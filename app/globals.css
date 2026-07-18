@@ -14,16 +14,20 @@
 
 @media (prefers-color-scheme: dark) {
  :root {
-  --background: #F7FAFC;
-  --foreground: #1E293B;
+  --background: #F4F7FB;
+  --foreground: #1B2A41;
 
-  --primary: #14B8A6;
-  --primary-dark: #0F766E;
+  --primary: #0F9D8A;
+  --primary-dark: #0B7C6E;
 
   --card: #FFFFFF;
-  --border: #E2E8F0;
+  --border: #E6ECF2;
 
-  --muted: #64748B;
+  --muted: #6B7A90;
+
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
 }
 }
 
