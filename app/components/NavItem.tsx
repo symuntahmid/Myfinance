@@ -14,14 +14,17 @@ export default function NavItem({
 }: NavItemProps) {
   return (
   <Link
-    href={href}
-    className={`block w-full rounded-xl px-4 py-3 text-left font-semibold transition ${
+  href={href}
+  className={`flex items-center gap-3 w-full rounded-xl px-4 py-3 font-semibold transition ${
       active
         ? "bg-[var(--primary)] text-white shadow-sm"
         : "text-slate-700 hover:bg-teal-50 hover:text-[var(--primary-dark)]"
     }`}
   >
-    {children}
+    <>
+  {icon}
+  <span>{children}</span>
+</>
   </Link>
 );
 }
