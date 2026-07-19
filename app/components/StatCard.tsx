@@ -1,6 +1,7 @@
 type StatCardProps = {
   title: string;
   value: string;
+  icon: React.ReactNode;
 };
 
 export default function StatCard({
