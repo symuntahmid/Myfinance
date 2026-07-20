@@ -21,3 +21,33 @@ export function saveTransactions(transactions: Transaction[]) {
     JSON.stringify(transactions)
   );
 }
+export function getSummary() {
+  const transactions = getTransactions();
+
+  let income = 0;
+  let expense = 0;
+  let investment = 0;
+
+  transactions.forEach((t) => {
+    switch (t.type) {
+      case "Income":
+        income += t.amount;
+        break;
+
+      case "Expense":
+        expense += t.amount;
+        break;
+
+      case "Investment":
+        investment += t.amount;
+        break;
+    }
+  });
+
+  return {
+    income,
+    expense,
+    investment,
+    netWorth: income - expense + investment,
+  };
+}

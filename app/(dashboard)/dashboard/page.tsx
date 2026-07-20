@@ -1,6 +1,7 @@
-import StatCard from "../../components/StatCard";
+import SummaryCards from "../../components/SummaryCards";
 import QuickAction from "../../components/QuickAction";
 import TransactionTable from "../../components/TransactionTable";
+import { getSummary } from "../../data/transactions";
 import {
   Wallet,
   TrendingUp,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
+  const summary = getSummary();
   return (
     <>
   <div className="flex items-center justify-between mb-8">
@@ -54,31 +56,7 @@ export default function Dashboard() {
     />
   </div>
 
-  <div className="grid grid-cols-2 gap-6 mt-10">
-    <StatCard
-      title="Net Worth"
-      value="$0"
-      icon={<Wallet className="w-6 h-6" />}
-    />
-
-    <StatCard
-      title="Monthly Income"
-      value="$0"
-      icon={<TrendingUp className="w-6 h-6" />}
-    />
-
-    <StatCard
-      title="Expenses"
-      value="$0"
-      icon={<TrendingDown className="w-6 h-6" />}
-    />
-
-    <StatCard
-      title="Investments"
-      value="$0"
-      icon={<Landmark className="w-6 h-6" />}
-    />
-  </div>
+  <SummaryCards />
 
   <TransactionTable />
 </>
