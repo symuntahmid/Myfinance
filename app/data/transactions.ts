@@ -15,31 +15,39 @@ export function getTransactions(): Transaction[] {
   return data ? JSON.parse(data) : [];
 }
 
-export function saveTransactions(transactions: Transaction[]) {
+export function saveTransactions(
+  transactions: Transaction[]
+): void {
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(transactions)
   );
 }
-export function getSummary() {
+
+export function getSummary(): {
+  income: number;
+  expense: number;
+  investment: number;
+  netWorth: number;
+} {
   const transactions = getTransactions();
 
   let income = 0;
   let expense = 0;
   let investment = 0;
 
-  transactions.forEach((t) => {
-    switch (t.type) {
+  transactions.forEach((transaction) => {
+    switch (transaction.type) {
       case "Income":
-        income += t.amount;
+        income += transaction.amount;
         break;
 
       case "Expense":
-        expense += t.amount;
+        expense += transaction.amount;
         break;
 
       case "Investment":
-        investment += t.amount;
+        investment += transaction.amount;
         break;
     }
   });
