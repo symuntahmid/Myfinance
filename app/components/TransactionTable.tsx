@@ -11,6 +11,10 @@ import {
 
 export default function TransactionTable() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<
+  "All" | "Income" | "Expense" | "Investment"
+>("All");
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
   useState<Transaction | null>(null);
@@ -31,27 +35,95 @@ export default function TransactionTable() {
   return (
     <>
       <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-5 text-2xl font-bold">
-          Recent Transactions
-        </h2>
+        <div className="mb-5 flex items-center justify-between">
+  <h2 className="text-2xl font-bold">
+    Recent Transactions
+  </h2>
+
+  <div className="flex items-center gap-3">
+  <button
+    onClick={() => setFilter("All")}
+    className={`rounded-full px-4 py-2 font-medium transition ${
+      filter === "All"
+        ? "bg-slate-800 text-white"
+        : "bg-slate-100 hover:bg-slate-200"
+    }`}
+  >
+    All
+  </button>
+
+  <button
+    onClick={() => setFilter("Income")}
+    className={`rounded-full px-4 py-2 font-medium transition ${
+      filter === "Income"
+        ? "bg-green-500 text-white"
+        : "bg-green-100 text-green-700 hover:bg-green-200"
+    }`}
+  >
+    Income
+  </button>
+
+  <button
+    onClick={() => setFilter("Expense")}
+    className={`rounded-full px-4 py-2 font-medium transition ${
+      filter === "Expense"
+        ? "bg-red-500 text-white"
+        : "bg-red-100 text-red-700 hover:bg-red-200"
+    }`}
+  >
+    Expense
+  </button>
+
+  <button
+    onClick={() => setFilter("Investment")}
+    className={`rounded-full px-4 py-2 font-medium transition ${
+      filter === "Investment"
+        ? "bg-blue-500 text-white"
+        : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+    }`}
+  >
+    Investment
+  </button>
+
+  <input
+    type="text"
+    placeholder="Search..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-56 rounded-xl border border-slate-300 p-2 outline-none focus:border-teal-500"
+  />
+</div>
+</div>
 
         <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="py-3 text-left">Type</th>
-              <th className="py-3 text-left">Source</th>
-              <th className="py-3 text-left">Amount</th>
-              <th className="py-3 text-center">Actions</th>
-            </tr>
-          </thead>
+  <thead>
+    <tr className="border-b">
+      <th className="py-3 text-left">Type</th>
+      <th className="py-3 text-left">Source</th>
+      <th className="py-3 text-left">Amount</th>
+      <th className="py-3 text-center">Actions</th>
+    </tr>
+  </thead>
+          
 
           <tbody>
-            {transactions.map((transaction) => (
-              <tr
-                key={transaction.id}
-                className="border-b last:border-0"
-              >
-                <td className="py-3">
+            {transactions
+              .filter((transaction) => {
+  const matchesSearch = transaction.source
+    .toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesFilter =
+    filter === "All" || transaction.type === filter;
+
+  return matchesSearch && matchesFilter;
+})
+              .map((transaction) => (
+                <tr
+                  key={transaction.id}
+                  className="border-b last:border-0"
+                >
+                  <td className="py-3">
                   <span
                     className={`rounded-full px-3 py-1 text-sm font-semibold ${
                       transaction.type === "Income"

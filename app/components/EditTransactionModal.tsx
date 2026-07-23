@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Transaction,
   getTransactions,
@@ -18,29 +18,35 @@ export default function EditTransactionModal({
   transaction,
   onClose,
 }: EditTransactionModalProps) {
+  const [source, setSource] = useState("");
+  const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    if (transaction) {
+      setSource(transaction.source);
+      setAmount(transaction.amount);
+    }
+  }, [transaction]);
+
   if (!open || !transaction) return null;
 
-  const [source, setSource] = useState(transaction.source);
-  const [amount, setAmount] = useState(transaction.amount);
   const saveChanges = () => {
-  const transactions = getTransactions();
+    const transactions = getTransactions();
 
-  const updatedTransactions = transactions.map((t) =>
-    t.id === transaction.id
-      ? {
-          ...t,
-          source,
-          amount,
-        }
-      : t
-  );
+    const updatedTransactions = transactions.map((t) =>
+      t.id === transaction.id
+        ? {
+            ...t,
+            source,
+            amount,
+          }
+        : t
+    );
 
-  saveTransactions(updatedTransactions);
+    saveTransactions(updatedTransactions);
 
-  onClose();
-
-  window.location.reload();
-};
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40">
@@ -77,12 +83,21 @@ export default function EditTransactionModal({
           </div>
         </div>
 
-        <button
-  onClick={saveChanges}
-  className="mt-6 rounded-lg bg-[var(--primary)] px-5 py-2 text-white"
->
-  Save Changes
-</button>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-slate-300 px-5 py-2 hover:bg-slate-100"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={saveChanges}
+            className="rounded-lg bg-[var(--primary)] px-5 py-2 text-white hover:opacity-90"
+          >
+            Save Changes
+          </button>
+        </div>
       </div>
     </div>
   );
