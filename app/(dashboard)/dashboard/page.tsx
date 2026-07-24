@@ -4,6 +4,7 @@ import TransactionTable from "../../components/TransactionTable";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
+import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 export default function Dashboard() {
   return (
@@ -63,7 +64,10 @@ export default function Dashboard() {
 
 </div>
 
-<IncomeExpenseChart />
+<div className="mt-8 grid gap-6 lg:grid-cols-2">
+  <IncomeExpenseChart />
+  <InvestmentPieChart />
+</div>
 
 <TransactionTable />
     </>

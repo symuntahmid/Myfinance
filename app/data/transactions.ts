@@ -26,6 +26,7 @@ export function saveTransactions(
 }
 
 export function getSummary(): {
+  
   income: number;
   expense: number;
   investment: number;
@@ -59,4 +60,83 @@ export function getSummary(): {
     investment,
     netWorth: income - expense + investment,
   };
+}
+export function getMonthlyReport() {
+  const transactions = getTransactions();
+
+  const income = transactions
+    .filter((t) => t.type === "Income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const expense = transactions
+    .filter((t) => t.type === "Expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const investment = transactions
+    .filter((t) => t.type === "Investment")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const savings = income - expense;
+
+  const savingsRate =
+    income === 0 ? 0 : (savings / income) * 100;
+
+  const largestExpense =
+    transactions
+      .filter((t) => t.type === "Expense")
+      .sort((a, b) => b.amount - a.amount)[0] || null;
+
+  const investmentCategories = transactions.filter(
+    (t) => t.type === "Investment"
+  );
+
+  const categoryTotals = investmentCategories.reduce(
+    (acc, t) => {
+      const category = t.category || "Other";
+      acc[category] = (acc[category] || 0) + t.amount;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
+  const topInvestmentCategory =
+    Object.entries(categoryTotals).sort(
+      (a, b) => b[1] - a[1]
+    )[0]?.[0] || "None";
+
+  return {
+    income,
+    expense,
+    investment,
+    savings,
+    savingsRate,
+    totalTransactions: transactions.length,
+    largestExpense,
+    topInvestmentCategory,
+  };
+}
+export function getFinancialHealthScore() {
+  const report = getMonthlyReport();
+
+  let score = 0;
+
+  // Savings Rate (40 points)
+  score += Math.min(report.savingsRate, 40);
+
+  // Investment Habit (20 points)
+  if (report.investment > 0) {
+    score += 20;
+  }
+
+  // Expense Control (20 points)
+  if (report.expense <= report.income) {
+    score += 20;
+  } else {
+    score += 10;
+  }
+
+  // Activity (20 points)
+  score += Math.min(report.totalTransactions, 20);
+
+  return Math.min(Math.round(score), 100);
 }
