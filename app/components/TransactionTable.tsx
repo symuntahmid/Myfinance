@@ -100,7 +100,8 @@ export default function TransactionTable() {
     <tr className="border-b">
       <th className="py-3 text-left">Type</th>
       <th className="py-3 text-left">Source</th>
-      <th className="py-3 text-left">Amount</th>
+<th className="py-3 text-left">Category</th>
+<th className="py-3 text-left">Amount</th>
       <th className="py-3 text-center">Actions</th>
     </tr>
   </thead>
@@ -109,9 +110,11 @@ export default function TransactionTable() {
           <tbody>
             {transactions
               .filter((transaction) => {
-  const matchesSearch = transaction.source
-    .toLowerCase()
-    .includes(search.toLowerCase());
+  const query = search.toLowerCase();
+
+const matchesSearch =
+  transaction.source.toLowerCase().includes(query) ||
+  (transaction.category ?? "").toLowerCase().includes(query);
 
   const matchesFilter =
     filter === "All" || transaction.type === filter;
@@ -138,12 +141,16 @@ export default function TransactionTable() {
                 </td>
 
                 <td className="py-3">
-                  {transaction.source}
-                </td>
+  {transaction.source}
+</td>
 
-                <td className="py-3 font-semibold">
-                  ${transaction.amount}
-                </td>
+<td className="py-3">
+  {transaction.category || "-"}
+</td>
+
+<td className="py-3 font-semibold">
+  ${transaction.amount.toLocaleString()}
+</td>
 
                 <td className="py-3">
                   <div className="flex justify-center gap-2">

@@ -2,6 +2,8 @@ import SummaryCards from "../../components/SummaryCards";
 import QuickAction from "../../components/QuickAction";
 import TransactionTable from "../../components/TransactionTable";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
+import NetWorthChart from "../../components/NetWorthChart";
+import FinancialInsights from "../../components/FinancialInsights";
 
 export default function Dashboard() {
   return (
@@ -51,9 +53,19 @@ export default function Dashboard() {
 
       <SummaryCards />
 
-      <IncomeExpenseChart />
+<div className="mt-8 grid gap-6 lg:grid-cols-3">
 
-      <TransactionTable />
+  <div className="lg:col-span-2">
+    <NetWorthChart />
+  </div>
+
+  <FinancialInsights />
+
+</div>
+
+<IncomeExpenseChart />
+
+<TransactionTable />
     </>
   );
 }
