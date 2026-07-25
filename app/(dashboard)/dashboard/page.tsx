@@ -5,12 +5,20 @@ import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
 import InvestmentPieChart from "../../components/InvestmentPieChart";
+import DailyJourneyCard from "../../components/DailyJourneyCard";
+import ProfileCard from "../../components/ProfileCard";
+import AchievementCard from "../../components/AchievementCard";
+import LessonCard from "../../components/LessonCard";
 
 export default function Dashboard() {
   return (
     <>
+      {/* Dashboard Header */}
+
       <div className="mb-8 flex items-center justify-between">
+
         <div>
+
           <h1 className="text-4xl font-bold">
             Dashboard
           </h1>
@@ -18,9 +26,11 @@ export default function Dashboard() {
           <p className="mt-2 text-[var(--muted)]">
             Welcome back! Here's your financial overview.
           </p>
+
         </div>
 
         <div className="text-right">
+
           <p className="text-sm text-slate-500">
             Today
           </p>
@@ -28,14 +38,33 @@ export default function Dashboard() {
           <p className="font-semibold">
             {new Date().toLocaleDateString()}
           </p>
+
         </div>
+
       </div>
 
-      <h2 className="mb-5 text-2xl font-bold">
+      {/* Motivation Section */}
+
+      <div className="space-y-6">
+
+  <DailyJourneyCard />
+
+  <LessonCard />
+
+  <ProfileCard />
+
+  <AchievementCard />
+
+</div>
+
+      {/* Quick Actions */}
+
+      <h2 className="mt-10 mb-5 text-2xl font-bold">
         Quick Actions
       </h2>
 
       <div className="grid grid-cols-3 gap-5">
+
         <QuickAction
           title="Add Income"
           href="/add-income"
@@ -50,26 +79,37 @@ export default function Dashboard() {
           title="Add Investment"
           href="/add-investment"
         />
+
       </div>
+
+      {/* Summary */}
 
       <SummaryCards />
 
-<div className="mt-8 grid gap-6 lg:grid-cols-3">
+      {/* Analytics */}
 
-  <div className="lg:col-span-2">
-    <NetWorthChart />
-  </div>
+      <div className="mt-8 grid gap-6 lg:grid-cols-3">
 
-  <FinancialInsights />
+        <div className="lg:col-span-2">
+          <NetWorthChart />
+        </div>
 
-</div>
+        <FinancialInsights />
 
-<div className="mt-8 grid gap-6 lg:grid-cols-2">
-  <IncomeExpenseChart />
-  <InvestmentPieChart />
-</div>
+      </div>
 
-<TransactionTable />
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+
+        <IncomeExpenseChart />
+
+        <InvestmentPieChart />
+
+      </div>
+
+      {/* Transactions */}
+
+      <TransactionTable />
+
     </>
   );
 }
