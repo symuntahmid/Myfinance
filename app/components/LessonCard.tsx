@@ -131,7 +131,7 @@ if (lesson.completed) {
           <div>
 
             <p className="text-sm text-white/70">
-              Continue your financial journey
+              Continue Learning
             </p>
 
             <p className="mt-1 text-xl font-semibold">

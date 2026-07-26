@@ -21,7 +21,7 @@ export default function ProfileCard() {
   );
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl bg-white p-6 shadow-xl min-h-[330px] transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:scale-[1.02]">
 
       <div className="flex items-center gap-4">
 
