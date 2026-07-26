@@ -5,6 +5,7 @@ export type Player = {
   level: number;
   streak: number;
   achievements: number;
+  wealthScore: number;
 };
 
 const STORAGE_KEY = "myfinance-player";
@@ -16,7 +17,10 @@ const DEFAULT_PLAYER: Player = {
   level: 8,
   streak: 18,
   achievements: 12,
+  wealthScore: 8420,
 };
+
+
 
 export function getPlayer(): Player {
   if (typeof window === "undefined") {
@@ -34,7 +38,12 @@ export function getPlayer(): Player {
     return DEFAULT_PLAYER;
   }
 
-  return JSON.parse(data);
+  const savedPlayer = JSON.parse(data);
+
+  return {
+    ...DEFAULT_PLAYER,
+    ...savedPlayer,
+  };
 }
 
 export function savePlayer(player: Player) {

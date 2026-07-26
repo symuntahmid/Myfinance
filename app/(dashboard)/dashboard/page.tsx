@@ -9,6 +9,7 @@ import DailyJourneyCard from "../../components/DailyJourneyCard";
 import ProfileCard from "../../components/ProfileCard";
 import AchievementCard from "../../components/AchievementCard";
 import LessonCard from "../../components/LessonCard";
+import FadeIn from "../../components/FadeIn";
 
 export default function Dashboard() {
   return (
@@ -47,13 +48,23 @@ export default function Dashboard() {
 
       <div className="space-y-6">
 
-  <DailyJourneyCard />
+<div className="grid gap-6 lg:grid-cols-2">
 
-  <LessonCard />
+  <FadeIn delay={0}>
+    <DailyJourneyCard />
+  </FadeIn>
 
-  <ProfileCard />
+  <FadeIn delay={0.1}>
+    <LessonCard />
+  </FadeIn>
 
-  <AchievementCard />
+  <FadeIn delay={0.2}>
+    <ProfileCard />
+  </FadeIn>
+
+  <FadeIn delay={0.3}>
+    <AchievementCard />
+  </FadeIn>
 
 </div>
 
@@ -84,31 +95,44 @@ export default function Dashboard() {
 
       {/* Summary */}
 
-      <SummaryCards />
+      <FadeIn delay={0.4}>
+  <SummaryCards />
+</FadeIn>
 
       {/* Analytics */}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
 
-        <div className="lg:col-span-2">
-          <NetWorthChart />
-        </div>
+  <FadeIn delay={0.5}>
+    <div className="lg:col-span-2">
+      <NetWorthChart />
+    </div>
+  </FadeIn>
 
-        <FinancialInsights />
+  <FadeIn delay={0.6}>
+    <FinancialInsights />
+  </FadeIn>
 
-      </div>
+</div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
 
-        <IncomeExpenseChart />
+  <FadeIn delay={0.7}>
+    <IncomeExpenseChart />
+  </FadeIn>
 
-        <InvestmentPieChart />
+  <FadeIn delay={0.8}>
+    <InvestmentPieChart />
+  </FadeIn>
 
-      </div>
+</div>
 
       {/* Transactions */}
 
-      <TransactionTable />
+      <FadeIn delay={0.9}>
+  <TransactionTable />
+</FadeIn>
+      </div>
 
     </>
   );

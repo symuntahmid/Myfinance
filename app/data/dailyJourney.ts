@@ -75,3 +75,17 @@ export function getJourneyProgress() {
     percent: (completed / tasks.length) * 100,
   };
 }
+
+export function completeLessonTask() {
+  const tasks = getDailyTasks();
+
+  const lessonTask = tasks.find(
+    (task) => task.title === "Read today's lesson"
+  );
+
+  if (!lessonTask || lessonTask.completed) return;
+
+  lessonTask.completed = true;
+
+  saveDailyTasks(tasks);
+}

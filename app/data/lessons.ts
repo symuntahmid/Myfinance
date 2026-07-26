@@ -1,69 +1,148 @@
 export type Lesson = {
   id: number;
+  module: number;
   title: string;
   description: string;
   content: string;
   xp: number;
   completed: boolean;
+
+  duration: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  category: string;
 };
 
 const STORAGE_KEY = "myfinance-lessons";
 
 const DEFAULT_LESSONS: Lesson[] = [
   {
-    id: 1,
-    title: "Pay Yourself First",
-    description: "The #1 habit of wealthy people.",
-    content:
-      "Before paying bills or buying anything else, save a percentage of your income first. Even saving 10% consistently can build significant wealth over time because your savings grow before your spending begins.",
-    xp: 10,
-    completed: false,
-  },
+  id: 1,
+  module: 1,
+  title: "What is Saving?",
+  description: "Learn why saving money matters.",
+  content:
+    "Saving means keeping part of your income for future needs instead of spending everything today.",
+  xp: 10,
+  completed: false,
+
+  duration: "3 min",
+  difficulty: "Beginner",
+  category: "Money Basics",
+},
+
   {
     id: 2,
-    title: "Needs vs Wants",
-    description: "Master your spending decisions.",
+    module: 1,
+    title: "Budgeting",
+    description: "Control your money with a budget.",
     content:
-      "Needs are things you must have to live and work. Wants improve comfort but aren't essential. Learning the difference is one of the fastest ways to gain control of your finances.",
+      "A budget helps you plan income and expenses so you always know where your money goes.",
     xp: 10,
     completed: false,
+
+    duration: "4 min",
+difficulty: "Beginner",
+category: "Budgeting",
   },
+
   {
     id: 3,
+    module: 1,
     title: "Emergency Fund",
-    description: "Protect your future self.",
+    description: "Prepare for unexpected events.",
     content:
-      "Build an emergency fund that covers 3–6 months of expenses. This prevents unexpected events from becoming financial disasters.",
-    xp: 10,
+      "An emergency fund protects you against job loss, illness, or unexpected expenses.",
+    xp: 15,
     completed: false,
+
+    duration: "5 min",
+difficulty: "Beginner",
+category: "Emergency Fund",
+  },
+
+  {
+    id: 4,
+    module: 1,
+    title: "Investing Basics",
+    description: "Start growing your wealth.",
+    content:
+      "Investing allows your money to grow over time through stocks, ETFs, real estate, and more.",
+    xp: 20,
+    completed: false,
+
+    duration: "7 min",
+difficulty: "Intermediate",
+category: "Investing",
+  },
+
+  {
+    id: 5,
+    module: 1,
+    title: "Compound Interest",
+    description: "The most powerful force in investing.",
+    content:
+      "Compound interest means earning returns on your previous returns, creating exponential growth.",
+    xp: 25,
+    completed: false,
+
+    duration: "8 min",
+difficulty: "Intermediate",
+category: "Compound Interest",
   },
 ];
 
 export function getLessons(): Lesson[] {
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined")
+    return DEFAULT_LESSONS;
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if (!saved) {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(DEFAULT_LESSONS)
+    );
+
     return DEFAULT_LESSONS;
   }
 
-  const data = localStorage.getItem(STORAGE_KEY);
-
-  if (!data) {
-    saveLessons(DEFAULT_LESSONS);
-    return DEFAULT_LESSONS;
-  }
-
-  return JSON.parse(data);
+  return JSON.parse(saved);
 }
 
-export function saveLessons(
-  lessons: Lesson[]
-): void {
+export function completeLesson(id: number) {
+  const lessons = getLessons();
+
+  const lesson = lessons.find(
+    (lesson) => lesson.id === id
+  );
+
+  if (!lesson) return;
+
+  lesson.completed = true;
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(lessons)
   );
 }
 
-export function getTodayLesson(): Lesson {
+export function getModuleProgress(module: number) {
+  const lessons = getLessons().filter(
+    (lesson) => lesson.module === module
+  );
+
+  const completed = lessons.filter(
+    (lesson) => lesson.completed
+  ).length;
+
+  return {
+    completed,
+    total: lessons.length,
+    percent:
+      (completed / lessons.length) * 100,
+  };
+}
+export function getTodayLesson() {
   const lessons = getLessons();
 
   const nextLesson = lessons.find(
@@ -71,18 +150,17 @@ export function getTodayLesson(): Lesson {
   );
 
   return nextLesson ?? lessons[0];
+  
 }
 
-export function completeLesson(id: number): void {
+export function isLessonUnlocked(id: number) {
   const lessons = getLessons();
 
-  const lesson = lessons.find(
+  const index = lessons.findIndex(
     (lesson) => lesson.id === id
   );
 
-  if (!lesson || lesson.completed) return;
+  if (index === 0) return true;
 
-  lesson.completed = true;
-
-  saveLessons(lessons);
+  return lessons[index - 1].completed;
 }
