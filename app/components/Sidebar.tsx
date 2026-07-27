@@ -15,7 +15,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-72 h-screen bg-white border-r border-[var(--border)] px-6 py-8 shadow-sm">
+    <aside className="hidden lg:flex lg:w-72 lg:h-screen lg:flex-col bg-white border-r border-[var(--border)] px-6 py-8 shadow-sm">
 
       <div className="mb-12">
         <h1 className="text-3xl font-extrabold tracking-tight text-[var(--primary-dark)]">

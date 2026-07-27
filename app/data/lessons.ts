@@ -221,6 +221,11 @@ export function completeLesson(id: number) {
   if (!lesson) return;
 
   lesson.completed = true;
+  if (typeof window !== "undefined") {
+  const audio = new Audio("/sounds/success.mp3");
+  audio.volume = 0.5;
+  audio.play().catch(() => {});
+}
 
   localStorage.setItem(
     STORAGE_KEY,
@@ -264,4 +269,15 @@ export function isLessonUnlocked(id: number) {
 
 export function getLessonById(id: number) {
   return getLessons().find((lesson) => lesson.id === id);
+}
+
+export function resetLessons() {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(DEFAULT_LESSONS)
+  );
+
+  window.dispatchEvent(
+    new Event("player-updated")
+  );
 }

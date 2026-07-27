@@ -45,12 +45,7 @@ export default function Dashboard() {
 
       </div>
 
-    
 
-<div className="mt-6">
-  <FadeIn delay={0.05}>
-  </FadeIn>
-</div>
 
      {/* Motivation Section */}
 

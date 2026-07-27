@@ -4,7 +4,7 @@ import ProfileCard from "@/app/components/ProfileCard";
 import AchievementCard from "@/app/components/AchievementCard";
 import FinancialGoalsCard from "@/app/components/FinancialGoalsCard";
 import FinancialHealthCard from "@/app/components/FinancialHealthCard";
-
+import { resetLessons } from "@/app/data/lessons";
 
 export default function ProfilePage() {
   return (
@@ -20,7 +20,7 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-3">
 
         <div className="lg:col-span-2">
           <ProfileCard />
@@ -29,13 +29,21 @@ export default function ProfilePage() {
         <AchievementCard />
 
         <div className="grid gap-6 lg:grid-cols-2">
-
-<FinancialHealthCard />
-  <FinancialGoalsCard />
-
-</div>
+          <FinancialHealthCard />
+          <FinancialGoalsCard />
+        </div>
 
       </div>
+
+      <button
+        onClick={() => {
+          resetLessons();
+          location.reload();
+        }}
+        className="mt-8 w-full rounded-2xl bg-red-500 py-3 font-bold text-white transition hover:bg-red-600"
+      >
+        🔄 Reset Academy (Developer)
+      </button>
 
     </div>
   );
