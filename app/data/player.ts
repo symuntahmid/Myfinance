@@ -1,15 +1,43 @@
 export type Player = {
+  name: string;
+
   xp: number;
+
   wealthScore: number;
+
   streak: number;
+
+  achievements: number;
+
+  netWorth: number;
+
+  monthlyCashFlow: number;
+
+  savingRate: number;
+
+  investments: number;
 };
 
 const STORAGE_KEY = "myfinance-player";
 
 const DEFAULT_PLAYER: Player = {
+  name: "Symun",
+
   xp: 0,
+
   wealthScore: 0,
+
   streak: 1,
+
+  achievements: 0,
+
+  netWorth: 0,
+
+  monthlyCashFlow: 0,
+
+  savingRate: 0,
+
+  investments: 0,
 };
 
 export function getPlayer(): Player {
@@ -28,7 +56,12 @@ export function getPlayer(): Player {
     return DEFAULT_PLAYER;
   }
 
-  return JSON.parse(saved);
+  const parsed = JSON.parse(saved);
+
+return {
+  ...DEFAULT_PLAYER,
+  ...parsed,
+};
 }
 
 export function savePlayer(player: Player) {
@@ -63,4 +96,27 @@ export function getLevel() {
     nextLevelXP: 100,
     percent: currentXP,
   };
+}
+
+export function getFinancialHealth() {
+  const player = getPlayer();
+
+  let score = 0;
+
+  // Saving Rate (25)
+  score += Math.min(player.savingRate, 25);
+
+  // Positive Cash Flow (20)
+  if (player.monthlyCashFlow > 0) score += 20;
+
+  // Investments (20)
+  score += Math.min(player.investments / 1000, 20);
+
+  // Net Worth (20)
+  score += Math.min(player.netWorth / 5000, 20);
+
+  // Learning (15)
+  score += Math.min(player.xp / 10, 15);
+
+  return Math.round(Math.min(score, 100));
 }
