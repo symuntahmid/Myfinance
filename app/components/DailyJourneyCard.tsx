@@ -1,4 +1,5 @@
 "use client";
+import { unlockAchievement } from "../data/achievements";
 
 import {
   CheckCircle2,
@@ -28,6 +29,15 @@ export default function DailyJourneyCard() {
     completeTask(id);
 
     addXP(reward);
+    const progress = getJourneyProgress();
+
+if (progress.completed + 1 >= progress.total) {
+  unlockAchievement(3);
+}
+
+    window.dispatchEvent(
+  new Event("player-updated")
+);
 
     forceUpdate((n) => n + 1);
   };

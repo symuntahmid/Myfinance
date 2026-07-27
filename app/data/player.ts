@@ -1,35 +1,25 @@
 export type Player = {
-  name: string;
-  rank: string;
   xp: number;
-  level: number;
-  streak: number;
-  achievements: number;
   wealthScore: number;
+  streak: number;
 };
 
 const STORAGE_KEY = "myfinance-player";
 
 const DEFAULT_PLAYER: Player = {
-  name: "Symun",
-  rank: "Financial Explorer",
-  xp: 840,
-  level: 8,
-  streak: 18,
-  achievements: 12,
-  wealthScore: 8420,
+  xp: 0,
+  wealthScore: 0,
+  streak: 1,
 };
-
-
 
 export function getPlayer(): Player {
   if (typeof window === "undefined") {
     return DEFAULT_PLAYER;
   }
 
-  const data = localStorage.getItem(STORAGE_KEY);
+  const saved = localStorage.getItem(STORAGE_KEY);
 
-  if (!data) {
+  if (!saved) {
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify(DEFAULT_PLAYER)
@@ -38,18 +28,17 @@ export function getPlayer(): Player {
     return DEFAULT_PLAYER;
   }
 
-  const savedPlayer = JSON.parse(data);
-
-  return {
-    ...DEFAULT_PLAYER,
-    ...savedPlayer,
-  };
+  return JSON.parse(saved);
 }
 
 export function savePlayer(player: Player) {
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(player)
+  );
+
+  window.dispatchEvent(
+    new Event("player-updated")
   );
 }
 
@@ -58,27 +47,20 @@ export function addXP(amount: number) {
 
   player.xp += amount;
 
-  while (player.xp >= player.level * 100) {
-    player.xp -= player.level * 100;
-
-    player.level++;
-
-    player.rank = getRank(player.level);
-  }
-
   savePlayer(player);
 }
 
-function getRank(level: number): string {
-  if (level >= 50) return "Financial Legend";
+export function getLevel() {
+  const player = getPlayer();
 
-  if (level >= 40) return "Wealth Architect";
+  const level = Math.floor(player.xp / 100) + 1;
 
-  if (level >= 30) return "Financial Strategist";
+  const currentXP = player.xp % 100;
 
-  if (level >= 20) return "Wealth Builder";
-
-  if (level >= 10) return "Investor";
-
-  return "Financial Explorer";
+  return {
+    level,
+    currentXP,
+    nextLevelXP: 100,
+    percent: currentXP,
+  };
 }

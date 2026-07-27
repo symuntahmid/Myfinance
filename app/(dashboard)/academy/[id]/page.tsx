@@ -3,11 +3,20 @@ import { useState } from "react";
 
 import LessonQuiz from "@/app/components/LessonQuiz";
 import { useParams } from "next/navigation";
+import LessonCompleteModal from "@/app/components/LessonCompleteModal";
 import { ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { unlockAchievement } from "@/app/data/achievements";
+
 import Link from "next/link";
 
 import {
+  addXP,
+  getPlayer,
+  savePlayer,
+} from "@/app/data/player";
+import {
   getLessonById,
+  completeLesson,
 } from "@/app/data/lessons";
 
 export default function LessonPage() {
@@ -16,8 +25,41 @@ export default function LessonPage() {
 const params = useParams();
 
 const lesson = getLessonById(Number(params.id));
+if (!lesson) {
+  return (
+    <div className="p-10">
+      Lesson not found.
+    </div>
+  );
+}
 
 const [showExample, setShowExample] = useState(false);
+
+const [showComplete, setShowComplete] = useState(false);
+
+function claimReward() {
+  if (!quizPassed || !lesson) return;
+
+  addXP(lesson.xp);
+
+  const player = getPlayer();
+
+  player.wealthScore += 150;
+
+  savePlayer(player);
+
+  completeLesson(lesson.id);
+  unlockAchievement(1);
+
+  setShowComplete(true);
+}
+
+const player = getPlayer();
+
+// Unlock 100 XP achievement
+if (player.xp >= 100) {
+  unlockAchievement(2);
+}
 
   if (!lesson) {
 
@@ -115,57 +157,50 @@ const [showExample, setShowExample] = useState(false);
 
   </div>
 
-  {/* Expandable Example */}
+{/* Expandable Example */}
 
-  <div className="rounded-3xl border bg-white shadow">
+<div className="rounded-3xl border bg-white shadow">
 
-    <button
-      onClick={() => setShowExample(!showExample)}
-      className="flex w-full items-center justify-between p-7"
-    >
+  <button
+    onClick={() => setShowExample(!showExample)}
+    className="flex w-full items-center justify-between p-7"
+  >
+    <div>
+      <h2 className="text-2xl font-bold">
+        📊 Real-Life Example
+      </h2>
 
-      <div>
+      <p className="mt-1 text-gray-500">
+        Click to view the example
+      </p>
+    </div>
 
-        <h2 className="text-2xl font-bold">
-          📊 Real-Life Example
-        </h2>
+    {showExample ? (
+      <ChevronUp size={26} />
+    ) : (
+      <ChevronDown size={26} />
+    )}
+  </button>
 
-        <p className="mt-1 text-gray-500">
-          See how this lesson works in practice.
+  {showExample && (
+    <div className="border-t p-8">
+
+      <div className="rounded-2xl bg-indigo-50 p-6">
+
+        <h3 className="text-xl font-bold">
+          {lesson.example.title}
+        </h3>
+
+        <p className="mt-5 text-gray-700 leading-8">
+          {lesson.example.description}
         </p>
 
       </div>
 
-      {showExample ? (
-        <ChevronUp size={26} />
-      ) : (
-        <ChevronDown size={26} />
-      )}
+    </div>
+  )}
 
-    </button>
-
-    {showExample && (
-
-      <div className="border-t p-8">
-
-        <div className="rounded-2xl bg-indigo-50 p-6">
-
-          <h3 className="text-xl font-bold">
-            {lesson.example.title}
-          </h3>
-
-          <p className="text-gray-700">
-  {lesson.example.description}
-</p>
-        </div>
-
-      </div>
-
-    )}
-
-  </div>
-
-  {/* Reward */}
+</div>
 
   <div className="rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
 
@@ -179,34 +214,37 @@ const [showExample, setShowExample] = useState(false);
         +{lesson.xp} XP
       </h2>
 
-      <button
+     <button
+  onClick={claimReward}
   disabled={!quizPassed}
   className={`rounded-2xl px-8 py-4 font-bold transition ${
     quizPassed
-      ? "bg-green-500 text-white hover:bg-green-600"
+      ? "bg-green-500 text-white hover:bg-green-600 hover:scale-105"
       : "bg-gray-300 text-gray-600 cursor-not-allowed"
   }`}
 >
-  {quizPassed ? "🎉 Claim +10 XP" : "🔒 Pass Quiz First"}
+  {quizPassed
+    ? `🎉 Claim +${lesson.xp} XP`
+    : "🔒 Pass Quiz First"}
 </button>
 
     </div>
-    <LessonQuiz
-  question="What is the primary purpose of an emergency fund?"
-  options={[
-    "Buy luxury items",
-    "Handle unexpected expenses",
-    "Invest in stocks",
-    "Pay monthly subscriptions",
-  ]}
-  correct={1}
-  explanation="An emergency fund protects you against unexpected events like losing your job, medical bills, or urgent repairs."
+   <LessonQuiz
+  question={lesson.question}
+  options={lesson.options}
+  correct={lesson.correct}
+  explanation={lesson.keyTakeaway}
   onCorrect={() => setQuizPassed(true)}
 />
 
   </div>
 
 </div>
+
+<LessonCompleteModal
+  open={showComplete}
+  xp={lesson.xp}
+/>
     </main>
 
   );

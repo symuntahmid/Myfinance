@@ -9,6 +9,10 @@ import DailyJourneyCard from "../../components/DailyJourneyCard";
 import ProfileCard from "../../components/ProfileCard";
 import AchievementCard from "../../components/AchievementCard";
 import LessonCard from "../../components/LessonCard";
+import StatsGrid from "@/app/components/StatsGrid";
+import LearningRoadmap from "@/app/components/LearningRoadmap";
+import WelcomeBanner from "../../components/WelcomeBanner";
+
 import FadeIn from "../../components/FadeIn";
 
 export default function Dashboard() {
@@ -20,13 +24,12 @@ export default function Dashboard() {
 
         <div>
 
-          <h1 className="text-4xl font-bold">
-            Dashboard
-          </h1>
 
-          <p className="mt-2 text-[var(--muted)]">
-            Welcome back! Here's your financial overview.
-          </p>
+          <h1 className="text-4xl font-bold">
+  Dashboard
+</h1>
+
+<WelcomeBanner />
 
         </div>
 
@@ -44,25 +47,43 @@ export default function Dashboard() {
 
       </div>
 
+      <FadeIn delay={0}>
+  <StatsGrid />
+</FadeIn>
+
+<div className="mt-6">
+  <FadeIn delay={0.05}>
+    <LearningRoadmap />
+  </FadeIn>
+</div>
+
       {/* Motivation Section */}
 
       <div className="space-y-6">
 
-<div className="grid gap-6 lg:grid-cols-2">
+<FadeIn delay={0}>
+  <StatsGrid />
+</FadeIn>
 
-  <FadeIn delay={0}>
-    <DailyJourneyCard />
-  </FadeIn>
-
+<div className="mt-8">
   <FadeIn delay={0.1}>
     <LessonCard />
   </FadeIn>
+</div>
 
+<div className="mt-8">
   <FadeIn delay={0.2}>
-    <ProfileCard />
+    <LearningRoadmap />
   </FadeIn>
+</div>
+
+<div className="mt-8 grid gap-6 lg:grid-cols-2">
 
   <FadeIn delay={0.3}>
+    <DailyJourneyCard />
+  </FadeIn>
+
+  <FadeIn delay={0.4}>
     <AchievementCard />
   </FadeIn>
 

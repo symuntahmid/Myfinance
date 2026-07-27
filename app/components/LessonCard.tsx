@@ -1,155 +1,115 @@
 "use client";
 
+import Link from "next/link";
 import {
-  BookOpen,
-  ArrowRight,
   Clock3,
   Star,
-  Award,
+  ArrowRight,
 } from "lucide-react";
 
-import Link from "next/link";
-
-import { getTodayLesson } from "../data/lessons";
+import {
+  getTodayLesson,
+  getLessons,
+} from "@/app/data/lessons";
 
 export default function LessonCard() {
   const lesson = getTodayLesson();
 
-if (lesson.completed) {
-  return (
-  <div className="rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 p-8 text-white shadow-xl">
+  const lessons = getLessons();
 
-    <h2 className="text-3xl font-bold">
-      🎉 Today's Lesson Completed
-    </h2>
+  const completed = lessons.filter(
+    (l) => l.completed
+  ).length;
 
-    <p className="mt-3 text-white/90">
-      Great job! Come back tomorrow for another lesson.
-    </p>
-
-    <div className="mt-8 flex gap-4">
-
-      <Link
-        href="/academy"
-        className="rounded-2xl bg-white px-6 py-3 font-bold text-emerald-700"
-      >
-        View Academy
-      </Link>
-
-      <button
-        onClick={() => {
-          localStorage.removeItem("myfinance-lessons");
-
-          window.location.reload();
-        }}
-        className="rounded-2xl bg-white/20 px-6 py-3 font-bold"
-      >
-        Reset Lessons (Dev)
-      </button>
-
-    </div>
-
-  </div>
-);
-}
+  const progress =
+    (completed / lessons.length) * 100;
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 text-white shadow-xl">
+    <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-8 text-white shadow-2xl">
 
-      <div className="p-8">
+      <p className="text-sm uppercase tracking-[0.25em] text-white/70">
+        Today's Lesson
+      </p>
 
-        <div className="flex items-start justify-between">
+      <h2 className="mt-3 text-4xl font-bold">
+        {lesson.title}
+      </h2>
 
-          <div className="flex items-center gap-4">
+      <p className="mt-4 max-w-2xl text-lg text-white/80">
+        {lesson.description}
+      </p>
 
-            <div className="rounded-2xl bg-white/20 p-4">
-              <BookOpen size={30} />
-            </div>
+      <div className="mt-8">
 
-            <div>
+        <div className="mb-2 flex justify-between text-sm">
 
-              <p className="text-sm uppercase tracking-widest text-white/80">
-                Finance Academy
-              </p>
+          <span>
+            Course Progress
+          </span>
 
-              <h2 className="text-4xl font-bold">
-                Today's Lesson
-              </h2>
-
-            </div>
-
-          </div>
-
-          <div className="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur">
-            +{lesson.xp} XP
-          </div>
+          <span>
+            {Math.round(progress)}%
+          </span>
 
         </div>
 
-        <div className="mt-10">
+        <div className="h-3 overflow-hidden rounded-full bg-white/20">
 
-          <h3 className="text-3xl font-bold">
-            {lesson.title}
-          </h3>
-
-          <p className="mt-3 max-w-xl text-lg text-white/80">
-            {lesson.description}
-          </p>
-
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-
-          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 backdrop-blur">
-
-            <Clock3 size={16} />
-
-            <span>{lesson.duration}</span>
-
-          </div>
-
-          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 backdrop-blur">
-
-            <Star size={16} />
-
-            <span>{lesson.difficulty}</span>
-
-          </div>
-
-          <div className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 backdrop-blur">
-
-            <Award size={16} />
-
-            <span>{lesson.category}</span>
-
-          </div>
+          <div
+            className="h-full rounded-full bg-white transition-all duration-700"
+            style={{
+              width: `${progress}%`,
+            }}
+          />
 
         </div>
 
-        <div className="mt-10 flex items-center justify-between">
+      </div>
 
-          <div>
+      <div className="mt-8 flex flex-wrap gap-4">
 
-            <p className="text-sm text-white/70">
-              Continue Learning
-            </p>
+        <div className="flex items-center gap-2 rounded-full bg-white/15 px-5 py-3">
 
-            <p className="mt-1 text-xl font-semibold">
-              Lesson Reward: +{lesson.xp} XP
-            </p>
+          <Clock3 size={18} />
 
-          </div>
-
-          <Link
-            href="/academy"
-            className="flex items-center gap-2 rounded-2xl bg-white px-7 py-4 text-lg font-bold text-indigo-700 transition hover:scale-105"
-          >
-            Continue
-
-            <ArrowRight size={20} />
-          </Link>
+          {lesson.duration}
 
         </div>
+
+        <div className="flex items-center gap-2 rounded-full bg-white/15 px-5 py-3">
+
+          <Star size={18} />
+
+          +{lesson.xp} XP
+
+        </div>
+
+        <div className="rounded-full bg-white/15 px-5 py-3">
+
+          {lesson.difficulty}
+
+        </div>
+
+      </div>
+
+      <div className="mt-10 flex flex-wrap gap-4">
+
+        <Link
+          href={`/academy/${lesson.id}`}
+          className="flex items-center gap-2 rounded-2xl bg-white px-7 py-4 font-bold text-indigo-700 transition hover:scale-105"
+        >
+          Continue Learning
+
+          <ArrowRight size={20} />
+
+        </Link>
+
+        <Link
+          href="/academy"
+          className="rounded-2xl border border-white/30 px-7 py-4 font-semibold transition hover:bg-white/10"
+        >
+          View Full Journey
+        </Link>
 
       </div>
 

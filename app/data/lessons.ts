@@ -183,7 +183,9 @@ const DEFAULT_LESSONS: Lesson[] = [
 ];
 
 export function getLessons(): Lesson[] {
-  if (typeof window === "undefined") return DEFAULT_LESSONS;
+  if (typeof window === "undefined") {
+    return DEFAULT_LESSONS;
+  }
 
   const saved = localStorage.getItem(STORAGE_KEY);
 
@@ -196,7 +198,19 @@ export function getLessons(): Lesson[] {
     return DEFAULT_LESSONS;
   }
 
-  return JSON.parse(saved);
+  const lessons = JSON.parse(saved);
+
+  // If old lesson format exists, reset automatically
+  if (!lessons[0]?.options) {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(DEFAULT_LESSONS)
+    );
+
+    return DEFAULT_LESSONS;
+  }
+
+  return lessons;
 }
 
 export function completeLesson(id: number) {

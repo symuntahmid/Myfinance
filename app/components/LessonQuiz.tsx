@@ -6,49 +6,88 @@ type QuizProps = {
   question: string;
   options: string[];
   correct: number;
-  xp: number;
+  explanation: string;
+  onCorrect: () => void;
 };
 
 export default function LessonQuiz({
   question,
   options,
   correct,
-  xp,
+  explanation,
+  onCorrect,
 }: QuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
+  const [answered, setAnswered] = useState(false);
+
+  function choose(index: number) {
+    if (answered) return;
+
+    setSelected(index);
+    setAnswered(true);
+
+    if (index === correct) {
+      onCorrect();
+    }
+  }
 
   return (
     <div className="mt-10 rounded-3xl bg-white p-8 shadow-xl">
 
-      <h2 className="text-3xl font-bold mb-8">
+      <h2 className="text-3xl font-bold">
         Quiz
       </h2>
 
-      <p className="mb-8 text-xl font-medium text-gray-800">
+      <p className="mt-6 text-xl font-semibold">
         {question}
       </p>
 
-      <div className="space-y-4">
+      <div className="mt-8 space-y-4">
 
-        {options.map((option, index) => (
+        {options.map((option, index) => {
 
-          <button
-            key={index}
-            onClick={() => setSelected(index)}
-            className={`w-full rounded-2xl border p-5 text-left transition
+          let style =
+            "border-gray-300 hover:border-indigo-400";
 
-            ${
-              selected === index
-                ? "border-indigo-600 bg-indigo-50"
-                : "border-gray-300 hover:border-indigo-400"
-            }`}
-          >
-            {option}
-          </button>
+          if (answered) {
 
-        ))}
+            if (index === correct) {
+              style =
+                "border-green-500 bg-green-50";
+            } else if (selected === index) {
+              style =
+                "border-red-500 bg-red-50";
+            }
+
+          }
+
+          return (
+            <button
+              key={index}
+              onClick={() => choose(index)}
+              className={`w-full rounded-2xl border p-5 text-left transition ${style}`}
+            >
+              {option}
+            </button>
+          );
+
+        })}
 
       </div>
+
+      {answered && (
+        <div className="mt-8 rounded-2xl bg-indigo-50 p-5">
+
+          <h3 className="font-bold text-indigo-700">
+            Explanation
+          </h3>
+
+          <p className="mt-2 text-gray-700">
+            {explanation}
+          </p>
+
+        </div>
+      )}
 
     </div>
   );
