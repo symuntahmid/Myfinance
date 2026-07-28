@@ -222,9 +222,23 @@ export function completeLesson(id: number) {
 
   lesson.completed = true;
   if (typeof window !== "undefined") {
+  console.log("🔊 Trying to play sound...");
+
   const audio = new Audio("/sounds/success.mp3");
-  audio.volume = 0.5;
-  audio.play().catch(() => {});
+
+  audio.volume = 1;
+
+  audio.oncanplaythrough = () => {
+    console.log("✅ Audio loaded");
+  };
+
+  audio.onerror = (e) => {
+    console.log("❌ Audio error", e);
+  };
+
+  audio.play()
+    .then(() => console.log("▶️ Playing"))
+    .catch((err) => console.log("❌ Play failed", err));
 }
 
   localStorage.setItem(

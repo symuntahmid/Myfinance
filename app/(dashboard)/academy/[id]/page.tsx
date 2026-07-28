@@ -49,9 +49,23 @@ function claimReward() {
   savePlayer(player);
 
   completeLesson(lesson.id);
-  unlockAchievement(1);
+unlockAchievement(1);
+
+// 🔊 Play success sound
+const audio = new Audio("/sounds/success.mp3");
+audio.volume = 1;
+
+audio.play().catch((err) => {
+  console.log("Audio error:", err);
+});
+
+setTimeout(() => {
+  const audio = new Audio("/sounds/success.mp3");
+  audio.volume = 1;
+  audio.play().catch(console.error);
 
   setShowComplete(true);
+}, 150);
 }
 
 const player = getPlayer();
