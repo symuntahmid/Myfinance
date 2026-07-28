@@ -1,10 +1,11 @@
 "use client";
 
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
+import FloatingActionButton from "@/app/components/FloatingActionButton";
 
 export default function MoneyPage() {
   return (
-    <div className="mx-auto max-w-7xl space-y-8">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 md:px-0">
 
       {/* Header */}
 
@@ -22,7 +23,7 @@ export default function MoneyPage() {
 
         <div className="mt-6 rounded-3xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-7 text-white shadow-xl">
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-xl md:text-2xl font-bold">
             You're saving 18% more than last month.
           </h2>
 
@@ -42,7 +43,7 @@ export default function MoneyPage() {
           Current Balance
         </p>
 
-        <h2 className="mt-4 text-6xl font-bold">
+        <h2 className="mt-4 text-4xl md:text-6xl font-bold">
           $12,540
         </h2>
 
@@ -54,7 +55,7 @@ export default function MoneyPage() {
 
       {/* Stats */}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-3 gap-3 md:gap-6">
 
         <div className="rounded-3xl bg-white p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
@@ -110,13 +111,15 @@ export default function MoneyPage() {
 
       <MoneyTrendChart />
 
+<FloatingActionButton />
+
       {/* Recent Activity */}
 
       <div className="rounded-3xl bg-white p-8 shadow-xl">
 
         <div className="flex items-center justify-between">
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-xl md:text-2xl font-bold">
             Recent Activity
           </h2>
 

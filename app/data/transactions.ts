@@ -4,6 +4,8 @@ export type Transaction = {
   source: string;
   category?: string;
   amount: number;
+  date: string;
+  note?: string;
 };
 
 const STORAGE_KEY = "myfinance-transactions";
@@ -139,4 +141,24 @@ export function getFinancialHealthScore() {
   score += Math.min(report.totalTransactions, 20);
 
   return Math.min(Math.round(score), 100);
+}
+
+export function addTransaction(transaction: Transaction) {
+  const transactions = getTransactions();
+
+  transactions.unshift(transaction);
+
+  saveTransactions(transactions);
+}
+
+export function deleteTransaction(id: number) {
+  const transactions = getTransactions().filter(
+    (t) => t.id !== id
+  );
+
+  saveTransactions(transactions);
+}
+
+export function clearTransactions() {
+  saveTransactions([]);
 }
