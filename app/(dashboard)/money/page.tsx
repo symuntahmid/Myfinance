@@ -204,18 +204,16 @@ useEffect(() => {
 
   <div className="mb-8 flex items-center justify-between">
 
-    <h2 className="text-2xl font-bold">
+    <h2 className="text-xl font-bold md:text-2xl">
       Recent Activity
     </h2>
 
-    import Link from "next/link";
-
-<Link
-  href="/dashboard/transactions"
-  className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
->
-  View All
-</Link>
+    <Link
+      href="/money/transactions"
+      className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+    >
+      View All →
+    </Link>
 
   </div>
 
@@ -281,7 +279,7 @@ useEffect(() => {
             </p>
 
             <span
-              className={`inline-block mt-2 rounded-full px-3 py-1 text-xs font-semibold ${
+              className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${
                 transaction.type === "Income"
                   ? "bg-green-100 text-green-700"
                   : transaction.type === "Expense"

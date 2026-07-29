@@ -19,6 +19,7 @@ import LessonCard from "../../components/LessonCard";
 import WelcomeBanner from "../../components/WelcomeBanner";
 
 import FadeIn from "../../components/FadeIn";
+import RecentTransactions from "../../components/RecentTransactions";
 
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -102,7 +103,7 @@ export default function Dashboard() {
         {/* Transactions */}
 
         <FadeIn delay={0.9}>
-          <TransactionTable />
+          <RecentTransactions />
         </FadeIn>
       </div>
 
