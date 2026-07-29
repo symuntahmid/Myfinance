@@ -1,7 +1,9 @@
 "use client";
+
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import AddTransactionSheet from "@/app/components/AddTransactionSheet";
-import AddIncomeModal from "@/app/components/AddIncomeModal";
+import TransactionForm from "@/app/components/TransactionForm";
 
 import {
   getTransactions,
@@ -15,7 +17,11 @@ import FloatingActionButton from "@/app/components/FloatingActionButton";
 export default function MoneyPage() {
 
   const [sheetOpen, setSheetOpen] = useState(false);
-const [incomeOpen, setIncomeOpen] = useState(false);
+const [formOpen, setFormOpen] = useState(false);
+
+const [transactionType, setTransactionType] = useState<
+  "Income" | "Expense" | "Investment"
+>("Income");
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 const [summary, setSummary] = useState(getSummary());
@@ -129,7 +135,7 @@ useEffect(() => {
           </p>
 
           <h3 className="mt-4 text-4xl font-bold text-cyan-600">
-           ${(summary.income - summary.expense).toLocaleString()}
+           ${summary.netWorth.toLocaleString()}
           </h3>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -140,139 +146,164 @@ useEffect(() => {
 
       </div>
 
-      {/* Chart */}
+            {/* Chart */}
 
       <MoneyTrendChart />
 
-<>
-  <FloatingActionButton
-    onClick={() => setSheetOpen(true)}
-  />
+      {/* Floating Action Button */}
 
-  <AddTransactionSheet
-    open={sheetOpen}
-    onClose={() => setSheetOpen(false)}
+      <FloatingActionButton
+        onClick={() => setSheetOpen(true)}
+      />
 
-    onIncome={() => {
-  setSheetOpen(false);
+      {/* Bottom Sheet */}
 
-  setTimeout(() => {
-    setIncomeOpen(true);
-  }, 250);
-}}
+      <AddTransactionSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        onIncome={() => {
+          setTransactionType("Income");
+          setSheetOpen(false);
 
-    onExpense={() => {
-      setSheetOpen(false);
-    }}
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
+        }}
+        onExpense={() => {
+          setTransactionType("Expense");
+          setSheetOpen(false);
 
-    onInvestment={() => {
-      setSheetOpen(false);
-    }}
-  />
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
+        }}
+        onInvestment={() => {
+          setTransactionType("Investment");
+          setSheetOpen(false);
 
-  <AddIncomeModal
-    open={incomeOpen}
-    onClose={() => setIncomeOpen(false)}
-  />
-</>
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
+        }}
+      />
+
+      {/* Transaction Form */}
+
+      <TransactionForm
+        open={formOpen}
+        type={transactionType}
+        onClose={() => {
+          setFormOpen(false);
+          refreshData();
+        }}
+      />
 
       {/* Recent Activity */}
 
 <div className="rounded-3xl bg-white p-8 shadow-xl">
 
-  <div className="flex items-center justify-between">
+  <div className="mb-8 flex items-center justify-between">
 
-    <h2 className="text-xl font-bold md:text-2xl">
+    <h2 className="text-2xl font-bold">
       Recent Activity
     </h2>
 
-    <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-      View All
-    </button>
+    import Link from "next/link";
+
+<Link
+  href="/dashboard/transactions"
+  className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+>
+  View All
+</Link>
 
   </div>
 
-  <div className="mt-8 space-y-4">
+  {transactions.length === 0 ? (
 
-    {transactions.length === 0 ? (
+    <div className="rounded-2xl border-2 border-dashed border-slate-200 py-14 text-center">
 
-      <div className="rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
+      <p className="text-lg font-semibold text-slate-700">
+        No transactions yet
+      </p>
 
-        <p className="text-lg font-semibold text-slate-700">
-          No transactions yet
-        </p>
+      <p className="mt-2 text-slate-500">
+        Add your first income, expense or investment.
+      </p>
 
-        <p className="mt-2 text-slate-500">
-          Tap the + button to add your first income or expense.
-        </p>
+    </div>
 
-      </div>
+  ) : (
 
-    ) : (
+    <div className="space-y-4">
 
-      transactions
-        .slice()
-        .reverse()
-        .slice(0, 5)
-        .map((transaction) => (
+      {transactions.slice(0, 3).map((transaction) => (
 
-          <div
-            key={transaction.id}
-            className="flex items-center justify-between rounded-2xl bg-slate-50 p-5 transition hover:bg-slate-100"
-          >
+        <div
+          key={transaction.id}
+          className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 p-5 transition hover:bg-slate-100"
+        >
 
-            <div>
+          <div>
 
-              <p className="font-semibold text-slate-900">
-                {transaction.source}
-              </p>
+            <p className="font-semibold text-slate-900">
+              {transaction.source}
+            </p>
 
-              <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+            <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
 
-                <span>
-                  {transaction.date}
-                </span>
+              <span>{transaction.date}</span>
 
-                <span>•</span>
-
-                <span>
-                  {transaction.category}
-                </span>
-
-              </div>
-
-            </div>
-
-            <div className="text-right">
-
-              <p
-                className={`text-xl font-bold ${
-                  transaction.type === "Income"
-                    ? "text-green-600"
-                    : transaction.type === "Expense"
-                    ? "text-red-500"
-                    : "text-cyan-600"
-                }`}
-              >
-                {transaction.type === "Expense" ? "-" : "+"}$
-                {transaction.amount.toLocaleString()}
-              </p>
-
-              <p className="mt-1 text-xs text-slate-500">
-                {transaction.type}
-              </p>
+              {transaction.category && (
+                <>
+                  <span>•</span>
+                  <span>{transaction.category}</span>
+                </>
+              )}
 
             </div>
 
           </div>
 
-        ))
+          <div className="text-right">
 
-    )}
+            <p
+              className={`text-lg font-bold ${
+                transaction.type === "Income"
+                  ? "text-green-600"
+                  : transaction.type === "Expense"
+                  ? "text-red-500"
+                  : "text-cyan-600"
+              }`}
+            >
+              {transaction.type === "Expense" ? "-" : "+"}$
+              {transaction.amount.toLocaleString()}
+            </p>
 
-  </div>
+            <span
+              className={`inline-block mt-2 rounded-full px-3 py-1 text-xs font-semibold ${
+                transaction.type === "Income"
+                  ? "bg-green-100 text-green-700"
+                  : transaction.type === "Expense"
+                  ? "bg-red-100 text-red-700"
+                  : "bg-cyan-100 text-cyan-700"
+              }`}
+            >
+              {transaction.type}
+            </span>
+
+          </div>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  )}
 
 </div>
-      </div>
-  );
+
+</div>
+);
 }

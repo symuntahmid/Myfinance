@@ -5,7 +5,7 @@ import { useState } from "react";
 import SummaryCards from "../../components/SummaryCards";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import AddTransactionSheet from "../../components/AddTransactionSheet";
-import AddIncomeModal from "../../components/AddIncomeModal";
+import TransactionForm from "../../components/TransactionForm";
 
 import TransactionTable from "../../components/TransactionTable";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
@@ -22,26 +22,26 @@ import FadeIn from "../../components/FadeIn";
 
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [incomeOpen, setIncomeOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+
+  const [transactionType, setTransactionType] = useState<
+    "Income" | "Expense" | "Investment"
+  >("Income");
 
   return (
     <>
       {/* Header */}
 
       <div className="mb-8 flex items-center justify-between">
-
         <div>
-
           <h1 className="text-4xl font-bold">
             Dashboard
           </h1>
 
           <WelcomeBanner />
-
         </div>
 
         <div className="text-right">
-
           <p className="text-sm text-slate-500">
             Today
           </p>
@@ -49,17 +49,13 @@ export default function Dashboard() {
           <p className="font-semibold">
             {new Date().toLocaleDateString()}
           </p>
-
         </div>
-
       </div>
 
       {/* Main Content */}
 
       <div className="space-y-6">
-
         <div className="grid gap-6 lg:grid-cols-2">
-
           <FadeIn delay={0}>
             <LessonCard />
           </FadeIn>
@@ -67,7 +63,6 @@ export default function Dashboard() {
           <FadeIn delay={0.1}>
             <ProfileCard compact />
           </FadeIn>
-
         </div>
 
         <FadeIn delay={0.2}>
@@ -83,7 +78,6 @@ export default function Dashboard() {
         {/* Analytics */}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-
           <FadeIn delay={0.5}>
             <div className="lg:col-span-2">
               <NetWorthChart />
@@ -93,11 +87,9 @@ export default function Dashboard() {
           <FadeIn delay={0.6}>
             <FinancialInsights />
           </FadeIn>
-
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-
           <FadeIn delay={0.7}>
             <IncomeExpenseChart />
           </FadeIn>
@@ -105,7 +97,6 @@ export default function Dashboard() {
           <FadeIn delay={0.8}>
             <InvestmentPieChart />
           </FadeIn>
-
         </div>
 
         {/* Transactions */}
@@ -113,39 +104,52 @@ export default function Dashboard() {
         <FadeIn delay={0.9}>
           <TransactionTable />
         </FadeIn>
-
       </div>
 
-      {/* Floating Action */}
+      {/* Floating Button */}
 
       <FloatingActionButton
         onClick={() => setSheetOpen(true)}
       />
 
+      {/* Bottom Sheet */}
+
       <AddTransactionSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
         onIncome={() => {
-  setSheetOpen(false);
-
-  // DON'T open AddIncomeModal
-  // setIncomeOpen(true);
-}}
-        onExpense={() => {
+          setTransactionType("Income");
           setSheetOpen(false);
-          // AddExpenseModal later
+
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
+        }}
+        onExpense={() => {
+          setTransactionType("Expense");
+          setSheetOpen(false);
+
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
         }}
         onInvestment={() => {
+          setTransactionType("Investment");
           setSheetOpen(false);
-          // AddInvestmentModal later
+
+          setTimeout(() => {
+            setFormOpen(true);
+          }, 250);
         }}
       />
 
-      <AddIncomeModal
-        open={incomeOpen}
-        onClose={() => setIncomeOpen(false)}
-      />
+      {/* Transaction Form */}
 
+      <TransactionForm
+        open={formOpen}
+        type={transactionType}
+        onClose={() => setFormOpen(false)}
+      />
     </>
   );
 }

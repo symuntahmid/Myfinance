@@ -1,46 +1,65 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wallet, TrendingUp, TrendingDown, Landmark } from "lucide-react";
+import {
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Landmark,
+} from "lucide-react";
+
 import StatCard from "./StatCard";
 import { getSummary } from "../data/transactions";
 
 export default function SummaryCards() {
-  const [summary, setSummary] = useState({
-    netWorth: 0,
-    income: 0,
-    expense: 0,
-    investment: 0,
-  });
+  const [summary, setSummary] = useState(getSummary());
 
   useEffect(() => {
-    setSummary(getSummary());
+    function refreshSummary() {
+      setSummary(getSummary());
+    }
+
+    // Load latest data
+    refreshSummary();
+
+    // Listen for transaction updates
+    window.addEventListener(
+      "transactionsUpdated",
+      refreshSummary
+    );
+
+    return () => {
+      window.removeEventListener(
+        "transactionsUpdated",
+        refreshSummary
+      );
+    };
   }, []);
 
   return (
-    <div className="grid grid-cols-2 gap-6 mt-10">
+    <div className="mt-10 grid grid-cols-2 gap-6">
       <StatCard
         title="Net Worth"
         value={`$${summary.netWorth.toLocaleString()}`}
-        icon={<Wallet className="w-6 h-6" />}
+        icon={<Wallet className="h-6 w-6" />}
       />
 
       <StatCard
         title="Monthly Income"
         value={`$${summary.income.toLocaleString()}`}
-        icon={<TrendingUp className="w-6 h-6" />}
+        icon={<TrendingUp className="h-6 w-6" />}
       />
 
       <StatCard
         title="Expenses"
         value={`$${summary.expense.toLocaleString()}`}
-        icon={<TrendingDown className="w-6 h-6" />}
+        icon={<TrendingDown className="h-6 w-6" />}
       />
 
       <StatCard
         title="Investments"
         value={`$${summary.investment.toLocaleString()}`}
-        icon={<Landmark className="w-6 h-6" />}
+        icon={<Landmark className="h-6 w-6" />}
       />
     </div>
   );

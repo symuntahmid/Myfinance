@@ -1,3 +1,4 @@
+
 export type Transaction = {
   id: number;
   type: "Income" | "Expense" | "Investment";
@@ -7,6 +8,7 @@ export type Transaction = {
   date: string;
   note?: string;
 };
+
 
 const STORAGE_KEY = "myfinance-transactions";
 
@@ -149,6 +151,10 @@ export function addTransaction(transaction: Transaction) {
   transactions.unshift(transaction);
 
   saveTransactions(transactions);
+
+  window.dispatchEvent(
+    new Event("transactionsUpdated")
+  );
 }
 
 export function deleteTransaction(id: number) {
