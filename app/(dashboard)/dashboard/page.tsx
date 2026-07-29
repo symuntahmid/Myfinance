@@ -1,33 +1,42 @@
+"use client";
+
+import { useState } from "react";
+
 import SummaryCards from "../../components/SummaryCards";
-import QuickAction from "../../components/QuickAction";
+import FloatingActionButton from "../../components/FloatingActionButton";
+import AddTransactionSheet from "../../components/AddTransactionSheet";
+import AddIncomeModal from "../../components/AddIncomeModal";
+
 import TransactionTable from "../../components/TransactionTable";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
 import InvestmentPieChart from "../../components/InvestmentPieChart";
+
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import ProfileCard from "../../components/ProfileCard";
-import AchievementCard from "../../components/AchievementCard";
 import LessonCard from "../../components/LessonCard";
 import WelcomeBanner from "../../components/WelcomeBanner";
 
 import FadeIn from "../../components/FadeIn";
 
 export default function Dashboard() {
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [incomeOpen, setIncomeOpen] = useState(false);
+
   return (
     <>
-      {/* Dashboard Header */}
+      {/* Header */}
 
       <div className="mb-8 flex items-center justify-between">
 
         <div>
 
-
           <h1 className="text-4xl font-bold">
-  Dashboard
-</h1>
+            Dashboard
+          </h1>
 
-<WelcomeBanner />
+          <WelcomeBanner />
 
         </div>
 
@@ -45,94 +54,97 @@ export default function Dashboard() {
 
       </div>
 
+      {/* Main Content */}
 
+      <div className="space-y-6">
 
-     {/* Motivation Section */}
+        <div className="grid gap-6 lg:grid-cols-2">
 
-<div className="space-y-6">
+          <FadeIn delay={0}>
+            <LessonCard />
+          </FadeIn>
 
-  <div className="grid gap-6 lg:grid-cols-2">
+          <FadeIn delay={0.1}>
+            <ProfileCard compact />
+          </FadeIn>
 
-    <FadeIn delay={0}>
-      <LessonCard />
-    </FadeIn>
+        </div>
 
-    <FadeIn delay={0.1}>
-      <ProfileCard compact />
-    </FadeIn>
+        <FadeIn delay={0.2}>
+          <DailyJourneyCard />
+        </FadeIn>
 
-  </div>
+        {/* Summary */}
 
-  <FadeIn delay={0.2}>
-    <DailyJourneyCard />
-  </FadeIn>
+        <FadeIn delay={0.4}>
+          <SummaryCards />
+        </FadeIn>
 
+        {/* Analytics */}
 
-      {/* Quick Actions */}
+        <div className="mt-8 grid gap-6 lg:grid-cols-3">
 
-      <h2 className="mt-10 mb-5 text-2xl font-bold">
-        Quick Actions
-      </h2>
+          <FadeIn delay={0.5}>
+            <div className="lg:col-span-2">
+              <NetWorthChart />
+            </div>
+          </FadeIn>
 
-      <div className="grid grid-cols-3 gap-5">
+          <FadeIn delay={0.6}>
+            <FinancialInsights />
+          </FadeIn>
 
-        <QuickAction
-          title="Add Income"
-          href="/add-income"
-        />
+        </div>
 
-        <QuickAction
-          title="Add Expense"
-          href="/add-expense"
-        />
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
 
-        <QuickAction
-          title="Add Investment"
-          href="/add-investment"
-        />
+          <FadeIn delay={0.7}>
+            <IncomeExpenseChart />
+          </FadeIn>
+
+          <FadeIn delay={0.8}>
+            <InvestmentPieChart />
+          </FadeIn>
+
+        </div>
+
+        {/* Transactions */}
+
+        <FadeIn delay={0.9}>
+          <TransactionTable />
+        </FadeIn>
 
       </div>
 
-      {/* Summary */}
+      {/* Floating Action */}
 
-      <FadeIn delay={0.4}>
-  <SummaryCards />
-</FadeIn>
+      <FloatingActionButton
+        onClick={() => setSheetOpen(true)}
+      />
 
-      {/* Analytics */}
+      <AddTransactionSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        onIncome={() => {
+  setSheetOpen(false);
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
+  // DON'T open AddIncomeModal
+  // setIncomeOpen(true);
+}}
+        onExpense={() => {
+          setSheetOpen(false);
+          // AddExpenseModal later
+        }}
+        onInvestment={() => {
+          setSheetOpen(false);
+          // AddInvestmentModal later
+        }}
+      />
 
-  <FadeIn delay={0.5}>
-    <div className="lg:col-span-2">
-      <NetWorthChart />
-    </div>
-  </FadeIn>
-
-  <FadeIn delay={0.6}>
-    <FinancialInsights />
-  </FadeIn>
-
-</div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-
-  <FadeIn delay={0.7}>
-    <IncomeExpenseChart />
-  </FadeIn>
-
-  <FadeIn delay={0.8}>
-    <InvestmentPieChart />
-  </FadeIn>
-
-</div>
-
-      {/* Transactions */}
-
-      <FadeIn delay={0.9}>
-  <TransactionTable />
-</FadeIn>
-      </div>
+      <AddIncomeModal
+        open={incomeOpen}
+        onClose={() => setIncomeOpen(false)}
+      />
 
     </>
   );

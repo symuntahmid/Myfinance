@@ -32,7 +32,7 @@ export default function CircularProgress({
     (progress / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className=" items-center">
 
       <svg
         height={radius * 2}

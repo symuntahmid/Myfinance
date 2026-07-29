@@ -49,38 +49,64 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white lg:hidden">
-
-      <div className="grid grid-cols-6">
+    <nav
+      className="
+        fixed
+        bottom-0
+        left-0
+        right-0
+        z-40
+        border-t
+        border-slate-200
+        bg-white/95
+        backdrop-blur-xl
+        shadow-[0_-10px_30px_rgba(0,0,0,.08)]
+        lg:hidden
+      "
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
+      <div className="grid grid-cols-6 h-20">
 
         {items.map((item) => {
-
           const Icon = item.icon;
 
           const active =
-            pathname.startsWith(item.href);
+            pathname === item.href ||
+            pathname.startsWith(item.href + "/");
 
           return (
             <Link
               key={item.name}
               href={item.href}
-              className={`flex flex-col items-center justify-center py-3 transition-all duration-200 ${
-  active
-    ? "text-teal-600"
-    : "text-slate-500 hover:text-slate-700"
-}`}
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                gap-1
+                transition-all
+                duration-200
+              "
             >
               <div
-  className={`rounded-2xl p-2 transition-all ${
-    active
-      ? "bg-teal-100"
-      : ""
-  }`}
->
-  <Icon size={22} />
-</div>
+                className={`rounded-2xl p-2 transition-all duration-200 ${
+                  active
+                    ? "bg-teal-100 text-teal-600"
+                    : "text-slate-500"
+                }`}
+              >
+                <Icon size={22} />
+              </div>
 
-              <span className="mt-1 text-[11px] font-medium">
+              <span
+                className={`text-[11px] font-medium ${
+                  active
+                    ? "text-teal-600"
+                    : "text-slate-500"
+                }`}
+              >
                 {item.name}
               </span>
             </Link>
@@ -88,7 +114,6 @@ export default function BottomNavigation() {
         })}
 
       </div>
-
     </nav>
   );
 }

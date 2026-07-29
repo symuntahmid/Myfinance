@@ -1,9 +1,42 @@
 "use client";
+import { useEffect, useState } from "react";
+import AddTransactionSheet from "@/app/components/AddTransactionSheet";
+import AddIncomeModal from "@/app/components/AddIncomeModal";
+
+import {
+  getTransactions,
+  getSummary,
+  Transaction,
+} from "@/app/data/transactions";
 
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
 
 export default function MoneyPage() {
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+const [incomeOpen, setIncomeOpen] = useState(false);
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+const [summary, setSummary] = useState(getSummary());
+
+function refreshData() {
+  setTransactions(getTransactions());
+  setSummary(getSummary());
+}
+
+useEffect(() => {
+  refreshData();
+
+  window.addEventListener("transactionsUpdated", refreshData);
+
+  return () => {
+    window.removeEventListener(
+      "transactionsUpdated",
+      refreshData
+    );
+  };
+}, []);
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 md:px-0">
 
@@ -44,7 +77,7 @@ export default function MoneyPage() {
         </p>
 
         <h2 className="mt-4 text-4xl md:text-6xl font-bold">
-          $12,540
+          ${summary.netWorth.toLocaleString()}
         </h2>
 
         <div className="mt-5 inline-flex rounded-full bg-emerald-500/20 px-5 py-2 text-sm font-semibold text-emerald-300">
@@ -64,7 +97,7 @@ export default function MoneyPage() {
           </p>
 
           <h3 className="mt-4 text-4xl font-bold text-green-600">
-            +$3,200
+            +${summary.income.toLocaleString()}
           </h3>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -80,7 +113,7 @@ export default function MoneyPage() {
           </p>
 
           <h3 className="mt-4 text-4xl font-bold text-red-500">
-            -$1,180
+            -${summary.expense.toLocaleString()}
           </h3>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -96,7 +129,7 @@ export default function MoneyPage() {
           </p>
 
           <h3 className="mt-4 text-4xl font-bold text-cyan-600">
-            $2,020
+           ${(summary.income - summary.expense).toLocaleString()}
           </h3>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -111,90 +144,135 @@ export default function MoneyPage() {
 
       <MoneyTrendChart />
 
-<FloatingActionButton />
+<>
+  <FloatingActionButton
+    onClick={() => setSheetOpen(true)}
+  />
+
+  <AddTransactionSheet
+    open={sheetOpen}
+    onClose={() => setSheetOpen(false)}
+
+    onIncome={() => {
+  setSheetOpen(false);
+
+  setTimeout(() => {
+    setIncomeOpen(true);
+  }, 250);
+}}
+
+    onExpense={() => {
+      setSheetOpen(false);
+    }}
+
+    onInvestment={() => {
+      setSheetOpen(false);
+    }}
+  />
+
+  <AddIncomeModal
+    open={incomeOpen}
+    onClose={() => setIncomeOpen(false)}
+  />
+</>
 
       {/* Recent Activity */}
 
-      <div className="rounded-3xl bg-white p-8 shadow-xl">
+<div className="rounded-3xl bg-white p-8 shadow-xl">
 
-        <div className="flex items-center justify-between">
+  <div className="flex items-center justify-between">
 
-          <h2 className="text-xl md:text-2xl font-bold">
-            Recent Activity
-          </h2>
+    <h2 className="text-xl font-bold md:text-2xl">
+      Recent Activity
+    </h2>
 
-          <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-            View All
-          </button>
+    <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+      View All
+    </button>
 
-        </div>
+  </div>
 
-        <div className="mt-8 space-y-5">
+  <div className="mt-8 space-y-4">
 
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-5">
+    {transactions.length === 0 ? (
 
-            <div>
+      <div className="rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
 
-              <p className="font-semibold">
-                Salary
-              </p>
+        <p className="text-lg font-semibold text-slate-700">
+          No transactions yet
+        </p>
 
-              <p className="text-sm text-slate-500">
-                Today
-              </p>
-
-            </div>
-
-            <p className="text-xl font-bold text-green-600">
-              +$2,500
-            </p>
-
-          </div>
-
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-5">
-
-            <div>
-
-              <p className="font-semibold">
-                Grocery Shopping
-              </p>
-
-              <p className="text-sm text-slate-500">
-                Yesterday
-              </p>
-
-            </div>
-
-            <p className="text-xl font-bold text-red-500">
-              -$85
-            </p>
-
-          </div>
-
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-5">
-
-            <div>
-
-              <p className="font-semibold">
-                Netflix
-              </p>
-
-              <p className="text-sm text-slate-500">
-                2 days ago
-              </p>
-
-            </div>
-
-            <p className="text-xl font-bold text-red-500">
-              -$16
-            </p>
-
-          </div>
-
-        </div>
+        <p className="mt-2 text-slate-500">
+          Tap the + button to add your first income or expense.
+        </p>
 
       </div>
 
-    </div>
+    ) : (
+
+      transactions
+        .slice()
+        .reverse()
+        .slice(0, 5)
+        .map((transaction) => (
+
+          <div
+            key={transaction.id}
+            className="flex items-center justify-between rounded-2xl bg-slate-50 p-5 transition hover:bg-slate-100"
+          >
+
+            <div>
+
+              <p className="font-semibold text-slate-900">
+                {transaction.source}
+              </p>
+
+              <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+
+                <span>
+                  {transaction.date}
+                </span>
+
+                <span>•</span>
+
+                <span>
+                  {transaction.category}
+                </span>
+
+              </div>
+
+            </div>
+
+            <div className="text-right">
+
+              <p
+                className={`text-xl font-bold ${
+                  transaction.type === "Income"
+                    ? "text-green-600"
+                    : transaction.type === "Expense"
+                    ? "text-red-500"
+                    : "text-cyan-600"
+                }`}
+              >
+                {transaction.type === "Expense" ? "-" : "+"}$
+                {transaction.amount.toLocaleString()}
+              </p>
+
+              <p className="mt-1 text-xs text-slate-500">
+                {transaction.type}
+              </p>
+
+            </div>
+
+          </div>
+
+        ))
+
+    )}
+
+  </div>
+
+</div>
+      </div>
   );
 }
