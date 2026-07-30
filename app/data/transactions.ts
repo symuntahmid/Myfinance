@@ -1,16 +1,46 @@
-
 export type Transaction = {
   id: number;
+
   type: "Income" | "Expense" | "Investment";
+
   source: string;
+
   category?: string;
+
   amount: number;
+
   date: string;
+
   note?: string;
+
+  /* Auto Repeat */
+  autoRepeat?: boolean;
+
+  repeatFrequency?:
+    | "daily"
+    | "weekly"
+    | "biweekly"
+    | "monthly"
+    | "yearly";
+
+  /* Reminder */
+  reminder?: boolean;
+
+  reminderType?:
+    | "due"
+    | "1day"
+    | "3days"
+    | "1week"
+    | "custom";
+
+  reminderDate?: string;
 };
 
-
 const STORAGE_KEY = "myfinance-transactions";
+
+/* -------------------------------- */
+/* Storage                          */
+/* -------------------------------- */
 
 export function getTransactions(): Transaction[] {
   if (typeof window === "undefined") return [];
@@ -29,13 +59,11 @@ export function saveTransactions(
   );
 }
 
-export function getSummary(): {
-  
-  income: number;
-  expense: number;
-  investment: number;
-  netWorth: number;
-} {
+/* -------------------------------- */
+/* Summary                          */
+/* -------------------------------- */
+
+export function getSummary() {
   const transactions = getTransactions();
 
   let income = 0;
@@ -65,6 +93,11 @@ export function getSummary(): {
     netWorth: income - expense + investment,
   };
 }
+
+/* -------------------------------- */
+/* Monthly Report                   */
+/* -------------------------------- */
+
 export function getMonthlyReport() {
   const transactions = getTransactions();
 
@@ -90,18 +123,24 @@ export function getMonthlyReport() {
       .filter((t) => t.type === "Expense")
       .sort((a, b) => b.amount - a.amount)[0] || null;
 
-  const investmentCategories = transactions.filter(
-    (t) => t.type === "Investment"
-  );
+  const investmentCategories =
+    transactions.filter(
+      (t) => t.type === "Investment"
+    );
 
-  const categoryTotals = investmentCategories.reduce(
-    (acc, t) => {
-      const category = t.category || "Other";
-      acc[category] = (acc[category] || 0) + t.amount;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
+  const categoryTotals =
+    investmentCategories.reduce(
+      (acc, t) => {
+        const category =
+          t.category || "Other";
+
+        acc[category] =
+          (acc[category] || 0) + t.amount;
+
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
   const topInvestmentCategory =
     Object.entries(categoryTotals).sort(
@@ -114,39 +153,57 @@ export function getMonthlyReport() {
     investment,
     savings,
     savingsRate,
-    totalTransactions: transactions.length,
+    totalTransactions:
+      transactions.length,
     largestExpense,
     topInvestmentCategory,
   };
 }
+
+/* -------------------------------- */
+/* Financial Health                 */
+/* -------------------------------- */
+
 export function getFinancialHealthScore() {
   const report = getMonthlyReport();
 
   let score = 0;
 
-  // Savings Rate (40 points)
-  score += Math.min(report.savingsRate, 40);
+  score += Math.min(
+    report.savingsRate,
+    40
+  );
 
-  // Investment Habit (20 points)
   if (report.investment > 0) {
     score += 20;
   }
 
-  // Expense Control (20 points)
   if (report.expense <= report.income) {
     score += 20;
   } else {
     score += 10;
   }
 
-  // Activity (20 points)
-  score += Math.min(report.totalTransactions, 20);
+  score += Math.min(
+    report.totalTransactions,
+    20
+  );
 
-  return Math.min(Math.round(score), 100);
+  return Math.min(
+    Math.round(score),
+    100
+  );
 }
 
-export function addTransaction(transaction: Transaction) {
-  const transactions = getTransactions();
+/* -------------------------------- */
+/* CRUD                             */
+/* -------------------------------- */
+
+export function addTransaction(
+  transaction: Transaction
+) {
+  const transactions =
+    getTransactions();
 
   transactions.unshift(transaction);
 
@@ -157,14 +214,25 @@ export function addTransaction(transaction: Transaction) {
   );
 }
 
-export function deleteTransaction(id: number) {
-  const transactions = getTransactions().filter(
-    (t) => t.id !== id
-  );
+export function deleteTransaction(
+  id: number
+) {
+  const transactions =
+    getTransactions().filter(
+      (t) => t.id !== id
+    );
 
   saveTransactions(transactions);
+
+  window.dispatchEvent(
+    new Event("transactionsUpdated")
+  );
 }
 
 export function clearTransactions() {
   saveTransactions([]);
+
+  window.dispatchEvent(
+    new Event("transactionsUpdated")
+  );
 }

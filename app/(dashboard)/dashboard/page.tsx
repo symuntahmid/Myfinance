@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import NotificationBell from "@/app/components/NotificationBell";
 import SummaryCards from "../../components/SummaryCards";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import AddTransactionSheet from "../../components/AddTransactionSheet";
@@ -31,27 +31,33 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* Header */}
+     {/* Header */}
 
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Dashboard
-          </h1>
+<div className="mb-8 flex items-center justify-between">
+  <div>
+    <h1 className="text-4xl font-bold">
+      Dashboard
+    </h1>
 
-          <WelcomeBanner />
-        </div>
+    <WelcomeBanner />
+  </div>
 
-        <div className="text-right">
-          <p className="text-sm text-slate-500">
-            Today
-          </p>
+  <div className="flex items-center gap-5">
+    {/* Notification Bell */}
+    <NotificationBell />
 
-          <p className="font-semibold">
-            {new Date().toLocaleDateString()}
-          </p>
-        </div>
-      </div>
+    {/* Date */}
+    <div className="text-right">
+      <p className="text-sm text-slate-500">
+        Today
+      </p>
+
+      <p className="font-semibold">
+        {new Date().toLocaleDateString()}
+      </p>
+    </div>
+  </div>
+</div>
 
       {/* Main Content */}
 

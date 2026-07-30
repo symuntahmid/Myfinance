@@ -9,7 +9,7 @@ import {
   StickyNote,
   Repeat,
   Bell,
-  Receipt,
+  Calculator,
 } from "lucide-react";
 
 import {
@@ -79,6 +79,62 @@ const sourceOptions = [
   "✍️ Other",
 ];
 
+/* -------------------------------- */
+/* Repeat / Reminder Options        */
+/* -------------------------------- */
+
+const repeatFrequencyOptions: { value: string; label: string }[] = [
+  { value: "weekly", label: "Every week" },
+  { value: "monthly", label: "Every month" },
+  { value: "yearly", label: "Every year" },
+];
+
+const reminderTypeOptions: { value: string; label: string }[] = [
+  { value: "due", label: "On due date" },
+  { value: "1day", label: "1 day before" },
+  { value: "3days", label: "3 days before" },
+  { value: "custom", label: "Custom date" },
+];
+
+/* -------------------------------- */
+/* Calculator                       */
+/* -------------------------------- */
+
+const calcButtons = [
+  "7", "8", "9", "÷",
+  "4", "5", "6", "×",
+  "1", "2", "3", "−",
+  "C", "0", ".", "+",
+];
+
+const calcSymbolToOperator: Record<string, string> = {
+  "÷": "/",
+  "×": "*",
+  "−": "-",
+  "+": "+",
+};
+
+function formatForDisplay(expr: string) {
+  return expr
+    .replace(/\*/g, "×")
+    .replace(/\//g, "÷")
+    .replace(/-/g, "−");
+}
+
+function evaluateExpression(expr: string): number | null {
+  if (!expr) return null;
+  if (!/^[0-9+\-*/.() ]*$/.test(expr)) return null;
+
+  try {
+    // eslint-disable-next-line no-new-func
+    const result = Function(`"use strict"; return (${expr});`)();
+    if (typeof result !== "number" || !Number.isFinite(result)) return null;
+    return Math.round(result * 100) / 100;
+  } catch {
+    return null;
+  }
+}
+
 export default function TransactionForm({
   open,
   type,
@@ -93,9 +149,24 @@ export default function TransactionForm({
   );
 
   const [note, setNote] = useState("");
+
   const [autoRepeat, setAutoRepeat] = useState(false);
+  const [repeatFrequency, setRepeatFrequency] =
+  useState<
+    "daily" | "weekly" | "biweekly" | "monthly" | "yearly"
+  >("monthly");
+
   const [reminder, setReminder] = useState(false);
+  const [reminderType, setReminderType] =
+  useState<
+    "due" | "1day" | "3days" | "1week" | "custom"
+  >("due");
+  const [reminderDate, setReminderDate] = useState("");
+
   const [showMore, setShowMore] = useState(false);
+
+  const [calcOpen, setCalcOpen] = useState(false);
+  const [calcExpr, setCalcExpr] = useState("");
 
   const categories = useMemo(() => {
     if (type === "Income") return incomeCategories;
@@ -110,10 +181,23 @@ export default function TransactionForm({
     amount.trim() !== "" &&
     !Number.isNaN(parsedAmount) &&
     parsedAmount > 0;
-  const isFormValid = isAmountValid && category.trim() !== "";
+
+  const isReminderValid =
+    !reminder || reminderType !== "custom" || reminderDate.trim() !== "";
+
+  const isFormValid =
+    isAmountValid && category.trim() !== "" && isReminderValid;
 
   const resolvedSource =
     source === "✍️ Other" ? customSource : source;
+
+  const repeatFrequencyLabel =
+    repeatFrequencyOptions.find((o) => o.value === repeatFrequency)?.label ??
+    "Every month";
+
+  const reminderTypeLabel =
+    reminderTypeOptions.find((o) => o.value === reminderType)?.label ??
+    "On due date";
 
   function resetForm() {
     setAmount("");
@@ -122,9 +206,17 @@ export default function TransactionForm({
     setCustomSource("");
     setNote("");
     setDate(new Date().toISOString().split("T")[0]);
+
     setAutoRepeat(false);
+    setRepeatFrequency("monthly");
+
     setReminder(false);
+    setReminderType("due");
+    setReminderDate("");
+
     setShowMore(false);
+    setCalcOpen(false);
+    setCalcExpr("");
   }
 
   function handleClose() {
@@ -132,31 +224,61 @@ export default function TransactionForm({
     onClose();
   }
 
-  function saveTransaction() {
-    if (!isFormValid) return;
+function saveTransaction() {
+  if (!isFormValid) return;
 
-    const transaction: Transaction = {
-      id:
-        typeof crypto !== "undefined" && "randomUUID" in crypto
-          ? crypto.randomUUID()
-          : Date.now(),
-      type,
-      amount: parsedAmount,
-      source: resolvedSource,
-      category,
-      note,
-      date,
-      // Not all Transaction shapes declare these yet — cast keeps this
-      // working today and lets you extend the Transaction type later
-      // without another refactor here.
-      autoRepeat,
-      reminder,
-    } as Transaction;
+  const transaction: Transaction = {
+    id: Date.now(),
 
-    addTransaction(transaction);
+    type,
+    amount: parsedAmount,
+    source: resolvedSource,
+    category,
+    note,
+    date,
 
-    resetForm();
-    onClose();
+    // Auto Repeat
+    autoRepeat,
+    repeatFrequency: autoRepeat
+      ? repeatFrequency
+      : undefined,
+
+    // Reminder
+    reminder,
+    reminderType: reminder
+      ? reminderType
+      : undefined,
+    reminderDate:
+      reminder &&
+      reminderType === "custom"
+        ? reminderDate
+        : undefined,
+  };
+
+  addTransaction(transaction);
+
+  resetForm();
+  onClose();
+}
+
+  function handleCalcPress(key: string) {
+    if (key === "C") {
+      setCalcExpr("");
+      return;
+    }
+
+    if (key === "=") {
+      const result = evaluateExpression(calcExpr);
+      if (result !== null) {
+        setAmount(String(result));
+      }
+      setCalcExpr("");
+      setCalcOpen(false);
+      return;
+    }
+
+    const char = calcSymbolToOperator[key] ?? key;
+    setCalcExpr((prev) => prev + char);
   }
 
   const accentGradient =
@@ -197,7 +319,7 @@ export default function TransactionForm({
             {/* Amount + Category */}
             <div className="grid grid-cols-2 gap-3">
               {/* Amount */}
-              <div>
+              <div className="relative">
                 <label
                   htmlFor="tx-amount"
                   className="mb-1.5 block text-xs font-semibold text-slate-500"
@@ -216,11 +338,63 @@ export default function TransactionForm({
                     placeholder="0.00"
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 pr-9 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                   />
-                  <Receipt
-                    size={16}
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
-                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setCalcOpen((v) => !v)}
+                    aria-label="Open calculator"
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 transition ${
+                      calcOpen
+                        ? "bg-indigo-100 text-indigo-600"
+                        : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                    }`}
+                  >
+                    <Calculator size={16} />
+                  </button>
                 </div>
+
+                {/* Calculator Popup */}
+                {calcOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-[1102]"
+                      onClick={() => setCalcOpen(false)}
+                    />
+
+                    <div className="absolute left-0 top-full z-[1103] mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
+                      <div className="mb-2 min-h-[2.25rem] rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-right text-sm text-slate-700">
+                        {calcExpr ? formatForDisplay(calcExpr) : "0"}
+                      </div>
+
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {calcButtons.map((key) => (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => handleCalcPress(key)}
+                            className={`rounded-lg py-2 text-sm font-semibold transition ${
+                              key === "C"
+                                ? "bg-red-50 text-red-500 hover:bg-red-100"
+                                : ["÷", "×", "−", "+"].includes(key)
+                                ? "bg-indigo-50 text-indigo-600 hover:bg-indigo-100"
+                                : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                            }`}
+                          >
+                            {key}
+                          </button>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => handleCalcPress("=")}
+                          className="col-span-4 mt-1 rounded-lg bg-indigo-500 py-2 text-sm font-semibold text-white transition hover:bg-indigo-600"
+                        >
+                          =
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Category */}
@@ -380,59 +554,149 @@ export default function TransactionForm({
                   </div>
 
                   {/* Auto Repeat */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-800">
-                        Auto Repeat
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Repeat every month
-                      </p>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Repeat size={14} className="text-slate-500" />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">
+                            Auto Repeat
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {repeatFrequencyLabel}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={autoRepeat}
+                        onClick={() => setAutoRepeat(!autoRepeat)}
+                        className={`relative h-6 w-11 rounded-full transition ${
+                          autoRepeat ? "bg-green-500" : "bg-slate-300"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                            autoRepeat ? "left-6" : "left-1"
+                          }`}
+                        />
+                      </button>
                     </div>
 
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={autoRepeat}
-                      onClick={() => setAutoRepeat(!autoRepeat)}
-                      className={`relative h-6 w-11 rounded-full transition ${
-                        autoRepeat ? "bg-green-500" : "bg-slate-300"
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
-                          autoRepeat ? "left-6" : "left-1"
-                        }`}
-                      />
-                    </button>
+                    {autoRepeat && (
+                      <div className="relative mt-2">
+                        <select
+                          value={repeatFrequency}
+                          onChange={(e) =>
+  setRepeatFrequency(
+    e.target.value as
+      | "daily"
+      | "weekly"
+      | "biweekly"
+      | "monthly"
+      | "yearly"
+  )
+}
+                          className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                        >
+                          {repeatFrequencyOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+
+                        <ChevronDown
+                          size={14}
+                          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Reminder */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-800">
-                        Reminder
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Notify before due date
-                      </p>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Bell size={14} className="text-slate-500" />
+                        <div>
+                          <p className="text-sm font-semibold text-slate-800">
+                            Reminder
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {reminderTypeLabel}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={reminder}
+                        onClick={() => setReminder(!reminder)}
+                        className={`relative h-6 w-11 rounded-full transition ${
+                          reminder ? "bg-indigo-500" : "bg-slate-300"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                            reminder ? "left-6" : "left-1"
+                          }`}
+                        />
+                      </button>
                     </div>
 
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={reminder}
-                      onClick={() => setReminder(!reminder)}
-                      className={`relative h-6 w-11 rounded-full transition ${
-                        reminder ? "bg-indigo-500" : "bg-slate-300"
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
-                          reminder ? "left-6" : "left-1"
-                        }`}
-                      />
-                    </button>
+                    {reminder && (
+                      <div className="mt-2 space-y-2">
+                        <div className="relative">
+                          <select
+                            value={reminderType}
+                            onChange={(e) =>
+  setReminderType(
+    e.target.value as
+      | "due"
+      | "1day"
+      | "3days"
+      | "1week"
+      | "custom"
+  )
+}
+                            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                          >
+                            {reminderTypeOptions.map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+
+                          <ChevronDown
+                            size={14}
+                            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                          />
+                        </div>
+
+                        {reminderType === "custom" && (
+                          <input
+                            type="date"
+                            value={reminderDate}
+                            onChange={(e) =>
+                              setReminderDate(e.target.value)
+                            }
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                          />
+                        )}
+
+                        {reminderType === "custom" &&
+                          reminderDate.trim() === "" && (
+                            <p className="text-xs text-red-500">
+                              Pick a reminder date.
+                            </p>
+                          )}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
