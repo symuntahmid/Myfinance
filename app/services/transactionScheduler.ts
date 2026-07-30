@@ -4,6 +4,8 @@ import {
   Transaction,
 } from "@/app/data/transactions";
 
+import { sendBrowserNotification } from "@/app/services/browserNotification";
+
 /* -------------------------------- */
 /* Helpers                          */
 /* -------------------------------- */
@@ -60,18 +62,22 @@ export function runTransactionScheduler() {
 
     if (!transaction.repeatFrequency) return;
 
-    const currentDate = new Date(transaction.date);
+    let currentDate = new Date(transaction.date);
 
-    const nextDate = getNextDate(
-      currentDate,
-      transaction.repeatFrequency
-    );
+    let latestGeneratedDate = currentDate;
 
-    if (today >= nextDate) {
+    while (true) {
+      const nextDate = getNextDate(
+        currentDate,
+        transaction.repeatFrequency
+      );
+
+      if (nextDate > today) break;
+
       const nextDateString =
         nextDate.toISOString().split("T")[0];
 
-      const alreadyExists = transactions.some(
+      const alreadyExists = updatedTransactions.some(
         (t) =>
           t.type === transaction.type &&
           t.source === transaction.source &&
@@ -83,10 +89,29 @@ export function runTransactionScheduler() {
       if (!alreadyExists) {
         updatedTransactions.unshift({
           ...transaction,
-          id: Date.now(),
+          id: Date.now() + Math.floor(Math.random() * 100000),
           date: nextDateString,
         });
       }
+
+      latestGeneratedDate = nextDate;
+      currentDate = nextDate;
+    }
+
+    // Move the parent recurring transaction forward
+    transaction.date = latestGeneratedDate
+      .toISOString()
+      .split("T")[0];
+  });
+
+  // Update parent recurring transactions
+  transactions.forEach((transaction) => {
+    const index = updatedTransactions.findIndex(
+      (t) => t.id === transaction.id
+    );
+
+    if (index !== -1) {
+      updatedTransactions[index] = transaction;
     }
   });
 
@@ -154,20 +179,27 @@ export function getReminderNotifications() {
       reminderDate.toDateString() ===
       today.toDateString()
     ) {
+      const title =
+        transaction.source ||
+        transaction.category ||
+        transaction.type;
+
+      const message =
+        transaction.note ||
+        `${transaction.category ?? transaction.type} • $${transaction.amount.toLocaleString()}`;
+
       notifications.push({
         id: String(transaction.id),
-
-        title:
-          transaction.source ||
-          transaction.category ||
-          transaction.type,
-
-        message:
-          transaction.note ||
-          `${transaction.category ?? transaction.type} • $${transaction.amount.toLocaleString()}`,
-
+        title,
+        message,
         date: transaction.date,
       });
+
+      sendBrowserNotification(
+        `${transaction.id}-${transaction.date}`,
+        title,
+        message
+      );
     }
   });
 

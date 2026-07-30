@@ -7,15 +7,27 @@ import BottomNavigation from "@/app/components/BottomNavigation";
 
 import { runTransactionScheduler } from "@/app/services/transactionScheduler";
 
+import {
+  requestNotificationPermission,
+  resetNotificationCacheIfNewDay,
+} from "@/app/services/browserNotification";
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
   useEffect(() => {
+    // Reset notification cache if a new day has started
+    resetNotificationCacheIfNewDay();
+
+    // Ask notification permission
+    requestNotificationPermission();
+
+    // Generate recurring transactions
     runTransactionScheduler();
 
+    // Refresh all transaction-based components
     window.dispatchEvent(
       new Event("transactionsUpdated")
     );

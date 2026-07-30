@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
 
 import {
   getReminderNotifications,
   ReminderNotification,
 } from "@/app/services/transactionScheduler";
+
+import {
+  markAllNotificationsRead,
+} from "@/app/services/browserNotification";
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<
@@ -15,11 +19,13 @@ export default function NotificationBell() {
 
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    function refreshNotifications() {
-      setNotifications(getReminderNotifications());
-    }
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  function refreshNotifications() {
+    setNotifications(getReminderNotifications());
+  }
+
+  useEffect(() => {
     refreshNotifications();
 
     window.addEventListener(
@@ -34,12 +40,58 @@ export default function NotificationBell() {
       );
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(
+          e.target as Node
+        )
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+  }, []);
+
   return (
-    <div className="relative">
+    <div
+      ref={containerRef}
+      className="relative"
+    >
       {/* Bell */}
 
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          const nextOpen = !open;
+
+          setOpen(nextOpen);
+
+          if (nextOpen) {
+            refreshNotifications();
+
+            const latest = getReminderNotifications();
+
+            if (latest.length > 0) {
+              markAllNotificationsRead(
+                latest.map((n) => n.id)
+              );
+
+              setNotifications([]);
+            }
+          }
+        }}
         className="relative rounded-full p-2 transition hover:bg-slate-100"
       >
         <Bell className="h-6 w-6 text-slate-700" />
@@ -54,13 +106,16 @@ export default function NotificationBell() {
       {/* Dropdown */}
 
       {open && (
-        <div className="absolute right-0 mt-3 w-96 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl z-50">
+        <div className="absolute right-0 z-50 mt-3 w-96 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+          {/* Header */}
 
           <div className="border-b border-slate-100 px-6 py-5">
             <h3 className="text-lg font-bold">
               Notifications
             </h3>
           </div>
+
+          {/* Empty */}
 
           {notifications.length === 0 ? (
             <div className="px-6 py-12 text-center">
@@ -74,7 +129,6 @@ export default function NotificationBell() {
             </div>
           ) : (
             <div className="max-h-96 overflow-y-auto">
-
               {notifications.map((item) => (
                 <div
                   key={item.id}
@@ -93,7 +147,6 @@ export default function NotificationBell() {
                   </p>
                 </div>
               ))}
-
             </div>
           )}
         </div>
