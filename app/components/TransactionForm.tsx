@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   X,
   Calendar,
@@ -14,13 +14,16 @@ import {
 
 import {
   addTransaction,
+  updateTransaction,
   Transaction,
 } from "@/app/data/transactions";
 
-type Props = {
+type TransactionFormProps = {
   open: boolean;
   type: "Income" | "Expense" | "Investment";
   onClose: () => void;
+
+  editingTransaction?: Transaction | null;
 };
 
 /* -------------------------------- */
@@ -139,7 +142,9 @@ export default function TransactionForm({
   open,
   type,
   onClose,
-}: Props) {
+  editingTransaction,
+}: TransactionFormProps) {
+
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
@@ -167,6 +172,42 @@ export default function TransactionForm({
 
   const [calcOpen, setCalcOpen] = useState(false);
   const [calcExpr, setCalcExpr] = useState("");
+
+  useEffect(() => {
+  if (!editingTransaction) return;
+
+  setAmount(String(editingTransaction.amount));
+
+  setSource(editingTransaction.source);
+
+  setCategory(editingTransaction.category ?? "");
+
+  setDate(editingTransaction.date);
+
+  setNote(editingTransaction.note ?? "");
+
+  setAutoRepeat(
+    editingTransaction.autoRepeat ?? false
+  );
+
+  setRepeatFrequency(
+    editingTransaction.repeatFrequency ??
+      "monthly"
+  );
+
+  setReminder(
+    editingTransaction.reminder ?? false
+  );
+
+  setReminderType(
+    editingTransaction.reminderType ??
+      "due"
+  );
+
+  setReminderDate(
+    editingTransaction.reminderDate ?? ""
+  );
+}, [editingTransaction]);
 
   const categories = useMemo(() => {
     if (type === "Income") return incomeCategories;
@@ -200,6 +241,7 @@ export default function TransactionForm({
     "On due date";
 
   function resetForm() {
+    if (editingTransaction) return;
     setAmount("");
     setCategory("");
     setSource("");
@@ -228,26 +270,36 @@ function saveTransaction() {
   if (!isFormValid) return;
 
   const transaction: Transaction = {
-    id: Date.now(),
+    id: editingTransaction
+      ? editingTransaction.id
+      : Date.now(),
 
     type,
+
     amount: parsedAmount,
+
     source: resolvedSource,
+
     category,
+
     note,
+
     date,
 
     // Auto Repeat
     autoRepeat,
+
     repeatFrequency: autoRepeat
       ? repeatFrequency
       : undefined,
 
     // Reminder
     reminder,
+
     reminderType: reminder
       ? reminderType
       : undefined,
+
     reminderDate:
       reminder &&
       reminderType === "custom"
@@ -255,9 +307,14 @@ function saveTransaction() {
         : undefined,
   };
 
-  addTransaction(transaction);
+  if (editingTransaction) {
+    updateTransaction(transaction);
+  } else {
+    addTransaction(transaction);
+  }
 
   resetForm();
+
   onClose();
 }
 

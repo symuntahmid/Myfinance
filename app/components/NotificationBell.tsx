@@ -109,11 +109,26 @@ export default function NotificationBell() {
         <div className="absolute right-0 z-50 mt-3 w-96 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
           {/* Header */}
 
-          <div className="border-b border-slate-100 px-6 py-5">
-            <h3 className="text-lg font-bold">
-              Notifications
-            </h3>
-          </div>
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+  <h3 className="text-lg font-bold">
+    Notifications
+  </h3>
+
+  {notifications.length > 0 && (
+    <button
+      onClick={() => {
+        markAllNotificationsRead(
+          notifications.map((n) => n.id)
+        );
+
+        setNotifications([]);
+      }}
+      className="text-sm font-medium text-blue-600 hover:text-blue-700"
+    >
+      Mark all as read
+    </button>
+  )}
+</div>
 
           {/* Empty */}
 

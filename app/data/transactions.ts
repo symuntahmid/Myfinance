@@ -202,12 +202,29 @@ export function getFinancialHealthScore() {
 export function addTransaction(
   transaction: Transaction
 ) {
-  const transactions =
-    getTransactions();
+  const transactions = getTransactions();
 
   transactions.unshift(transaction);
 
   saveTransactions(transactions);
+
+  window.dispatchEvent(
+    new Event("transactionsUpdated")
+  );
+}
+
+export function updateTransaction(
+  updatedTransaction: Transaction
+) {
+  const transactions = getTransactions();
+
+  const updated = transactions.map((transaction) =>
+    transaction.id === updatedTransaction.id
+      ? updatedTransaction
+      : transaction
+  );
+
+  saveTransactions(updated);
 
   window.dispatchEvent(
     new Event("transactionsUpdated")

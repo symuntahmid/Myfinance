@@ -89,7 +89,9 @@ export function runTransactionScheduler() {
       if (!alreadyExists) {
         updatedTransactions.unshift({
           ...transaction,
-          id: Date.now() + Math.floor(Math.random() * 100000),
+          id:
+            Date.now() +
+            Math.floor(Math.random() * 1000000),
           date: nextDateString,
         });
       }
@@ -98,20 +100,23 @@ export function runTransactionScheduler() {
       currentDate = nextDate;
     }
 
-    // Move the parent recurring transaction forward
+    // Move master recurring transaction forward
     transaction.date = latestGeneratedDate
       .toISOString()
       .split("T")[0];
   });
 
-  // Update parent recurring transactions
+  // Update master recurring transactions
   transactions.forEach((transaction) => {
     const index = updatedTransactions.findIndex(
       (t) => t.id === transaction.id
     );
 
     if (index !== -1) {
-      updatedTransactions[index] = transaction;
+      updatedTransactions[index] = {
+        ...updatedTransactions[index],
+        date: transaction.date,
+      };
     }
   });
 

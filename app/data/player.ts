@@ -1,3 +1,9 @@
+import {
+  getSummary,
+  getMonthlyReport,
+  getFinancialHealthScore,
+} from "@/app/data/transactions";
+
 export type Player = {
   name: string;
 
@@ -47,21 +53,30 @@ export function getPlayer(): Player {
 
   const saved = localStorage.getItem(STORAGE_KEY);
 
-  if (!saved) {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(DEFAULT_PLAYER)
-    );
+  const basePlayer = saved
+    ? {
+        ...DEFAULT_PLAYER,
+        ...JSON.parse(saved),
+      }
+    : DEFAULT_PLAYER;
 
-    return DEFAULT_PLAYER;
-  }
+  const summary = getSummary();
+  const report = getMonthlyReport();
 
-  const parsed = JSON.parse(saved);
+  return {
+    ...basePlayer,
 
-return {
-  ...DEFAULT_PLAYER,
-  ...parsed,
-};
+    // Live values from transactions
+    netWorth: summary.netWorth,
+
+    monthlyCashFlow: report.savings,
+
+    savingRate: Math.round(report.savingsRate),
+
+    investments: report.investment,
+
+    wealthScore: getFinancialHealthScore(),
+  };
 }
 
 export function savePlayer(player: Player) {
