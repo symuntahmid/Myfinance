@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import NotificationBell from "@/app/components/NotificationBell";
 import SummaryCards from "../../components/SummaryCards";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import AddTransactionSheet from "../../components/AddTransactionSheet";
 import TransactionForm from "../../components/TransactionForm";
+import AddInvestmentModal from "../../components/AddInvestmentModal";
 
-import TransactionTable from "../../components/TransactionTable";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
@@ -21,45 +22,73 @@ import WelcomeBanner from "../../components/WelcomeBanner";
 import FadeIn from "../../components/FadeIn";
 import RecentTransactions from "../../components/RecentTransactions";
 
+import { getPortfolioSummary } from "@/app/data/investments";
+
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
+
   const [formOpen, setFormOpen] = useState(false);
 
+  const [investmentModalOpen, setInvestmentModalOpen] =
+    useState(false);
+
   const [transactionType, setTransactionType] = useState<
-    "Income" | "Expense" | "Investment"
+    "Income" | "Expense"
   >("Income");
+
+  const [portfolio, setPortfolio] = useState(
+    getPortfolioSummary()
+  );
+
+  useEffect(() => {
+    function refreshPortfolio() {
+      setPortfolio(getPortfolioSummary());
+    }
+
+    refreshPortfolio();
+
+    window.addEventListener(
+      "investmentsUpdated",
+      refreshPortfolio
+    );
+
+    return () => {
+      window.removeEventListener(
+        "investmentsUpdated",
+        refreshPortfolio
+      );
+    };
+  }, []);
 
   return (
     <>
-     {/* Header */}
+      {/* Header */}
 
-<div className="mb-8 flex items-center justify-between">
-  <div>
-    <h1 className="text-4xl font-bold">
-      Dashboard
-    </h1>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold">
+            Dashboard
+          </h1>
 
-    <WelcomeBanner />
-  </div>
+          <WelcomeBanner />
+        </div>
 
-  <div className="flex items-center gap-5">
-    {/* Notification Bell */}
-    <NotificationBell />
+        <div className="flex items-center gap-5">
+          <NotificationBell />
 
-    {/* Date */}
-    <div className="text-right">
-      <p className="text-sm text-slate-500">
-        Today
-      </p>
+          <div className="text-right">
+            <p className="text-sm text-slate-500">
+              Today
+            </p>
 
-      <p className="font-semibold">
-        {new Date().toLocaleDateString()}
-      </p>
-    </div>
-  </div>
-</div>
+            <p className="font-semibold">
+              {new Date().toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+      </div>
 
-      {/* Main Content */}
+      {/* Main */}
 
       <div className="space-y-6">
         <div className="grid gap-6 lg:grid-cols-2">
@@ -76,13 +105,86 @@ export default function Dashboard() {
           <DailyJourneyCard />
         </FadeIn>
 
-        {/* Summary */}
-
         <FadeIn delay={0.4}>
           <SummaryCards />
         </FadeIn>
 
-        {/* Analytics */}
+        {portfolio.totalAssets > 0 && (
+          <FadeIn delay={0.45}>
+            <div className="rounded-3xl bg-white p-6 shadow-sm">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-2xl font-bold">
+                  Investment Portfolio
+                </h2>
+
+                <span className="rounded-full bg-cyan-100 px-4 py-2 text-sm font-semibold text-cyan-700">
+                  {portfolio.totalAssets} Assets
+                </span>
+              </div>
+
+              <div className="grid gap-5 md:grid-cols-4">
+                <div>
+                  <p className="text-sm text-slate-500">
+                    Invested
+                  </p>
+
+                  <h3 className="mt-2 text-2xl font-bold">
+                    $
+                    {portfolio.invested.toLocaleString()}
+                  </h3>
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">
+                    Current Value
+                  </p>
+
+                  <h3 className="mt-2 text-2xl font-bold">
+                    $
+                    {portfolio.current.toLocaleString()}
+                  </h3>
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">
+                    Profit
+                  </p>
+
+                  <h3
+                    className={`mt-2 text-2xl font-bold ${
+                      portfolio.profit >= 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {portfolio.profit >= 0 ? "+" : ""}
+                    $
+                    {portfolio.profit.toLocaleString()}
+                  </h3>
+                </div>
+
+                <div>
+                  <p className="text-sm text-slate-500">
+                    Return
+                  </p>
+
+                  <h3
+                    className={`mt-2 text-2xl font-bold ${
+                      portfolio.returnPercentage >= 0
+                        ? "text-cyan-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {portfolio.returnPercentage.toFixed(
+                      2
+                    )}
+                    %
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <FadeIn delay={0.5}>
@@ -106,20 +208,14 @@ export default function Dashboard() {
           </FadeIn>
         </div>
 
-        {/* Transactions */}
-
         <FadeIn delay={0.9}>
           <RecentTransactions />
         </FadeIn>
       </div>
 
-      {/* Floating Button */}
-
       <FloatingActionButton
         onClick={() => setSheetOpen(true)}
       />
-
-      {/* Bottom Sheet */}
 
       <AddTransactionSheet
         open={sheetOpen}
@@ -141,21 +237,23 @@ export default function Dashboard() {
           }, 250);
         }}
         onInvestment={() => {
-          setTransactionType("Investment");
           setSheetOpen(false);
 
           setTimeout(() => {
-            setFormOpen(true);
+            setInvestmentModalOpen(true);
           }, 250);
         }}
       />
-
-      {/* Transaction Form */}
 
       <TransactionForm
         open={formOpen}
         type={transactionType}
         onClose={() => setFormOpen(false)}
+      />
+
+      <AddInvestmentModal
+        open={investmentModalOpen}
+        onClose={() => setInvestmentModalOpen(false)}
       />
     </>
   );

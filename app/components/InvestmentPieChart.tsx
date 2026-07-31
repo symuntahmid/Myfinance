@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import {
   PieChart,
   Pie,
@@ -9,7 +11,7 @@ import {
   Legend,
 } from "recharts";
 
-import { getTransactions } from "../data/transactions";
+import { getAllocation } from "../data/investments";
 
 const COLORS = [
   "#14b8a6",
@@ -19,34 +21,50 @@ const COLORS = [
   "#22c55e",
   "#ef4444",
   "#64748b",
+  "#f97316",
+  "#06b6d4",
+  "#84cc16",
 ];
 
 export default function InvestmentPieChart() {
-  const transactions = getTransactions();
+  const [data, setData] = useState<
+    {
+      name: string;
+      value: number;
+    }[]
+  >([]);
 
-  const investments = transactions.filter(
-    (t) => t.type === "Investment"
-  );
+  useEffect(() => {
+    function refreshChart() {
+      const allocation = getAllocation();
 
-  const grouped = investments.reduce((acc, transaction) => {
-    const category = transaction.category || "Other";
+      const chartData = Object.entries(allocation).map(
+        ([name, value]) => ({
+          name,
+          value,
+        })
+      );
 
-    acc[category] =
-      (acc[category] || 0) + transaction.amount;
+      setData(chartData);
+    }
 
-    return acc;
-  }, {} as Record<string, number>);
+    refreshChart();
 
-  const data = Object.entries(grouped).map(
-    ([name, value]) => ({
-      name,
-      value,
-    })
-  );
+    window.addEventListener(
+      "investmentsUpdated",
+      refreshChart
+    );
+
+    return () => {
+      window.removeEventListener(
+        "investmentsUpdated",
+        refreshChart
+      );
+    };
+  }, []);
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-
       <h2 className="text-2xl font-bold">
         Investment Allocation
       </h2>
@@ -56,45 +74,53 @@ export default function InvestmentPieChart() {
       </p>
 
       <div className="mt-8 h-80">
+        {data.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-slate-400">
+            No investments yet
+          </div>
+        ) : (
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+          >
+            <PieChart>
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={95}
+                innerRadius={55}
+                paddingAngle={3}
+                animationDuration={900}
+                label={({ percent }) =>
+                  `${((percent ?? 0) * 100).toFixed(
+                    0
+                  )}%`
+                }
+              >
+                {data.map((_, index) => (
+                  <Cell
+                    key={index}
+                    fill={
+                      COLORS[index % COLORS.length]
+                    }
+                  />
+                ))}
+              </Pie>
 
-        <ResponsiveContainer width="100%" height="100%">
+              <Tooltip
+  formatter={(value) =>
+    `$${Number(value).toLocaleString()}`
+  }
+              />
 
-          <PieChart>
-  <Pie
-    data={data}
-    dataKey="value"
-    nameKey="name"
-    cx="50%"
-    cy="50%"
-    outerRadius={95}
-    innerRadius={55}
-    paddingAngle={3}
-    animationDuration={1000}
-    label={({ percent }) =>
-      `${((percent ?? 0) * 100).toFixed(0)}%`
-    }
-  >
-    {data.map((_, index) => (
-      <Cell
-        key={index}
-        fill={COLORS[index % COLORS.length]}
-      />
-    ))}
-  </Pie>
-
-  <Tooltip
-    formatter={(value: number) =>
-      `$${value.toLocaleString()}`
-    }
-  />
-
-  <Legend />
-</PieChart>
-
-        </ResponsiveContainer>
-
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
-
     </div>
   );
 }

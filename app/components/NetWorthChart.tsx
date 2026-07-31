@@ -44,25 +44,35 @@ export default function NetWorthChart() {
     getSummary()
   );
 
-  useEffect(() => {
-    function refreshSummary() {
-      setSummary(getSummary());
-    }
+ useEffect(() => {
+  function refreshSummary() {
+    setSummary(getSummary());
+  }
 
-    refreshSummary();
+  refreshSummary();
 
-    window.addEventListener(
+  window.addEventListener(
+    "transactionsUpdated",
+    refreshSummary
+  );
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refreshSummary
+  );
+
+  return () => {
+    window.removeEventListener(
       "transactionsUpdated",
       refreshSummary
     );
 
-    return () => {
-      window.removeEventListener(
-        "transactionsUpdated",
-        refreshSummary
-      );
-    };
-  }, []);
+    window.removeEventListener(
+      "investmentsUpdated",
+      refreshSummary
+    );
+  };
+}, []);
 
   const netWorth = summary.netWorth;
 

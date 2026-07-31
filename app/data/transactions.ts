@@ -1,3 +1,5 @@
+import { getPortfolioSummary } from "./investments";
+
 export type Transaction = {
   id: number;
 
@@ -13,7 +15,6 @@ export type Transaction = {
 
   note?: string;
 
-  /* Auto Repeat */
   autoRepeat?: boolean;
 
   repeatFrequency?:
@@ -23,7 +24,6 @@ export type Transaction = {
     | "monthly"
     | "yearly";
 
-  /* Reminder */
   reminder?: boolean;
 
   reminderType?:
@@ -39,7 +39,7 @@ export type Transaction = {
 const STORAGE_KEY = "myfinance-transactions";
 
 /* -------------------------------- */
-/* Storage                          */
+/* Storage */
 /* -------------------------------- */
 
 export function getTransactions(): Transaction[] {
@@ -60,7 +60,7 @@ export function saveTransactions(
 }
 
 /* -------------------------------- */
-/* Summary                          */
+/* Summary */
 /* -------------------------------- */
 
 export function getSummary() {
@@ -68,7 +68,6 @@ export function getSummary() {
 
   let income = 0;
   let expense = 0;
-  let investment = 0;
 
   transactions.forEach((transaction) => {
     switch (transaction.type) {
@@ -79,23 +78,28 @@ export function getSummary() {
       case "Expense":
         expense += transaction.amount;
         break;
-
-      case "Investment":
-        investment += transaction.amount;
-        break;
     }
   });
+
+  const portfolio = getPortfolioSummary();
 
   return {
     income,
     expense,
-    investment,
-    netWorth: income - expense + investment,
+
+    // Investment Portfolio value
+    investment: portfolio.current,
+
+    // Cash + Investments
+    netWorth:
+      income -
+      expense +
+      portfolio.current,
   };
 }
 
 /* -------------------------------- */
-/* Monthly Report                   */
+/* Monthly Report */
 /* -------------------------------- */
 
 export function getMonthlyReport() {
@@ -109,59 +113,45 @@ export function getMonthlyReport() {
     .filter((t) => t.type === "Expense")
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const investment = transactions
-    .filter((t) => t.type === "Investment")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const portfolio = getPortfolioSummary();
 
   const savings = income - expense;
 
   const savingsRate =
-    income === 0 ? 0 : (savings / income) * 100;
+    income === 0
+      ? 0
+      : (savings / income) * 100;
 
   const largestExpense =
     transactions
       .filter((t) => t.type === "Expense")
-      .sort((a, b) => b.amount - a.amount)[0] || null;
-
-  const investmentCategories =
-    transactions.filter(
-      (t) => t.type === "Investment"
-    );
-
-  const categoryTotals =
-    investmentCategories.reduce(
-      (acc, t) => {
-        const category =
-          t.category || "Other";
-
-        acc[category] =
-          (acc[category] || 0) + t.amount;
-
-        return acc;
-      },
-      {} as Record<string, number>
-    );
-
-  const topInvestmentCategory =
-    Object.entries(categoryTotals).sort(
-      (a, b) => b[1] - a[1]
-    )[0]?.[0] || "None";
+      .sort((a, b) => b.amount - a.amount)[0] ||
+    null;
 
   return {
     income,
     expense,
-    investment,
+
+    // Current investment portfolio
+    investment: portfolio.current,
+
     savings,
     savingsRate,
+
     totalTransactions:
       transactions.length,
+
     largestExpense,
-    topInvestmentCategory,
+
+    topInvestmentCategory:
+      portfolio.totalAssets > 0
+        ? "Portfolio"
+        : "None",
   };
 }
 
 /* -------------------------------- */
-/* Financial Health                 */
+/* Financial Health */
 /* -------------------------------- */
 
 export function getFinancialHealthScore() {
@@ -196,7 +186,7 @@ export function getFinancialHealthScore() {
 }
 
 /* -------------------------------- */
-/* CRUD                             */
+/* CRUD */
 /* -------------------------------- */
 
 export function addTransaction(

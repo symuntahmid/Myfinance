@@ -4,6 +4,10 @@ import {
   getFinancialHealthScore,
 } from "@/app/data/transactions";
 
+import {
+  getPortfolioSummary,
+} from "@/app/data/investments";
+
 export type Player = {
   name: string;
 
@@ -62,24 +66,41 @@ export function getPlayer(): Player {
 
   const summary = getSummary();
   const report = getMonthlyReport();
+  const portfolio = getPortfolioSummary();
 
   return {
     ...basePlayer,
 
-    // Live values from transactions
-    netWorth: summary.netWorth,
+    // Live Money Data
+    netWorth:
+      summary.netWorth +
+      portfolio.current,
 
-    monthlyCashFlow: report.savings,
+    monthlyCashFlow:
+      report.savings,
 
-    savingRate: Math.round(report.savingsRate),
+    savingRate: Math.round(
+      report.savingsRate
+    ),
 
-    investments: report.investment,
+    // Live Investment Data
+    investments:
+      portfolio.current,
 
-    wealthScore: getFinancialHealthScore(),
+    // Combined Wealth Score
+    wealthScore: Math.round(
+      Math.min(
+        getFinancialHealthScore() +
+          portfolio.returnPercentage / 5,
+        100
+      )
+    ),
   };
 }
 
-export function savePlayer(player: Player) {
+export function savePlayer(
+  player: Player
+) {
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(player)
@@ -101,9 +122,11 @@ export function addXP(amount: number) {
 export function getLevel() {
   const player = getPlayer();
 
-  const level = Math.floor(player.xp / 100) + 1;
+  const level =
+    Math.floor(player.xp / 100) + 1;
 
-  const currentXP = player.xp % 100;
+  const currentXP =
+    player.xp % 100;
 
   return {
     level,
@@ -118,20 +141,35 @@ export function getFinancialHealth() {
 
   let score = 0;
 
-  // Saving Rate (25)
-  score += Math.min(player.savingRate, 25);
+  // Saving Rate
+  score += Math.min(
+    player.savingRate,
+    25
+  );
 
-  // Positive Cash Flow (20)
-  if (player.monthlyCashFlow > 0) score += 20;
+  // Positive Cash Flow
+  if (player.monthlyCashFlow > 0)
+    score += 20;
 
-  // Investments (20)
-  score += Math.min(player.investments / 1000, 20);
+  // Investment Size
+  score += Math.min(
+    player.investments / 1000,
+    20
+  );
 
-  // Net Worth (20)
-  score += Math.min(player.netWorth / 5000, 20);
+  // Net Worth
+  score += Math.min(
+    player.netWorth / 5000,
+    20
+  );
 
-  // Learning (15)
-  score += Math.min(player.xp / 10, 15);
+  // XP
+  score += Math.min(
+    player.xp / 10,
+    15
+  );
 
-  return Math.round(Math.min(score, 100));
+  return Math.round(
+    Math.min(score, 100)
+  );
 }

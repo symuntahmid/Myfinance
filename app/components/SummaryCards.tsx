@@ -9,29 +9,44 @@ import {
 } from "lucide-react";
 
 import StatCard from "./StatCard";
+
 import { getSummary } from "../data/transactions";
+import { getPortfolioSummary } from "../data/investments";
 
 export default function SummaryCards() {
   const [summary, setSummary] = useState(getSummary());
 
+  const [portfolio, setPortfolio] = useState(
+    getPortfolioSummary()
+  );
+
   useEffect(() => {
-    function refreshSummary() {
+    function refresh() {
       setSummary(getSummary());
+      setPortfolio(getPortfolioSummary());
     }
 
-    // Load latest data
-    refreshSummary();
+    refresh();
 
-    // Listen for transaction updates
     window.addEventListener(
       "transactionsUpdated",
-      refreshSummary
+      refresh
+    );
+
+    window.addEventListener(
+      "investmentsUpdated",
+      refresh
     );
 
     return () => {
       window.removeEventListener(
         "transactionsUpdated",
-        refreshSummary
+        refresh
+      );
+
+      window.removeEventListener(
+        "investmentsUpdated",
+        refresh
       );
     };
   }, []);
@@ -58,7 +73,7 @@ export default function SummaryCards() {
 
       <StatCard
         title="Investments"
-        value={`$${summary.investment.toLocaleString()}`}
+        value={`$${portfolio.current.toLocaleString()}`}
         icon={<Landmark className="h-6 w-6" />}
       />
     </div>
