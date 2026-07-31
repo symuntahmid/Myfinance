@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AddTransactionSheet from "@/app/components/AddTransactionSheet";
 import TransactionForm from "@/app/components/TransactionForm";
-
+import SpendingInsights from "@/app/components/SpendingInsights";
 import {
   getTransactions,
   getSummary,
@@ -38,9 +38,14 @@ useEffect(() => {
 
   return () => {
     window.removeEventListener(
-      "transactionsUpdated",
-      refreshData
-    );
+  "transactionsUpdated",
+  refreshData
+);
+
+window.removeEventListener(
+  "investmentsUpdated",
+  refreshData
+);
   };
 }, []);
   return (
@@ -83,7 +88,7 @@ useEffect(() => {
         </p>
 
         <h2 className="mt-4 text-4xl md:text-6xl font-bold">
-          ${summary.netWorth.toLocaleString()}
+          ${(summary.income - summary.expense).toLocaleString()}
         </h2>
 
         <div className="mt-5 inline-flex rounded-full bg-emerald-500/20 px-5 py-2 text-sm font-semibold text-emerald-300">
@@ -148,7 +153,48 @@ useEffect(() => {
 
             {/* Chart */}
 
-      <MoneyTrendChart />
+      <div className="grid gap-6 lg:grid-cols-3">
+  <div className="lg:col-span-2">
+    <MoneyTrendChart />
+  </div>
+
+  <div>
+    <SpendingInsights />
+  </div>
+  <Link href="/money/analytics">
+
+  <div className="cursor-pointer rounded-3xl border border-cyan-200 bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-white shadow-xl transition hover:scale-[1.02]">
+
+    <div className="flex items-center justify-between">
+
+      <div>
+
+        <p className="text-sm uppercase tracking-[0.3em] text-white/70">
+          Analytics
+        </p>
+
+        <h2 className="mt-2 text-3xl font-bold">
+          Explore Money Analytics
+        </h2>
+
+        <p className="mt-3 max-w-xl text-white/80">
+          View detailed expense breakdown,
+          income sources, category trends,
+          financial health and AI insights.
+        </p>
+
+      </div>
+
+      <div className="text-5xl">
+        📊
+      </div>
+
+    </div>
+
+  </div>
+
+</Link>
+</div>
 
       {/* Floating Action Button */}
 
