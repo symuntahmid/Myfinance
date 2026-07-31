@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import AddTransactionSheet from "@/app/components/AddTransactionSheet";
 import TransactionForm from "@/app/components/TransactionForm";
 import SpendingInsights from "@/app/components/SpendingInsights";
+
+
 import {
   getTransactions,
   getSummary,
@@ -88,8 +90,8 @@ window.removeEventListener(
         </p>
 
         <h2 className="mt-4 text-4xl md:text-6xl font-bold">
-          ${(summary.income - summary.expense).toLocaleString()}
-        </h2>
+  ${summary.availableCash.toLocaleString()}
+</h2>
 
         <div className="mt-5 inline-flex rounded-full bg-emerald-500/20 px-5 py-2 text-sm font-semibold text-emerald-300">
           ▲ +8.2% this month
@@ -136,16 +138,16 @@ window.removeEventListener(
         <div className="rounded-3xl bg-white p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
           <p className="text-xs uppercase tracking-[0.2em] text-slate-400">
-            Savings
-          </p>
+  Available Cash
+</p>
 
-          <h3 className="mt-4 text-4xl font-bold text-cyan-600">
-           ${summary.netWorth.toLocaleString()}
-          </h3>
+<h3 className="mt-4 text-4xl font-bold text-cyan-600">
+  ${summary.availableCash.toLocaleString()}
+</h3>
 
-          <p className="mt-2 text-sm text-slate-500">
-            63% Saving Rate
-          </p>
+<p className="mt-2 text-sm text-slate-500">
+  Income − Expenses
+</p>
 
         </div>
 

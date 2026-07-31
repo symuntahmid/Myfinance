@@ -3,15 +3,31 @@
 import { getTransactions } from "@/app/data/transactions";
 
 const categoryIcons: Record<string, string> = {
-  Food: "🍔",
-  Transport: "🚗",
+  Food: "🍽️",
+  Restaurant: "🍜",
+  Groceries: "🛒",
   Shopping: "🛍️",
-  Bills: "💡",
+  Transport: "🚕",
+  Fuel: "⛽",
   Rent: "🏠",
-  Entertainment: "🎮",
-  Healthcare: "❤️",
+  Bills: "💡",
+  Utilities: "🔌",
+  Internet: "🌐",
+  Mobile: "📱",
+  Healthcare: "🏥",
+  Medicine: "💊",
   Education: "📚",
-  Other: "📦",
+  Entertainment: "🎬",
+  Travel: "✈️",
+  Subscription: "📺",
+  Investment: "📈",
+  Insurance: "🛡️",
+  Tax: "🧾",
+  Gift: "🎁",
+  Charity: "❤️",
+  Family: "👨‍👩‍👧",
+  Pet: "🐶",
+  Other: "💳",
 };
 
 export default function ExpenseBreakdownChart() {
@@ -22,7 +38,7 @@ export default function ExpenseBreakdownChart() {
   const grouped: Record<string, number> = {};
 
   expenses.forEach((t) => {
-    const category = t.category ?? "Other";
+    const category = t.category?.trim() || "Other";
 
     grouped[category] =
       (grouped[category] ?? 0) + t.amount;
@@ -52,34 +68,29 @@ export default function ExpenseBreakdownChart() {
 
   return (
     <div className="space-y-6">
-
       {data.map((item) => (
-
         <div key={item.name}>
-
           <div className="mb-2 flex items-center justify-between">
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
 
-              <span className="text-2xl">
-                {categoryIcons[item.name] ?? "📦"}
-              </span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-2xl">
+                {categoryIcons[item.name] ?? "💳"}
+              </div>
 
               <div>
-
-                <p className="font-semibold">
+                <p className="font-semibold text-slate-900">
                   {item.name}
                 </p>
 
                 <p className="text-sm text-slate-500">
                   ${item.value.toLocaleString()}
                 </p>
-
               </div>
 
             </div>
 
-            <span className="font-bold text-red-500">
+            <span className="text-sm font-bold text-red-500">
               {item.percent.toFixed(0)}%
             </span>
 
@@ -95,11 +106,8 @@ export default function ExpenseBreakdownChart() {
             />
 
           </div>
-
         </div>
-
       ))}
-
     </div>
   );
 }
