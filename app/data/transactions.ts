@@ -1,13 +1,26 @@
+import { getGoals } from "./goals";
 import { getPortfolioSummary } from "./investments";
-
 export type Transaction = {
   id: number;
 
-  type: "Income" | "Expense" | "Investment";
+  type:
+    | "Income"
+    | "Expense"
+    | "Investment"
+    | "Transfer";
 
   source: string;
 
+  // NEW
+  destination?: string;
+
   category?: string;
+
+  // NEW
+  relatedGoalId?: string;
+
+  // NEW
+  relatedInvestmentId?: string;
 
   amount: number;
 
@@ -87,29 +100,35 @@ function calculateMonthlyTotals() {
     getCurrentMonthTransactions();
 
   let income = 0;
-  let expense = 0;
-  let investmentSpent = 0;
+let expense = 0;
+let investmentSpent = 0;
+let transferSpent = 0;
 
   transactions.forEach((transaction) => {
-    switch (transaction.type) {
-      case "Income":
-        income += transaction.amount;
-        break;
+  switch (transaction.type) {
+    case "Income":
+      income += transaction.amount;
+      break;
 
-      case "Expense":
-        expense += transaction.amount;
-        break;
+    case "Expense":
+      expense += transaction.amount;
+      break;
 
-      case "Investment":
-        investmentSpent += transaction.amount;
-        break;
-    }
-  });
+    case "Investment":
+      investmentSpent += transaction.amount;
+      break;
+
+    case "Transfer":
+      transferSpent += transaction.amount;
+      break;
+  }
+});
 
   return {
     income,
     expense,
     investmentSpent,
+    transferSpent,
   };
 }
 
@@ -122,40 +141,37 @@ export function getSummary() {
     income,
     expense,
     investmentSpent,
+    transferSpent,
   } = calculateMonthlyTotals();
 
   // Read investments directly from transactions
-  const investments = getTransactions().filter(
-    (t) => t.type === "Investment"
-  );
+  const portfolio = getPortfolioSummary();
+const goals = getGoals();
 
-  const invested = investments.reduce(
-    (sum, t) => sum + t.amount,
-    0
-  );
+const goalBalance = goals.reduce(
+  (sum, goal) => sum + goal.savedAmount,
+  0
+);
 
-  const portfolio = {
-    invested,
-    current: invested, // Later we'll replace this with live market value
-    profit: 0,
-    returnPercentage: 0,
-    totalAssets: investments.length,
-  };
 
-  const availableCash = income - expense;
+ const availableCash =
+  income - expense;
 
   return {
     income,
     expense,
     investmentSpent,
-
+    transferSpent,
     availableCash,
 
     investment: portfolio.current,
 
-    netWorth:
-      availableCash +
-      portfolio.current,
+    goalBalance,
+
+netWorth:
+  availableCash +
+  portfolio.current +
+  goalBalance,
   };
 }
 
@@ -168,31 +184,16 @@ export function getMonthlyReport() {
     getCurrentMonthTransactions();
 
   const {
-    income,
-    expense,
-    investmentSpent,
-  } = calculateMonthlyTotals();
+  income,
+  expense,
+  investmentSpent,
+  transferSpent,
+} = calculateMonthlyTotals();
 
   // Read investments directly from transactions
-  const investments = getTransactions().filter(
-    (t) => t.type === "Investment"
-  );
-
-  const invested = investments.reduce(
-    (sum, t) => sum + t.amount,
-    0
-  );
-
-  const portfolio = {
-    invested,
-    current: invested,
-    profit: 0,
-    returnPercentage: 0,
-    totalAssets: investments.length,
-  };
-
+  const portfolio = getPortfolioSummary();
   const availableCash =
-    income - expense;
+  income - expense;
 
   const savingsRate =
     income === 0
@@ -217,6 +218,8 @@ export function getMonthlyReport() {
     expense,
 
     investmentSpent,
+
+    transferSpent,
 
     availableCash,
 
