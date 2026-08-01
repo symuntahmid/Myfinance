@@ -21,6 +21,7 @@ import WelcomeBanner from "../../components/WelcomeBanner";
 
 import FadeIn from "../../components/FadeIn";
 import RecentTransactions from "../../components/RecentTransactions";
+import GoalProgressCard from "../../components/GoalProgressCard";
 
 import { getPortfolioSummary } from "@/app/data/investments";
 
@@ -102,12 +103,16 @@ export default function Dashboard() {
         </div>
 
         <FadeIn delay={0.2}>
-          <DailyJourneyCard />
-        </FadeIn>
+  <DailyJourneyCard />
+</FadeIn>
 
-        <FadeIn delay={0.4}>
-          <SummaryCards />
-        </FadeIn>
+<FadeIn delay={0.3}>
+  <GoalProgressCard />
+</FadeIn>
+
+<FadeIn delay={0.4}>
+  <SummaryCards />
+</FadeIn>
 
         {portfolio.totalAssets > 0 && (
           <FadeIn delay={0.45}>
