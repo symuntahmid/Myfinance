@@ -4,6 +4,10 @@ import {
   Investment,
   InvestmentType,
 } from "@/app/data/investments";
+import {
+  addTransaction,
+  Transaction,
+} from "@/app/data/transactions";
 import { useState } from "react";
 import { Calculator, X } from "lucide-react";
 
@@ -74,6 +78,29 @@ function parseAmount(value: string): number {
   return Number(value.replace(/,/g, "").trim());
 }
 
+// Date.now() alone can collide when two records are created in the same
+// millisecond (e.g. an investment plus its linked deduction expense).
+function generateId(): string {
+  return (
+    Date.now().toString() +
+    Math.floor(Math.random() * 1_000_000).toString()
+  );
+}
+
+/* -------------------------------- */
+/* Investment Funding Options       */
+/* -------------------------------- */
+
+const investmentFundingOptions: {
+  value: "cash" | "bank" | "card";
+  label: string;
+  source: string;
+}[] = [
+  { value: "cash", label: "💵 Available Cash", source: "💵 Cash" },
+  { value: "bank", label: "🏦 Bank Account", source: "🏦 Bank" },
+  { value: "card", label: "💳 Credit Card", source: "💳 Card" },
+];
+
 export default function AddInvestmentModal({
   open,
   onClose,
@@ -92,6 +119,12 @@ export default function AddInvestmentModal({
   const [investedAmount, setInvestedAmount] = useState("");
   const [currentValue, setCurrentValue] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Investment Funding
+  const [deductFromBalance, setDeductFromBalance] = useState(false);
+  const [investmentFunding, setInvestmentFunding] = useState<
+    "cash" | "bank" | "card"
+  >("cash");
 
   // Calculator — shared between the two amount fields
 
@@ -176,6 +209,8 @@ export default function AddInvestmentModal({
     setInvestedAmount("");
     setCurrentValue("");
     setNotes("");
+    setDeductFromBalance(false);
+    setInvestmentFunding("cash");
     closeCalculator();
   }
 
@@ -191,7 +226,7 @@ export default function AddInvestmentModal({
       id:
         typeof crypto !== "undefined" && "randomUUID" in crypto
           ? crypto.randomUUID()
-          : Date.now().toString(),
+          : generateId(),
       name,
       type,
       purchaseDate,
@@ -201,6 +236,32 @@ export default function AddInvestmentModal({
     };
 
     addInvestment(investment);
+
+    // If this investment is funded from tracked money, also log a linked
+    // Expense so the cash/bank/card balance reflects the outflow.
+    if (deductFromBalance) {
+      const funding = investmentFundingOptions.find(
+        (option) => option.value === investmentFunding
+      );
+
+      const expense: Transaction = {
+        id: Date.now() + Math.floor(Math.random() * 100000),
+        type: "Expense",
+        source: funding?.source ?? "💵 Cash",
+        // A dedicated category (rather than reusing an investment-style
+        // label) keeps analytics clean — e.g. "35% of income went to
+        // investment funding" instead of blending it into general spend.
+        category: "📈 Investment Funding",
+        amount: parsedInvested,
+        date: purchaseDate,
+        note: `Investment: ${name}`,
+        autoRepeat: false,
+        reminder: false,
+      };
+
+      addTransaction(expense);
+    }
+
     resetForm();
     onClose();
   }
@@ -380,6 +441,61 @@ export default function AddInvestmentModal({
                   <p className="mt-2 text-sm text-red-500">
                     Enter a value of 0 or more.
                   </p>
+                )}
+              </div>
+
+              {/* Investment Funding */}
+
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 md:col-span-2">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="font-semibold">Investment Funding</h3>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                      Where is this investment money coming from?
+                    </p>
+                  </div>
+
+                  <label className="flex shrink-0 items-center gap-2 text-sm font-medium">
+                    <input
+                      type="checkbox"
+                      checked={deductFromBalance}
+                      onChange={(e) =>
+                        setDeductFromBalance(e.target.checked)
+                      }
+                      className="h-4 w-4 rounded accent-cyan-600"
+                    />
+                    Deduct from my balance
+                  </label>
+                </div>
+
+                {deductFromBalance ? (
+                  <div className="mt-5 grid gap-3 md:grid-cols-3">
+                    {investmentFundingOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setInvestmentFunding(option.value)}
+                        className={`rounded-xl border p-3 text-left transition ${
+                          investmentFunding === option.value
+                            ? "border-cyan-500 bg-cyan-50"
+                            : "border-slate-200 bg-white hover:bg-slate-50"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-5 rounded-xl border border-green-200 bg-green-50 p-4">
+                    <p className="font-medium text-green-700">
+                      ➕ External Funding
+                    </p>
+
+                    <p className="text-sm text-green-600">
+                      This investment won&apos;t reduce your balance.
+                    </p>
+                  </div>
                 )}
               </div>
 
