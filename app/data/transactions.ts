@@ -124,19 +124,29 @@ export function getSummary() {
     investmentSpent,
   } = calculateMonthlyTotals();
 
-  const portfolio =
-    getPortfolioSummary();
+  // Read investments directly from transactions
+  const investments = getTransactions().filter(
+    (t) => t.type === "Investment"
+  );
 
-  const availableCash =
-    income -
-    expense -
-    investmentSpent;
+  const invested = investments.reduce(
+    (sum, t) => sum + t.amount,
+    0
+  );
+
+  const portfolio = {
+    invested,
+    current: invested, // Later we'll replace this with live market value
+    profit: 0,
+    returnPercentage: 0,
+    totalAssets: investments.length,
+  };
+
+  const availableCash = income - expense;
 
   return {
     income,
-
     expense,
-
     investmentSpent,
 
     availableCash,
@@ -163,13 +173,26 @@ export function getMonthlyReport() {
     investmentSpent,
   } = calculateMonthlyTotals();
 
-  const portfolio =
-    getPortfolioSummary();
+  // Read investments directly from transactions
+  const investments = getTransactions().filter(
+    (t) => t.type === "Investment"
+  );
+
+  const invested = investments.reduce(
+    (sum, t) => sum + t.amount,
+    0
+  );
+
+  const portfolio = {
+    invested,
+    current: invested,
+    profit: 0,
+    returnPercentage: 0,
+    totalAssets: investments.length,
+  };
 
   const availableCash =
-    income -
-    expense -
-    investmentSpent;
+    income - expense;
 
   const savingsRate =
     income === 0
@@ -197,13 +220,11 @@ export function getMonthlyReport() {
 
     availableCash,
 
-    savings:
-      availableCash,
+    savings: availableCash,
 
     savingsRate,
 
-    investment:
-      portfolio.current,
+    investment: portfolio.current,
 
     netWorth:
       availableCash +

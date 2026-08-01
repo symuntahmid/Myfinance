@@ -1,5 +1,5 @@
 "use client";
-
+import { addInvestment } from "@/app/data/investments";
 import { useMemo, useState, useEffect } from "react";
 import {
   X,
@@ -100,6 +100,20 @@ const reminderTypeOptions: { value: string; label: string }[] = [
 ];
 
 /* -------------------------------- */
+/* Investment Funding Options       */
+/* -------------------------------- */
+
+const investmentFundingOptions: {
+  value: "cash" | "bank" | "card";
+  label: string;
+  source: string;
+}[] = [
+  { value: "cash", label: "💵 Available Cash", source: "💵 Cash" },
+  { value: "bank", label: "🏦 Bank Account", source: "🏦 Bank" },
+  { value: "card", label: "💳 Credit Card", source: "💳 Card" },
+];
+
+/* -------------------------------- */
 /* Calculator                       */
 /* -------------------------------- */
 
@@ -138,13 +152,18 @@ function evaluateExpression(expr: string): number | null {
   }
 }
 
+// Date.now() alone can collide when two transactions are created in the
+// same millisecond (e.g. an investment plus its linked deduction expense).
+function generateId(): number {
+  return Date.now() + Math.floor(Math.random() * 1_000_000);
+}
+
 export default function TransactionForm({
   open,
   type,
   onClose,
   editingTransaction,
 }: TransactionFormProps) {
-
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
@@ -156,17 +175,21 @@ export default function TransactionForm({
   const [note, setNote] = useState("");
 
   const [autoRepeat, setAutoRepeat] = useState(false);
-  const [repeatFrequency, setRepeatFrequency] =
-  useState<
+  const [repeatFrequency, setRepeatFrequency] = useState<
     "daily" | "weekly" | "biweekly" | "monthly" | "yearly"
   >("monthly");
 
   const [reminder, setReminder] = useState(false);
-  const [reminderType, setReminderType] =
-  useState<
+  const [reminderType, setReminderType] = useState<
     "due" | "1day" | "3days" | "1week" | "custom"
   >("due");
   const [reminderDate, setReminderDate] = useState("");
+
+  // Investment Funding (only relevant when type === "Investment")
+  const [deductFromBalance, setDeductFromBalance] = useState(false);
+  const [investmentFunding, setInvestmentFunding] = useState<
+    "cash" | "bank" | "card"
+  >("cash");
 
   const [showMore, setShowMore] = useState(false);
 
@@ -174,40 +197,21 @@ export default function TransactionForm({
   const [calcExpr, setCalcExpr] = useState("");
 
   useEffect(() => {
-  if (!editingTransaction) return;
+    if (!editingTransaction) return;
 
-  setAmount(String(editingTransaction.amount));
+    setAmount(String(editingTransaction.amount));
+    setSource(editingTransaction.source);
+    setCategory(editingTransaction.category ?? "");
+    setDate(editingTransaction.date);
+    setNote(editingTransaction.note ?? "");
 
-  setSource(editingTransaction.source);
+    setAutoRepeat(editingTransaction.autoRepeat ?? false);
+    setRepeatFrequency(editingTransaction.repeatFrequency ?? "monthly");
 
-  setCategory(editingTransaction.category ?? "");
-
-  setDate(editingTransaction.date);
-
-  setNote(editingTransaction.note ?? "");
-
-  setAutoRepeat(
-    editingTransaction.autoRepeat ?? false
-  );
-
-  setRepeatFrequency(
-    editingTransaction.repeatFrequency ??
-      "monthly"
-  );
-
-  setReminder(
-    editingTransaction.reminder ?? false
-  );
-
-  setReminderType(
-    editingTransaction.reminderType ??
-      "due"
-  );
-
-  setReminderDate(
-    editingTransaction.reminderDate ?? ""
-  );
-}, [editingTransaction]);
+    setReminder(editingTransaction.reminder ?? false);
+    setReminderType(editingTransaction.reminderType ?? "due");
+    setReminderDate(editingTransaction.reminderDate ?? "");
+  }, [editingTransaction]);
 
   const categories = useMemo(() => {
     if (type === "Income") return incomeCategories;
@@ -229,8 +233,7 @@ export default function TransactionForm({
   const isFormValid =
     isAmountValid && category.trim() !== "" && isReminderValid;
 
-  const resolvedSource =
-    source === "✍️ Other" ? customSource : source;
+  const resolvedSource = source === "✍️ Other" ? customSource : source;
 
   const repeatFrequencyLabel =
     repeatFrequencyOptions.find((o) => o.value === repeatFrequency)?.label ??
@@ -239,6 +242,11 @@ export default function TransactionForm({
   const reminderTypeLabel =
     reminderTypeOptions.find((o) => o.value === reminderType)?.label ??
     "On due date";
+
+  // Investment Funding only applies when creating a brand-new Investment
+  // transaction. Showing it in edit mode would risk creating a duplicate
+  // deduction expense every time the transaction is re-saved.
+  const showInvestmentFunding = type === "Investment" && !editingTransaction;
 
   function resetForm() {
     if (editingTransaction) return;
@@ -256,6 +264,9 @@ export default function TransactionForm({
     setReminderType("due");
     setReminderDate("");
 
+    setDeductFromBalance(false);
+    setInvestmentFunding("cash");
+
     setShowMore(false);
     setCalcOpen(false);
     setCalcExpr("");
@@ -266,57 +277,76 @@ export default function TransactionForm({
     onClose();
   }
 
-function saveTransaction() {
-  if (!isFormValid) return;
+  function saveTransaction() {
+    if (!isFormValid) return;
 
-  const transaction: Transaction = {
-    id: editingTransaction
-      ? editingTransaction.id
-      : Date.now(),
+    const transaction: Transaction = {
+      id: editingTransaction ? editingTransaction.id : generateId(),
 
-    type,
+      type,
+      amount: parsedAmount,
+      source: resolvedSource,
+      category,
+      note,
+      date,
 
-    amount: parsedAmount,
+      // Auto Repeat
+      autoRepeat,
+      repeatFrequency: autoRepeat ? repeatFrequency : undefined,
 
-    source: resolvedSource,
+      // Reminder
+      reminder,
+      reminderType: reminder ? reminderType : undefined,
+      reminderDate:
+        reminder && reminderType === "custom" ? reminderDate : undefined,
+    };
 
-    category,
+    if (editingTransaction) {
+      updateTransaction(transaction);
+    } else {
+      addTransaction(transaction);
+      if (type === "Investment") {
+  addInvestment({
+    id: crypto.randomUUID(),
 
-    note,
+    name: category,
 
-    date,
+    type: category.replace(/^.*?\s/, "") as any,
 
-    // Auto Repeat
-    autoRepeat,
+    investedAmount: parsedAmount,
 
-    repeatFrequency: autoRepeat
-      ? repeatFrequency
-      : undefined,
+    currentValue: parsedAmount,
 
-    // Reminder
-    reminder,
+    purchaseDate: date,
 
-    reminderType: reminder
-      ? reminderType
-      : undefined,
-
-    reminderDate:
-      reminder &&
-      reminderType === "custom"
-        ? reminderDate
-        : undefined,
-  };
-
-  if (editingTransaction) {
-    updateTransaction(transaction);
-  } else {
-    addTransaction(transaction);
-  }
-
-  resetForm();
-
-  onClose();
+    notes: note,
+  });
 }
+
+      // If this new investment is funded from tracked money, also log a
+      // linked Expense so the cash/bank/card balance reflects the outflow.
+      if (showInvestmentFunding && deductFromBalance) {
+        const fundingOption = investmentFundingOptions.find(
+          (o) => o.value === investmentFunding
+        );
+
+        addTransaction({
+          id: generateId(),
+          type: "Expense",
+          source: fundingOption?.source ?? "💵 Cash",
+          category: "📈 Investment",
+          amount: parsedAmount,
+          date,
+          note: `Investment: ${category}`,
+          autoRepeat: false,
+          reminder: false,
+        });
+      }
+    }
+
+    resetForm();
+    onClose();
+  }
 
   function handleCalcPress(key: string) {
     if (key === "C") {
@@ -359,7 +389,7 @@ function saveTransaction() {
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6 pb-2">
             <h2 className="text-xl font-bold text-slate-900">
-              Add {type}
+              {editingTransaction ? "Edit Transaction" : `Add ${type}`}
             </h2>
 
             <button
@@ -571,6 +601,63 @@ function saveTransaction() {
               )}
             </div>
 
+            {/* Investment Funding */}
+            {showInvestmentFunding && (
+              <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-800">
+                      Investment Funding
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Choose where this investment money comes from.
+                    </p>
+                  </div>
+
+                  <label className="flex shrink-0 items-center gap-2 text-xs font-medium text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={deductFromBalance}
+                      onChange={(e) =>
+                        setDeductFromBalance(e.target.checked)
+                      }
+                      className="h-4 w-4 rounded accent-cyan-600"
+                    />
+                    Deduct from my balance
+                  </label>
+                </div>
+
+                {deductFromBalance ? (
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {investmentFundingOptions.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setInvestmentFunding(opt.value)}
+                        className={`rounded-xl border p-3 text-left text-sm transition ${
+                          investmentFunding === opt.value
+                            ? "border-cyan-500 bg-cyan-50 text-cyan-800"
+                            : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+                    <p className="text-sm font-medium text-emerald-700">
+                      ➕ External Funding
+                    </p>
+                    <p className="mt-1 text-xs text-emerald-600">
+                      This investment won&apos;t reduce your available
+                      balance.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* More Options */}
             <div className="rounded-2xl border border-slate-200 bg-slate-50">
               <button
@@ -647,15 +734,15 @@ function saveTransaction() {
                         <select
                           value={repeatFrequency}
                           onChange={(e) =>
-  setRepeatFrequency(
-    e.target.value as
-      | "daily"
-      | "weekly"
-      | "biweekly"
-      | "monthly"
-      | "yearly"
-  )
-}
+                            setRepeatFrequency(
+                              e.target.value as
+                                | "daily"
+                                | "weekly"
+                                | "biweekly"
+                                | "monthly"
+                                | "yearly"
+                            )
+                          }
                           className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                         >
                           {repeatFrequencyOptions.map((opt) => (
@@ -711,15 +798,15 @@ function saveTransaction() {
                           <select
                             value={reminderType}
                             onChange={(e) =>
-  setReminderType(
-    e.target.value as
-      | "due"
-      | "1day"
-      | "3days"
-      | "1week"
-      | "custom"
-  )
-}
+                              setReminderType(
+                                e.target.value as
+                                  | "due"
+                                  | "1day"
+                                  | "3days"
+                                  | "1week"
+                                  | "custom"
+                              )
+                            }
                             className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                           >
                             {reminderTypeOptions.map((opt) => (
@@ -767,7 +854,7 @@ function saveTransaction() {
               disabled={!isFormValid}
               className={`w-full rounded-full py-3.5 text-base font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${accentGradient}`}
             >
-              Save {type}
+              {editingTransaction ? "Update Transaction" : "Save Transaction"}
             </button>
           </div>
         </div>
