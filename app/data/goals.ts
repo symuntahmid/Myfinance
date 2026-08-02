@@ -58,3 +58,39 @@ export function deleteGoal(id: string) {
 
   saveGoals(goals);
 }
+
+export function addMoneyToGoal(
+  goalId: string,
+  amount: number
+) {
+  const goals = getGoals();
+
+  const updatedGoals = goals.map((goal) => {
+    if (goal.id !== goalId) return goal;
+
+    return {
+      ...goal,
+      savedAmount: goal.savedAmount + amount,
+    };
+  });
+
+  saveGoals(updatedGoals);
+}
+export function withdrawMoneyFromGoal(
+  id: string,
+  amount: number
+) {
+  const goals = getGoals().map((goal) => {
+    if (goal.id !== id) return goal;
+
+    return {
+      ...goal,
+      savedAmount: Math.max(
+        goal.savedAmount - amount,
+        0
+      ),
+    };
+  });
+
+  saveGoals(goals);
+}
