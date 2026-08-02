@@ -1,4 +1,4 @@
-import { getGoals } from "./goals";
+
 import { getPortfolioSummary } from "./investments";
 export type Transaction = {
   id: number;
@@ -146,33 +146,30 @@ export function getSummary() {
 
   // Read investments directly from transactions
   const portfolio = getPortfolioSummary();
-const goals = getGoals();
-
-const goalBalance = goals.reduce(
-  (sum, goal) => sum + goal.savedAmount,
-  0
-);
 
 
- const availableCash =
-  income - expense;
 
-  return {
-    income,
-    expense,
-    investmentSpent,
-    transferSpent,
-    availableCash,
+ const spending =
+  expense +
+  investmentSpent +
+  transferSpent;
 
-    investment: portfolio.current,
+const availableCash =
+  income - spending;
 
-    goalBalance,
+ return {
+  income,
+  expense,
+  investmentSpent,
+  transferSpent,
+  availableCash,
 
-netWorth:
-  availableCash +
-  portfolio.current +
-  goalBalance,
-  };
+  investment: portfolio.current,
+
+  netWorth:
+    availableCash +
+    portfolio.current,
+};
 }
 
 /* ==========================================
@@ -193,7 +190,7 @@ export function getMonthlyReport() {
   // Read investments directly from transactions
   const portfolio = getPortfolioSummary();
   const availableCash =
-  income - expense;
+  income - expense - investmentSpent - transferSpent;
 
   const savingsRate =
     income === 0
@@ -201,12 +198,13 @@ export function getMonthlyReport() {
       : (availableCash / income) * 100;
 
   const largestExpense =
-    transactions
-      .filter(
-        (t) =>
-          t.type === "Expense" ||
-          t.type === "Investment"
-      )
+  transactions
+    .filter(
+      (t) =>
+        t.type === "Expense" ||
+        t.type === "Investment" ||
+        t.type === "Transfer"
+    )
       .sort(
         (a, b) =>
           b.amount - a.amount
@@ -302,8 +300,8 @@ export function addTransaction(
   saveTransactions(transactions);
 
   window.dispatchEvent(
-    new Event("transactionsUpdated")
-  );
+  new CustomEvent("transactionsUpdated")
+);
 }
 
 export function updateTransaction(
@@ -323,8 +321,8 @@ export function updateTransaction(
   saveTransactions(updated);
 
   window.dispatchEvent(
-    new Event("transactionsUpdated")
-  );
+  new CustomEvent("transactionsUpdated")
+);
 }
 
 export function deleteTransaction(
@@ -339,14 +337,14 @@ export function deleteTransaction(
   saveTransactions(transactions);
 
   window.dispatchEvent(
-    new Event("transactionsUpdated")
-  );
+  new CustomEvent("transactionsUpdated")
+);
 }
 
 export function clearTransactions() {
   saveTransactions([]);
 
   window.dispatchEvent(
-    new Event("transactionsUpdated")
-  );
+  new CustomEvent("transactionsUpdated")
+);
 }
