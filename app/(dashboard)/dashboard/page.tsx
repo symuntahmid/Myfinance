@@ -21,7 +21,7 @@ import WelcomeBanner from "../../components/WelcomeBanner";
 
 import FadeIn from "../../components/FadeIn";
 import RecentTransactions from "../../components/RecentTransactions";
-
+import GoalProgressCard from "../../components/GoalProgressCard";
 
 import { getPortfolioSummary } from "@/app/data/investments";
 
@@ -91,24 +91,37 @@ export default function Dashboard() {
 
       {/* Main */}
 
-      <div className="space-y-6">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <FadeIn delay={0}>
-            <LessonCard />
-          </FadeIn>
+<div className="space-y-6">
 
-          <FadeIn delay={0.1}>
-            <ProfileCard compact />
-          </FadeIn>
-        </div>
+  {/* Top Cards */}
 
-        <FadeIn delay={0.2}>
-  <DailyJourneyCard />
-</FadeIn>
+  <div className="grid gap-6 lg:grid-cols-2">
+    <FadeIn delay={0}>
+      <LessonCard />
+    </FadeIn>
 
-<FadeIn delay={0.4}>
-  <SummaryCards />
-</FadeIn>
+    <FadeIn delay={0.1}>
+      <ProfileCard compact />
+    </FadeIn>
+  </div>
+
+  {/* Daily Journey */}
+
+  <FadeIn delay={0.2}>
+    <DailyJourneyCard />
+  </FadeIn>
+
+  {/* Money Summary */}
+
+  <FadeIn delay={0.4}>
+    <SummaryCards />
+  </FadeIn>
+
+  {/* Goal Progress */}
+
+  <FadeIn delay={0.5}>
+    <GoalProgressCard />
+  </FadeIn>
 
         {portfolio.totalAssets > 0 && (
           <FadeIn delay={0.45}>
