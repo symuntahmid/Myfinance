@@ -10,29 +10,58 @@ type Props = {
   onClose: () => void;
 };
 
+const emojis = [
+  "🎯",
+  "✈️",
+  "🏠",
+  "🚗",
+  "💻",
+  "🎓",
+  "💍",
+  "📱",
+  "🏍️",
+  "🛒",
+  "💰",
+  "❤️",
+];
+
 export default function AddGoalModal({
   open,
   onClose,
 }: Props) {
   const [title, setTitle] = useState("");
   const [emoji, setEmoji] = useState("🎯");
-  const [targetAmount, setTargetAmount] = useState("");
-  const [targetDate, setTargetDate] = useState("");
+  const [targetAmount, setTargetAmount] =
+    useState("");
+  const [targetDate, setTargetDate] =
+    useState("");
 
   if (!open) return null;
 
   function handleCreateGoal() {
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      alert("Please enter a goal name.");
+      return;
+    }
 
-    if (!targetAmount) return;
+    if (!targetAmount || Number(targetAmount) <= 0) {
+      alert("Please enter a valid target amount.");
+      return;
+    }
 
     addGoal({
       id: Date.now().toString(),
+
       title: title.trim(),
+
       emoji,
+
       targetAmount: Number(targetAmount),
+
       savedAmount: 0,
+
       targetDate,
+
       createdAt: new Date().toISOString(),
     });
 
@@ -46,22 +75,16 @@ export default function AddGoalModal({
 
   return (
     <>
-      {/* Backdrop */}
-
       <div
         className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-
-      {/* Modal */}
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
         <div
           onClick={(e) => e.stopPropagation()}
           className="w-full max-w-xl rounded-[32px] bg-white shadow-2xl"
         >
-          {/* Header */}
-
           <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
             <div className="flex items-center gap-4">
               <div className="rounded-2xl bg-cyan-100 p-3">
@@ -87,8 +110,6 @@ export default function AddGoalModal({
             </button>
           </div>
 
-          {/* Body */}
-
           <div className="space-y-6 p-8">
             <div>
               <label className="mb-2 block text-sm font-semibold">
@@ -97,23 +118,35 @@ export default function AddGoalModal({
 
               <input
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) =>
+                  setTitle(e.target.value)
+                }
                 placeholder="Japan Trip"
                 className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-semibold">
-                Emoji
+              <label className="mb-3 block text-sm font-semibold">
+                Choose Emoji
               </label>
 
-              <input
-                value={emoji}
-                onChange={(e) => setEmoji(e.target.value)}
-                placeholder="🎯"
-                className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
-              />
+              <div className="grid grid-cols-6 gap-3">
+                {emojis.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setEmoji(item)}
+                    className={`rounded-2xl border p-3 text-3xl transition ${
+                      emoji === item
+                        ? "border-cyan-500 bg-cyan-100"
+                        : "border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -147,8 +180,6 @@ export default function AddGoalModal({
               />
             </div>
           </div>
-
-          {/* Footer */}
 
           <div className="flex gap-4 px-8 pb-8">
             <button

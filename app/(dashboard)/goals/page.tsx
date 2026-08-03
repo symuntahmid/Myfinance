@@ -1,7 +1,6 @@
 "use client";
 import AddMoneyModal from "@/app/components/AddMoneyModal";
 import EditGoalModal from "@/app/components/EditGoalModal";
-import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -388,14 +387,7 @@ export default function GoalsPage() {
           setMoneyGoal(null);
         }}
       />
-      <WithdrawMoneyModal
-        open={withdrawOpen}
-        goal={withdrawGoal}
-        onClose={() => {
-          setWithdrawOpen(false);
-          setWithdrawGoal(null);
-        }}
-      />
+      
     </>
   );
 }
