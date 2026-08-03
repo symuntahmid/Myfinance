@@ -1,6 +1,7 @@
 "use client";
 import AddMoneyModal from "@/app/components/AddMoneyModal";
 import EditGoalModal from "@/app/components/EditGoalModal";
+import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -35,8 +36,8 @@ export default function GoalsPage() {
   const [addMoneyOpen, setAddMoneyOpen] = useState(false);
   const [moneyGoal, setMoneyGoal] = useState<Goal | null>(null);
 
-  const [withdrawGoal, setWithdrawGoal] = useState<Goal | null>(null);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawGoal, setWithdrawGoal] = useState<Goal | null>(null);
 
   useEffect(() => {
     function refreshGoals() {
@@ -190,7 +191,7 @@ export default function GoalsPage() {
               return (
                 <div
                   key={goal.id}
-                 className="relative overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#06b6d4_0%,#0ea5e9_45%,#2563eb_78%,#4f46e5_100%)] p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
+                  className="relative overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#06b6d4_0%,#0ea5e9_45%,#2563eb_78%,#4f46e5_100%)] p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
                 >
                   {/* Lighting effect */}
                   <div className="pointer-events-none absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
@@ -387,7 +388,14 @@ export default function GoalsPage() {
           setMoneyGoal(null);
         }}
       />
-      
+      <WithdrawMoneyModal
+        open={withdrawOpen}
+        goal={withdrawGoal}
+        onClose={() => {
+          setWithdrawOpen(false);
+          setWithdrawGoal(null);
+        }}
+      />
     </>
   );
 }
