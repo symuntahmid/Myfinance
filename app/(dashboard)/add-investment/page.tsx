@@ -9,7 +9,11 @@ export default function AddInvestmentPage() {
         Record a new investment.
       </p>
 
-      <TransactionForm type="Investment" />
+      <TransactionForm
+  open={true}
+  onClose={() => {}}
+  type="Investment"
+/>
     </>
   );
 }

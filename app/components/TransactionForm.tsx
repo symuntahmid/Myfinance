@@ -325,23 +325,7 @@ export default function TransactionForm({
 
       // If this new investment is funded from tracked money, also log a
       // linked Expense so the cash/bank/card balance reflects the outflow.
-      if (showInvestmentFunding && deductFromBalance) {
-        const fundingOption = investmentFundingOptions.find(
-          (o) => o.value === investmentFunding
-        );
-
-        addTransaction({
-          id: generateId(),
-          type: "Expense",
-          source: fundingOption?.source ?? "💵 Cash",
-          category: "📈 Investment",
-          amount: parsedAmount,
-          date,
-          note: `Investment: ${category}`,
-          autoRepeat: false,
-          reminder: false,
-        });
-      }
+      
     }
 
     resetForm();
