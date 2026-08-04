@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 
 import AddInvestmentModal from "@/app/components/AddInvestmentModal";
 
@@ -9,6 +13,7 @@ import {
   getInvestments,
   getPortfolioSummary,
   clearInvestments,
+  deleteInvestment,
   Investment,
 } from "@/app/data/investments";
 
@@ -21,6 +26,16 @@ export default function InvestmentsPage() {
   // NEW
   const [editingInvestment, setEditingInvestment] =
     useState<Investment | null>(null);
+
+  const handleDelete = (id: string) => {
+  if (
+    !confirm("Delete this investment?")
+  )
+    return;
+
+  deleteInvestment(id);
+};
+    
 
   useEffect(() => {
     function refreshPortfolio() {
@@ -191,67 +206,95 @@ export default function InvestmentsPage() {
                 <th className="py-4 text-right">
                   Return
                 </th>
+                <th className="py-4 text-right">
+  Actions
+</th>
               </tr>
             </thead>
 
             <tbody>
-              {investments.map((investment) => {
-                const profit =
-                  investment.currentValue -
-                  investment.investedAmount;
+  {investments.map((investment) => {
+    const profit =
+      investment.currentValue -
+      investment.investedAmount;
 
-                const percentage =
-                  investment.investedAmount === 0
-                    ? 0
-                    : (profit /
-                        investment.investedAmount) *
-                      100;
+    const percentage =
+      investment.investedAmount === 0
+        ? 0
+        : (profit /
+            investment.investedAmount) *
+          100;
 
-                return (
-                  <tr
-                    key={investment.id}
-                    className="border-b border-slate-100 last:border-0"
-                  >
-                    <td className="py-5 font-semibold">
-                      {investment.name}
-                    </td>
+    return (
+      <tr
+        key={investment.id}
+        className="border-b border-slate-100 last:border-0"
+      >
+        <td className="py-5 font-semibold">
+          {investment.name}
+        </td>
 
-                    <td>{investment.type}</td>
+        <td>{investment.type}</td>
 
-                    <td className="text-right">
-                      $
-                      {investment.investedAmount.toLocaleString()}
-                    </td>
+        <td className="text-right">
+          $
+          {investment.investedAmount.toLocaleString()}
+        </td>
 
-                    <td className="text-right">
-                      $
-                      {investment.currentValue.toLocaleString()}
-                    </td>
+        <td className="text-right">
+          $
+          {investment.currentValue.toLocaleString()}
+        </td>
 
-                    <td
-                      className={`text-right font-semibold ${
-                        profit >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {profit >= 0 ? "+" : ""}
-                      ${profit.toLocaleString()}
-                    </td>
+        <td
+          className={`text-right font-semibold ${
+            profit >= 0
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {profit >= 0 ? "+" : ""}
+          ${profit.toLocaleString()}
+        </td>
 
-                    <td
-                      className={`text-right font-semibold ${
-                        percentage >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {percentage.toFixed(2)}%
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+        <td
+          className={`text-right font-semibold ${
+            percentage >= 0
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {percentage.toFixed(2)}%
+        </td>
+
+        {/* Actions */}
+        <td className="py-5">
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() =>
+                setEditingInvestment(investment)
+              }
+              className="rounded-xl border border-slate-200 p-2 transition hover:bg-slate-100"
+              title="Edit Investment"
+            >
+              <Pencil size={16} />
+            </button>
+
+            <button
+              onClick={() =>
+                handleDelete(investment.id)
+              }
+              className="rounded-xl border border-red-200 p-2 text-red-600 transition hover:bg-red-50"
+              title="Delete Investment"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
           </table>
         )}
       </div>
