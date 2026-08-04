@@ -1,3 +1,4 @@
+import { addPortfolioSnapshot } from "./portfolioHistory";
 export type InvestmentType =
   | "Stocks"
   | "Crypto"
@@ -55,6 +56,15 @@ export function saveInvestments(
     STORAGE_KEY,
     JSON.stringify(investments)
   );
+
+  // Save today's portfolio value
+  const currentValue = investments.reduce(
+    (sum, investment) =>
+      sum + investment.currentValue,
+    0
+  );
+
+  addPortfolioSnapshot(currentValue);
 
   window.dispatchEvent(
     new Event("investmentsUpdated")
