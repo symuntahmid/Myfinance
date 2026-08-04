@@ -60,12 +60,13 @@ export default function PortfolioGrowthChart() {
           <LineChart
             data={data}
             margin={{
-              top: 10,
+              top: 20,
               right: 20,
-              left: 0,
+              left: 10,
               bottom: 10,
             }}
           >
+            {/* Gradient */}
             <defs>
               <linearGradient
                 id="portfolioGradient"
@@ -75,42 +76,50 @@ export default function PortfolioGrowthChart() {
                 y2="1"
               >
                 <stop
-                  offset="0%"
+                  offset="5%"
                   stopColor="#06b6d4"
                   stopOpacity={0.35}
                 />
                 <stop
-                  offset="100%"
+                  offset="95%"
                   stopColor="#06b6d4"
                   stopOpacity={0}
                 />
               </linearGradient>
             </defs>
 
+            {/* Softer Grid */}
             <CartesianGrid
-              stroke="#E5E7EB"
+              stroke="#F1F5F9"
               strokeDasharray="4 4"
+              vertical={false}
             />
 
+            {/* X Axis */}
             <XAxis
               dataKey="day"
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "#64748b" }}
               tickLine={false}
               axisLine={false}
             />
 
+            {/* Y Axis */}
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "#64748b" }}
+              tickFormatter={(value) => `$${value}`}
               tickLine={false}
               axisLine={false}
+              width={55}
             />
 
+            {/* Premium Tooltip */}
             <Tooltip
               contentStyle={{
                 borderRadius: "16px",
                 border: "none",
+                backgroundColor: "#ffffff",
                 boxShadow:
-                  "0 10px 30px rgba(0,0,0,.12)",
+                  "0 12px 35px rgba(15,23,42,.15)",
               }}
               formatter={(value) => [
                 `$${Number(value).toLocaleString()}`,
@@ -118,29 +127,29 @@ export default function PortfolioGrowthChart() {
               ]}
             />
 
+            {/* Gradient Area */}
             <Area
-              type="monotone"
+              type="natural"
               dataKey="value"
               stroke="none"
               fill="url(#portfolioGradient)"
             />
 
+            {/* Line */}
             <Line
-              type="monotone"
+              type="natural"
               dataKey="value"
               stroke="#06b6d4"
               strokeWidth={4}
-              dot={{
-                r: 5,
-                strokeWidth: 2,
-                fill: "#ffffff",
-              }}
+              dot={false}
               activeDot={{
                 r: 8,
                 fill: "#06b6d4",
+                stroke: "#ffffff",
+                strokeWidth: 3,
               }}
               isAnimationActive
-              animationDuration={1200}
+              animationDuration={1500}
               animationEasing="ease-out"
             />
           </LineChart>

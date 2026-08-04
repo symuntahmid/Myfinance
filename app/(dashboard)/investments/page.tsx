@@ -1,6 +1,7 @@
 "use client";
 import PortfolioGrowthChart from "@/app/components/PortfolioGrowthChart";
 import PortfolioAllocationChart from "@/app/components/PortfolioAllocationChart";
+import AIInvestmentInsights from "@/app/components/AIInvestmentInsights";
 
 import EditInvestmentModal from "@/app/components/EditInvestmentModal";
 import { useEffect, useState } from "react";
@@ -307,6 +308,10 @@ export default function InvestmentsPage() {
 <PortfolioGrowthChart />
 <div className="mt-8">
   <PortfolioAllocationChart />
+</div>
+
+<div className="mt-8">
+  <AIInvestmentInsights />
 </div>
       <AddInvestmentModal
         open={openModal}
