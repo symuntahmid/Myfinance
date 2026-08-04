@@ -1,5 +1,6 @@
 "use client";
 
+import EditInvestmentModal from "@/app/components/EditInvestmentModal";
 import { useEffect, useState } from "react";
 import {
   Plus,
@@ -305,6 +306,11 @@ export default function InvestmentsPage() {
         open={openModal}
         onClose={() => setOpenModal(false)}
       />
+      <EditInvestmentModal
+  open={editingInvestment !== null}
+  investment={editingInvestment}
+  onClose={() => setEditingInvestment(null)}
+/>
     </>
   );
 }
