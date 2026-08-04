@@ -8,6 +8,7 @@ import AddInvestmentModal from "@/app/components/AddInvestmentModal";
 import {
   getInvestments,
   getPortfolioSummary,
+  clearInvestments,
   Investment,
 } from "@/app/data/investments";
 
@@ -16,6 +17,10 @@ export default function InvestmentsPage() {
 
   const [investments, setInvestments] = useState<Investment[]>([]);
   const [summary, setSummary] = useState(getPortfolioSummary());
+
+  // NEW
+  const [editingInvestment, setEditingInvestment] =
+    useState<Investment | null>(null);
 
   useEffect(() => {
     function refreshPortfolio() {
@@ -38,29 +43,55 @@ export default function InvestmentsPage() {
     };
   }, []);
 
+  // NEW
+  function handleDeleteAll() {
+    const confirmed = window.confirm(
+      "Delete all investments?\n\nThis action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    clearInvestments();
+
+    // Refresh UI immediately
+    setInvestments(getInvestments());
+    setSummary(getPortfolioSummary());
+  }
+
   return (
     <>
       {/* Header */}
 
-      <div className="mb-10 flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-bold">
-            My Investments
-          </h1>
+<div className="mb-10 flex items-center justify-between">
+  <div>
+    <h1 className="text-4xl font-bold">
+      My Investments
+    </h1>
 
-          <p className="mt-2 text-[var(--muted)]">
-            Manage all your investments in one place.
-          </p>
-        </div>
+    <p className="mt-2 text-[var(--muted)]">
+      Manage all your investments in one place.
+    </p>
+  </div>
 
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center gap-2 rounded-2xl bg-[var(--primary)] px-5 py-3 font-semibold text-white transition hover:opacity-90"
-        >
-          <Plus size={18} />
-          Add Investment
-        </button>
-      </div>
+  <div className="flex items-center gap-3">
+    <button
+      onClick={() => setOpenModal(true)}
+      className="flex items-center gap-2 rounded-2xl bg-[var(--primary)] px-5 py-3 font-semibold text-white transition hover:opacity-90"
+    >
+      <Plus size={18} />
+      Add Investment
+    </button>
+
+    {investments.length > 0 && (
+      <button
+        onClick={handleDeleteAll}
+        className="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
+      >
+        Delete All
+      </button>
+    )}
+  </div>
+</div>
 
       {/* Portfolio Summary */}
 
