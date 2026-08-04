@@ -27,6 +27,8 @@ import { getPortfolioSummary } from "@/app/data/investments";
 import BudgetProgressCard from "@/app/components/BudgetProgressCard";
 import { getBudgets } from "@/app/data/budgets";
 
+import { getSummary } from "@/app/data/transactions";
+
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -51,7 +53,7 @@ const totalBudget = budgets.reduce(
 );
 
 // Temporary spent value
-const totalSpent = 0;
+const totalSpent = getSummary().expense;
 
   useEffect(() => {
     function refreshPortfolio() {
@@ -135,12 +137,14 @@ const totalSpent = 0;
     <GoalProgressCard />
   </FadeIn>
 
-  <div className="mt-8">
+{/* Budget Progress */}
+
+  <FadeIn delay={0.6}>
   <BudgetProgressCard
     budget={totalBudget}
     spent={totalSpent}
   />
-</div>
+</FadeIn>
 
         {portfolio.totalAssets > 0 && (
           <FadeIn delay={0.45}>
