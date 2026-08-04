@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   addBudget,
+  updateBudget,
   BudgetCategory,
+  Budget,
 } from "@/app/data/budgets";
 
 type Props = {
   open: boolean;
   onClose: () => void;
+
+  editingBudget?: Budget | null;
 };
 
 const categories: BudgetCategory[] = [
@@ -21,13 +25,15 @@ const categories: BudgetCategory[] = [
   "Health",
   "Education",
   "Travel",
-  "Other",
+  "Others",
 ];
 
 export default function AddBudgetModal({
   open,
   onClose,
+  editingBudget,
 }: Props) {
+
   const [category, setCategory] =
     useState<BudgetCategory>("Food");
 
@@ -39,28 +45,51 @@ export default function AddBudgetModal({
       new Date().toISOString().slice(0, 7)
     );
 
+    useEffect(() => {
+  if (editingBudget) {
+    setCategory(editingBudget.category);
+    setAmount(editingBudget.amount.toString());
+    setMonth(editingBudget.month);
+  } else {
+    setCategory("Food");
+    setAmount("");
+    setMonth(
+      new Date().toISOString().slice(0, 7)
+    );
+  }
+}, [editingBudget, open]);
+
   if (!open) return null;
 
   function handleSubmit(
-    e: React.FormEvent
-  ) {
-    e.preventDefault();
+  e: React.FormEvent
+) {
+  e.preventDefault();
 
+  if (editingBudget) {
+    updateBudget({
+      id: editingBudget.id,
+      category,
+      amount: Number(amount),
+      month,
+    });
+  } else {
     addBudget({
       id: crypto.randomUUID(),
       category,
       amount: Number(amount),
       month,
     });
-
-    setCategory("Food");
-    setAmount("");
-    setMonth(
-      new Date().toISOString().slice(0, 7)
-    );
-
-    onClose();
   }
+
+  setCategory("Food");
+  setAmount("");
+  setMonth(
+    new Date().toISOString().slice(0, 7)
+  );
+
+  onClose();
+}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -69,8 +98,10 @@ export default function AddBudgetModal({
         className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl"
       >
         <h2 className="mb-6 text-2xl font-bold">
-          Add Budget
-        </h2>
+  {editingBudget
+    ? "Edit Budget"
+    : "Add Budget"}
+</h2>
 
         <div className="space-y-5">
           <div>
@@ -144,7 +175,9 @@ export default function AddBudgetModal({
             type="submit"
             className="rounded-2xl bg-[var(--primary)] px-5 py-3 font-semibold text-white"
           >
-            Save Budget
+            {editingBudget
+  ? "Save Changes"
+  : "Save Budget"}
           </button>
         </div>
       </form>

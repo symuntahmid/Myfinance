@@ -22,6 +22,8 @@ import {
 export default function BudgetPage() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [openModal, setOpenModal] = useState(false);
+  const [editingBudget, setEditingBudget] =
+  useState<Budget | null>(null);
 
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
@@ -165,16 +167,18 @@ const totalSpent = getSummary().expense;
 {menuOpenId === budget.id && (
   <div className="absolute right-0 top-12 z-20 w-44 rounded-2xl border bg-white p-2 shadow-xl">
     <button
-      onClick={() => {
-        setMenuOpenId(null);
+  onClick={() => {
+    setEditingBudget(budget);
 
-        // Edit functionality comes next
-      }}
-      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-100"
-    >
-      <Pencil size={16} />
-      Edit Budget
-    </button>
+    setOpenModal(true);
+
+    setMenuOpenId(null);
+  }}
+  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-100"
+>
+  <Pencil size={16} />
+  Edit Budget
+</button>
 
     <button
       onClick={() => {
@@ -312,9 +316,14 @@ const totalSpent = getSummary().expense;
       </div>
 
       <AddBudgetModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-      />
+  open={openModal}
+  editingBudget={editingBudget}
+  onClose={() => {
+    setOpenModal(false);
+
+    setEditingBudget(null);
+  }}
+/>
     </>
   );
 }
