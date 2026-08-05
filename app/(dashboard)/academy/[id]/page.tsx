@@ -17,6 +17,7 @@ import {
 import {
   getLessonById,
   completeLesson,
+  getLessons,
 } from "@/app/data/lessons";
 
 export default function LessonPage() {
@@ -25,6 +26,13 @@ export default function LessonPage() {
 const params = useParams();
 
 const lesson = getLessonById(Number(params.id));
+const hasNextLesson =
+  getLessons().some(
+    (l) =>
+      !l.completed &&
+      l.id !== lesson?.id
+  );
+
 if (!lesson) {
   return (
     <div className="p-10">
@@ -258,6 +266,7 @@ if (player.xp >= 100) {
 <LessonCompleteModal
   open={showComplete}
   xp={lesson.xp}
+  hasNextLesson={hasNextLesson}
 />
     </main>
 

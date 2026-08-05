@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 type Props = {
   open: boolean;
   xp: number;
+  hasNextLesson: boolean;
 };
 
 export default function LessonCompleteModal({
   open,
   xp,
+  hasNextLesson,
 }: Props) {
   const [animatedXP, setAnimatedXP] = useState(0);
   const [wealthScore, setWealthScore] = useState(0);
@@ -77,38 +79,62 @@ export default function LessonCompleteModal({
 
         <div className="mt-10 rounded-2xl bg-indigo-50 p-6">
 
-          <div className="flex items-center justify-between">
+  <div className="flex items-center justify-between">
+    <span>XP Earned</span>
 
-            <span>XP Earned</span>
+    <strong className="text-2xl text-indigo-700">
+      +{animatedXP}
+    </strong>
+  </div>
 
-            <strong className="text-2xl text-indigo-700 transition-all duration-300">
-              +{animatedXP}
-            </strong>
+  <div className="mt-5 flex items-center justify-between">
+    <span>Wealth Score</span>
 
-          </div>
+    <strong className="flex items-center gap-2 text-green-600">
+      <TrendingUp size={18} />
+      +{wealthScore}
+    </strong>
+  </div>
 
-          <div className="mt-5 flex items-center justify-between">
+</div>
 
-            <span>Wealth Score</span>
+<div className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-left">
 
-            <strong className="flex items-center gap-2 text-green-600">
+  <p className="text-sm font-semibold uppercase tracking-wider text-slate-500">
+    Next Step
+  </p>
 
-              <TrendingUp size={18} />
+  <h3 className="mt-2 text-xl font-bold">
+    Continue your Finance Academy journey
+  </h3>
 
-              +{wealthScore}
+  <p className="mt-2 text-slate-600">
+    Your next lesson is ready. Keep your learning streak alive and continue building your Financial Mastery.
+  </p>
 
-            </strong>
+</div>
 
-          </div>
+<div className="mt-8 flex gap-4">
 
-        </div>
+  <Link
+    href={hasNextLesson ? "/academy" : "/dashboard"}
+    className="flex-1 rounded-2xl bg-indigo-600 py-4 text-center font-bold text-white transition hover:scale-105 hover:bg-indigo-700"
+  >
+    {hasNextLesson
+      ? "Continue Learning →"
+      : "Go to Dashboard →"}
+  </Link>
 
-        <Link
-          href="/dashboard"
-          className="mt-8 block rounded-2xl bg-indigo-600 py-4 font-bold text-white transition hover:scale-105 hover:bg-indigo-700"
-        >
-          Continue
-        </Link>
+  {hasNextLesson && (
+    <Link
+      href="/dashboard"
+      className="flex-1 rounded-2xl border border-slate-300 py-4 text-center font-bold text-slate-700 transition hover:bg-slate-100"
+    >
+      Dashboard
+    </Link>
+  )}
+
+</div>
 
       </div>
 
