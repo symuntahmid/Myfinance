@@ -9,13 +9,7 @@ export type Achievement = {
 const STORAGE_KEY = "myfinance-achievements";
 
 const DEFAULT_ACHIEVEMENTS: Achievement[] = [
-  {
-    id: 1,
-    title: "First Lesson",
-    description: "Complete your first lesson.",
-    icon: "🎓",
-    unlocked: false,
-  },
+
   {
     id: 2,
     title: "100 XP",
@@ -30,13 +24,7 @@ const DEFAULT_ACHIEVEMENTS: Achievement[] = [
     icon: "🔥",
     unlocked: false,
   },
-  {
-    id: 4,
-    title: "Module Master",
-    description: "Complete every lesson in Module 1.",
-    icon: "🏆",
-    unlocked: false,
-  },
+
 ];
 
 export function getAchievements(): Achievement[] {

@@ -16,7 +16,7 @@ import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import ProfileCard from "../../components/ProfileCard";
-import LessonCard from "../../components/LessonCard";
+
 import WelcomeBanner from "../../components/WelcomeBanner";
 
 import FadeIn from "../../components/FadeIn";
@@ -110,20 +110,15 @@ const totalSpent = getSummary().expense;
   {/* Top Cards */}
 
   <div className="grid gap-6 lg:grid-cols-2">
-    <FadeIn delay={0}>
-      <LessonCard />
-    </FadeIn>
-
-    <FadeIn delay={0.1}>
-      <ProfileCard compact />
-    </FadeIn>
-  </div>
-
-  {/* Daily Journey */}
-
-  <FadeIn delay={0.2}>
+  <FadeIn delay={0}>
     <DailyJourneyCard />
   </FadeIn>
+
+  <FadeIn delay={0.1}>
+    <ProfileCard compact />
+  </FadeIn>
+</div>
+
 
   {/* Money Summary */}
 

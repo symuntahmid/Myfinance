@@ -16,13 +16,13 @@ const DEFAULT_TASKS: DailyTask[] = [
   },
   {
     id: 2,
-    title: "Read today's lesson",
+    title: "Review your spending",
     reward: 10,
     completed: false,
   },
   {
     id: 3,
-    title: "Save $20",
+    title: "Make one better money decision",
     reward: 20,
     completed: false,
   },
@@ -74,18 +74,4 @@ export function getJourneyProgress() {
     total: tasks.length,
     percent: (completed / tasks.length) * 100,
   };
-}
-
-export function completeLessonTask() {
-  const tasks = getDailyTasks();
-
-  const lessonTask = tasks.find(
-    (task) => task.title === "Read today's lesson"
-  );
-
-  if (!lessonTask || lessonTask.completed) return;
-
-  lessonTask.completed = true;
-
-  saveDailyTasks(tasks);
 }
