@@ -28,6 +28,10 @@ const DEFAULT_TASKS: DailyTask[] = [
   },
 ];
 
+/* ==========================================
+   GET DAILY TASKS
+========================================== */
+
 export function getDailyTasks(): DailyTask[] {
   if (typeof window === "undefined") {
     return DEFAULT_TASKS;
@@ -40,29 +44,106 @@ export function getDailyTasks(): DailyTask[] {
     return DEFAULT_TASKS;
   }
 
-  return JSON.parse(data);
+  try {
+    const tasks = JSON.parse(data) as DailyTask[];
+
+    /*
+      Detect old Daily Journey structure
+    */
+    const hasOldTask = tasks.some(
+      (task) =>
+        task.title === "Read today's lesson" ||
+        task.title === "Save $20"
+    );
+
+    if (hasOldTask) {
+      resetDailyJourney();
+      return getDailyTasks();
+    }
+
+    /*
+      Validate current structure
+    */
+    const valid =
+      tasks.length === DEFAULT_TASKS.length &&
+      DEFAULT_TASKS.every((defaultTask) => {
+        const task = tasks.find(
+          (t) => t.id === defaultTask.id
+        );
+
+        return (
+          task &&
+          task.title === defaultTask.title &&
+          typeof task.reward === "number" &&
+          typeof task.completed === "boolean"
+        );
+      });
+
+    if (!valid) {
+      resetDailyJourney();
+      return getDailyTasks();
+    }
+
+    return tasks;
+
+  } catch {
+    resetDailyJourney();
+    return getDailyTasks();
+  }
 }
 
-export function saveDailyTasks(tasks: DailyTask[]) {
+/* ==========================================
+   SAVE
+========================================== */
+
+export function saveDailyTasks(
+  tasks: DailyTask[]
+) {
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(tasks)
   );
+
+  window.dispatchEvent(
+    new Event("dailyJourneyUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("player-updated")
+  );
 }
 
-export function completeTask(id: number) {
+/* ==========================================
+   COMPLETE TASK
+========================================== */
+
+export function completeTask(
+  id: number
+): boolean {
+
   const tasks = getDailyTasks();
 
-  const task = tasks.find((t) => t.id === id);
+  const task = tasks.find(
+    (task) => task.id === id
+  );
 
-  if (!task || task.completed) return;
+  if (!task || task.completed) {
+    return false;
+  }
 
   task.completed = true;
 
   saveDailyTasks(tasks);
+
+  return true;
 }
 
+/* ==========================================
+   PROGRESS
+========================================== */
+
 export function getJourneyProgress() {
+
   const tasks = getDailyTasks();
 
   const completed = tasks.filter(
@@ -72,6 +153,29 @@ export function getJourneyProgress() {
   return {
     completed,
     total: tasks.length,
-    percent: (completed / tasks.length) * 100,
+    percent:
+      tasks.length === 0
+        ? 0
+        : (completed / tasks.length) * 100,
   };
+}
+
+/* ==========================================
+   RESET DAILY JOURNEY
+========================================== */
+
+export function resetDailyJourney() {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(DEFAULT_TASKS)
+  );
+
+  window.dispatchEvent(
+    new Event("dailyJourneyUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("player-updated")
+  );
 }

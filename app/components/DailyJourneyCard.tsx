@@ -1,4 +1,5 @@
 "use client";
+
 import { unlockAchievement } from "../data/achievements";
 
 import {
@@ -11,42 +12,72 @@ import {
 import {
   getDailyTasks,
   getJourneyProgress,
-  completeTask,
 } from "../data/dailyJourney";
 
-import { addXP } from "../data/player";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DailyJourneyCard() {
   const [, forceUpdate] = useState(0);
 
-  const tasks = getDailyTasks();
+  useEffect(() => {
+    const updateJourney = () => {
+      const progress = getJourneyProgress();
 
-  const progress = getJourneyProgress();
+      // Daily Hero achievement
+      if (
+        progress.total > 0 &&
+        progress.completed >= progress.total
+      ) {
+        unlockAchievement(3);
+      }
 
-  const finishTask = (id: number, reward: number) => {
-    completeTask(id);
+      forceUpdate((n) => n + 1);
+    };
 
-    addXP(reward);
-    const progress = getJourneyProgress();
+    // Update when a real financial action
+    // completes a Daily Journey task.
+    window.addEventListener(
+      "dailyJourneyUpdated",
+      updateJourney
+    );
 
-if (progress.completed + 1 >= progress.total) {
-  unlockAchievement(3);
-}
+    // Also update when player data changes.
+    window.addEventListener(
+      "player-updated",
+      updateJourney
+    );
 
-    window.dispatchEvent(
-  new Event("player-updated")
-);
+    // Update when transactions change.
+    window.addEventListener(
+      "transactionsUpdated",
+      updateJourney
+    );
 
-    forceUpdate((n) => n + 1);
-  };
+    return () => {
+      window.removeEventListener(
+        "dailyJourneyUpdated",
+        updateJourney
+      );
+
+      window.removeEventListener(
+        "player-updated",
+        updateJourney
+      );
+
+      window.removeEventListener(
+        "transactionsUpdated",
+        updateJourney
+      );
+    };
+  }, []);
 
   const updatedTasks = getDailyTasks();
   const updatedProgress = getJourneyProgress();
 
   return (
     <div className="rounded-3xl bg-gradient-to-r from-orange-500 to-amber-400 p-8 text-white shadow-xl">
+
+      {/* Header */}
 
       <div className="flex items-center gap-3">
 
@@ -68,6 +99,8 @@ if (progress.completed + 1 >= progress.total) {
 
       </div>
 
+      {/* Progress */}
+
       <div className="mt-8">
 
         <div className="mb-3 flex justify-between">
@@ -77,7 +110,8 @@ if (progress.completed + 1 >= progress.total) {
           </span>
 
           <span className="font-semibold">
-            {updatedProgress.completed}/{updatedProgress.total}
+            {updatedProgress.completed}/
+            {updatedProgress.total}
           </span>
 
         </div>
@@ -94,6 +128,8 @@ if (progress.completed + 1 >= progress.total) {
         </div>
 
       </div>
+
+      {/* Tasks */}
 
       <div className="mt-8 space-y-4">
 
@@ -112,7 +148,10 @@ if (progress.completed + 1 >= progress.total) {
                   size={24}
                 />
               ) : (
-                <Circle size={24} />
+                <Circle
+                  className="text-white/70"
+                  size={24}
+                />
               )}
 
               <div>
@@ -129,15 +168,20 @@ if (progress.completed + 1 >= progress.total) {
 
             </div>
 
-            {!task.completed && (
-              <button
-                onClick={() =>
-                  finishTask(task.id, task.reward)
-                }
-                className="rounded-xl bg-white px-5 py-2 font-semibold text-orange-600 transition hover:scale-105"
-              >
-                Complete
-              </button>
+            {/* Status instead of manual Complete button */}
+
+            {task.completed ? (
+
+              <span className="rounded-xl bg-green-400/20 px-4 py-2 text-sm font-semibold text-green-100">
+                ✓ Completed
+              </span>
+
+            ) : (
+
+              <span className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white/70">
+                Complete through activity
+              </span>
+
             )}
 
           </div>
@@ -146,8 +190,11 @@ if (progress.completed + 1 >= progress.total) {
 
       </div>
 
+      {/* Completed */}
+
       {updatedProgress.completed ===
-        updatedProgress.total && (
+        updatedProgress.total &&
+        updatedProgress.total > 0 && (
 
         <div className="mt-8 rounded-2xl bg-white/20 p-5">
 
@@ -162,7 +209,8 @@ if (progress.completed + 1 >= progress.total) {
               </h3>
 
               <p>
-                Tomorrow a new journey begins.
+                Great job! You completed all
+                today's money actions.
               </p>
 
             </div>

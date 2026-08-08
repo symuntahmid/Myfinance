@@ -1,48 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Flame,
   Heart,
   Target,
-  Zap,
   Gift,
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
 
-export default function LessonCard() {
-  const [completed, setCompleted] = useState(false);
+import {
+  getDailyTasks,
+  completeTask,
+  getJourneyProgress,
+} from "@/app/data/dailyJourney";
 
-  const streak = 12;
+import {
+  getPlayer,
+  getLevel,
+  addXP,
+} from "@/app/data/player";
+
+export default function LessonCard() {
+  const [tasks, setTasks] = useState(getDailyTasks());
+  const [player, setPlayer] = useState(getPlayer());
+  const [rewardClaimed, setRewardClaimed] = useState(false);
+
+  function refresh() {
+    setTasks(getDailyTasks());
+    setPlayer(getPlayer());
+  }
+
+  useEffect(() => {
+    refresh();
+
+    const handleUpdate = () => {
+      refresh();
+    };
+
+    window.addEventListener("player-updated", handleUpdate);
+
+    return () => {
+      window.removeEventListener(
+        "player-updated",
+        handleUpdate
+      );
+    };
+  }, []);
+
+  function handleCompleteTask(id: number, reward: number) {
+    const task = tasks.find((task) => task.id === id);
+
+    if (!task || task.completed) return;
+
+    completeTask(id);
+
+    addXP(reward);
+
+    refresh();
+  }
+
+  function claimDailyReward() {
+    const progress = getJourneyProgress();
+
+    if (
+      progress.completed !== progress.total ||
+      rewardClaimed
+    ) {
+      return;
+    }
+
+    setRewardClaimed(true);
+
+    // Small completion bonus
+    addXP(10);
+
+    refresh();
+  }
+
+  const progress = getJourneyProgress();
+  const level = getLevel();
+
   const energy = 5;
   const maxEnergy = 5;
-
-  const dailyActions = [
-    {
-      id: 1,
-      title: "Track one expense",
-      description: "Add any expense from today.",
-      xp: 10,
-    },
-    {
-      id: 2,
-      title: "Review your spending",
-      description: "Take a quick look at where your money went.",
-      xp: 10,
-    },
-    {
-      id: 3,
-      title: "Make one better decision",
-      description: "Save, avoid, transfer, or plan one small amount.",
-      xp: 15,
-    },
-  ];
-
-  const totalXP = dailyActions.reduce(
-    (total, action) => total + action.xp,
-    0
-  );
 
   return (
     <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-8 text-white shadow-2xl">
@@ -62,8 +103,8 @@ export default function LessonCard() {
           </h2>
 
           <p className="mt-3 max-w-2xl text-lg text-white/80">
-            Small financial actions today can create a completely different
-            future.
+            Small financial actions today can create a completely
+            different future.
           </p>
 
         </div>
@@ -78,7 +119,7 @@ export default function LessonCard() {
           />
 
           <p className="mt-1 text-3xl font-bold">
-            {streak}
+            {player.streak}
           </p>
 
           <p className="text-sm text-white/70">
@@ -116,24 +157,26 @@ export default function LessonCard() {
 
         <div className="mt-3 flex gap-2">
 
-          {Array.from({ length: maxEnergy }).map((_, index) => (
+          {Array.from({ length: maxEnergy }).map(
+            (_, index) => (
 
-            <div
-              key={index}
-              className={`h-3 flex-1 rounded-full ${
-                index < energy
-                  ? "bg-pink-300"
-                  : "bg-white/20"
-              }`}
-            />
+              <div
+                key={index}
+                className={`h-3 flex-1 rounded-full ${
+                  index < energy
+                    ? "bg-pink-300"
+                    : "bg-white/20"
+                }`}
+              />
 
-          ))}
+            )
+          )}
 
         </div>
 
       </div>
 
-      {/* Today's Actions */}
+      {/* Daily Missions */}
 
       <div className="mt-8">
 
@@ -148,22 +191,27 @@ export default function LessonCard() {
         </div>
 
         <p className="mt-1 text-white/70">
-          You don't need to be perfect. Just make one small improvement today.
+          Make one small improvement to your financial life today.
         </p>
 
         <div className="mt-5 space-y-3">
 
-          {dailyActions.map((action) => (
+          {tasks.map((task) => (
 
-            <button
-              key={action.id}
-              onClick={() => setCompleted(true)}
-              className="group flex w-full items-center gap-4 rounded-2xl bg-white/10 p-5 text-left transition hover:bg-white/20"
+            <div
+              key={task.id}
+              className="flex items-center gap-4 rounded-2xl bg-white/10 p-5 transition hover:bg-white/15"
             >
 
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/15">
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                  task.completed
+                    ? "bg-green-400/20"
+                    : "bg-white/15"
+                }`}
+              >
 
-                {completed ? (
+                {task.completed ? (
                   <CheckCircle2
                     size={22}
                     className="text-green-300"
@@ -177,20 +225,42 @@ export default function LessonCard() {
               <div className="flex-1">
 
                 <p className="font-bold">
-                  {action.title}
+                  {task.title}
                 </p>
 
                 <p className="mt-1 text-sm text-white/60">
-                  {action.description}
+                  {task.completed
+                    ? "Completed today ✓"
+                    : "Complete this small action today."}
                 </p>
 
               </div>
 
-              <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-bold">
-                +{action.xp} XP
-              </span>
+              <div className="flex items-center gap-3">
 
-            </button>
+                <span className="rounded-full bg-white/15 px-3 py-1 text-sm font-bold">
+                  +{task.reward} XP
+                </span>
+
+                {!task.completed && (
+
+                  <button
+                    onClick={() =>
+                      handleCompleteTask(
+                        task.id,
+                        task.reward
+                      )
+                    }
+                    className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-indigo-700 transition hover:scale-105 hover:bg-indigo-50"
+                  >
+                    Complete
+                  </button>
+
+                )}
+
+              </div>
+
+            </div>
 
           ))}
 
@@ -213,7 +283,9 @@ export default function LessonCard() {
             </p>
 
             <p className="text-2xl font-bold">
-              +{totalXP} XP
+              {progress.completed === progress.total
+                ? "+10 XP Bonus"
+                : "Complete all 3 actions"}
             </p>
 
           </div>
@@ -221,18 +293,28 @@ export default function LessonCard() {
         </div>
 
         <button
-          disabled={!completed}
+          onClick={claimDailyReward}
+          disabled={
+            progress.completed !== progress.total ||
+            rewardClaimed
+          }
           className={`mt-5 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-bold transition ${
-            completed
+            progress.completed === progress.total &&
+            !rewardClaimed
               ? "bg-indigo-600 text-white hover:scale-[1.02] hover:bg-indigo-700"
               : "cursor-not-allowed bg-slate-100 text-slate-400"
           }`}
         >
-          {completed
-            ? "🎁 Claim Today's Reward"
-            : "🔒 Complete an action first"}
+          {rewardClaimed
+            ? "✅ Reward Claimed"
+            : progress.completed === progress.total
+              ? "🎁 Claim Today's Reward"
+              : `🔒 ${progress.completed}/3 Actions Complete`}
 
-          {completed && <ArrowRight size={18} />}
+          {progress.completed === progress.total &&
+            !rewardClaimed && (
+              <ArrowRight size={18} />
+            )}
 
         </button>
 
@@ -251,7 +333,7 @@ export default function LessonCard() {
             </p>
 
             <h3 className="mt-1 text-2xl font-bold">
-              Money Apprentice
+              Level {level.level}
             </h3>
 
           </div>
@@ -259,11 +341,11 @@ export default function LessonCard() {
           <div className="text-right">
 
             <p className="text-sm text-white/60">
-              420 / 500 XP
+              {level.currentXP} / {level.nextLevelXP} XP
             </p>
 
             <p className="font-bold">
-              80%
+              {level.percent}%
             </p>
 
           </div>
@@ -273,14 +355,16 @@ export default function LessonCard() {
         <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/20">
 
           <div
-            className="h-full rounded-full bg-white"
-            style={{ width: "80%" }}
+            className="h-full rounded-full bg-white transition-all duration-700"
+            style={{
+              width: `${level.percent}%`,
+            }}
           />
 
         </div>
 
         <p className="mt-3 text-sm text-white/60">
-          80 XP until your next level: Money Planner
+          {level.nextLevelXP - level.currentXP} XP until your next level.
         </p>
 
       </div>
