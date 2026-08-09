@@ -198,46 +198,60 @@ export function getMonthlyReport() {
       ? 0
       : (availableCash / income) * 100;
 
+  // Only actual expenses count as expenses here.
+  const expenseTransactions = transactions
+    .filter(
+      (transaction) =>
+        transaction.type === "Expense"
+    )
+    .sort(
+      (a, b) => b.amount - a.amount
+    );
+
   const largestExpense =
-    transactions
-      .filter(
-        (transaction) =>
-          transaction.type === "Expense" ||
-          transaction.type === "Investment" ||
-          transaction.type === "Transfer"
-      )
-      .sort(
-        (a, b) => b.amount - a.amount
-      )[0] ?? null;
+    expenseTransactions[0] ?? null;
 
   return {
     income,
     expense,
+
+    // Money allocated to investments this month
     investmentSpent,
+
     transferIn,
     transferOut,
 
+    // Cash remaining after this month's activity
     availableCash,
 
+    // Monthly savings
     savings: availableCash,
 
     savingsRate,
 
+    // Current investment portfolio
     investment: portfolio.current,
 
+    // Total amount ever invested
+    totalInvested: portfolio.invested,
+
+    // Current portfolio profit/loss
+    investmentProfit: portfolio.profit,
+
+    // Current portfolio return
+    investmentReturnPercentage:
+      portfolio.returnPercentage,
+
+    // Total net worth
     netWorth:
       availableCash +
       portfolio.current,
 
+    // Activity
     totalTransactions:
       transactions.length,
 
     largestExpense,
-
-    topInvestmentCategory:
-      portfolio.totalAssets > 0
-        ? "Portfolio"
-        : "None",
   };
 }
 

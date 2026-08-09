@@ -50,12 +50,18 @@ const DEFAULT_PLAYER: Player = {
   investments: 0,
 };
 
+/* ==========================================
+   PLAYER
+========================================== */
+
 export function getPlayer(): Player {
   if (typeof window === "undefined") {
     return DEFAULT_PLAYER;
   }
 
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = localStorage.getItem(
+    STORAGE_KEY
+  );
 
   const basePlayer = saved
     ? {
@@ -71,10 +77,13 @@ export function getPlayer(): Player {
   return {
     ...basePlayer,
 
-    // Live Money Data
-    netWorth:
-      summary.netWorth +
-      portfolio.current,
+    /* --------------------------------------
+       LIVE MONEY DATA
+    -------------------------------------- */
+
+    // getSummary().netWorth already includes
+    // the current investment portfolio.
+    netWorth: summary.netWorth,
 
     monthlyCashFlow:
       report.savings,
@@ -83,11 +92,17 @@ export function getPlayer(): Player {
       report.savingsRate
     ),
 
-    // Live Investment Data
+    /* --------------------------------------
+       LIVE INVESTMENT DATA
+    -------------------------------------- */
+
     investments:
       portfolio.current,
 
-    // Combined Wealth Score
+    /* --------------------------------------
+       COMBINED WEALTH SCORE
+    -------------------------------------- */
+
     wealthScore: Math.round(
       Math.min(
         getFinancialHealthScore() +
@@ -98,9 +113,18 @@ export function getPlayer(): Player {
   };
 }
 
+
+/* ==========================================
+   SAVE PLAYER
+========================================== */
+
 export function savePlayer(
   player: Player
 ) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(player)
@@ -111,6 +135,11 @@ export function savePlayer(
   );
 }
 
+
+/* ==========================================
+   XP
+========================================== */
+
 export function addXP(amount: number) {
   const player = getPlayer();
 
@@ -118,6 +147,11 @@ export function addXP(amount: number) {
 
   savePlayer(player);
 }
+
+
+/* ==========================================
+   LEVEL
+========================================== */
 
 export function getLevel() {
   const player = getPlayer();
@@ -136,38 +170,84 @@ export function getLevel() {
   };
 }
 
+
+/* ==========================================
+   FINANCIAL HEALTH
+========================================== */
+
 export function getFinancialHealth() {
   const player = getPlayer();
 
+  /*
+   * A completely new account should not be
+   * classified as "Critical".
+   *
+   * If the user has no financial activity yet,
+   * return 0 and let the UI explain that there
+   * is not enough data.
+   */
+
+  const hasFinancialData =
+    player.monthlyCashFlow !== 0 ||
+    player.savingRate !== 0 ||
+    player.investments !== 0 ||
+    player.netWorth !== 0 ||
+    player.xp !== 0;
+
+  if (!hasFinancialData) {
+    return 0;
+  }
+
   let score = 0;
 
-  // Saving Rate
+  /* --------------------------------------
+     SAVING RATE — 25 POINTS
+  -------------------------------------- */
+
   score += Math.min(
-    player.savingRate,
+    Math.max(player.savingRate, 0),
     25
   );
 
-  // Positive Cash Flow
-  if (player.monthlyCashFlow > 0)
-    score += 20;
 
-  // Investment Size
+  /* --------------------------------------
+     POSITIVE CASH FLOW — 20 POINTS
+  -------------------------------------- */
+
+  if (player.monthlyCashFlow > 0) {
+    score += 20;
+  }
+
+
+  /* --------------------------------------
+     INVESTMENT SIZE — 20 POINTS
+  -------------------------------------- */
+
   score += Math.min(
     player.investments / 1000,
     20
   );
 
-  // Net Worth
+
+  /* --------------------------------------
+     NET WORTH — 20 POINTS
+  -------------------------------------- */
+
   score += Math.min(
-    player.netWorth / 5000,
+    Math.max(player.netWorth, 0) / 5000,
     20
   );
 
-  // XP
+
+  /* --------------------------------------
+     XP / FINANCIAL HABIT ACTIVITY — 15 POINTS
+  -------------------------------------- */
+
   score += Math.min(
     player.xp / 10,
     15
   );
+
 
   return Math.round(
     Math.min(score, 100)
