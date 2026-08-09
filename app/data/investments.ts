@@ -83,6 +83,29 @@ export function addInvestment(
   investments.unshift(investment);
 
   saveInvestments(investments);
+
+  /* ------------------------------------------
+     DAILY JOURNEY
+     Task 3:
+     Make one better money decision
+  ------------------------------------------ */
+
+  import("./dailyJourney").then(
+    ({ completeTask }) => {
+      const completed = completeTask(3);
+
+      if (completed) {
+        // Give the Daily Journey reward
+        import("./player").then(({ addXP }) => {
+          addXP(20);
+        });
+
+        window.dispatchEvent(
+          new Event("dailyJourneyUpdated")
+        );
+      }
+    }
+  );
 }
 
 export function updateInvestment(

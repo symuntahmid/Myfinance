@@ -1,23 +1,26 @@
 "use client";
 
 import { HeartPulse } from "lucide-react";
-import { getFinancialHealth } from "@/app/data/player";
 
-export default function FinancialHealthCard() {
-  const score = getFinancialHealth();
+type FinancialHealthCardProps = {
+  score: number;
+};
 
+export default function FinancialHealthCard({
+  score,
+}: FinancialHealthCardProps) {
+  let label = "Critical";
   let color = "bg-red-500";
-  let label = "Poor";
 
   if (score >= 80) {
-    color = "bg-green-500";
     label = "Excellent";
+    color = "bg-green-500";
   } else if (score >= 60) {
-    color = "bg-yellow-500";
     label = "Good";
+    color = "bg-yellow-500";
   } else if (score >= 40) {
-    color = "bg-orange-500";
     label = "Fair";
+    color = "bg-orange-500";
   }
 
   return (
@@ -25,6 +28,7 @@ export default function FinancialHealthCard() {
 
       <div className="flex items-center gap-3">
         <HeartPulse className="text-red-500" />
+
         <h2 className="text-2xl font-bold">
           Financial Health
         </h2>
@@ -52,6 +56,11 @@ export default function FinancialHealthCard() {
         />
 
       </div>
+
+      <p className="mt-4 text-center text-sm text-slate-500">
+        Based on your actual income, expenses, savings,
+        investments and financial activity this month.
+      </p>
 
     </div>
   );
