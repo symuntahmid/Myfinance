@@ -1,8 +1,8 @@
 "use client";
 
 import ProfileCard from "@/app/components/ProfileCard";
-import DailyJourneyCard from "@/app/components/DailyJourneyCard";
 import GlobalComparisonCard from "@/app/components/profile/GlobalComparisonCard";
+import BadgesCard from "@/app/components/profile/BadgesCard";
 
 export default function ProfilePage() {
   return (
@@ -19,11 +19,13 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      {/* PROFILE + GAMIFICATION */}
+      {/* PROFILE */}
       <ProfileCard />
 
-      {/* THIS MONTH'S SAVING + BADGES */}
-      <DailyJourneyCard />
+    
+
+      {/* BADGES */}
+      <BadgesCard />
 
       {/* GLOBAL COMPARISON */}
       <GlobalComparisonCard />
