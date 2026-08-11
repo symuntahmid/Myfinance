@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { completeTask } from "../../data/dailyJourney";
 import {
   getMonthlyReport,
   getFinancialHealthScore,
@@ -12,6 +12,7 @@ import {
 } from "../../data/investments";
 
 import FinancialHealthCard from "../../components/reports/FinancialHealthCard";
+import MonthlyTrendChart from "../../components/reports/MonthlyTrendChart";
 
 export default function ReportsPage() {
   const [report, setReport] = useState(() =>
@@ -199,6 +200,11 @@ export default function ReportsPage() {
 
       </section>
 
+{/* ==========================================
+    FINANCIAL TREND
+========================================== */}
+
+<MonthlyTrendChart />
 
       {/* ==========================================
           CASH FLOW
@@ -335,7 +341,7 @@ export default function ReportsPage() {
             </p>
 
             <h3 className="mt-3 text-5xl font-bold text-teal-600">
-              {report.savingsRate.toFixed(1)}%
+              {Math.max(report.savingsRate, 0).toFixed(1)}%
             </h3>
 
             <p className="mt-3 text-sm text-slate-500">
