@@ -40,14 +40,16 @@ export default function GlobalComparisonCard() {
       {/* Map */}
       <div className="px-5 pt-3">
         <div className="overflow-hidden rounded-2xl bg-slate-50 p-3">
-          <WorldMap
-            color="#79c95b"
-            title="Global spending comparison"
-            valueSuffix="%"
-            size="responsive"
-            data={comparisonData}
-          />
-        </div>
+  <div className="flex justify-center">
+    <WorldMap
+      color="#79c95b"
+      title="Global spending comparison"
+      valueSuffix="%"
+      size="lg"
+      data={comparisonData}
+    />
+  </div>
+</div>
       </div>
 
       {/* Comparison */}
