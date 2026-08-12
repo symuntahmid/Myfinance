@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+
 import {
   User,
   Sparkles,
@@ -14,14 +16,29 @@ import {
   MessageSquare,
   ShieldCheck,
   FileText,
-  ChevronRight,
   Download,
   Upload,
-  LockKeyhole,
-  LogOut,
+  Lock,
   Trash2,
-  Settings2,
+  LogOut,
+  ChevronRight,
+  X,
 } from "lucide-react";
+
+import {
+  getSettings,
+  updateSettings,
+} from "@/app/data/settings";
+
+import {
+  exportMyFinanceData,
+  importMyFinanceData,
+  deleteAllAccountData,
+} from "@/app/data/accountData";
+
+/* ==========================================
+   TYPES
+========================================== */
 
 type SettingRowProps = {
   icon: React.ReactNode;
@@ -31,6 +48,16 @@ type SettingRowProps = {
   right?: React.ReactNode;
   danger?: boolean;
 };
+
+type ModalProps = {
+  open: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+};
+
+/* ==========================================
+   ROW
+========================================== */
 
 function SettingRow({
   icon,
@@ -44,17 +71,17 @@ function SettingRow({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-left transition ${
+      className={`flex w-full items-center gap-4 px-4 py-4 text-left transition ${
         danger
-          ? "hover:bg-red-50"
-          : "hover:bg-slate-50"
+          ? "hover:bg-red-50 active:bg-red-100"
+          : "hover:bg-slate-50 active:bg-slate-100"
       }`}
     >
       <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition ${
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
           danger
-            ? "bg-red-50 text-red-500 group-hover:bg-red-100"
-            : "bg-slate-50 text-slate-600 group-hover:bg-white group-hover:shadow-sm"
+            ? "bg-red-50 text-red-500"
+            : "bg-slate-50 text-slate-600"
         }`}
       >
         {icon}
@@ -72,7 +99,7 @@ function SettingRow({
         </p>
 
         {subtitle && (
-          <p className="mt-0.5 text-xs leading-relaxed text-slate-400">
+          <p className="mt-0.5 text-xs text-slate-400">
             {subtitle}
           </p>
         )}
@@ -81,144 +108,270 @@ function SettingRow({
       {right ?? (
         <ChevronRight
           size={18}
-          className="shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-500"
+          className="shrink-0 text-slate-300"
         />
       )}
     </button>
   );
 }
 
-function SettingCard({
-  title,
-  description,
-  icon,
+/* ==========================================
+   GROUP
+========================================== */
+
+function SettingGroup({
   children,
 }: {
-  title: string;
-  description?: string;
-  icon?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-2 shadow-sm">
-      <div className="flex items-center gap-3 px-4 pb-2 pt-4">
-        {icon && (
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600">
-            {icon}
-          </div>
-        )}
-
-        <div>
-          <h2 className="text-sm font-bold text-slate-900">
-            {title}
-          </h2>
-
-          {description && (
-            <p className="mt-0.5 text-[11px] text-slate-400">
-              {description}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-1">{children}</div>
-    </section>
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      {children}
+    </div>
   );
 }
+
+/* ==========================================
+   DIVIDER
+========================================== */
 
 function Divider() {
   return (
-    <div className="mx-4 border-t border-slate-100" />
+    <div className="ml-[72px] border-t border-slate-100" />
   );
 }
 
-export default function Settings() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+/* ==========================================
+   MODAL
+========================================== */
+
+function Modal({
+  open,
+  onClose,
+  children,
+}: ModalProps) {
+  if (!open) return null;
 
   return (
-    <div className="mx-auto max-w-4xl pb-12">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
+      <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+        >
+          <X size={18} />
+        </button>
+
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* ==========================================
+   SETTINGS PAGE
+========================================== */
+
+export default function Settings() {
+  const [settings, setSettings] =
+    useState(getSettings());
+
+  const [savingTargetOpen, setSavingTargetOpen] =
+    useState(false);
+
+  const [regionalOpen, setRegionalOpen] =
+    useState(false);
+
+  const [remindersOpen, setRemindersOpen] =
+    useState(false);
+
+  const [passcodeOpen, setPasscodeOpen] =
+    useState(false);
+
+  const [feedbackOpen, setFeedbackOpen] =
+    useState(false);
+
+  const [deleteOpen, setDeleteOpen] =
+    useState(false);
+
+  const [savingTarget, setSavingTarget] =
+    useState(
+      String(settings.monthlySavingTarget)
+    );
+
+  const [country, setCountry] =
+    useState(settings.country);
+
+  const [language, setLanguage] =
+    useState(settings.language);
+
+  const [currency, setCurrency] =
+    useState(settings.currency);
+
+  const fileInputRef =
+    useRef<HTMLInputElement>(null);
+
+  /* ========================================
+     REFRESH SETTINGS
+  ======================================== */
+
+  useEffect(() => {
+    const refresh = () => {
+      setSettings(getSettings());
+    };
+
+    window.addEventListener(
+      "settingsUpdated",
+      refresh
+    );
+
+    return () => {
+      window.removeEventListener(
+        "settingsUpdated",
+        refresh
+      );
+    };
+  }, []);
+
+  /* ========================================
+     DARK MODE
+  ======================================== */
+
+  useEffect(() => {
+    document.documentElement.classList.toggle(
+      "dark",
+      settings.darkMode
+    );
+  }, [settings.darkMode]);
+
+  /* ========================================
+     UPDATE
+  ======================================== */
+
+  function changeSetting(
+    updates: Partial<typeof settings>
+  ) {
+    updateSettings(updates);
+    setSettings(getSettings());
+  }
+
+  /* ========================================
+     IMPORT
+  ======================================== */
+
+  async function handleImport(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const file =
+      event.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+      await importMyFinanceData(file);
+
+      setSettings(getSettings());
+
+      alert(
+        "Your MyFinance data was imported successfully."
+      );
+    } catch {
+      alert(
+        "This backup file is invalid or could not be imported."
+      );
+    }
+
+    event.target.value = "";
+  }
+
+  /* ========================================
+     DELETE
+  ======================================== */
+
+  function handleDelete() {
+    deleteAllAccountData();
+
+    setDeleteOpen(false);
+
+    setSettings(getSettings());
+
+    alert(
+      "Your MyFinance account data has been deleted."
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-3xl pb-10">
 
       {/* HEADER */}
-      <div className="mb-7">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm">
-            <Settings2 size={21} />
-          </div>
 
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-950">
-              Settings
-            </h1>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          Settings
+        </h1>
 
-            <p className="mt-0.5 text-sm text-slate-500">
-              Manage your account, money preferences, and privacy.
-            </p>
-          </div>
-        </div>
+        <p className="mt-1 text-sm text-slate-500">
+          Manage your account and MyFinance preferences.
+        </p>
       </div>
 
+
       {/* PREMIUM */}
+
       <button
         type="button"
-        className="group relative mb-7 w-full overflow-hidden rounded-[28px] bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 p-6 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-xl"
+        className="group relative mb-7 w-full overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 p-5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
       >
-        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
 
-        <div className="pointer-events-none absolute -bottom-20 right-24 h-40 w-40 rounded-full bg-yellow-300/20 blur-3xl" />
+        <div className="relative max-w-[75%]">
 
-        <div className="relative max-w-xl">
-          <div className="flex items-center gap-2">
+          <div className="mb-2 flex items-center gap-2">
             <Sparkles
               size={18}
               className="text-yellow-200"
             />
 
-            <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/75">
+            <span className="text-xs font-bold uppercase tracking-wider text-white/80">
               MyFinance Premium
             </span>
           </div>
 
-          <h2 className="mt-2 text-2xl font-bold text-white">
-            Upgrade your financial intelligence
+          <h2 className="text-xl font-bold text-white">
+            Access Premium Features
           </h2>
 
-          <p className="mt-2 max-w-lg text-sm leading-relaxed text-white/80">
-            Get deeper CFO insights, advanced reports,
-            personalized recommendations, and smarter
-            financial planning.
+          <p className="mt-1 text-xs leading-relaxed text-white/80">
+            Unlock smarter CFO insights, advanced reports,
+            and personalized financial guidance.
           </p>
 
-          <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-bold text-slate-900 shadow-sm transition group-hover:px-6">
+          <span className="mt-4 inline-flex rounded-full bg-white px-5 py-2 text-xs font-bold text-slate-900 shadow-sm transition group-hover:px-6">
             Upgrade
-            <ChevronRight size={14} />
           </span>
-        </div>
 
-        {/* Decorative circles */}
-        <div className="pointer-events-none absolute right-8 top-1/2 hidden -translate-y-1/2 md:block">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full border-[14px] border-white/20">
-            <Sparkles
-              size={38}
-              className="text-white/80"
-            />
-          </div>
         </div>
       </button>
 
-      {/* GRID */}
-      <div className="grid gap-6 md:grid-cols-2">
 
-        {/* ACCOUNT */}
-        <SettingCard
-          title="Account"
-          description="Your MyFinance identity"
-          icon={<User size={18} />}
-        >
+      {/* ACCOUNT */}
+
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Account
+        </p>
+
+        <SettingGroup>
+
           <SettingRow
             icon={<User size={19} />}
             title="Profile"
-            subtitle="Symun · Your Personal CFO"
+            subtitle="Your financial identity"
+            onClick={() => {
+              window.location.href =
+                "/profile";
+            }}
           />
 
           <Divider />
@@ -227,32 +380,44 @@ export default function Settings() {
             icon={<Sparkles size={19} />}
             title="Upgrade"
             subtitle="Unlock premium CFO features"
+            onClick={() => {
+              alert(
+                "Premium upgrade will be available soon."
+              );
+            }}
           />
-        </SettingCard>
 
-        {/* MONEY */}
-        <SettingCard
-          title="Money"
-          description="Personalize your financial goals"
-          icon={<Coins size={18} />}
-        >
+          <Divider />
+
           <SettingRow
             icon={<Target size={19} />}
             title="Monthly Saving Target"
-            subtitle="$125 per month"
+            subtitle={`$${settings.monthlySavingTarget.toLocaleString()} per month`}
+            onClick={() =>
+              setSavingTargetOpen(true)
+            }
           />
-        </SettingCard>
 
-        {/* REGIONAL */}
-        <SettingCard
-          title="Regional Preferences"
-          description="Control how financial information is displayed"
-          icon={<Globe2 size={18} />}
-        >
+        </SettingGroup>
+      </section>
+
+
+      {/* REGIONAL */}
+
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Regional Preferences
+        </p>
+
+        <SettingGroup>
+
           <SettingRow
             icon={<Globe2 size={19} />}
             title="Country"
-            subtitle="Bangladesh"
+            subtitle={settings.country}
+            onClick={() =>
+              setRegionalOpen(true)
+            }
           />
 
           <Divider />
@@ -260,7 +425,10 @@ export default function Settings() {
           <SettingRow
             icon={<Languages size={19} />}
             title="Language"
-            subtitle="English"
+            subtitle={settings.language}
+            onClick={() =>
+              setRegionalOpen(true)
+            }
           />
 
           <Divider />
@@ -268,20 +436,36 @@ export default function Settings() {
           <SettingRow
             icon={<Coins size={19} />}
             title="Currency"
-            subtitle="USD ($)"
+            subtitle={settings.currency}
+            onClick={() =>
+              setRegionalOpen(true)
+            }
           />
-        </SettingCard>
 
-        {/* PREFERENCES */}
-        <SettingCard
-          title="Preferences"
-          description="Customize your MyFinance experience"
-          icon={<Settings2 size={18} />}
-        >
+        </SettingGroup>
+      </section>
+
+
+      {/* PREFERENCES */}
+
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Preferences
+        </p>
+
+        <SettingGroup>
+
           <SettingRow
             icon={<Bell size={19} />}
             title="Reminders"
-            subtitle="Manage financial reminders"
+            subtitle={
+              settings.remindersEnabled
+                ? "Enabled"
+                : "Disabled"
+            }
+            onClick={() =>
+              setRemindersOpen(true)
+            }
           />
 
           <Divider />
@@ -290,19 +474,21 @@ export default function Settings() {
             icon={<Moon size={19} />}
             title="Dark Mode"
             subtitle={
-              darkMode ? "Enabled" : "Disabled"
+              settings.darkMode
+                ? "Enabled"
+                : "Disabled"
             }
             right={
               <span
                 className={`relative h-6 w-11 rounded-full transition ${
-                  darkMode
+                  settings.darkMode
                     ? "bg-slate-900"
                     : "bg-slate-200"
                 }`}
               >
                 <span
                   className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
-                    darkMode
+                    settings.darkMode
                       ? "left-6"
                       : "left-1"
                   }`}
@@ -310,29 +496,31 @@ export default function Settings() {
               </span>
             }
             onClick={() =>
-              setDarkMode((value) => !value)
+              changeSetting({
+                darkMode:
+                  !settings.darkMode,
+              })
             }
           />
-        </SettingCard>
 
-        {/* SECURITY & DATA */}
-        <SettingCard
-          title="Security & Data"
-          description="Protect and manage your financial data"
-          icon={<ShieldCheck size={18} />}
-        >
-          <SettingRow
-            icon={<LockKeyhole size={19} />}
-            title="Passcode Lock"
-            subtitle="Protect MyFinance when you open it"
-          />
+        </SettingGroup>
+      </section>
 
-          <Divider />
+
+      {/* DATA */}
+
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Your Data
+        </p>
+
+        <SettingGroup>
 
           <SettingRow
             icon={<Download size={19} />}
             title="Export Data"
-            subtitle="Download a backup of your financial data"
+            subtitle="Download a MyFinance backup"
+            onClick={exportMyFinanceData}
           />
 
           <Divider />
@@ -340,60 +528,33 @@ export default function Settings() {
           <SettingRow
             icon={<Upload size={19} />}
             title="Import Data"
-            subtitle="Restore your MyFinance backup"
+            subtitle="Restore a previous backup"
+            onClick={() =>
+              fileInputRef.current?.click()
+            }
           />
-        </SettingCard>
 
-        {/* SUPPORT */}
-        <SettingCard
-          title="Support"
-          description="Help us make MyFinance better"
-          icon={<MessageSquare size={18} />}
-        >
-          <SettingRow
-            icon={<Star size={19} />}
-            title="Rate MyFinance"
-            subtitle="Tell us what you think"
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json,application/json"
+            className="hidden"
+            onChange={handleImport}
           />
 
           <Divider />
 
           <SettingRow
-            icon={<MessageSquare size={19} />}
-            title="Send Feedback"
-            subtitle="Share an idea or report a problem"
-          />
-        </SettingCard>
-
-        {/* LEGAL */}
-        <SettingCard
-          title="Terms & Privacy"
-          description="Your privacy and legal information"
-          icon={<ShieldCheck size={18} />}
-        >
-          <SettingRow
-            icon={<ShieldCheck size={19} />}
-            title="Privacy Policy"
-          />
-
-          <Divider />
-
-          <SettingRow
-            icon={<FileText size={19} />}
-            title="Terms of Use"
-          />
-        </SettingCard>
-
-        {/* ACCOUNT ACTIONS */}
-        <SettingCard
-          title="Account"
-          description="Manage your MyFinance account"
-          icon={<User size={18} />}
-        >
-          <SettingRow
-            icon={<LogOut size={19} />}
-            title="Log Out"
-            subtitle="Sign out of MyFinance"
+            icon={<Lock size={19} />}
+            title="Passcode Lock"
+            subtitle={
+              settings.passcodeEnabled
+                ? "Enabled"
+                : "Not enabled"
+            }
+            onClick={() =>
+              setPasscodeOpen(true)
+            }
           />
 
           <Divider />
@@ -401,61 +562,468 @@ export default function Settings() {
           <SettingRow
             icon={<Trash2 size={19} />}
             title="Delete Account Data"
-            subtitle="Permanently remove your financial data"
+            subtitle="Permanently remove your MyFinance data"
             danger
-            onClick={() => setDeleteOpen(true)}
+            onClick={() =>
+              setDeleteOpen(true)
+            }
           />
-        </SettingCard>
 
-      </div>
+        </SettingGroup>
+      </section>
 
-      {/* DELETE CONFIRMATION */}
-      {deleteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-500">
-              <Trash2 size={22} />
-            </div>
+      {/* SUPPORT */}
 
-            <h2 className="mt-5 text-xl font-bold text-slate-950">
-              Delete your financial data?
-            </h2>
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Support
+        </p>
 
-            <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              This will permanently remove your transactions,
-              investments, budgets, goals, and financial
-              progress. This action cannot be undone.
-            </p>
+        <SettingGroup>
 
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setDeleteOpen(false)}
-                className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-              >
-                Cancel
-              </button>
+          <SettingRow
+            icon={<Star size={19} />}
+            title="Rate MyFinance"
+            subtitle="Tell us what you think"
+            onClick={() =>
+              alert(
+                "Thanks for supporting MyFinance!"
+              )
+            }
+          />
 
-              <button
-                type="button"
-                onClick={() => {
-                  setDeleteOpen(false);
-                  // Connect your actual data deletion logic here.
-                }}
-                className="flex-1 rounded-xl bg-red-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-600"
-              >
-                Delete Data
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          <Divider />
+
+          <SettingRow
+            icon={<MessageSquare size={19} />}
+            title="Send Feedback"
+            subtitle="Help us improve MyFinance"
+            onClick={() =>
+              setFeedbackOpen(true)
+            }
+          />
+
+        </SettingGroup>
+      </section>
+
+
+      {/* LEGAL */}
+
+      <section className="mb-6">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+          Terms & Privacy
+        </p>
+
+        <SettingGroup>
+
+          <SettingRow
+            icon={<ShieldCheck size={19} />}
+            title="Privacy Policy"
+            onClick={() =>
+              alert(
+                "Privacy Policy page coming soon."
+              )
+            }
+          />
+
+          <Divider />
+
+          <SettingRow
+            icon={<FileText size={19} />}
+            title="Terms of Use"
+            onClick={() =>
+              alert(
+                "Terms of Use page coming soon."
+              )
+            }
+          />
+
+        </SettingGroup>
+      </section>
+
+
+      {/* LOGOUT */}
+
+      <section>
+        <SettingGroup>
+
+          <SettingRow
+            icon={<LogOut size={19} />}
+            title="Log Out"
+            subtitle="Sign out of MyFinance"
+            onClick={() => {
+              alert(
+                "You have been logged out."
+              );
+            }}
+          />
+
+        </SettingGroup>
+      </section>
+
 
       {/* FOOTER */}
+
       <p className="mt-8 text-center text-[11px] text-slate-400">
         MyFinance · Your Personal CFO
       </p>
+
+
+      {/* ======================================
+          SAVING TARGET MODAL
+      ====================================== */}
+
+      <Modal
+        open={savingTargetOpen}
+        onClose={() =>
+          setSavingTargetOpen(false)
+        }
+      >
+        <h2 className="text-xl font-bold text-slate-900">
+          Monthly Saving Target
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          How much do you want to save each month?
+        </p>
+
+        <input
+          value={savingTarget}
+          onChange={(event) =>
+            setSavingTarget(
+              event.target.value
+            )
+          }
+          type="number"
+          min="0"
+          className="mt-6 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-cyan-500"
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            const value =
+              Number(savingTarget);
+
+            if (
+              !Number.isFinite(value) ||
+              value < 0
+            ) {
+              return;
+            }
+
+            changeSetting({
+              monthlySavingTarget:
+                value,
+            });
+
+            setSavingTargetOpen(false);
+          }}
+          className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800"
+        >
+          Save Target
+        </button>
+      </Modal>
+
+
+      {/* ======================================
+          REGIONAL MODAL
+      ====================================== */}
+
+      <Modal
+        open={regionalOpen}
+        onClose={() =>
+          setRegionalOpen(false)
+        }
+      >
+        <h2 className="text-xl font-bold text-slate-900">
+          Regional Preferences
+        </h2>
+
+        <div className="mt-6 space-y-4">
+
+          <label className="block">
+            <span className="text-xs font-semibold text-slate-500">
+              Country
+            </span>
+
+            <select
+              value={country}
+              onChange={(event) =>
+                setCountry(
+                  event.target.value
+                )
+              }
+              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
+            >
+              <option>Bangladesh</option>
+              <option>India</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Germany</option>
+              <option>Japan</option>
+              <option>Canada</option>
+              <option>Australia</option>
+            </select>
+          </label>
+
+
+          <label className="block">
+            <span className="text-xs font-semibold text-slate-500">
+              Language
+            </span>
+
+            <select
+              value={language}
+              onChange={(event) =>
+                setLanguage(
+                  event.target.value
+                )
+              }
+              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
+            >
+              <option>English</option>
+              <option>বাংলা</option>
+              <option>日本語</option>
+              <option>Deutsch</option>
+            </select>
+          </label>
+
+
+          <label className="block">
+            <span className="text-xs font-semibold text-slate-500">
+              Currency
+            </span>
+
+            <select
+              value={currency}
+              onChange={(event) =>
+                setCurrency(
+                  event.target.value
+                )
+              }
+              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
+            >
+              <option value="USD">
+                USD ($)
+              </option>
+
+              <option value="BDT">
+                BDT (৳)
+              </option>
+
+              <option value="EUR">
+                EUR (€)
+              </option>
+
+              <option value="GBP">
+                GBP (£)
+              </option>
+
+              <option value="JPY">
+                JPY (¥)
+              </option>
+
+              <option value="CAD">
+                CAD ($)
+              </option>
+            </select>
+          </label>
+
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            changeSetting({
+              country,
+              language,
+              currency,
+            });
+
+            setRegionalOpen(false);
+          }}
+          className="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+        >
+          Save Preferences
+        </button>
+      </Modal>
+
+
+      {/* ======================================
+          REMINDERS MODAL
+      ====================================== */}
+
+      <Modal
+        open={remindersOpen}
+        onClose={() =>
+          setRemindersOpen(false)
+        }
+      >
+        <h2 className="text-xl font-bold text-slate-900">
+          Reminders
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          Keep your financial habits on track.
+        </p>
+
+        <button
+          type="button"
+          onClick={() =>
+            changeSetting({
+              remindersEnabled:
+                !settings.remindersEnabled,
+            })
+          }
+          className="mt-6 flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4"
+        >
+          <span className="text-sm font-semibold text-slate-900">
+            Financial reminders
+          </span>
+
+          <span
+            className={`relative h-6 w-11 rounded-full ${
+              settings.remindersEnabled
+                ? "bg-emerald-500"
+                : "bg-slate-300"
+            }`}
+          >
+            <span
+              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                settings.remindersEnabled
+                  ? "left-6"
+                  : "left-1"
+              }`}
+            />
+          </span>
+        </button>
+      </Modal>
+
+
+      {/* ======================================
+          PASSCODE MODAL
+      ====================================== */}
+
+      <Modal
+        open={passcodeOpen}
+        onClose={() =>
+          setPasscodeOpen(false)
+        }
+      >
+        <h2 className="text-xl font-bold text-slate-900">
+          Passcode Lock
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          Passcode protection will be connected to
+          the authentication layer next.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => {
+            setPasscodeOpen(false);
+
+            alert(
+              "Passcode setup will be enabled when authentication is connected."
+            );
+          }}
+          className="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+        >
+          Continue
+        </button>
+      </Modal>
+
+
+      {/* ======================================
+          FEEDBACK MODAL
+      ====================================== */}
+
+      <Modal
+        open={feedbackOpen}
+        onClose={() =>
+          setFeedbackOpen(false)
+        }
+      >
+        <h2 className="text-xl font-bold text-slate-900">
+          Send Feedback
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          Tell us how we can make MyFinance better.
+        </p>
+
+        <textarea
+          rows={5}
+          placeholder="Write your feedback..."
+          className="mt-5 w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            setFeedbackOpen(false);
+
+            alert(
+              "Thank you for your feedback!"
+            );
+          }}
+          className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+        >
+          Send Feedback
+        </button>
+      </Modal>
+
+
+      {/* ======================================
+          DELETE MODAL
+      ====================================== */}
+
+      <Modal
+        open={deleteOpen}
+        onClose={() =>
+          setDeleteOpen(false)
+        }
+      >
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+          <Trash2 size={24} />
+        </div>
+
+        <h2 className="mt-5 text-xl font-bold text-slate-900">
+          Delete Account Data?
+        </h2>
+
+        <p className="mt-2 text-sm leading-relaxed text-slate-500">
+          This will permanently delete your transactions,
+          investments, budgets, player progress, and settings.
+          This action cannot be undone.
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+
+          <button
+            type="button"
+            onClick={() =>
+              setDeleteOpen(false)
+            }
+            className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white hover:bg-red-700"
+          >
+            Delete Data
+          </button>
+
+        </div>
+      </Modal>
+
     </div>
   );
 }
