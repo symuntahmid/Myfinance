@@ -61,7 +61,10 @@ export default function ProfileCard({
     );
   }
 
-  const progress = Math.min(Math.max(level.percent, 0), 100);
+  const progress = Math.min(
+    Math.max(level.percent, 0),
+    100
+  );
 
   return (
     <section
@@ -91,12 +94,10 @@ export default function ProfileCard({
             compact ? "h-16 w-16" : "h-28 w-28"
           }`}
         >
-          <div
-            className={`relative h-full w-full overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-cyan-100 to-teal-100 shadow-lg`}
-          >
+          <div className="relative h-full w-full overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-cyan-100 to-teal-100 shadow-lg">
             {!avatarError ? (
               <Image
-                src="/quokka-profile.png"
+                src="/images/quokka/quokka-profile.png"
                 alt="Premium quokka profile"
                 fill
                 sizes={compact ? "64px" : "112px"}
@@ -149,7 +150,9 @@ export default function ProfileCard({
 
           <p
             className={`text-slate-500 ${
-              compact ? "mt-0.5 text-xs" : "mt-1 text-sm"
+              compact
+                ? "mt-0.5 text-xs"
+                : "mt-1 text-sm"
             }`}
           >
             Your Personal CFO
@@ -158,7 +161,11 @@ export default function ProfileCard({
           {!compact && (
             <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
               <span>Smarter money. Bigger dreams.</span>
-              <Rocket size={15} className="text-cyan-500" />
+
+              <Rocket
+                size={15}
+                className="text-cyan-500"
+              />
             </div>
           )}
         </div>
