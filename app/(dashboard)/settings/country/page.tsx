@@ -1,10 +1,14 @@
 "use client";
 
+import {
+  updateSettings,
+} from "@/app/data/settings";
+
+import { countries } from "@/app/data/countries";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Check, Search } from "lucide-react";
-
-import { countries } from "@/app/data/countries";
 
 export default function CountryPage() {
   const [search, setSearch] = useState("");
@@ -33,16 +37,42 @@ export default function CountryPage() {
   }, [search]);
 
   const handleSelect = (code: string) => {
+    const selectedCountry = countries.find(
+      (country) => country.code === code
+    );
+
+    if (!selectedCountry) {
+      return;
+    }
+
     setSelected(code);
 
+    /*
+     * Save country code separately.
+     * Useful for future country-specific features.
+     */
     localStorage.setItem(
       "myfinance-country",
-      code
+      selectedCountry.code
     );
 
-    window.dispatchEvent(
-      new Event("countryUpdated")
-    );
+    /*
+     * Update the main MyFinance settings.
+     *
+     * Settings page reads:
+     * getSettings().country
+     *
+     * Therefore we save the COUNTRY NAME here,
+     * not only the country code.
+     */
+    updateSettings({
+      country: selectedCountry.name,
+    });
+
+    /*
+     * Return to Settings after selection.
+     */
+    window.location.href = "/settings";
   };
 
   return (

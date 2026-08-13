@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
+import { countries } from "@/app/data/countries";
 import {
   User,
   Sparkles,
@@ -174,6 +175,16 @@ function Modal({
 ========================================== */
 
 export default function Settings() {
+
+  const [passcodeStep, setPasscodeStep] =
+  useState<"create" | "confirm">("create");
+
+const [passcodeInput, setPasscodeInput] =
+  useState("");
+
+const [passcodeConfirm, setPasscodeConfirm] =
+  useState("");
+
   const [settings, setSettings] =
     useState(getSettings());
 
@@ -226,6 +237,7 @@ export default function Settings() {
       refresh
     );
 
+    
     return () => {
       window.removeEventListener(
         "settingsUpdated",
@@ -289,16 +301,35 @@ export default function Settings() {
      DELETE
   ======================================== */
 
+  
+
   function handleDelete() {
-    deleteAllAccountData();
+  deleteAllAccountData();
 
-    setDeleteOpen(false);
+  setDeleteOpen(false);
 
-    setSettings(getSettings());
+  setSettings(getSettings());
+}
 
-    alert(
-      "Your MyFinance account data has been deleted."
-    );
+  async function hashPasscode(
+    passcode: string
+  ) {
+    const data = new TextEncoder().encode(passcode);
+
+    const hashBuffer =
+      await crypto.subtle.digest(
+        "SHA-256",
+        data
+      );
+
+    const hashArray =
+      Array.from(new Uint8Array(hashBuffer));
+
+    return hashArray
+      .map((byte) =>
+        byte.toString(16).padStart(2, "0")
+      )
+      .join("");
   }
 
   return (
@@ -412,24 +443,25 @@ export default function Settings() {
         <SettingGroup>
 
           <SettingRow
-            icon={<Globe2 size={19} />}
-            title="Country"
-            subtitle={settings.country}
-            onClick={() =>
-              setRegionalOpen(true)
-            }
-          />
+  icon={<Globe2 size={19} />}
+  title="Country"
+  subtitle={settings.country}
+  onClick={() => {
+    window.location.href = "/settings/country";
+  }}
+/>
 
           <Divider />
 
           <SettingRow
-            icon={<Languages size={19} />}
-            title="Language"
-            subtitle={settings.language}
-            onClick={() =>
-              setRegionalOpen(true)
-            }
-          />
+  icon={<Languages size={19} />}
+  title="Language"
+  subtitle={settings.language}
+  onClick={() => {
+    window.location.href =
+      "/settings/language";
+  }}
+/>
 
           <Divider />
 
@@ -517,11 +549,13 @@ export default function Settings() {
         <SettingGroup>
 
           <SettingRow
-            icon={<Download size={19} />}
-            title="Export Data"
-            subtitle="Download a MyFinance backup"
-            onClick={exportMyFinanceData}
-          />
+  icon={<Download size={19} />}
+  title="Export Data"
+  subtitle="Download a backup of your MyFinance data"
+  onClick={() => {
+    exportMyFinanceData();
+  }}
+/>
 
           <Divider />
 
@@ -743,104 +777,24 @@ export default function Settings() {
 
         <div className="mt-6 space-y-4">
 
-          <label className="block">
-            <span className="text-xs font-semibold text-slate-500">
-              Country
-            </span>
-
-            <select
-              value={country}
-              onChange={(event) =>
-                setCountry(
-                  event.target.value
-                )
-              }
-              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
-            >
-              <option>Bangladesh</option>
-              <option>India</option>
-              <option>United States</option>
-              <option>United Kingdom</option>
-              <option>Germany</option>
-              <option>Japan</option>
-              <option>Canada</option>
-              <option>Australia</option>
-            </select>
-          </label>
-
-
-          <label className="block">
-            <span className="text-xs font-semibold text-slate-500">
-              Language
-            </span>
-
-            <select
-              value={language}
-              onChange={(event) =>
-                setLanguage(
-                  event.target.value
-                )
-              }
-              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
-            >
-              <option>English</option>
-              <option>বাংলা</option>
-              <option>日本語</option>
-              <option>Deutsch</option>
-            </select>
-          </label>
-
-
-          <label className="block">
-            <span className="text-xs font-semibold text-slate-500">
-              Currency
-            </span>
-
-            <select
-              value={currency}
-              onChange={(event) =>
-                setCurrency(
-                  event.target.value
-                )
-              }
-              className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3"
-            >
-              <option value="USD">
-                USD ($)
-              </option>
-
-              <option value="BDT">
-                BDT (৳)
-              </option>
-
-              <option value="EUR">
-                EUR (€)
-              </option>
-
-              <option value="GBP">
-                GBP (£)
-              </option>
-
-              <option value="JPY">
-                JPY (¥)
-              </option>
-
-              <option value="CAD">
-                CAD ($)
-              </option>
-            </select>
-          </label>
-
+          <SettingRow
+  icon={<Coins size={19} />}
+  title="Currency"
+  subtitle={settings.currency}
+  onClick={() => {
+    window.location.href =
+      "/settings/currency";
+  }}
+/>
         </div>
 
         <button
           type="button"
           onClick={() => {
             changeSetting({
-              country,
-              language,
-              currency,
-            });
+
+  currency,
+});
 
             setRegionalOpen(false);
           }}
@@ -901,41 +855,187 @@ export default function Settings() {
         </button>
       </Modal>
 
+{/* ======================================
+    PASSCODE MODAL
+====================================== */}
 
-      {/* ======================================
-          PASSCODE MODAL
-      ====================================== */}
+<Modal
+  open={passcodeOpen}
+  onClose={() => {
+    setPasscodeOpen(false);
+    setPasscodeStep("create");
+    setPasscodeInput("");
+    setPasscodeConfirm("");
+  }}
+>
+  <h2 className="text-xl font-bold text-slate-900">
+    Passcode Lock
+  </h2>
 
-      <Modal
-        open={passcodeOpen}
-        onClose={() =>
-          setPasscodeOpen(false)
-        }
+  <p className="mt-1 text-sm leading-relaxed text-slate-500">
+    Protect your MyFinance account with a passcode.
+  </p>
+
+  {!settings.passcodeEnabled ? (
+    <>
+      <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+        <div className="flex items-center gap-3">
+          <Lock
+            size={20}
+            className="text-slate-600"
+          />
+
+          <div>
+            <p className="text-sm font-semibold text-slate-900">
+              Set up your passcode
+            </p>
+
+            <p className="mt-0.5 text-xs text-slate-500">
+              Use a 4–6 digit passcode.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {passcodeStep === "create" ? (
+        <>
+          <label className="mt-6 block text-sm font-semibold text-slate-700">
+            Create passcode
+          </label>
+
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={6}
+            value={passcodeInput}
+            onChange={(event) => {
+              const value =
+                event.target.value.replace(
+                  /\D/g,
+                  ""
+                );
+
+              setPasscodeInput(value);
+            }}
+            placeholder="Enter 4–6 digits"
+            className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+          />
+
+          <button
+            type="button"
+            disabled={
+              passcodeInput.length < 4
+            }
+            onClick={() => {
+              setPasscodeStep("confirm");
+            }}
+            className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Continue
+          </button>
+        </>
+      ) : (
+        <>
+          <label className="mt-6 block text-sm font-semibold text-slate-700">
+            Confirm passcode
+          </label>
+
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={6}
+            value={passcodeConfirm}
+            onChange={(event) => {
+              const value =
+                event.target.value.replace(
+                  /\D/g,
+                  ""
+                );
+
+              setPasscodeConfirm(value);
+            }}
+            placeholder="Enter passcode again"
+            className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+          />
+
+          {passcodeConfirm.length > 0 &&
+            passcodeConfirm !== passcodeInput && (
+              <p className="mt-2 text-xs font-medium text-red-500">
+                Passcodes do not match.
+              </p>
+            )}
+
+          <button
+            type="button"
+            disabled={
+              passcodeConfirm.length < 4 ||
+              passcodeConfirm !== passcodeInput
+            }
+            onClick={async () => {
+              const hash =
+                await hashPasscode(
+                  passcodeInput
+                );
+
+              updateSettings({
+                passcodeEnabled: true,
+                passcodeHash: hash,
+              });
+
+              setSettings(getSettings());
+
+              setPasscodeOpen(false);
+              setPasscodeStep("create");
+              setPasscodeInput("");
+              setPasscodeConfirm("");
+            }}
+            className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Enable Passcode Lock
+          </button>
+        </>
+      )}
+    </>
+  ) : (
+    <>
+      <div className="mt-5 rounded-2xl bg-emerald-50 p-4">
+        <div className="flex items-center gap-3">
+          <ShieldCheck
+            size={21}
+            className="text-emerald-600"
+          />
+
+          <div>
+            <p className="text-sm font-semibold text-emerald-700">
+              Passcode Lock is enabled
+            </p>
+
+            <p className="mt-0.5 text-xs text-emerald-600">
+              Your MyFinance account is protected.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          updateSettings({
+            passcodeEnabled: false,
+            passcodeHash: null,
+          });
+
+          setSettings(getSettings());
+
+          setPasscodeOpen(false);
+        }}
+        className="mt-6 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-600 transition hover:bg-red-100"
       >
-        <h2 className="text-xl font-bold text-slate-900">
-          Passcode Lock
-        </h2>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Passcode protection will be connected to
-          the authentication layer next.
-        </p>
-
-        <button
-          type="button"
-          onClick={() => {
-            setPasscodeOpen(false);
-
-            alert(
-              "Passcode setup will be enabled when authentication is connected."
-            );
-          }}
-          className="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
-        >
-          Continue
-        </button>
-      </Modal>
-
+        Disable Passcode Lock
+      </button>
+    </>
+  )}
+</Modal>
 
       {/* ======================================
           FEEDBACK MODAL
@@ -1025,5 +1125,6 @@ export default function Settings() {
       </Modal>
 
     </div>
+
   );
 }

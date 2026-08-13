@@ -1,21 +1,60 @@
-import {
-  clearTransactions,
-} from "./transactions";
+"use client";
 
-import {
-  clearInvestments,
-} from "./investments";
+import { getSettings, saveSettings } from "./settings";
 
-import {
-  clearBudgets,
-} from "./budgets";
+const STORAGE_KEYS = {
+  transactions: "myfinance-transactions",
+  investments: "myfinance-investments",
+  budgets: "myfinance-budgets",
+  player: "myfinance-player",
+  settings: "myfinance-settings",
+  portfolioHistory: "myfinance-portfolio-history",
+  goals: "myfinance-goals",
+  achievements: "myfinance-achievements",
+  dailyJourney: "myfinance-daily-journey",
+};
 
-import {
-  resetSettings,
-} from "./settings";
+/* ==========================================
+   HELPERS
+========================================== */
 
-const PLAYER_STORAGE_KEY =
-  "myfinance-player";
+function getStoredArray(key: string) {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  const saved = localStorage.getItem(key);
+
+  if (!saved) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function getStoredObject(key: string) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const saved = localStorage.getItem(key);
+
+  if (!saved) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return null;
+  }
+}
 
 /* ==========================================
    EXPORT
@@ -32,39 +71,58 @@ export function exportMyFinanceData() {
     exportedAt:
       new Date().toISOString(),
 
-    transactions: JSON.parse(
-      localStorage.getItem(
-        "myfinance-transactions"
-      ) || "[]"
-    ),
+    transactions:
+      getStoredArray(
+        STORAGE_KEYS.transactions
+      ),
 
-    investments: JSON.parse(
-      localStorage.getItem(
-        "myfinance-investments"
-      ) || "[]"
-    ),
+    investments:
+      getStoredArray(
+        STORAGE_KEYS.investments
+      ),
 
-    budgets: JSON.parse(
-      localStorage.getItem(
-        "myfinance-budgets"
-      ) || "[]"
-    ),
+    budgets:
+      getStoredArray(
+        STORAGE_KEYS.budgets
+      ),
 
-    player: JSON.parse(
-      localStorage.getItem(
-        PLAYER_STORAGE_KEY
-      ) || "null"
-    ),
+    player:
+      getStoredObject(
+        STORAGE_KEYS.player
+      ),
 
-    settings: JSON.parse(
-      localStorage.getItem(
-        "myfinance-settings"
-      ) || "null"
-    ),
+    settings:
+      getSettings(),
+
+    portfolioHistory:
+      getStoredArray(
+        STORAGE_KEYS.portfolioHistory
+      ),
+
+    goals:
+      getStoredArray(
+        STORAGE_KEYS.goals
+      ),
+
+    achievements:
+      getStoredArray(
+        STORAGE_KEYS.achievements
+      ),
+
+    dailyJourney:
+      getStoredArray(
+        STORAGE_KEYS.dailyJourney
+      ),
   };
 
   const blob = new Blob(
-    [JSON.stringify(backup, null, 2)],
+    [
+      JSON.stringify(
+        backup,
+        null,
+        2
+      ),
+    ],
     {
       type: "application/json",
     }
@@ -87,7 +145,7 @@ export function exportMyFinanceData() {
 
   link.click();
 
-  link.remove();
+  document.body.removeChild(link);
 
   URL.revokeObjectURL(url);
 }
@@ -96,180 +154,167 @@ export function exportMyFinanceData() {
    IMPORT
 ========================================== */
 
-export function importMyFinanceData(
+export async function importMyFinanceData(
   file: File
-): Promise<void> {
-  return new Promise(
-    (resolve, reject) => {
-      const reader =
-        new FileReader();
-
-      reader.onload = () => {
-        try {
-          const backup = JSON.parse(
-            String(reader.result)
-          );
-
-          if (
-            !backup ||
-            backup.version !== 1
-          ) {
-            throw new Error(
-              "Invalid MyFinance backup file."
-            );
-          }
-
-          if (
-            !Array.isArray(
-              backup.transactions
-            ) ||
-            !Array.isArray(
-              backup.investments
-            ) ||
-            !Array.isArray(
-              backup.budgets
-            )
-          ) {
-            throw new Error(
-              "Backup file is incomplete."
-            );
-          }
-
-          localStorage.setItem(
-            "myfinance-transactions",
-            JSON.stringify(
-              backup.transactions
-            )
-          );
-
-          localStorage.setItem(
-            "myfinance-investments",
-            JSON.stringify(
-              backup.investments
-            )
-          );
-
-          localStorage.setItem(
-            "myfinance-budgets",
-            JSON.stringify(
-              backup.budgets
-            )
-          );
-
-          if (backup.player) {
-            localStorage.setItem(
-              PLAYER_STORAGE_KEY,
-              JSON.stringify(
-                backup.player
-              )
-            );
-          }
-
-          if (backup.settings) {
-            localStorage.setItem(
-              "myfinance-settings",
-              JSON.stringify(
-                backup.settings
-              )
-            );
-          }
-
-          window.dispatchEvent(
-            new Event(
-              "transactionsUpdated"
-            )
-          );
-
-          window.dispatchEvent(
-            new Event(
-              "investmentsUpdated"
-            )
-          );
-
-          window.dispatchEvent(
-            new Event(
-              "budgetsUpdated"
-            )
-          );
-
-          window.dispatchEvent(
-            new Event(
-              "player-updated"
-            )
-          );
-
-          window.dispatchEvent(
-            new Event(
-              "settingsUpdated"
-            )
-          );
-
-          window.dispatchEvent(
-            new Event(
-              "dailyJourneyUpdated"
-            )
-          );
-
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      reader.onerror = () => {
-        reject(
-          new Error(
-            "Could not read backup file."
-          )
-        );
-      };
-
-      reader.readAsText(file);
-    }
-  );
-}
-
-/* ==========================================
-   DELETE ALL ACCOUNT DATA
-========================================== */
-
-export function deleteAllAccountData() {
+) {
   if (typeof window === "undefined") {
     return;
   }
 
-  clearTransactions();
+  const text =
+    await file.text();
 
-  clearInvestments();
+  let backup: any;
 
-  clearBudgets();
+  try {
+    backup = JSON.parse(text);
+  } catch {
+    throw new Error(
+      "Invalid JSON backup file."
+    );
+  }
 
-  localStorage.removeItem(
-    PLAYER_STORAGE_KEY
+  /* ------------------------------------------
+     BASIC VALIDATION
+  ------------------------------------------ */
+
+  if (
+    !backup ||
+    typeof backup !== "object"
+  ) {
+    throw new Error(
+      "Invalid MyFinance backup."
+    );
+  }
+
+  if (
+    backup.version !== 1
+  ) {
+    throw new Error(
+      "Unsupported MyFinance backup version."
+    );
+  }
+
+  /* ------------------------------------------
+     VALIDATE MAIN DATA
+  ------------------------------------------ */
+
+  const arrayKeys = [
+    "transactions",
+    "investments",
+    "budgets",
+    "portfolioHistory",
+    "goals",
+    "achievements",
+    "dailyJourney",
+  ];
+
+  for (const key of arrayKeys) {
+    if (
+      backup[key] !== undefined &&
+      !Array.isArray(backup[key])
+    ) {
+      throw new Error(
+        `Invalid ${key} data.`
+      );
+    }
+  }
+
+  if (
+    backup.settings !== undefined &&
+    (
+      !backup.settings ||
+      typeof backup.settings !== "object"
+    )
+  ) {
+    throw new Error(
+      "Invalid settings data."
+    );
+  }
+
+  /* ------------------------------------------
+     RESTORE ARRAYS
+  ------------------------------------------ */
+
+  const restoreArray = (
+    key: string,
+    value: unknown
+  ) => {
+    if (Array.isArray(value)) {
+      localStorage.setItem(
+        key,
+        JSON.stringify(value)
+      );
+    }
+  };
+
+  restoreArray(
+    STORAGE_KEYS.transactions,
+    backup.transactions
   );
 
-  resetSettings();
-
-  /*
-   * Clear other known MyFinance
-   * supporting data.
-   */
-
-  localStorage.removeItem(
-    "myfinance-achievements"
+  restoreArray(
+    STORAGE_KEYS.investments,
+    backup.investments
   );
 
-  localStorage.removeItem(
-    "myfinance-daily-journey"
+  restoreArray(
+    STORAGE_KEYS.budgets,
+    backup.budgets
   );
 
-  localStorage.removeItem(
-    "myfinance-portfolio-history"
+  restoreArray(
+    STORAGE_KEYS.portfolioHistory,
+    backup.portfolioHistory
   );
 
-  localStorage.removeItem(
-    "myfinance-goals"
+  restoreArray(
+    STORAGE_KEYS.goals,
+    backup.goals
   );
+
+  restoreArray(
+    STORAGE_KEYS.achievements,
+    backup.achievements
+  );
+
+  restoreArray(
+    STORAGE_KEYS.dailyJourney,
+    backup.dailyJourney
+  );
+
+  /* ------------------------------------------
+     RESTORE PLAYER
+  ------------------------------------------ */
+
+  if (
+    backup.player &&
+    typeof backup.player === "object"
+  ) {
+    localStorage.setItem(
+      STORAGE_KEYS.player,
+      JSON.stringify(
+        backup.player
+      )
+    );
+  }
+
+  /* ------------------------------------------
+     RESTORE SETTINGS
+  ------------------------------------------ */
+
+  if (
+    backup.settings &&
+    typeof backup.settings === "object"
+  ) {
+    saveSettings(
+      backup.settings
+    );
+  }
+
+  /* ------------------------------------------
+     REFRESH APPLICATION
+  ------------------------------------------ */
 
   window.dispatchEvent(
     new Event("transactionsUpdated")
@@ -284,11 +329,75 @@ export function deleteAllAccountData() {
   );
 
   window.dispatchEvent(
+    new Event("settingsUpdated")
+  );
+
+  window.dispatchEvent(
     new Event("player-updated")
   );
 
   window.dispatchEvent(
+    new Event("countryUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("languageUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("currencyUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("dailyJourneyUpdated")
+  );
+
+  /*
+   * Give React components time to
+   * receive the restored localStorage data.
+   */
+
+  await new Promise(
+    (resolve) =>
+      setTimeout(resolve, 100)
+  );
+
+  return true;
+}
+
+/* ==========================================
+   DELETE ALL ACCOUNT DATA
+========================================== */
+
+export function deleteAllAccountData() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  Object.values(
+    STORAGE_KEYS
+  ).forEach((key) => {
+    localStorage.removeItem(key);
+  });
+
+  window.dispatchEvent(
+    new Event("transactionsUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("investmentsUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("budgetsUpdated")
+  );
+
+  window.dispatchEvent(
     new Event("settingsUpdated")
+  );
+
+  window.dispatchEvent(
+    new Event("player-updated")
   );
 
   window.dispatchEvent(
