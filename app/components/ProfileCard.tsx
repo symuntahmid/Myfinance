@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { CheckCircle2, Rocket, User } from "lucide-react";
 import { getPlayer, getLevel } from "@/app/data/player";
+import { getProfile } from "@/app/data/profile";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -23,24 +24,42 @@ export default function ProfileCard({
     typeof getLevel
   > | null>(null);
 
+  const [profile, setProfile] = useState(
+  getProfile()
+);
+
   useEffect(() => {
     setMounted(true);
 
     const refreshPlayer = () => {
-      setPlayer(getPlayer());
-      setLevel(getLevel());
-    };
+  setPlayer(getPlayer());
+  setLevel(getLevel());
+  setProfile(getProfile());
+};
 
     refreshPlayer();
 
-    window.addEventListener("player-updated", refreshPlayer);
+   window.addEventListener(
+  "player-updated",
+  refreshPlayer
+);
 
-    return () => {
-      window.removeEventListener(
-        "player-updated",
-        refreshPlayer
-      );
-    };
+window.addEventListener(
+  "profileUpdated",
+  refreshPlayer
+);
+
+return () => {
+  window.removeEventListener(
+    "player-updated",
+    refreshPlayer
+  );
+
+  window.removeEventListener(
+    "profileUpdated",
+    refreshPlayer
+  );
+};
   }, []);
 
   if (!mounted || !player || !level) {
@@ -139,7 +158,9 @@ export default function ProfileCard({
                 compact ? "text-lg" : "text-3xl"
               }`}
             >
-              {player.name}
+              {profile.displayName ||
+  `${profile.firstName} ${profile.lastName}`.trim() ||
+  player.name}
             </h2>
 
             <CheckCircle2
@@ -148,15 +169,17 @@ export default function ProfileCard({
             />
           </div>
 
-          <p
-            className={`text-slate-500 ${
-              compact
-                ? "mt-0.5 text-xs"
-                : "mt-1 text-sm"
-            }`}
-          >
-            Your Personal CFO
-          </p>
+          {profile.username && (
+  <p
+    className={`text-slate-400 ${
+      compact
+        ? "mt-0.5 text-[11px]"
+        : "mt-1 text-xs"
+    }`}
+  >
+    @{profile.username}
+  </p>
+)}
 
           {!compact && (
             <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
