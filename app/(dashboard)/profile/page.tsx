@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import ProfileCard from "@/app/components/ProfileCard";
 import ProfileMoneyProgressCard from "@/app/components/profile/ProfileMoneyProgressCard";
@@ -11,24 +12,24 @@ export default function ProfilePage() {
     <div className="space-y-6 pb-10">
 
       {/* HEADER */}
-<div className="flex items-start justify-between gap-4">
-  <div>
-    <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-      My Profile
-    </h1>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+            My Profile
+          </h1>
 
-    <p className="mt-1 text-sm text-slate-500">
-      Your financial identity, progress, and money habits.
-    </p>
-  </div>
+          <p className="mt-1 text-sm text-slate-500">
+            Your financial identity, progress, and money habits.
+          </p>
+        </div>
 
-  <Link
-    href="/profile/edit"
-    className="mt-2 shrink-0 text-sm font-semibold text-cyan-600 transition hover:text-cyan-700"
-  >
-    Edit Profile
-  </Link>
-</div>
+        <Link
+          href="/profile/edit"
+          className="mt-2 shrink-0 text-sm font-semibold text-cyan-600 transition hover:text-cyan-700"
+        >
+          Edit Profile
+        </Link>
+      </div>
 
       {/* PROFILE + LEVEL */}
       <ProfileCard />
@@ -44,6 +45,16 @@ export default function ProfilePage() {
 
       {/* GLOBAL COMPARISON */}
       <GlobalComparisonCard />
+
+      {/* DEVELOPER MODE */}
+      <div className="pt-2">
+        <Link
+          href="/profile/developer"
+          className="text-xs font-medium text-slate-400 transition hover:text-slate-600"
+        >
+          Developer Mode
+        </Link>
+      </div>
 
     </div>
   );

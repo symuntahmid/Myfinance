@@ -6,6 +6,7 @@ export type DailyTask = {
 };
 
 const STORAGE_KEY = "myfinance-daily-journey";
+const DATE_STORAGE_KEY = "myfinance-daily-journey-date";
 
 const DEFAULT_TASKS: DailyTask[] = [
   {
@@ -29,6 +30,20 @@ const DEFAULT_TASKS: DailyTask[] = [
 ];
 
 /* ==========================================
+   DATE
+========================================== */
+
+function getTodayKey() {
+  const now = new Date();
+
+  return [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+/* ==========================================
    GET DAILY TASKS
 ========================================== */
 
@@ -37,19 +52,61 @@ export function getDailyTasks(): DailyTask[] {
     return DEFAULT_TASKS;
   }
 
-  const data = localStorage.getItem(STORAGE_KEY);
+  const today = getTodayKey();
+
+  const savedDate = localStorage.getItem(
+    DATE_STORAGE_KEY
+  );
+
+  /*
+   * ------------------------------------------
+   * NEW DAY
+   * ------------------------------------------
+   *
+   * If the stored date is different from today,
+   * start a fresh Daily Journey.
+   */
+
+  if (savedDate !== today) {
+    resetDailyJourney();
+
+    return DEFAULT_TASKS.map((task) => ({
+      ...task,
+    }));
+  }
+
+  const data = localStorage.getItem(
+    STORAGE_KEY
+  );
+
+  /*
+   * First-time user.
+   */
 
   if (!data) {
     saveDailyTasks(DEFAULT_TASKS);
-    return DEFAULT_TASKS;
+
+    localStorage.setItem(
+      DATE_STORAGE_KEY,
+      today
+    );
+
+    return DEFAULT_TASKS.map((task) => ({
+      ...task,
+    }));
   }
 
   try {
-    const tasks = JSON.parse(data) as DailyTask[];
+    const tasks = JSON.parse(
+      data
+    ) as DailyTask[];
 
     /*
-      Detect old Daily Journey structure
-    */
+     * ------------------------------------------
+     * OLD TASK MIGRATION
+     * ------------------------------------------
+     */
+
     const hasOldTask = tasks.some(
       (task) =>
         task.title === "Read today's lesson" ||
@@ -58,37 +115,55 @@ export function getDailyTasks(): DailyTask[] {
 
     if (hasOldTask) {
       resetDailyJourney();
-      return getDailyTasks();
+
+      return DEFAULT_TASKS.map((task) => ({
+        ...task,
+      }));
     }
 
     /*
-      Validate current structure
-    */
-    const valid =
-      tasks.length === DEFAULT_TASKS.length &&
-      DEFAULT_TASKS.every((defaultTask) => {
-        const task = tasks.find(
-          (t) => t.id === defaultTask.id
-        );
+     * ------------------------------------------
+     * VALIDATE CURRENT STRUCTURE
+     * ------------------------------------------
+     */
 
-        return (
-          task &&
-          task.title === defaultTask.title &&
-          typeof task.reward === "number" &&
-          typeof task.completed === "boolean"
-        );
-      });
+    const valid =
+      tasks.length ===
+        DEFAULT_TASKS.length &&
+      DEFAULT_TASKS.every(
+        (defaultTask) => {
+          const task = tasks.find(
+            (t) =>
+              t.id === defaultTask.id
+          );
+
+          return (
+            task &&
+            task.title ===
+              defaultTask.title &&
+            typeof task.reward ===
+              "number" &&
+            typeof task.completed ===
+              "boolean"
+          );
+        }
+      );
 
     if (!valid) {
       resetDailyJourney();
-      return getDailyTasks();
+
+      return DEFAULT_TASKS.map((task) => ({
+        ...task,
+      }));
     }
 
     return tasks;
-
   } catch {
     resetDailyJourney();
-    return getDailyTasks();
+
+    return DEFAULT_TASKS.map((task) => ({
+      ...task,
+    }));
   }
 }
 
@@ -99,9 +174,22 @@ export function getDailyTasks(): DailyTask[] {
 export function saveDailyTasks(
   tasks: DailyTask[]
 ) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   localStorage.setItem(
     STORAGE_KEY,
     JSON.stringify(tasks)
+  );
+
+  /*
+   * Make sure today's date is recorded.
+   */
+
+  localStorage.setItem(
+    DATE_STORAGE_KEY,
+    getTodayKey()
   );
 
   window.dispatchEvent(
@@ -120,12 +208,16 @@ export function saveDailyTasks(
 export function completeTask(
   id: number
 ): boolean {
-
   const tasks = getDailyTasks();
 
   const task = tasks.find(
     (task) => task.id === id
   );
+
+  /*
+   * Already completed today.
+   * Do not award XP again.
+   */
 
   if (!task || task.completed) {
     return false;
@@ -143,7 +235,6 @@ export function completeTask(
 ========================================== */
 
 export function getJourneyProgress() {
-
   const tasks = getDailyTasks();
 
   const completed = tasks.filter(
@@ -165,10 +256,25 @@ export function getJourneyProgress() {
 ========================================== */
 
 export function resetDailyJourney() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const freshTasks = DEFAULT_TASKS.map(
+    (task) => ({
+      ...task,
+      completed: false,
+    })
+  );
 
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify(DEFAULT_TASKS)
+    JSON.stringify(freshTasks)
+  );
+
+  localStorage.setItem(
+    DATE_STORAGE_KEY,
+    getTodayKey()
   );
 
   window.dispatchEvent(
