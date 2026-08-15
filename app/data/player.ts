@@ -4,9 +4,9 @@ import {
   getFinancialHealthScore,
 } from "@/app/data/transactions";
 
-import {
-  getPortfolioSummary,
-} from "@/app/data/investments";
+import { getPortfolioSummary } from "@/app/data/investments";
+
+import { LEVELS } from "@/app/data/levels";
 
 export type Player = {
   name: string;
@@ -63,12 +63,18 @@ export function getPlayer(): Player {
     STORAGE_KEY
   );
 
-  const basePlayer = saved
-    ? {
-        ...DEFAULT_PLAYER,
-        ...JSON.parse(saved),
-      }
-    : DEFAULT_PLAYER;
+  let basePlayer: Player;
+
+  try {
+    basePlayer = saved
+      ? {
+          ...DEFAULT_PLAYER,
+          ...JSON.parse(saved),
+        }
+      : DEFAULT_PLAYER;
+  } catch {
+    basePlayer = DEFAULT_PLAYER;
+  }
 
   const summary = getSummary();
   const report = getMonthlyReport();
@@ -81,8 +87,6 @@ export function getPlayer(): Player {
        LIVE MONEY DATA
     -------------------------------------- */
 
-    // getSummary().netWorth already includes
-    // the current investment portfolio.
     netWorth: summary.netWorth,
 
     monthlyCashFlow:
@@ -141,6 +145,10 @@ export function savePlayer(
 ========================================== */
 
 export function addXP(amount: number) {
+  if (amount <= 0) {
+    return;
+  }
+
   const player = getPlayer();
 
   player.xp += amount;
@@ -156,17 +164,85 @@ export function addXP(amount: number) {
 export function getLevel() {
   const player = getPlayer();
 
-  const level =
-    Math.floor(player.xp / 100) + 1;
+  /*
+   * Find the highest level whose XP requirement
+   * has been reached.
+   */
 
-  const currentXP =
-    player.xp % 100;
+  let currentLevel = LEVELS[0];
+
+  for (const level of LEVELS) {
+    if (player.xp >= level.xpRequired) {
+      currentLevel = level;
+    } else {
+      break;
+    }
+  }
+
+  /*
+   * Find the next level.
+   */
+
+  const currentIndex =
+    LEVELS.findIndex(
+      (level) =>
+        level.level === currentLevel.level
+    );
+
+  const nextLevel =
+    LEVELS[currentIndex + 1] ?? null;
+
+  /*
+   * XP progress inside the current level.
+   */
+
+  const currentLevelXP =
+    player.xp - currentLevel.xpRequired;
+
+  const xpNeededForNextLevel =
+    nextLevel
+      ? nextLevel.xpRequired -
+        currentLevel.xpRequired
+      : 0;
+
+  const percent =
+    nextLevel && xpNeededForNextLevel > 0
+      ? Math.min(
+          Math.round(
+            (currentLevelXP /
+              xpNeededForNextLevel) *
+              100
+          ),
+          100
+        )
+      : 100;
 
   return {
-    level,
-    currentXP,
-    nextLevelXP: 100,
-    percent: currentXP,
+    level: currentLevel.level,
+
+    title: currentLevel.title,
+
+    icon: currentLevel.icon,
+
+    currentXP: currentLevelXP,
+
+    totalXP: player.xp,
+
+    nextLevelXP:
+      nextLevel?.xpRequired ?? currentLevel.xpRequired,
+
+    xpToNextLevel: nextLevel
+      ? Math.max(
+          nextLevel.xpRequired -
+            player.xp,
+          0
+        )
+      : 0,
+
+    percent,
+
+    isMaxLevel:
+      nextLevel === null,
   };
 }
 
@@ -181,10 +257,6 @@ export function getFinancialHealth() {
   /*
    * A completely new account should not be
    * classified as "Critical".
-   *
-   * If the user has no financial activity yet,
-   * return 0 and let the UI explain that there
-   * is not enough data.
    */
 
   const hasFinancialData =
@@ -209,7 +281,6 @@ export function getFinancialHealth() {
     25
   );
 
-
   /* --------------------------------------
      POSITIVE CASH FLOW — 20 POINTS
   -------------------------------------- */
@@ -217,7 +288,6 @@ export function getFinancialHealth() {
   if (player.monthlyCashFlow > 0) {
     score += 20;
   }
-
 
   /* --------------------------------------
      INVESTMENT SIZE — 20 POINTS
@@ -228,7 +298,6 @@ export function getFinancialHealth() {
     20
   );
 
-
   /* --------------------------------------
      NET WORTH — 20 POINTS
   -------------------------------------- */
@@ -238,7 +307,6 @@ export function getFinancialHealth() {
     20
   );
 
-
   /* --------------------------------------
      XP / FINANCIAL HABIT ACTIVITY — 15 POINTS
   -------------------------------------- */
@@ -247,7 +315,6 @@ export function getFinancialHealth() {
     player.xp / 10,
     15
   );
-
 
   return Math.round(
     Math.min(score, 100)
