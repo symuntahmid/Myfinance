@@ -1,4 +1,5 @@
 import { getPortfolioSummary } from "./investments";
+import { addXP } from "./player";
 
 export type Transaction = {
   id: number;
@@ -405,7 +406,12 @@ export function addTransaction(
       // Task 1:
       // Track one expense automatically
       if (transaction.type === "Expense") {
-        completed = completeTask(1);
+        const taskCompleted = completeTask(1);
+
+        if (taskCompleted) {
+          addXP(15);
+          completed = true;
+        }
       }
 
       // Task 3:
@@ -416,7 +422,12 @@ export function addTransaction(
         transaction.type === "Investment" ||
         transaction.relatedGoalId
       ) {
-        completed = completeTask(3) || completed;
+        const taskCompleted = completeTask(3);
+
+        if (taskCompleted) {
+          addXP(20);
+          completed = true;
+        }
       }
 
       if (completed) {

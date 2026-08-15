@@ -1,7 +1,9 @@
 "use client";
 
+
 import { useEffect, useState } from "react";
 import { completeTask } from "../../data/dailyJourney";
+import { addXP } from "@/app/data/player";
 import {
   getMonthlyReport,
   getFinancialHealthScore,
@@ -27,37 +29,48 @@ export default function ReportsPage() {
     getPortfolioSummary()
   );
 
-  useEffect(() => {
-    const refreshReport = () => {
-      setReport(getMonthlyReport());
-      setScore(getFinancialHealthScore());
-      setPortfolio(getPortfolioSummary());
-    };
+ useEffect(() => {
+  const refreshReport = () => {
+    setReport(getMonthlyReport());
+    setScore(getFinancialHealthScore());
+    setPortfolio(getPortfolioSummary());
+  };
 
-    refreshReport();
+  refreshReport();
 
-    window.addEventListener(
+  // Complete "Review your spending" task
+  const taskCompleted = completeTask(2);
+
+  if (taskCompleted) {
+    addXP(10);
+
+    window.dispatchEvent(
+      new Event("dailyJourneyUpdated")
+    );
+  }
+
+  window.addEventListener(
+    "transactionsUpdated",
+    refreshReport
+  );
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refreshReport
+  );
+
+  return () => {
+    window.removeEventListener(
       "transactionsUpdated",
       refreshReport
     );
 
-    window.addEventListener(
+    window.removeEventListener(
       "investmentsUpdated",
       refreshReport
     );
-
-    return () => {
-      window.removeEventListener(
-        "transactionsUpdated",
-        refreshReport
-      );
-
-      window.removeEventListener(
-        "investmentsUpdated",
-        refreshReport
-      );
-    };
-  }, []);
+  };
+}, []);
 
   const formatMoney = (amount: number) =>
     `$${amount.toLocaleString(undefined, {
