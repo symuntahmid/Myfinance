@@ -28,6 +28,7 @@ import BudgetProgressCard from "@/app/components/BudgetProgressCard";
 import { getBudgets } from "@/app/data/budgets";
 
 import { getSummary } from "@/app/data/transactions";
+import AIInsightCard from "@/app/components/ai/AIInsightCard";
 
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -119,6 +120,7 @@ const totalSpent = getSummary().expense;
   </FadeIn>
 </div>
 
+<AIInsightCard />
 
   {/* Money Summary */}
 
