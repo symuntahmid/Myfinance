@@ -1,18 +1,22 @@
 import type { AIInsight } from "./aiInsights";
 
+/* =====================================================
+   TYPES
+===================================================== */
+
 export type InsightCandidate = {
   insight: AIInsight;
 
-  // Used to prevent similar insights appearing together.
+  // Prevent similar insights from appearing together.
   family?: string;
 
-  // Optional group/category.
+  // Optional spending/category grouping.
   category?: string;
 
   // Higher number = more important.
   priority: number;
 
-  // Prevent too many insights of the same type.
+  // Optional custom limit for this candidate's type.
   typeLimit?: number;
 };
 
@@ -21,84 +25,6 @@ export type InsightSelectionOptions = {
   maxPerType?: number;
   maxPerCategory?: number;
 };
-
-function normalizeText(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-/* =====================================================
-   SIMILARITY
-===================================================== */
-
-function calculateSimilarity(
-  a: string,
-  b: string
-) {
-  const wordsA = new Set(
-    normalizeText(a).split(" ")
-  );
-
-  const wordsB = new Set(
-    normalizeText(b).split(" ")
-  );
-
-  if (
-    wordsA.size === 0 ||
-    wordsB.size === 0
-  ) {
-    return 0;
-  }
-
-  let intersection = 0;
-
-  wordsA.forEach((word) => {
-    if (wordsB.has(word)) {
-      intersection++;
-    }
-  });
-
-  const union =
-    new Set([
-      ...wordsA,
-      ...wordsB,
-    ]).size;
-
-  return union > 0
-    ? intersection / union
-    : 0;
-}
-
-/* =====================================================
-   DUPLICATE DETECTION
-===================================================== */
-
-function isTooSimilar(
-  candidate: AIInsight,
-  selected: AIInsight[]
-) {
-  return selected.some((existing) => {
-    const titleSimilarity =
-      calculateSimilarity(
-        candidate.title,
-        existing.title
-      );
-
-    const messageSimilarity =
-      calculateSimilarity(
-        candidate.message,
-        existing.message
-      );
-
-    return (
-      titleSimilarity >= 0.65 ||
-      messageSimilarity >= 0.65
-    );
-  });
-}
 
 /* =====================================================
    INSIGHT SELECTION
@@ -114,12 +40,19 @@ export function selectInsights(
     maxPerCategory = 2,
   } = options;
 
-  const sorted = [...candidates].sort(
-    (a, b) =>
-      b.priority - a.priority
+  /* ---------------------------------------------------
+     Sort by priority
+  --------------------------------------------------- */
+
+  const sortedCandidates = [...candidates].sort(
+    (a, b) => b.priority - a.priority
   );
 
   const selected: AIInsight[] = [];
+
+  /* ---------------------------------------------------
+     Tracking
+  --------------------------------------------------- */
 
   const typeCounts =
     new Map<string, number>();
@@ -127,108 +60,103 @@ export function selectInsights(
   const categoryCounts =
     new Map<string, number>();
 
-  const familyCounts =
-    new Map<string, number>();
+  const usedFamilies =
+    new Set<string>();
 
-  for (const candidate of sorted) {
-    if (
-      selected.length >= maxInsights
-    ) {
+  /* ---------------------------------------------------
+     Select candidates
+  --------------------------------------------------- */
+
+  for (const candidate of sortedCandidates) {
+    if (selected.length >= maxInsights) {
       break;
     }
 
-    const insight =
-      candidate.insight;
+    const insight = candidate.insight;
 
-    /* ---------------------------------------------
+    /* -----------------------------------------------
        TYPE LIMIT
-    --------------------------------------------- */
+    ------------------------------------------------ */
 
-    const typeCount =
-      typeCounts.get(insight.type) || 0;
+    const type = insight.type;
+
+    const currentTypeCount =
+      typeCounts.get(type) ?? 0;
 
     const typeLimit =
-      candidate.typeLimit ??
-      maxPerType;
+      candidate.typeLimit ?? maxPerType;
 
-    if (typeCount >= typeLimit) {
+    if (currentTypeCount >= typeLimit) {
       continue;
     }
 
-    /* ---------------------------------------------
+    /* -----------------------------------------------
+       FAMILY DUPLICATE PROTECTION
+    ------------------------------------------------ */
+
+    if (
+      candidate.family &&
+      usedFamilies.has(candidate.family)
+    ) {
+      continue;
+    }
+
+    /* -----------------------------------------------
        CATEGORY LIMIT
-    --------------------------------------------- */
+    ------------------------------------------------ */
 
     const category =
-      candidate.category ||
+      candidate.category ??
       insight.category;
 
     if (category) {
-      const categoryCount =
-        categoryCounts.get(category) ||
-        0;
+      const currentCategoryCount =
+        categoryCounts.get(category) ?? 0;
 
       if (
-        categoryCount >=
+        currentCategoryCount >=
         maxPerCategory
       ) {
         continue;
       }
     }
 
-    /* ---------------------------------------------
-       FAMILY LIMIT
-    --------------------------------------------- */
-
-    if (candidate.family) {
-      const familyCount =
-        familyCounts.get(
-          candidate.family
-        ) || 0;
-
-      if (familyCount >= 1) {
-        continue;
-      }
-    }
-
-    /* ---------------------------------------------
-       TEXT SIMILARITY
-    --------------------------------------------- */
-
-    if (
-      isTooSimilar(
-        insight,
-        selected
-      )
-    ) {
-      continue;
-    }
-
-    /* ---------------------------------------------
-       SELECT
-    --------------------------------------------- */
+    /* -----------------------------------------------
+       ACCEPT INSIGHT
+    ------------------------------------------------ */
 
     selected.push(insight);
 
+    /* -----------------------------------------------
+       UPDATE TYPE COUNT
+    ------------------------------------------------ */
+
     typeCounts.set(
-      insight.type,
-      typeCount + 1
+      type,
+      currentTypeCount + 1
     );
 
+    /* -----------------------------------------------
+       UPDATE CATEGORY COUNT
+    ------------------------------------------------ */
+
     if (category) {
+      const currentCategoryCount =
+        categoryCounts.get(category) ?? 0;
+
       categoryCounts.set(
         category,
-        (categoryCounts.get(category) ||
-          0) + 1
+        currentCategoryCount + 1
       );
     }
 
+    /* -----------------------------------------------
+       UPDATE FAMILY
+    ------------------------------------------------ */
+
     if (candidate.family) {
-      familyCounts.set(
-        candidate.family,
-        (familyCounts.get(
-          candidate.family
-        ) || 0) + 1
+      usedFamilies.add(
+        candidate.family
       );
     }
   }

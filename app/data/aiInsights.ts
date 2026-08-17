@@ -11,6 +11,11 @@ import {
   getPortfolioSummary,
 } from "@/app/data/investments";
 
+import {
+  selectInsights,
+  type InsightCandidate,
+} from "@/app/data/insightRegistry";
+
 /* =====================================================
    TYPES
 ===================================================== */
@@ -91,7 +96,7 @@ export function getAIInsights(): AIInsight[] {
      INSIGHT RESULTS
   ------------------------------------------------ */
 
-  const insights: AIInsight[] = [];
+  
 
   /* =================================================
      RULES
@@ -1008,27 +1013,39 @@ export function getAIInsights(): AIInsight[] {
         };
       },
     },
-  ];
+    ];
 
   /* =================================================
-     RUN RULES
+     BUILD INSIGHT CANDIDATES
   ================================================= */
+
+  const candidates: InsightCandidate[] = [];
 
   for (const rule of rules) {
     const result = rule.check();
 
-    if (result) {
-      insights.push(result);
+    if (!result) {
+      continue;
     }
+
+    candidates.push({
+      insight: result,
+      priority: result.priority,
+      category: result.category,
+    });
   }
 
   /* =================================================
-     SORT BY PRIORITY
+     SELECT BEST INSIGHTS
   ================================================= */
 
-  return insights.sort(
-    (a, b) =>
-      b.priority - a.priority
+  return selectInsights(
+    candidates,
+    {
+      maxInsights: 5,
+      maxPerType: 2,
+      maxPerCategory: 2,
+    }
   );
 }
 
@@ -1037,8 +1054,7 @@ export function getAIInsights(): AIInsight[] {
 ===================================================== */
 
 export function getTopAIInsight(): AIInsight | null {
-  const insights =
-    getAIInsights();
+  const insights = getAIInsights();
 
   return insights.length > 0
     ? insights[0]
