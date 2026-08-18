@@ -41,17 +41,42 @@ export function selectInsights(
   } = options;
 
   /* ---------------------------------------------------
-     Sort by priority
+     SAFETY
+  --------------------------------------------------- */
+
+  if (
+    maxInsights <= 0 ||
+    candidates.length === 0
+  ) {
+    return [];
+  }
+
+  /* ---------------------------------------------------
+     SORT BY PRIORITY
   --------------------------------------------------- */
 
   const sortedCandidates = [...candidates].sort(
-    (a, b) => b.priority - a.priority
+    (a, b) => {
+      if (b.priority !== a.priority) {
+        return b.priority - a.priority;
+      }
+
+      // Stable fallback so equal-priority
+      // insights don't jump around randomly.
+      return a.insight.id.localeCompare(
+        b.insight.id
+      );
+    }
   );
+
+  /* ---------------------------------------------------
+     SELECTED INSIGHTS
+  --------------------------------------------------- */
 
   const selected: AIInsight[] = [];
 
   /* ---------------------------------------------------
-     Tracking
+     TRACKING
   --------------------------------------------------- */
 
   const typeCounts =
@@ -64,39 +89,53 @@ export function selectInsights(
     new Set<string>();
 
   /* ---------------------------------------------------
-     Select candidates
+     RUN THROUGH CANDIDATES
   --------------------------------------------------- */
 
   for (const candidate of sortedCandidates) {
-    if (selected.length >= maxInsights) {
+    /* -----------------------------------------------
+       MAX TOTAL INSIGHTS
+    ------------------------------------------------ */
+
+    if (
+      selected.length >= maxInsights
+    ) {
       break;
     }
 
-    const insight = candidate.insight;
+    const insight =
+      candidate.insight;
 
     /* -----------------------------------------------
        TYPE LIMIT
     ------------------------------------------------ */
 
-    const type = insight.type;
+    const type =
+      insight.type;
 
     const currentTypeCount =
       typeCounts.get(type) ?? 0;
 
     const typeLimit =
-      candidate.typeLimit ?? maxPerType;
+      candidate.typeLimit ??
+      maxPerType;
 
-    if (currentTypeCount >= typeLimit) {
+    if (
+      currentTypeCount >=
+      typeLimit
+    ) {
       continue;
     }
 
     /* -----------------------------------------------
-       FAMILY DUPLICATE PROTECTION
+       FAMILY PROTECTION
     ------------------------------------------------ */
 
     if (
       candidate.family &&
-      usedFamilies.has(candidate.family)
+      usedFamilies.has(
+        candidate.family
+      )
     ) {
       continue;
     }
@@ -111,7 +150,9 @@ export function selectInsights(
 
     if (category) {
       const currentCategoryCount =
-        categoryCounts.get(category) ?? 0;
+        categoryCounts.get(
+          category
+        ) ?? 0;
 
       if (
         currentCategoryCount >=
@@ -122,7 +163,7 @@ export function selectInsights(
     }
 
     /* -----------------------------------------------
-       ACCEPT INSIGHT
+       ACCEPT
     ------------------------------------------------ */
 
     selected.push(insight);
@@ -142,7 +183,9 @@ export function selectInsights(
 
     if (category) {
       const currentCategoryCount =
-        categoryCounts.get(category) ?? 0;
+        categoryCounts.get(
+          category
+        ) ?? 0;
 
       categoryCounts.set(
         category,
