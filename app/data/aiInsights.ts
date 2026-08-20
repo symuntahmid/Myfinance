@@ -1016,37 +1016,124 @@ export function getAIInsights(): AIInsight[] {
     ];
 
   /* =================================================
-     BUILD INSIGHT CANDIDATES
-  ================================================= */
+   BUILD INSIGHT CANDIDATES
+================================================= */
 
-  const candidates: InsightCandidate[] = [];
+const candidates: InsightCandidate[] = [];
 
-  for (const rule of rules) {
-    const result = rule.check();
+for (const rule of rules) {
+  const result = rule.check();
 
-    if (!result) {
-      continue;
-    }
-
-    candidates.push({
-      insight: result,
-      priority: result.priority,
-      category: result.category,
-    });
+  if (!result) {
+    continue;
   }
 
-  /* =================================================
-     SELECT BEST INSIGHTS
-  ================================================= */
+  let family: string | undefined;
 
-  return selectInsights(
-    candidates,
-    {
-      maxInsights: 5,
-      maxPerType: 2,
-      maxPerCategory: 2,
-    }
-  );
+  /* -----------------------------------------------
+     SPENDING WARNINGS
+  ------------------------------------------------ */
+
+  switch (result.id) {
+    case "high-spending-rate":
+    case "dominant-spending-category":
+    case "spending-category-increased":
+      family = "spending-warning";
+      break;
+
+    /* -----------------------------------------------
+       SPENDING OPPORTUNITIES
+    ------------------------------------------------ */
+
+    case "largest-spending-category":
+    case "potential-saving-opportunity":
+    case "spending-opportunity":
+      family = "spending-opportunity";
+      break;
+
+    /* -----------------------------------------------
+       SPENDING HABITS
+    ------------------------------------------------ */
+
+    case "spending-category-decreased":
+    case "frequent-category-purchases":
+    case "weekend-spending":
+    case "multiple-spending-categories":
+      family = "spending-habit";
+      break;
+
+    /* -----------------------------------------------
+       POSITIVE CASH FLOW
+    ------------------------------------------------ */
+
+    case "positive-cash-flow":
+    case "spending-with-positive-cash-flow":
+      family = "positive-cash-flow";
+      break;
+
+    /* -----------------------------------------------
+       SAVING
+    ------------------------------------------------ */
+
+    case "strong-saving-rate":
+    case "no-savings":
+      family = "saving";
+      break;
+
+    /* -----------------------------------------------
+       FUNNY
+    ------------------------------------------------ */
+
+    case "money-disappearing":
+    case "funny-spending":
+      family = "funny-spending";
+      break;
+
+    /* -----------------------------------------------
+       OTHER FINANCIAL INSIGHTS
+    ------------------------------------------------ */
+
+    case "negative-cash-flow":
+      family = "cash-flow-warning";
+      break;
+
+    case "investment-progress":
+      family = "investment";
+      break;
+
+    case "healthy-finances":
+      family = "financial-health";
+      break;
+
+    case "keep-going":
+      family = "tracking";
+      break;
+
+    case "difficult-month":
+      family = "emotional";
+      break;
+  }
+
+  candidates.push({
+    insight: result,
+    priority: result.priority,
+    category: result.category,
+    family,
+  });
+}
+
+/* =================================================
+   SELECT BEST INSIGHTS
+================================================= */
+
+return selectInsights(
+  candidates,
+  {
+    maxInsights: 5,
+    maxPerType: 2,
+    maxPerCategory: 2,
+  }
+);
 }
 
 /* =====================================================
