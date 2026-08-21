@@ -1,35 +1,49 @@
-import {
-  getMonthlyReport,
-} from "@/app/data/transactions";
-
 import type { AIInsight } from "../aiInsights";
-import type { InsightCandidate } from "../insightRegistry";
 
 /* =====================================================
    SAVING INSIGHTS
 ===================================================== */
 
 /**
- * Saving-focused conditional AI insights.
+ * Saving insights focus only on:
  *
- * This file only handles:
- * - Savings rate
- * - Positive/negative saving gap
- * - Saving opportunities
- * - Saving consistency
+ * - Positive savings
+ * - Strong savings rate
+ * - No savings
+ * - Savings improvement
+ * - Savings opportunity
  *
- * The final number of insights is handled by
- * the central Insight Selection Engine.
+ * This file should remain independent from:
+ *
+ * - Spending
+ * - Investments
+ * - Goals
+ * - Habits
+ * - Emotional insights
+ * - Funny insights
  */
+
+/* =====================================================
+   TYPES
+===================================================== */
+
+export type SavingInsightContext = {
+  income: number;
+  expense: number;
+  netCashFlow: number;
+  savings: number;
+  savingsRate: number;
+
+  previousSavings?: number;
+  previousSavingsRate?: number;
+};
 
 /* =====================================================
    HELPERS
 ===================================================== */
 
 function money(value: number) {
-  return `৳${Math.round(
-    value
-  ).toLocaleString()}`;
+  return `৳${Math.round(value).toLocaleString()}`;
 }
 
 function percent(value: number) {
@@ -37,365 +51,355 @@ function percent(value: number) {
 }
 
 /* =====================================================
-   MAIN
+   SAVING RULES
 ===================================================== */
 
-export function getSavingInsights(): InsightCandidate[] {
-  const report =
-    getMonthlyReport();
+export function getSavingInsights(
+  context: SavingInsightContext
+): AIInsight[] {
+  const {
+    income,
+    expense,
+    netCashFlow,
+    savings,
+    savingsRate,
+    previousSavings = 0,
+    previousSavingsRate = 0,
+  } = context;
 
-  const candidates: InsightCandidate[] = [];
-
-  /* =================================================
-     1. NO SAVINGS
-  ================================================= */
-
-  if (
-    report.income > 0 &&
-    report.savingsRate <= 0
-  ) {
-    const insight: AIInsight = {
-      id: "saving-no-positive-gap",
-
-      type: "opportunity",
-
-      title:
-        "Your next financial win could be creating a savings gap",
-
-      message:
-        "You're not currently keeping any positive portion of your income this month.",
-
-      action:
-        "Try setting aside even a small amount before your next expense.",
-
-      priority: 96,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-gap",
-    });
-  }
+  const insights: AIInsight[] = [];
 
   /* =================================================
-     2. VERY LOW SAVING RATE
+     STRONG SAVINGS RATE
   ================================================= */
 
-  if (
-    report.income > 0 &&
-    report.savingsRate > 0 &&
-    report.savingsRate < 10
-  ) {
-    const insight: AIInsight = {
-      id: "low-saving-rate",
-
-      type: "opportunity",
-
-      title:
-        "Your savings habit has room to grow",
-
-      message:
-        `You're currently keeping about ${percent(
-          report.savingsRate
-        )} of your income.`,
-
-      action:
-        "Try increasing your savings slightly rather than making a drastic spending cut.",
-
-      priority: 88,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-rate",
-    });
-  }
-
-  /* =================================================
-     3. HEALTHY SAVING RATE
-  ================================================= */
-
-  if (
-    report.income > 0 &&
-    report.savingsRate >= 20
-  ) {
-    const insight: AIInsight = {
-      id: "healthy-saving-rate",
+  if (income > 0 && savingsRate >= 20) {
+    insights.push({
+      id: "strong-saving-rate",
 
       type: "achievement",
 
       title:
-        "You're building a strong saving habit",
+        "You're building real financial momentum",
 
       message:
         `You're currently keeping ${percent(
-          report.savingsRate
+          savingsRate
         )} of your income.`,
 
       action:
         "Consistency matters more than perfection. Keep protecting this saving habit.",
 
-      priority: 86,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-rate",
+      priority: 85,
     });
   }
 
   /* =================================================
-     4. STRONG SAVING RATE
+     EXCELLENT SAVINGS RATE
+  ================================================= */
+
+  if (income > 0 && savingsRate >= 30) {
+    insights.push({
+      id: "excellent-saving-rate",
+
+      type: "achievement",
+
+      title:
+        "You're saving at a strong rate",
+
+      message:
+        `${percent(
+          savingsRate
+        )} of your income is currently staying with you instead of being spent.`,
+
+      action:
+        "Keep this rate sustainable and consider directing part of the savings toward long-term goals.",
+
+      priority: 90,
+    });
+  }
+
+  /* =================================================
+     POSITIVE SAVINGS
   ================================================= */
 
   if (
-    report.income > 0 &&
-    report.savingsRate >= 30
+    income > 0 &&
+    savings > 0 &&
+    savingsRate > 0 &&
+    savingsRate < 20
   ) {
-    const insight: AIInsight = {
-      id: "excellent-saving-rate",
+    insights.push({
+      id: "positive-savings",
 
-      type: "motivational",
+      type: "achievement",
 
       title:
-        "You're creating serious financial momentum",
+        "You're creating a savings gap",
 
       message:
-        `You're currently keeping ${percent(
-          report.savingsRate
+        `You've kept ${money(
+          savings
+        )} from your income this month.`,
+
+      action:
+        "Even a small positive savings gap can become meaningful when you repeat it consistently.",
+
+      priority: 70,
+    });
+  }
+
+  /* =================================================
+     NO SAVINGS
+  ================================================= */
+
+  if (
+    income > 0 &&
+    savingsRate <= 0 &&
+    netCashFlow <= 0
+  ) {
+    insights.push({
+      id: "no-savings",
+
+      type: "opportunity",
+
+      title:
+        "Your next opportunity is hiding in your cash flow",
+
+      message:
+        "You haven't created a positive savings gap this month yet.",
+
+      action:
+        "Try setting aside even a small amount before your next expense.",
+
+      priority: 92,
+    });
+  }
+
+  /* =================================================
+     LOW SAVINGS RATE
+  ================================================= */
+
+  if (
+    income > 0 &&
+    savingsRate > 0 &&
+    savingsRate < 10
+  ) {
+    insights.push({
+      id: "low-saving-rate",
+
+      type: "opportunity",
+
+      title:
+        "A small saving habit could make a difference",
+
+      message:
+        `You're currently keeping about ${percent(
+          savingsRate
         )} of your income.`,
 
       action:
-        "Protect this gap and give your savings a clear purpose such as an emergency fund, investment, or major goal.",
+        "Try increasing your savings slightly rather than making a drastic cut to your lifestyle.",
+
+      priority: 78,
+    });
+  }
+
+  /* =================================================
+     SAVINGS IMPROVED
+  ================================================= */
+
+  if (
+    income > 0 &&
+    previousSavings > 0 &&
+    savings > previousSavings &&
+    savings - previousSavings >= 100
+  ) {
+    const increase =
+      savings - previousSavings;
+
+    insights.push({
+      id: "saving-improved",
+
+      type: "motivational",
+
+      title:
+        "Your saving habit is improving",
+
+      message:
+        `You've saved ${money(
+          increase
+        )} more than you did last month.`,
+
+      action:
+        "Keep repeating the behavior that created this improvement.",
 
       priority: 82,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-rate",
     });
   }
 
   /* =================================================
-     5. POSITIVE SAVINGS GAP
+     SAVINGS RATE IMPROVED
   ================================================= */
 
   if (
-    report.netCashFlow > 0
+    income > 0 &&
+    previousSavingsRate > 0 &&
+    savingsRate >
+      previousSavingsRate + 5
   ) {
-    const savedAmount =
-      report.netCashFlow;
+    const improvement =
+      savingsRate -
+      previousSavingsRate;
 
-    if (savedAmount >= 500) {
-      const insight: AIInsight = {
-        id: "positive-saving-gap",
-
-        type: "achievement",
-
-        title:
-          "You created a positive savings gap",
-
-        message:
-          `After your current income and expenses, you have roughly ${money(
-            savedAmount
-          )} left this month.`,
-
-        action:
-          "Consider protecting part of this amount instead of letting it disappear into unplanned spending.",
-
-        priority: 78,
-
-        category: "saving",
-      };
-
-      candidates.push({
-        insight,
-
-        priority:
-          insight.priority,
-
-        category: "saving",
-
-        family: "saving-gap",
-      });
-    }
-  }
-
-  /* =================================================
-     6. SMALL POSITIVE GAP
-  ================================================= */
-
-  if (
-    report.income > 0 &&
-    report.netCashFlow > 0 &&
-    report.netCashFlow < 500
-  ) {
-    const insight: AIInsight = {
-      id: "small-saving-gap",
+    insights.push({
+      id: "saving-rate-improved",
 
       type: "motivational",
 
       title:
-        "You're starting to create a saving habit",
+        "Your savings rate is moving up",
 
       message:
-        `You currently have about ${money(
-          report.netCashFlow
-        )} left after your expenses.`,
+        `Your savings rate improved by about ${percent(
+          improvement
+        )} compared with last month.`,
 
       action:
-        "Even a small positive gap is progress. Try protecting it before your next expense.",
+        "Small improvements in your saving rate can compound into significant progress over time.",
 
-      priority: 70,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-gap",
+      priority: 80,
     });
   }
 
   /* =================================================
-     7. SAVING RATE IMPROVEMENT TARGET
+     SAVINGS FALLING
   ================================================= */
 
   if (
-    report.income > 0 &&
-    report.savingsRate >= 10 &&
-    report.savingsRate < 20
+    previousSavings > 0 &&
+    savings < previousSavings &&
+    previousSavings - savings >= 200
   ) {
-    const targetAmount =
-      report.income * 0.2;
+    const decrease =
+      previousSavings - savings;
 
-    const currentSaved =
-      report.income *
-      (report.savingsRate / 100);
+    insights.push({
+      id: "saving-decreased",
 
-    const additionalNeeded =
-      targetAmount -
-      currentSaved;
+      type: "warning",
 
-    if (
-      additionalNeeded > 0
-    ) {
-      const insight: AIInsight = {
-        id: "saving-rate-next-step",
+      title:
+        "Your savings dropped this month",
 
-        type: "opportunity",
+      message:
+        `You saved ${money(
+          decrease
+        )} less than you did last month.`,
 
-        title:
-          "You're closer to a stronger saving rate",
+      action:
+        "Check whether the change came from a temporary expense or a spending pattern you can adjust.",
 
-        message:
-          `You're saving about ${percent(
-            report.savingsRate
-          )} of your income. Reaching 20% would require roughly ${money(
-            additionalNeeded
-          )} more.`,
-
-        action:
-          "Look for one realistic spending adjustment instead of trying to cut everything at once.",
-
-        priority: 74,
-
-        category: "saving",
-      };
-
-      candidates.push({
-        insight,
-
-        priority:
-          insight.priority,
-
-        category: "saving",
-
-        family: "saving-rate-next-step",
-      });
-    }
+      priority: 88,
+    });
   }
 
   /* =================================================
-     8. SAVING MOMENTUM
+     SAVING FROM POSITIVE CASH FLOW
   ================================================= */
 
   if (
-    report.income > 0 &&
-    report.savingsRate >= 20 &&
-    report.netCashFlow > 0
+    income > 0 &&
+    netCashFlow > 0 &&
+    savings > 0
   ) {
-    const insight: AIInsight = {
-      id: "saving-momentum",
+    insights.push({
+      id: "positive-cash-flow-saving",
 
-      type: "motivational",
+      type: "achievement",
 
       title:
-        "Your cash flow is supporting your savings",
+        "You're turning cash flow into savings",
 
       message:
-        `You're keeping ${percent(
-          report.savingsRate
-        )} of your income while maintaining positive cash flow.`,
+        `After your expenses, you still have ${money(
+          netCashFlow
+        )} of positive cash flow.`,
 
       action:
-        "Keep this structure consistent and consider giving the saved money a specific job.",
+        "Protect this gap and make saving part of your normal monthly routine.",
+
+      priority: 75,
+    });
+  }
+
+  /* =================================================
+     SAVINGS OPPORTUNITY
+  ================================================= */
+
+  if (
+    income > 0 &&
+    savingsRate > 0 &&
+    savingsRate < 20
+  ) {
+    const additionalSaving =
+      income * 0.05;
+
+    insights.push({
+      id: "five-percent-saving-opportunity",
+
+      type: "opportunity",
+
+      title:
+        "You could strengthen your savings with a small increase",
+
+      message:
+        `Saving an additional 5% of your income would add roughly ${money(
+          additionalSaving
+        )} to your monthly savings.`,
+
+      action:
+        "You don't need to find the entire amount at once. Start with one small recurring change.",
+
+      priority: 72,
+    });
+  }
+
+  /* =================================================
+     ZERO EXPENSE / HIGH SAVINGS
+  ================================================= */
+
+  if (
+    income > 0 &&
+    expense === 0 &&
+    savings > 0
+  ) {
+    insights.push({
+      id: "zero-expense-saving",
+
+      type: "achievement",
+
+      title:
+        "You've kept your spending extremely low",
+
+      message:
+        `You've kept ${money(
+          savings
+        )} from your income so far this month.`,
+
+      action:
+        "Make sure this level of saving is sustainable rather than temporary.",
 
       priority: 68,
-
-      category: "saving",
-    };
-
-    candidates.push({
-      insight,
-
-      priority:
-        insight.priority,
-
-      category: "saving",
-
-      family: "saving-momentum",
     });
   }
 
-  return candidates;
+  /* =================================================
+     RETURN
+  ================================================= */
+
+  return insights.sort(
+    (a, b) =>
+      b.priority - a.priority
+  );
 }
