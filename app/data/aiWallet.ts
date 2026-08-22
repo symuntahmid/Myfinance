@@ -1,8 +1,6 @@
 export type AIWallet = {
   credits: number;
   adsWatchedTotal: number;
-  insightsUnlocked: number;
-  sessionUnlocked: boolean;
 };
 
 
@@ -14,23 +12,23 @@ const AD_REWARD = 5;
 
 const ADS_REQUIRED_FOR_UNLOCK = 2;
 
-const ADDITIONAL_INSIGHTS_UNLOCK_COUNT = 3;
 
 
+/*
+  SESSION ONLY
 
-/* ==========================================
-   DEFAULT WALLET
-========================================== */
+  This resets when browser/app reloads.
+  Never saved in localStorage.
+*/
+let sessionUnlocked = false;
+
+
 
 const DEFAULT_WALLET: AIWallet = {
 
   credits: 0,
 
   adsWatchedTotal: 0,
-
-  insightsUnlocked: 0,
-
-  sessionUnlocked: false,
 
 };
 
@@ -45,7 +43,7 @@ const DEFAULT_WALLET: AIWallet = {
 export function getAIWallet(): AIWallet {
 
 
-  if (typeof window === "undefined") {
+  if(typeof window === "undefined"){
 
     return DEFAULT_WALLET;
 
@@ -60,19 +58,23 @@ export function getAIWallet(): AIWallet {
 
 
 
-  if (!saved) {
+  if(!saved){
 
 
     localStorage.setItem(
+
       STORAGE_KEY,
+
       JSON.stringify(DEFAULT_WALLET)
+
     );
 
 
-    return DEFAULT_WALLET;
+    return {
+      ...DEFAULT_WALLET
+    };
 
   }
-
 
 
 
@@ -80,55 +82,28 @@ export function getAIWallet(): AIWallet {
 
 
     const wallet =
-      JSON.parse(saved) as AIWallet;
-
-
-
-    /*
-      NEW APP SESSION
-
-      Energy stays saved.
-      Ads stay saved.
-      Insights lock again.
-    */
-
-    wallet.insightsUnlocked = 0;
-
-    wallet.sessionUnlocked = false;
-
-
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(wallet)
-    );
+      JSON.parse(saved);
 
 
 
     return {
 
-      ...DEFAULT_WALLET,
+      credits:
+        Number(wallet.credits) || 0,
 
-      ...wallet,
+
+      adsWatchedTotal:
+        Number(wallet.adsWatchedTotal) || 0,
 
     };
-
 
 
   } catch {
 
 
-    localStorage.setItem(
-
-      STORAGE_KEY,
-
-      JSON.stringify(DEFAULT_WALLET)
-
-    );
-
-
-    return DEFAULT_WALLET;
-
+    return {
+      ...DEFAULT_WALLET
+    };
 
   }
 
@@ -146,10 +121,9 @@ export function getAIWallet(): AIWallet {
 
 function saveAIWallet(
   wallet: AIWallet
-) {
+){
 
-
-  if (typeof window === "undefined") {
+  if(typeof window === "undefined"){
 
     return;
 
@@ -185,15 +159,8 @@ function saveAIWallet(
 
 
 /* ==========================================
-   REWARD AD
+   WATCH REWARD AD
 ========================================== */
-
-
-/*
-  1 Reward Ad = +5 Energy
-
-  2 Reward Ads = +10 Energy
-*/
 
 
 export function rewardAIAd(): boolean {
@@ -225,13 +192,12 @@ export function rewardAIAd(): boolean {
 
 
 
-
 /* ==========================================
-   ADS PROGRESS
+   ADS STATUS
 ========================================== */
 
 
-export function getAdsCompletedForUnlock(): number {
+export function getAdsCompletedForUnlock(){
 
 
   const wallet =
@@ -254,18 +220,14 @@ export function getAdsCompletedForUnlock(): number {
 
 
 
-
-export function getAdsRemainingForUnlock(): number {
-
-
-  const completed =
-    getAdsCompletedForUnlock();
-
+export function getAdsRemainingForUnlock(){
 
 
   return Math.max(
 
-    ADS_REQUIRED_FOR_UNLOCK - completed,
+    ADS_REQUIRED_FOR_UNLOCK -
+
+    getAdsCompletedForUnlock(),
 
     0
 
@@ -285,7 +247,7 @@ export function getAdsRemainingForUnlock(): number {
 ========================================== */
 
 
-export function canUnlockAIInsight(): boolean {
+export function canUnlockAIInsight(){
 
 
   const wallet =
@@ -309,7 +271,7 @@ export function canUnlockAIInsight(): boolean {
 
 
 /* ==========================================
-   UNLOCK EXTRA INSIGHTS
+   UNLOCK INSIGHTS
 ========================================== */
 
 
@@ -321,11 +283,13 @@ export function unlockAIInsights(): boolean {
 
 
 
-  if (
+  /*
+    MUST HAVE 10 ENERGY
+  */
 
+  if(
     wallet.credits < INSIGHT_COST
-
-  ) {
+  ){
 
     return false;
 
@@ -333,19 +297,15 @@ export function unlockAIInsights(): boolean {
 
 
 
-
-
   wallet.credits -= INSIGHT_COST;
 
 
 
-  wallet.insightsUnlocked =
-    ADDITIONAL_INSIGHTS_UNLOCK_COUNT;
+  /*
+    ONLY CURRENT SESSION
+  */
 
-
-
-  wallet.sessionUnlocked = true;
-
+  sessionUnlocked = true;
 
 
 
@@ -365,22 +325,16 @@ export function unlockAIInsights(): boolean {
 
 
 /* ==========================================
-   CHECK SESSION UNLOCK
+   SESSION CHECK
 ========================================== */
 
 
-export function hasUnlockedInsights(): boolean {
+export function hasUnlockedInsights(){
 
 
-  const wallet =
-    getAIWallet();
-
-
-
-  return wallet.sessionUnlocked;
+  return sessionUnlocked;
 
 }
-
 
 
 
@@ -393,7 +347,7 @@ export function hasUnlockedInsights(): boolean {
 ========================================== */
 
 
-export function getAIWalletInfo() {
+export function getAIWalletInfo(){
 
 
   const wallet =
@@ -405,68 +359,46 @@ export function getAIWalletInfo() {
 
 
     credits:
-
       wallet.credits,
 
 
-
     adsWatchedTotal:
-
       wallet.adsWatchedTotal,
 
 
-
-    insightsUnlocked:
-
-      wallet.insightsUnlocked,
-
-
-    sessionUnlocked:
-
-      wallet.sessionUnlocked,
-
+    sessionUnlocked,
 
 
     insightCost:
-
       INSIGHT_COST,
 
 
-
     adReward:
-
       AD_REWARD,
 
 
-
     adsRequired:
-
       ADS_REQUIRED_FOR_UNLOCK,
 
 
-
     adsCompleted:
-
       getAdsCompletedForUnlock(),
 
 
-
     adsRemaining:
-
       getAdsRemainingForUnlock(),
 
 
-
     creditsNeeded:
-
       Math.max(
 
-        INSIGHT_COST - wallet.credits,
+        INSIGHT_COST -
+
+        wallet.credits,
 
         0
 
       ),
-
 
   };
 
@@ -484,10 +416,10 @@ export function getAIWalletInfo() {
 ========================================== */
 
 
-export function resetAIWallet() {
+export function resetAIWallet(){
 
 
-  if (typeof window === "undefined") {
+  if(typeof window === "undefined"){
 
     return;
 
@@ -500,6 +432,10 @@ export function resetAIWallet() {
     STORAGE_KEY
 
   );
+
+
+
+  sessionUnlocked = false;
 
 
 

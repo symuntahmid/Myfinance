@@ -68,6 +68,8 @@ function getInsightIcon(
 
 
 
+
+
 export default function AIInsightCard({
 
   title = "Your Smart CFO Insights",
@@ -96,11 +98,13 @@ export default function AIInsightCard({
 
 
 
+
   /* ==========================================
-     REFRESH
+     REFRESH DATA
   ========================================== */
 
   const refresh = () => {
+
 
     const wallet =
       getAIWallet();
@@ -124,7 +128,10 @@ export default function AIInsightCard({
       hasUnlockedInsights()
     );
 
+
   };
+
+
 
 
 
@@ -132,6 +139,7 @@ export default function AIInsightCard({
   /* ==========================================
      LOAD
   ========================================== */
+
 
   useEffect(()=>{
 
@@ -168,7 +176,7 @@ export default function AIInsightCard({
 
 
 
-    return ()=>{
+    return()=>{
 
 
       window.removeEventListener(
@@ -203,12 +211,22 @@ export default function AIInsightCard({
 
 
 
+
+
+
+
   /* ==========================================
-     UNLOCK EXTRA 3 INSIGHTS
+     UNLOCK
   ========================================== */
 
 
   const handleUnlock = () => {
+
+
+    console.log(
+      "CLICKED UNLOCK"
+    );
+
 
 
     const success =
@@ -216,17 +234,23 @@ export default function AIInsightCard({
 
 
 
+    console.log(
+      "UNLOCK SUCCESS:",
+      success
+    );
+
+
+
     if(!success){
 
+
       setShowEnergy(true);
+
 
       return;
 
     }
 
-
-
-    setUnlocked(true);
 
 
     refresh();
@@ -238,11 +262,16 @@ export default function AIInsightCard({
 
 
 
+
+
+
   if(!mounted){
 
     return null;
 
   }
+
+
 
 
 
@@ -289,9 +318,12 @@ bg-cyan-200/30 blur-3xl
 
 
 
+
+
 <div className="
 flex items-start justify-between gap-4
 ">
+
 
 
 <div className="
@@ -307,6 +339,7 @@ rounded-2xl bg-white text-cyan-600 shadow-sm
 <Brain size={22}/>
 
 </div>
+
 
 
 
@@ -351,7 +384,7 @@ unlocked
 
 :
 
-"Your first Smart CFO insight is free today"
+"Your first Smart CFO insight is free today ✨"
 
 }
 
@@ -363,6 +396,7 @@ unlocked
 
 
 </div>
+
 
 
 
@@ -389,7 +423,12 @@ className="fill-cyan-400 text-cyan-500"
 </div>
 
 
+
 </div>
+
+
+
+
 
 
 
@@ -425,6 +464,7 @@ flex items-start gap-3
 
 
 
+
 <div className="min-w-0">
 
 
@@ -448,7 +488,9 @@ mt-1 text-sm leading-5 text-slate-600
 
 
 
+
 {insight.action && (
+
 
 <p className="
 mt-3 rounded-xl bg-slate-50
@@ -458,6 +500,7 @@ px-3 py-2 text-xs text-slate-600
 {insight.action}
 
 </p>
+
 
 )}
 
@@ -479,7 +522,10 @@ px-3 py-2 text-xs text-slate-600
 
 
 
+
+
 {!unlocked && (
+
 
 <div className="
 rounded-2xl border border-white
@@ -511,6 +557,7 @@ text-sm font-bold text-slate-900
 </p>
 
 
+
 <p className="
 text-xs text-slate-500
 ">
@@ -520,13 +567,16 @@ Watch 2 ads and use 10 Energy to unlock them
 </p>
 
 
+
+</div>
+
+
+
 </div>
 
 
 </div>
 
-
-</div>
 
 )}
 
@@ -539,7 +589,11 @@ Watch 2 ads and use 10 Energy to unlock them
 
 
 
+
+
+
 {!unlocked && (
+
 
 <div className="mt-4">
 
@@ -548,11 +602,15 @@ Watch 2 ads and use 10 Energy to unlock them
 
 showEnergy
 
+
 ?
+
 
 <AIInsightEnergy />
 
+
 :
+
 
 <button
 type="button"
@@ -574,10 +632,12 @@ Unlock 3 More Insights · 10 Energy
 
 </button>
 
+
 }
 
 
 </div>
+
 
 )}
 
@@ -587,6 +647,7 @@ Unlock 3 More Insights · 10 Energy
 
 
 </section>
+
 
   );
 
