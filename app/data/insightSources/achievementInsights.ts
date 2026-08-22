@@ -7,44 +7,29 @@ import {
   getPortfolioSummary,
 } from "@/app/data/investments";
 
-import type { AIInsight } from "../aiInsights";
+import type { AIInsight } from "@/app/data/types/AIInsight";
+
 
 /* =====================================================
    ACHIEVEMENT INSIGHTS
 ===================================================== */
 
-/**
- * Achievement insights recognize real financial progress.
- *
- * These should feel earned, not generic.
- *
- * Examples:
- * - Positive cash flow
- * - Savings progress
- * - Investment progress
- * - Positive net worth
- * - Transaction tracking consistency
- * - Income growth
- * - Expense reduction
- */
-
-/* =====================================================
-   HELPERS
-===================================================== */
 
 function money(value: number) {
   return `৳${Math.round(value).toLocaleString()}`;
 }
 
+
 function percent(value: number) {
   return `${Math.round(value)}%`;
 }
+
 
 /* =====================================================
    TYPES
 ===================================================== */
 
-type AchievementInsightRule = {
+export type AchievementInsightRule = {
   id: string;
 
   priority: number;
@@ -52,15 +37,12 @@ type AchievementInsightRule = {
   check: () => AIInsight | null;
 };
 
+
 /* =====================================================
    ACHIEVEMENT RULES
 ===================================================== */
 
-const achievementRules: AchievementInsightRule[] = [
-
-  /* =================================================
-     POSITIVE CASH FLOW
-  ================================================= */
+export const achievementInsightRules: AchievementInsightRule[] = [
 
   {
     id: "achievement-positive-cash-flow",
@@ -68,21 +50,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 80,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.netCashFlow <= 0
-      ) {
+
+      if (report.netCashFlow <= 0) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-positive-cash-flow",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-positive-cash-flow",
+
+        type: "achievement",
 
         title:
           "You're ending the month in the green",
@@ -99,14 +80,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "cash-flow",
-
       };
     },
   },
 
-  /* =================================================
-     SAVINGS RATE
-  ================================================= */
 
   {
     id: "achievement-saving-rate",
@@ -114,21 +91,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 85,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.savingsRate < 20
-      ) {
+
+      if (report.savingsRate < 20) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-saving-rate",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-saving-rate",
+
+        type: "achievement",
 
         title:
           "You're building a strong saving habit",
@@ -145,14 +121,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "saving",
-
       };
     },
   },
 
-  /* =================================================
-     HIGH SAVINGS RATE
-  ================================================= */
 
   {
     id: "achievement-excellent-saving-rate",
@@ -160,21 +132,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 95,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.savingsRate < 30
-      ) {
+
+      if (report.savingsRate < 30) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-excellent-saving-rate",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-excellent-saving-rate",
+
+        type: "achievement",
 
         title:
           "You're saving a significant part of your income",
@@ -191,14 +162,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "saving",
-
       };
     },
   },
 
-  /* =================================================
-     POSITIVE NET WORTH
-  ================================================= */
 
   {
     id: "achievement-positive-net-worth",
@@ -206,21 +173,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 65,
 
     check: () => {
+
       const summary =
         getSummary();
 
-      if (
-        summary.netWorth <= 0
-      ) {
+
+      if (summary.netWorth <= 0) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-positive-net-worth",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-positive-net-worth",
+
+        type: "achievement",
 
         title:
           "You're building a financial foundation",
@@ -237,14 +203,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "net-worth",
-
       };
     },
   },
 
-  /* =================================================
-     INVESTMENT PROGRESS
-  ================================================= */
 
   {
     id: "achievement-investment-progress",
@@ -252,21 +214,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 70,
 
     check: () => {
+
       const portfolio =
         getPortfolioSummary();
 
-      if (
-        portfolio.current <= 0
-      ) {
+
+      if (portfolio.current <= 0) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-investment-progress",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-investment-progress",
+
+        type: "achievement",
 
         title:
           "Your money is starting to work for you",
@@ -283,14 +244,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "investment",
-
       };
     },
   },
 
-  /* =================================================
-     TRANSACTION TRACKING
-  ================================================= */
 
   {
     id: "achievement-tracking-consistency",
@@ -298,21 +255,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 50,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.totalTransactions < 5
-      ) {
+
+      if (report.totalTransactions < 5) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-tracking-consistency",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-tracking-consistency",
+
+        type: "achievement",
 
         title:
           "You're becoming more aware of your money",
@@ -327,14 +283,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "tracking",
-
       };
     },
   },
 
-  /* =================================================
-     STRONG TRACKING
-  ================================================= */
 
   {
     id: "achievement-strong-tracking",
@@ -342,21 +294,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 60,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.totalTransactions < 15
-      ) {
+
+      if (report.totalTransactions < 15) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-strong-tracking",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-strong-tracking",
+
+        type: "achievement",
 
         title:
           "You're taking your financial tracking seriously",
@@ -371,14 +322,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "tracking",
-
       };
     },
   },
 
-  /* =================================================
-     INCOME
-  ================================================= */
 
   {
     id: "achievement-income",
@@ -386,21 +333,20 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 45,
 
     check: () => {
+
       const report =
         getMonthlyReport();
 
-      if (
-        report.income <= 0
-      ) {
+
+      if (report.income <= 0) {
         return null;
       }
 
-      return {
-        id:
-          "achievement-income",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-income",
+
+        type: "achievement",
 
         title:
           "You've created income this month",
@@ -417,14 +363,10 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "income",
-
       };
     },
   },
 
-  /* =================================================
-     FINANCIAL FOUNDATION
-  ================================================= */
 
   {
     id: "achievement-financial-foundation",
@@ -432,11 +374,13 @@ const achievementRules: AchievementInsightRule[] = [
     priority: 55,
 
     check: () => {
+
       const summary =
         getSummary();
 
       const report =
         getMonthlyReport();
+
 
       if (
         summary.netWorth <= 0 ||
@@ -445,12 +389,11 @@ const achievementRules: AchievementInsightRule[] = [
         return null;
       }
 
-      return {
-        id:
-          "achievement-financial-foundation",
 
-        type:
-          "achievement",
+      return {
+        id: "achievement-financial-foundation",
+
+        type: "achievement",
 
         title:
           "You're strengthening your financial foundation",
@@ -467,36 +410,8 @@ const achievementRules: AchievementInsightRule[] = [
 
         category:
           "financial-health",
-
       };
     },
   },
 
 ];
-
-/* =====================================================
-   GET ACHIEVEMENT INSIGHTS
-===================================================== */
-
-export function getAchievementInsights(): AIInsight[] {
-  const insights: AIInsight[] = [];
-
-  for (
-    const rule of achievementRules
-  ) {
-    const result =
-      rule.check();
-
-    if (!result) {
-      continue;
-    }
-
-    insights.push(result);
-  }
-
-  return insights.sort(
-    (a, b) =>
-      b.priority -
-      a.priority
-  );
-}

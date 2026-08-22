@@ -1,4 +1,4 @@
-import type { AIInsight } from "./aiInsights";
+import type { AIInsight } from "@/app/data/types/AIInsight";
 
 /* =====================================================
    TYPES

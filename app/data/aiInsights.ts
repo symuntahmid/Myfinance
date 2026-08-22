@@ -16,45 +16,23 @@ import {
   type InsightCandidate,
 } from "@/app/data/insightRegistry";
 
-/* =====================================================
-   TYPES
-===================================================== */
+import type {
+  AIInsight,
+  AIInsightType,
+} from "@/app/data/types/AIInsight";
 
-export type AIInsightType =
-  | "warning"
-  | "opportunity"
-  | "habit"
-  | "achievement"
-  | "emotional"
-  | "funny"
-  | "investment"
-  | "goal"
-  | "motivational";
-
-export type AIInsight = {
-  id: string;
-  type: AIInsightType;
-
-  title: string;
-  message: string;
-
-  action?: string;
-
-  priority: number;
-
-  category?: string;
-
-  conditions?: string[];
-};
 
 type InsightRule = {
   id: string;
+
   type: AIInsightType;
 
   priority: number;
 
   check: () => AIInsight | null;
 };
+
+
 
 /* =====================================================
    HELPERS
@@ -64,45 +42,56 @@ function money(value: number) {
   return `৳${Math.round(value).toLocaleString()}`;
 }
 
+
 function percent(value: number) {
   return `${Math.round(value)}%`;
 }
+
+
 
 /* =====================================================
    AI INSIGHT ENGINE
 ===================================================== */
 
 export function getAIInsights(): AIInsight[] {
-  /* -----------------------------------------------
-     CORE FINANCIAL DATA
-  ------------------------------------------------ */
 
-  const report = getMonthlyReport();
 
-  const summary = getSummary();
+  /*
+    Core financial data
+  */
 
-  const portfolio = getPortfolioSummary();
+  const report =
+    getMonthlyReport();
 
-  /* -----------------------------------------------
-     SPENDING ANALYSIS
 
-     IMPORTANT:
-     Spending analysis now lives in its own file.
-  ------------------------------------------------ */
+  const summary =
+    getSummary();
 
-  const spending = getSpendingAnalysis();
 
-  /* -----------------------------------------------
-     INSIGHT RESULTS
-  ------------------------------------------------ */
+  const portfolio =
+    getPortfolioSummary();
 
-  
 
-  /* =================================================
-     RULES
-  ================================================= */
+
+  /*
+    Spending intelligence
+  */
+
+  const spending =
+    getSpendingAnalysis();
+
+
+
+
+  /*
+    All possible insights
+    are generated here.
+  */
 
   const rules: InsightRule[] = [
+
+
+    
 
     /* =================================================
        CASH FLOW
@@ -1028,122 +1017,228 @@ for (const rule of rules) {
     continue;
   }
 
-  let family: string | undefined;
+ let family: string | undefined;
+
+
+/* =================================================
+   FAMILY GROUPING
+
+   Prevent similar financial insights
+   from appearing together.
+================================================= */
+
+
+switch (result.id) {
+
 
   /* -----------------------------------------------
-     SPENDING WARNINGS
+     ALL SPENDING INSIGHTS
   ------------------------------------------------ */
 
-  switch (result.id) {
-    case "high-spending-rate":
-    case "dominant-spending-category":
-    case "spending-category-increased":
-      family = "spending-warning";
-      break;
+  case "high-spending-rate":
 
-    /* -----------------------------------------------
-       SPENDING OPPORTUNITIES
-    ------------------------------------------------ */
+  case "largest-spending-category":
 
-    case "largest-spending-category":
-    case "potential-saving-opportunity":
-    case "spending-opportunity":
-      family = "spending-opportunity";
-      break;
+  case "dominant-spending-category":
 
-    /* -----------------------------------------------
-       SPENDING HABITS
-    ------------------------------------------------ */
+  case "spending-category-increased":
 
-    case "spending-category-decreased":
-    case "frequent-category-purchases":
-    case "weekend-spending":
-    case "multiple-spending-categories":
-      family = "spending-habit";
-      break;
+  case "potential-saving-opportunity":
 
-    /* -----------------------------------------------
-       POSITIVE CASH FLOW
-    ------------------------------------------------ */
+  case "spending-opportunity":
 
-    case "positive-cash-flow":
-    case "spending-with-positive-cash-flow":
-      family = "positive-cash-flow";
-      break;
+  case "spending-category-decreased":
 
-    /* -----------------------------------------------
-       SAVING
-    ------------------------------------------------ */
+  case "frequent-category-purchases":
 
-    case "strong-saving-rate":
-    case "no-savings":
-      family = "saving";
-      break;
+  case "weekend-spending":
 
-    /* -----------------------------------------------
-       FUNNY
-    ------------------------------------------------ */
+  case "multiple-spending-categories":
 
-    case "money-disappearing":
-    case "funny-spending":
-      family = "funny-spending";
-      break;
+    family = "spending";
 
-    /* -----------------------------------------------
-       OTHER FINANCIAL INSIGHTS
-    ------------------------------------------------ */
+    break;
 
-    case "negative-cash-flow":
-      family = "cash-flow-warning";
-      break;
 
-    case "investment-progress":
-      family = "investment";
-      break;
 
-    case "healthy-finances":
-      family = "financial-health";
-      break;
+  /* -----------------------------------------------
+     CASH FLOW
+  ------------------------------------------------ */
 
-    case "keep-going":
-      family = "tracking";
-      break;
+  case "negative-cash-flow":
 
-    case "difficult-month":
-      family = "emotional";
-      break;
-  }
+  case "positive-cash-flow":
 
-  candidates.push({
-    insight: result,
-    priority: result.priority,
-    category: result.category,
-    family,
-  });
+  case "spending-with-positive-cash-flow":
+
+    family = "cash-flow";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     SAVING
+  ------------------------------------------------ */
+
+  case "strong-saving-rate":
+
+  case "no-savings":
+
+    family = "saving";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     INVESTMENT
+  ------------------------------------------------ */
+
+  case "investment-progress":
+
+    family = "investment";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     FINANCIAL HEALTH
+  ------------------------------------------------ */
+
+  case "healthy-finances":
+
+    family = "financial-health";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     MOTIVATION
+  ------------------------------------------------ */
+
+  case "keep-going":
+
+    family = "motivation";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     EMOTIONAL
+  ------------------------------------------------ */
+
+  case "difficult-month":
+
+    family = "emotional";
+
+    break;
+
+
+
+  /* -----------------------------------------------
+     FUNNY
+  ------------------------------------------------ */
+
+  case "money-disappearing":
+
+  case "funny-spending":
+
+    family = "funny";
+
+    break;
+
 }
+
+
+
+candidates.push({
+
+  insight: result,
+
+  priority: result.priority,
+
+  category: result.category,
+
+  family,
+
+});
+
+}
+
+
 
 /* =================================================
    SELECT BEST INSIGHTS
 ================================================= */
 
-return selectInsights(
+const selected = selectInsights(
+
   candidates,
+
   {
-    maxInsights: 5,
+
+    // Total insights after unlock
+    maxInsights: 4,
+
+    // Avoid too many same types
     maxPerType: 2,
-    maxPerCategory: 2,
+
+    // Avoid duplicate category insights
+    maxPerCategory: 1,
+
   }
+
 );
+
+
+
+const uniqueInsights = Array.from(
+
+  new Map(
+
+    selected.map(
+
+      (item) => [
+
+        item.id,
+
+        item,
+
+      ]
+
+    )
+
+  ).values()
+
+);
+
+
+
+return uniqueInsights;
+
 }
+
+
 
 /* =====================================================
    TOP INSIGHT
 ===================================================== */
 
+
 export function getTopAIInsight(): AIInsight | null {
-  const insights = getAIInsights();
+
+  const insights =
+    getAIInsights();
+
 
   return insights.length > 0
+
     ? insights[0]
+
     : null;
+
 }
