@@ -2,6 +2,7 @@ export type AIWallet = {
   credits: number;
   adsWatchedTotal: number;
   insightsUnlocked: number;
+  sessionUnlocked: boolean;
 };
 
 
@@ -29,7 +30,10 @@ const DEFAULT_WALLET: AIWallet = {
 
   insightsUnlocked: 0,
 
+  sessionUnlocked: false,
+
 };
+
 
 
 
@@ -80,6 +84,27 @@ export function getAIWallet(): AIWallet {
 
 
 
+    /*
+      NEW APP SESSION
+
+      Energy stays saved.
+      Ads stay saved.
+      Insights lock again.
+    */
+
+    wallet.insightsUnlocked = 0;
+
+    wallet.sessionUnlocked = false;
+
+
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(wallet)
+    );
+
+
+
     return {
 
       ...DEFAULT_WALLET,
@@ -108,6 +133,8 @@ export function getAIWallet(): AIWallet {
   }
 
 }
+
+
 
 
 
@@ -154,15 +181,20 @@ function saveAIWallet(
 
 
 
+
+
+
 /* ==========================================
    REWARD AD
 ========================================== */
+
 
 /*
   1 Reward Ad = +5 Energy
 
   2 Reward Ads = +10 Energy
 */
+
 
 export function rewardAIAd(): boolean {
 
@@ -186,6 +218,9 @@ export function rewardAIAd(): boolean {
   return true;
 
 }
+
+
+
 
 
 
@@ -218,6 +253,8 @@ export function getAdsCompletedForUnlock(): number {
 
 
 
+
+
 export function getAdsRemainingForUnlock(): number {
 
 
@@ -235,6 +272,9 @@ export function getAdsRemainingForUnlock(): number {
   );
 
 }
+
+
+
 
 
 
@@ -265,8 +305,11 @@ export function canUnlockAIInsight(): boolean {
 
 
 
+
+
+
 /* ==========================================
-   UNLOCK 3 MORE INSIGHTS
+   UNLOCK EXTRA INSIGHTS
 ========================================== */
 
 
@@ -291,12 +334,18 @@ export function unlockAIInsights(): boolean {
 
 
 
+
   wallet.credits -= INSIGHT_COST;
 
 
 
   wallet.insightsUnlocked =
     ADDITIONAL_INSIGHTS_UNLOCK_COUNT;
+
+
+
+  wallet.sessionUnlocked = true;
+
 
 
 
@@ -312,8 +361,11 @@ export function unlockAIInsights(): boolean {
 
 
 
+
+
+
 /* ==========================================
-   CHECK IF EXTRA INSIGHTS UNLOCKED
+   CHECK SESSION UNLOCK
 ========================================== */
 
 
@@ -325,14 +377,12 @@ export function hasUnlockedInsights(): boolean {
 
 
 
-  return (
-
-    wallet.insightsUnlocked >=
-    ADDITIONAL_INSIGHTS_UNLOCK_COUNT
-
-  );
+  return wallet.sessionUnlocked;
 
 }
+
+
+
 
 
 
@@ -369,6 +419,11 @@ export function getAIWalletInfo() {
     insightsUnlocked:
 
       wallet.insightsUnlocked,
+
+
+    sessionUnlocked:
+
+      wallet.sessionUnlocked,
 
 
 
@@ -416,6 +471,9 @@ export function getAIWalletInfo() {
   };
 
 }
+
+
+
 
 
 

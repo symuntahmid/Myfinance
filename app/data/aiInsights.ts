@@ -1062,19 +1062,32 @@ switch (result.id) {
 
 
   /* -----------------------------------------------
-     CASH FLOW
-  ------------------------------------------------ */
+   CASH FLOW
+------------------------------------------------ */
 
-  case "negative-cash-flow":
+case "negative-cash-flow":
 
-  case "positive-cash-flow":
+  family = "cash-flow-warning";
 
-  case "spending-with-positive-cash-flow":
+  break;
 
-    family = "cash-flow";
 
-    break;
 
+case "positive-cash-flow":
+
+case "strong-saving-rate":
+
+  family = "financial-progress";
+
+  break;
+
+
+
+case "spending-with-positive-cash-flow":
+
+  family = "spending-gap";
+
+  break;
 
 
   /* -----------------------------------------------

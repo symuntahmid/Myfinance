@@ -58,11 +58,6 @@ export default function AIInsightEnergy({
 
 
 
-    /*
-      2 ads required
-      each ad = +5 Energy
-    */
-
     setAdsCompleted(
       wallet.adsWatchedTotal % 2
     );
@@ -106,7 +101,6 @@ export default function AIInsightEnergy({
 
 
 
-
   if(!mounted){
 
     return null;
@@ -116,8 +110,10 @@ export default function AIInsightEnergy({
 
 
 
+
   const canUnlock =
     energy >= requiredEnergy;
+
 
 
 
@@ -235,7 +231,10 @@ text-cyan-600
 
 
 
-{/* AD PROGRESS */}
+{/* ONLY SHOW ADS WHEN ENERGY IS NOT ENOUGH */}
+
+{!canUnlock && (
+
 
 <div className="mt-4">
 
@@ -281,7 +280,6 @@ item <= adsCompleted
 
 
 
-
 <p className="
 mt-2 text-[11px]
 text-slate-400
@@ -295,18 +293,24 @@ text-slate-400
 </div>
 
 
+)}
 
 
 
 
 
-{/* ACTION */}
+
+
+
+
+{/* ACTION BUTTON */}
 
 
 <div className="mt-4">
 
 
 {canUnlock ? (
+
 
 
 <button
@@ -336,6 +340,7 @@ Unlock 3 More Insights · 10 Energy
 ) : (
 
 
+
 <button
 type="button"
 onClick={handleWatchAd}
@@ -360,6 +365,7 @@ Watch Reward Ad
 
 
 
+
 <span className="
 rounded-full bg-white/10
 px-2 py-0.5 text-[10px]
@@ -371,13 +377,17 @@ text-cyan-300
 </span>
 
 
+
 </button>
+
 
 
 )}
 
 
+
 </div>
+
 
 
 
@@ -416,7 +426,10 @@ text-slate-400
 
 
 
+
 </div>
+
+
 
 
 
@@ -499,10 +512,12 @@ Upgrade
 </button>
 
 
+
 </div>
 
 
 </div>
+
 
 
 
