@@ -1,9 +1,10 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
+
 import { completeTask } from "../../data/dailyJourney";
 import { addXP } from "@/app/data/player";
+
 import {
   getMonthlyReport,
   getFinancialHealthScore,
@@ -16,7 +17,9 @@ import {
 import FinancialHealthCard from "../../components/reports/FinancialHealthCard";
 import MonthlyTrendChart from "../../components/reports/MonthlyTrendChart";
 
+
 export default function ReportsPage() {
+
   const [report, setReport] = useState(() =>
     getMonthlyReport()
   );
@@ -29,110 +32,153 @@ export default function ReportsPage() {
     getPortfolioSummary()
   );
 
- useEffect(() => {
-  const refreshReport = () => {
-    setReport(getMonthlyReport());
-    setScore(getFinancialHealthScore());
-    setPortfolio(getPortfolioSummary());
-  };
 
-  refreshReport();
+  useEffect(() => {
 
-  // Complete "Review your spending" task
-  const taskCompleted = completeTask(2);
+    const refreshReport = () => {
 
-  if (taskCompleted) {
-    addXP(10);
+      setReport(getMonthlyReport());
 
-    window.dispatchEvent(
-      new Event("dailyJourneyUpdated")
-    );
-  }
+      setScore(
+        getFinancialHealthScore()
+      );
 
-  window.addEventListener(
-    "transactionsUpdated",
-    refreshReport
-  );
+      setPortfolio(
+        getPortfolioSummary()
+      );
 
-  window.addEventListener(
-    "investmentsUpdated",
-    refreshReport
-  );
+    };
 
-  return () => {
-    window.removeEventListener(
+
+    refreshReport();
+
+
+    // Complete review task only once
+    const completed =
+      completeTask(2);
+
+
+    if (completed) {
+
+      addXP(10);
+
+      window.dispatchEvent(
+        new Event("dailyJourneyUpdated")
+      );
+
+    }
+
+
+
+    window.addEventListener(
       "transactionsUpdated",
       refreshReport
     );
 
-    window.removeEventListener(
+
+    window.addEventListener(
       "investmentsUpdated",
       refreshReport
     );
-  };
-}, []);
 
-  const formatMoney = (amount: number) =>
-    `$${amount.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    })}`;
+
+
+    return () => {
+
+      window.removeEventListener(
+        "transactionsUpdated",
+        refreshReport
+      );
+
+
+      window.removeEventListener(
+        "investmentsUpdated",
+        refreshReport
+      );
+
+    };
+
+
+  }, []);
+
+
+
+  const formatMoney = (
+    amount?: number
+  ) =>
+    `$${(amount ?? 0).toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits: 2,
+      }
+    )}`;
+
+
 
   const investmentProfitPositive =
     portfolio.profit >= 0;
 
+
   const investmentReturnPositive =
     portfolio.returnPercentage >= 0;
 
+
+
   return (
+
     <div className="space-y-8">
 
-      {/* ==========================================
-          HEADER
-      ========================================== */}
+
+      {/* HEADER */}
 
       <div>
+
         <h1 className="text-4xl font-bold">
           Monthly Report
         </h1>
 
-        <p className="mt-2 text-slate-500">
+
+        <p className="mt-2 text-[var(--muted)]">
           A clear picture of your financial performance this month.
         </p>
+
       </div>
 
 
-      {/* ==========================================
-          FINANCIAL HEALTH
-      ========================================== */}
 
-      <FinancialHealthCard score={score} />
+      {/* FINANCIAL HEALTH */}
+
+      <FinancialHealthCard
+        score={score}
+      />
 
 
-      {/* ==========================================
-          MONTHLY OVERVIEW
-      ========================================== */}
+
+      {/* MONTHLY OVERVIEW */}
 
       <section>
 
         <div className="mb-4">
+
           <h2 className="text-2xl font-bold">
             Monthly Overview
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
             How your money moved this month.
           </p>
+
         </div>
+
 
 
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
-          {/* Income */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-sm text-[var(--muted)]">
               Income
             </p>
 
@@ -140,18 +186,18 @@ export default function ReportsPage() {
               {formatMoney(report.income)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Money received this month
             </p>
 
           </div>
 
 
-          {/* Expenses */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Expenses
             </p>
 
@@ -159,18 +205,18 @@ export default function ReportsPage() {
               {formatMoney(report.expense)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Money spent this month
             </p>
 
           </div>
 
 
-          {/* Investments */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Invested This Month
             </p>
 
@@ -178,20 +224,21 @@ export default function ReportsPage() {
               {formatMoney(report.investmentSpent)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Money allocated to investments
             </p>
 
           </div>
 
 
-          {/* Savings */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Net Cash Flow
             </p>
+
 
             <h3
               className={`mt-2 text-3xl font-bold ${
@@ -203,162 +250,138 @@ export default function ReportsPage() {
               {formatMoney(report.netCashFlow)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
+
+            <p className="mt-2 text-xs text-[var(--muted)]">
               Cash remaining after this month's activity
             </p>
 
           </div>
 
+
         </div>
 
       </section>
 
-{/* ==========================================
-    FINANCIAL TREND
-========================================== */}
 
-<MonthlyTrendChart />
 
-      {/* ==========================================
-          CASH FLOW
-      ========================================== */}
+      {/* FINANCIAL TREND */}
+
+      <MonthlyTrendChart />
+
+
+
+      {/* CASH FLOW */}
 
       <section>
 
         <div className="mb-4">
+
           <h2 className="text-2xl font-bold">
             Cash Flow
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
             Your income, spending, investments, and transfers.
           </p>
+
         </div>
 
 
         <div className="grid gap-5 md:grid-cols-2">
 
 
-          {/* Cash Position */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-
-            <div className="flex items-start justify-between">
+            <div className="flex justify-between">
 
               <div>
 
-                <p className="text-sm font-medium text-slate-500">
+                <p className="text-sm text-[var(--muted)]">
                   Available Cash
                 </p>
 
-                <h3
-                  className={`mt-2 text-4xl font-bold ${
-                    report.availableCash >= 0
-                      ? "text-slate-900"
-                      : "text-red-600"
-                  }`}
-                >
+
+                <h3 className="mt-2 text-4xl font-bold">
                   {formatMoney(report.availableCash)}
                 </h3>
 
               </div>
 
-              <div className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-500">
+
+              <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold">
                 CASH
-              </div>
+              </span>
+
 
             </div>
 
 
+
             <div className="mt-6 space-y-3">
+
 
               <div className="flex justify-between text-sm">
 
-                <span className="text-slate-500">
+                <span className="text-[var(--muted)]">
                   Income
                 </span>
 
-                <span className="font-medium text-green-600">
+                <span className="font-semibold text-green-600">
                   +{formatMoney(report.income)}
                 </span>
 
               </div>
 
 
+
               <div className="flex justify-between text-sm">
 
-                <span className="text-slate-500">
+                <span className="text-[var(--muted)]">
                   Expenses
                 </span>
 
-                <span className="font-medium text-red-600">
+                <span className="font-semibold text-red-600">
                   -{formatMoney(report.expense)}
                 </span>
 
               </div>
 
 
+
               <div className="flex justify-between text-sm">
 
-                <span className="text-slate-500">
+                <span className="text-[var(--muted)]">
                   Investments
                 </span>
 
-                <span className="font-medium text-indigo-600">
+                <span className="font-semibold text-indigo-600">
                   -{formatMoney(report.investmentSpent)}
                 </span>
 
               </div>
 
 
-              {report.transferOut > 0 && (
-                <div className="flex justify-between text-sm">
-
-                  <span className="text-slate-500">
-                    Transfers Out
-                  </span>
-
-                  <span className="font-medium text-orange-600">
-                    -{formatMoney(report.transferOut)}
-                  </span>
-
-                </div>
-              )}
-
-
-              {report.transferIn > 0 && (
-                <div className="flex justify-between text-sm">
-
-                  <span className="text-slate-500">
-                    Transfers In
-                  </span>
-
-                  <span className="font-medium text-green-600">
-                    +{formatMoney(report.transferIn)}
-                  </span>
-
-                </div>
-              )}
-
             </div>
 
+
           </div>
+                    {/* Savings Rate */}
 
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-          {/* Savings Rate */}
-
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-sm text-[var(--muted)]">
               Savings Rate
             </p>
+
 
             <h3 className="mt-3 text-5xl font-bold text-teal-600">
               {Math.max(report.savingsRate, 0).toFixed(1)}%
             </h3>
 
-            <p className="mt-3 text-sm text-slate-500">
-              Percentage of your income remaining after this month's activity.
+
+            <p className="mt-3 text-sm text-[var(--muted)]">
+              Percentage of income remaining after this month's activity.
             </p>
 
 
@@ -376,17 +399,18 @@ export default function ReportsPage() {
 
             </div>
 
+
           </div>
+
 
         </div>
 
       </section>
-      
 
 
-      {/* ==========================================
-          INVESTMENT PERFORMANCE
-      ========================================== */}
+
+
+      {/* INVESTMENT PERFORMANCE */}
 
       <section>
 
@@ -396,21 +420,22 @@ export default function ReportsPage() {
             Investment Performance
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
-            The current value and performance of your investment portfolio.
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Current value and performance of your portfolio.
           </p>
 
         </div>
 
 
+
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
 
-          {/* Portfolio Value */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-sm text-[var(--muted)]">
               Portfolio Value
             </p>
 
@@ -418,39 +443,34 @@ export default function ReportsPage() {
               {formatMoney(report.investment)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
-              Current value of all investments
-            </p>
-
           </div>
 
 
-          {/* Total Invested */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Total Invested
             </p>
 
-            <h3 className="mt-2 text-3xl font-bold text-slate-900">
+
+            <h3 className="mt-2 text-3xl font-bold">
               {formatMoney(report.investedAmount)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
-              Total amount invested
-            </p>
 
           </div>
 
 
-          {/* Profit / Loss */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Profit / Loss
             </p>
+
 
             <h3
               className={`mt-2 text-3xl font-bold ${
@@ -463,20 +483,18 @@ export default function ReportsPage() {
               {formatMoney(report.investmentProfit)}
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
-              Current portfolio performance
-            </p>
 
           </div>
 
 
-          {/* Return */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <p className="text-sm font-medium text-slate-500">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
+            <p className="text-sm text-[var(--muted)]">
               Return
             </p>
+
 
             <h3
               className={`mt-2 text-3xl font-bold ${
@@ -489,24 +507,25 @@ export default function ReportsPage() {
               {report.investmentReturn.toFixed(2)}%
             </h3>
 
-            <p className="mt-2 text-xs text-slate-400">
-              Return on invested capital
-            </p>
 
           </div>
+
+
 
         </div>
 
       </section>
 
 
-      {/* ==========================================
-          EXPENSE BREAKDOWN
-      ========================================== */}
+
+
+
+      {/* EXPENSE BREAKDOWN */}
 
       {report.expenseBreakdown.length > 0 && (
 
         <section>
+
 
           <div className="mb-4">
 
@@ -514,114 +533,149 @@ export default function ReportsPage() {
               Expense Breakdown
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Where your money actually went this month.
+
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              Where your money went this month.
             </p>
+
 
           </div>
 
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
             <div className="space-y-5">
+
 
               {report.expenseBreakdown.map(
                 (item) => {
 
                   const percentage =
                     report.expense > 0
-                      ? (item.amount / report.expense) * 100
+                      ? (item.amount /
+                          report.expense) *
+                        100
                       : 0;
 
+
                   return (
+
                     <div key={item.category}>
 
-                      <div className="flex items-center justify-between">
 
-                        <span className="font-medium text-slate-700">
+                      <div className="flex justify-between">
+
+                        <span className="font-medium">
                           {item.category}
                         </span>
 
-                        <span className="font-semibold text-slate-900">
+
+                        <span className="font-semibold">
                           {formatMoney(item.amount)}
                         </span>
 
+
                       </div>
+
 
 
                       <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
 
                         <div
+
                           className="h-full rounded-full bg-red-400"
+
                           style={{
                             width: `${percentage}%`,
                           }}
+
                         />
 
                       </div>
 
 
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-[var(--muted)]">
                         {percentage.toFixed(1)}% of expenses
                       </p>
 
+
                     </div>
+
                   );
+
                 }
               )}
 
+
             </div>
 
+
           </div>
+
 
         </section>
 
       )}
 
 
-      {/* ==========================================
-          RECENT ACTIVITY + NET WORTH
-      ========================================== */}
+
+
+
+
+      {/* RECENT ACTIVITY + NET WORTH */}
 
       <div className="grid gap-6 lg:grid-cols-2">
 
 
-        {/* Recent Activity */}
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+
 
           <h2 className="text-xl font-bold">
             Recent Activity
           </h2>
 
-          <p className="mt-1 text-sm text-slate-500">
-            Your latest financial activity this month.
+
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Latest financial activity this month.
           </p>
+
 
 
           {report.recentTransactions.length > 0 ? (
 
+
             <div className="mt-6 space-y-4">
+
 
               {report.recentTransactions.map(
                 (transaction) => (
 
+
                   <div
+
                     key={transaction.id}
+
                     className="flex items-center justify-between border-b border-slate-100 pb-4 last:border-0"
+
                   >
+
 
                     <div>
 
-                      <p className="font-medium text-slate-800">
+                      <p className="font-medium">
                         {transaction.source}
                       </p>
 
-                      <p className="text-xs text-slate-400">
+
+                      <p className="text-xs text-[var(--muted)]">
                         {transaction.type}
                       </p>
 
+
                     </div>
+
 
 
                     <span
@@ -629,61 +683,73 @@ export default function ReportsPage() {
                         transaction.type === "Income"
                           ? "text-green-600"
                           : transaction.type === "Expense"
-                            ? "text-red-600"
-                            : transaction.type === "Investment"
-                              ? "text-indigo-600"
-                              : "text-slate-700"
+                          ? "text-red-600"
+                          : "text-indigo-600"
                       }`}
                     >
+
                       {transaction.type === "Income"
                         ? "+"
-                        : transaction.type === "Expense" ||
-                            transaction.type === "Investment"
-                          ? "-"
-                          : ""}
-                      {formatMoney(transaction.amount)}
+                        : "-"}
+
+                      {formatMoney(
+                        transaction.amount
+                      )}
+
                     </span>
 
+
                   </div>
+
 
                 )
               )}
 
+
             </div>
+
 
           ) : (
 
-            <div className="mt-6 rounded-xl bg-slate-50 p-6 text-center">
 
-              <p className="text-sm text-slate-500">
-                No financial activity recorded this month.
-              </p>
+            <div className="mt-6 rounded-xl bg-slate-50 p-6 text-center text-sm text-[var(--muted)]">
+
+              No financial activity recorded this month.
 
             </div>
 
+
           )}
+
+
 
         </section>
 
 
-        {/* Net Worth */}
+
+
 
         <section className="rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
 
-          <p className="text-sm font-medium text-white/60">
+
+          <p className="text-sm text-white/60">
             NET WORTH
           </p>
+
 
           <h2 className="mt-2 text-4xl font-bold">
             {formatMoney(report.netWorth)}
           </h2>
 
+
           <p className="mt-3 text-sm text-white/60">
-            Available cash + current investment portfolio value.
+            Available cash + investment portfolio value.
           </p>
 
 
+
           <div className="mt-6 space-y-3">
+
 
             <div className="flex justify-between">
 
@@ -691,11 +757,15 @@ export default function ReportsPage() {
                 Available Cash
               </span>
 
+
               <span className="font-semibold">
                 {formatMoney(report.availableCash)}
               </span>
 
+
             </div>
+
+
 
 
             <div className="flex justify-between">
@@ -704,41 +774,55 @@ export default function ReportsPage() {
                 Investments
               </span>
 
+
               <span className="font-semibold">
                 {formatMoney(report.investment)}
               </span>
 
+
             </div>
+
 
           </div>
 
+
         </section>
+
+
 
       </div>
 
 
-      {/* ==========================================
-          EMPTY STATE
-      ========================================== */}
+
+
+
+      {/* EMPTY STATE */}
 
       {report.totalTransactions === 0 &&
         report.investment === 0 && (
 
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
 
-            <h3 className="text-xl font-bold text-slate-800">
-              Your report is waiting for real data.
-            </h3>
+          <h3 className="text-xl font-bold">
+            Your report is waiting for real data.
+          </h3>
 
-            <p className="mx-auto mt-2 max-w-xl text-sm text-slate-500">
-              Add income, expenses, or investments to start
-              building your financial report.
-            </p>
 
-          </div>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-[var(--muted)]">
 
-        )}
+            Add income, expenses, or investments to start building your financial report.
+
+          </p>
+
+
+        </div>
+
+      )}
+
+
 
     </div>
+
   );
+
 }
