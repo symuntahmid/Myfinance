@@ -11,40 +11,56 @@ import {
   Transaction,
 } from "../data/transactions";
 
+import { formatCurrency } from "@/app/utils/currency";
+
 
 export default function TransactionTable() {
 
-  const [transactions, setTransactions] =
+
+  const [transactions,setTransactions] =
     useState<Transaction[]>([]);
 
-  const [search, setSearch] =
+
+  const [search,setSearch] =
     useState("");
 
-  const [filter, setFilter] =
+
+  const [filter,setFilter] =
     useState<
       "All" | "Income" | "Expense" | "Investment"
     >("All");
 
 
-  const [isEditOpen, setIsEditOpen] =
+
+  const [isEditOpen,setIsEditOpen] =
     useState(false);
 
 
-  const [selectedTransaction, setSelectedTransaction] =
+  const [selectedTransaction,setSelectedTransaction] =
     useState<Transaction | null>(null);
 
 
 
-  useEffect(() => {
+  const [currencyRefresh,setCurrencyRefresh] =
+    useState(0);
 
-    function refreshTransactions() {
+
+
+  useEffect(()=>{
+
+
+    function refreshTransactions(){
+
       setTransactions(
         getTransactions()
       );
+
     }
 
 
+
     refreshTransactions();
+
 
 
     window.addEventListener(
@@ -53,22 +69,36 @@ export default function TransactionTable() {
     );
 
 
-    return () => {
+    window.addEventListener(
+      "currencyUpdated",
+      ()=>{
+        setCurrencyRefresh(
+          value=>value+1
+        );
+      }
+    );
+
+
+
+    return()=>{
+
 
       window.removeEventListener(
         "transactionsUpdated",
         refreshTransactions
       );
 
+
     };
 
-  }, []);
 
+  },[]);
 
 
 
 
   function deleteTransaction(id:number){
+
 
     const updatedTransactions =
       getTransactions().filter(
@@ -141,7 +171,6 @@ gap-3
 ">
 
 
-
 <button
 onClick={()=>setFilter("All")}
 className={`rounded-full px-4 py-2 font-medium transition ${
@@ -154,7 +183,6 @@ filter==="All"
 >
 All
 </button>
-
 
 
 <button
@@ -171,8 +199,6 @@ Income
 </button>
 
 
-
-
 <button
 onClick={()=>setFilter("Expense")}
 className={`rounded-full px-4 py-2 font-medium transition ${
@@ -185,8 +211,6 @@ filter==="Expense"
 >
 Expense
 </button>
-
-
 
 
 <button
@@ -299,9 +323,10 @@ Actions
 <tbody>
 
 
-{transactions
-
+{
+transactions
 .filter((transaction)=>{
+
 
 const query =
 search.toLowerCase();
@@ -349,6 +374,7 @@ last:border-0
 
 <td className="py-3">
 
+
 <span
 className={`rounded-full px-3 py-1 text-sm font-semibold ${
 transaction.type==="Income"
@@ -367,7 +393,9 @@ transaction.type==="Expense"
 
 </span>
 
+
 </td>
+
 
 
 
@@ -382,6 +410,7 @@ text-[var(--foreground)]
 
 
 
+
 <td className="
 py-3
 text-[var(--muted)]
@@ -392,16 +421,17 @@ text-[var(--muted)]
 
 
 
+
 <td className="
 py-3
 font-semibold
 text-[var(--foreground)]
 ">
 
-$
-{transaction.amount.toLocaleString()}
+{formatCurrency(transaction.amount)}
 
 </td>
+
 
 
 
@@ -418,8 +448,11 @@ gap-2
 
 <button
 onClick={()=>{
+
 setSelectedTransaction(transaction);
+
 setIsEditOpen(true);
+
 }}
 className="
 rounded-lg
@@ -475,11 +508,13 @@ hover:bg-red-600
 </td>
 
 
-
 </tr>
 
 
-))}
+))
+
+
+}
 
 
 </tbody>

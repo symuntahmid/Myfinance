@@ -8,6 +8,7 @@ import TransactionForm from "@/app/components/TransactionForm";
 import SpendingInsights from "@/app/components/SpendingInsights";
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
+import { formatCurrency } from "@/app/utils/currency";
 
 import {
   getTransactions,
@@ -180,7 +181,7 @@ Current Balance
 mt-4 text-4xl
 md:text-6xl font-bold
 ">
-${summary.availableCash.toLocaleString()}
+{formatCurrency(summary.availableCash)}
 </h2>
 
 
@@ -213,19 +214,19 @@ grid grid-cols-3 gap-3 md:gap-6
 {[
 {
 title:"Income",
-value:`+$${summary.income.toLocaleString()}`,
+value:`+${formatCurrency(summary.income)}`,
 color:"text-green-600",
 desc:"This Month"
 },
 {
 title:"Expenses",
-value:`-$${summary.expense.toLocaleString()}`,
+value:`-${formatCurrency(summary.expense)}`,
 color:"text-red-500",
 desc:"This Month"
 },
 {
 title:"Available Cash",
-value:`$${summary.availableCash.toLocaleString()}`,
+value:formatCurrency(summary.availableCash),
 color:"text-cyan-600",
 desc:"Income − Expenses"
 }
@@ -615,8 +616,7 @@ transaction.type==="Expense"
 "+"
 }
 
-$
-{transaction.amount.toLocaleString()}
+{formatCurrency(transaction.amount)}
 
 </p>
 

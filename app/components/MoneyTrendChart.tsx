@@ -1,5 +1,5 @@
 "use client";
-
+import { formatCurrency } from "@/app/utils/currency";
 import {
   useEffect,
   useMemo,
@@ -62,21 +62,27 @@ function CustomTooltip({
 
 
       <p className="font-bold text-green-600">
-        Income: $
-        {Number(payload[0]?.value || 0).toLocaleString()}
-      </p>
+  Income:{" "}
+  {formatCurrency(
+    Number(payload[0]?.value || 0)
+  )}
+</p>
 
 
-      <p className="font-bold text-red-500">
-        Expense: $
-        {Number(payload[1]?.value || 0).toLocaleString()}
-      </p>
+<p className="font-bold text-red-500">
+  Expense:{" "}
+  {formatCurrency(
+    Number(payload[1]?.value || 0)
+  )}
+</p>
 
 
-      <p className="font-bold text-cyan-600">
-        Savings: $
-        {Number(payload[2]?.value || 0).toLocaleString()}
-      </p>
+<p className="font-bold text-cyan-600">
+  Savings:{" "}
+  {formatCurrency(
+    Number(payload[2]?.value || 0)
+  )}
+</p>
 
 
     </div>
@@ -98,65 +104,79 @@ export default function MoneyTrendChart() {
   const [transactions,setTransactions] =
     useState<Transaction[]>([]);
 
+const [, forceCurrencyUpdate] = useState(0);
 
 
   useEffect(()=>{
 
-
-    const refresh = () => {
-
-
-      const data =
-        getTransactions();
-
-
-      setTransactions(
-        Array.isArray(data)
-        ? data.filter(Boolean)
-        : []
-      );
-
-    };
+  const currencyListener = () => {
+    forceCurrencyUpdate(
+      value => value + 1
+    );
+  };
 
 
-    refresh();
+  window.addEventListener(
+    "currencyUpdated",
+    currencyListener
+  );
 
 
-    window.addEventListener(
+  const refresh = () => {
+
+    const data =
+      getTransactions();
+
+
+    setTransactions(
+      Array.isArray(data)
+      ? data.filter(Boolean)
+      : []
+    );
+
+  };
+
+
+  refresh();
+
+
+  window.addEventListener(
+    "transactionsUpdated",
+    refresh
+  );
+
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refresh
+  );
+
+
+  return()=>{
+
+
+    window.removeEventListener(
       "transactionsUpdated",
       refresh
     );
 
 
-    window.addEventListener(
+    window.removeEventListener(
       "investmentsUpdated",
       refresh
     );
 
 
-    return()=>{
+    window.removeEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
 
 
-      window.removeEventListener(
-        "transactionsUpdated",
-        refresh
-      );
+  };
 
 
-      window.removeEventListener(
-        "investmentsUpdated",
-        refresh
-      );
-
-
-    };
-
-
-  },[]);
-
-
-
-
+},[]);
 
 
   const data =

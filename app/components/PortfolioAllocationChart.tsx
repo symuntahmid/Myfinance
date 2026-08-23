@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -9,6 +14,8 @@ import {
 } from "recharts";
 
 import { getAllocation } from "@/app/data/investments";
+
+import { formatCurrency } from "@/app/utils/currency";
 
 
 const COLORS = [
@@ -26,14 +33,52 @@ const COLORS = [
 export default function PortfolioAllocationChart() {
 
 
+  const [, forceCurrencyUpdate] =
+    useState(0);
+
+
+
+  useEffect(()=>{
+
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
+
+
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
+
+
+    return()=>{
+
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
+      );
+
+    };
+
+
+  },[]);
+
+
+
+
   const allocation =
     getAllocation();
 
 
 
+
   const data =
     Object.entries(allocation).map(
-      ([name, value]) => ({
+      ([name,value])=>({
         name,
         value,
       })
@@ -41,7 +86,7 @@ export default function PortfolioAllocationChart() {
 
 
 
-  if(data.length === 0){
+  if(data.length===0){
 
     return null;
 
@@ -54,6 +99,7 @@ export default function PortfolioAllocationChart() {
       (sum,item)=>sum + item.value,
       0
     );
+
 
 
 
@@ -173,7 +219,9 @@ boxShadow:
 
 formatter={(value)=>[
 
-`$${Number(value).toLocaleString()}`,
+formatCurrency(
+Number(value)
+),
 
 "Value"
 
@@ -276,6 +324,8 @@ text-[var(--foreground)]
 
 
 
+
+
 <div className="text-right">
 
 
@@ -284,8 +334,9 @@ font-semibold
 text-[var(--foreground)]
 ">
 
-$
-{item.value.toLocaleString()}
+{formatCurrency(
+  item.value
+)}
 
 </div>
 
