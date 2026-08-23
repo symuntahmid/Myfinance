@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  ReactNode,
+} from "react";
+
 import Link from "next/link";
 
 import { countries } from "@/app/data/countries";
@@ -46,18 +52,18 @@ import {
 ========================================== */
 
 type SettingRowProps = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   subtitle?: string;
   onClick?: () => void;
-  right?: React.ReactNode;
+  right?: ReactNode;
   danger?: boolean;
 };
 
 type ModalProps = {
   open: boolean;
   onClose: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 /* ==========================================
@@ -78,15 +84,15 @@ function SettingRow({
       onClick={onClick}
       className={`flex w-full items-center gap-4 px-4 py-4 text-left transition ${
         danger
-          ? "hover:bg-red-50 active:bg-red-100"
-          : "hover:bg-slate-50 active:bg-slate-100"
+          ? "hover:bg-red-50/50 active:bg-red-100"
+          : "hover:bg-black/5 dark:hover:bg-[var(--card)]/5"
       }`}
     >
       <div
         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
           danger
-            ? "bg-red-50 text-red-500"
-            : "bg-slate-50 text-slate-600"
+            ? "bg-red-50 text-red-500 dark:bg-red-500/10"
+            : "bg-black/5 text-slate-600 dark:text-slate-300 dark:bg-[var(--card)]/10 dark:text-slate-300"
         }`}
       >
         {icon}
@@ -97,14 +103,14 @@ function SettingRow({
           className={`text-sm font-semibold ${
             danger
               ? "text-red-600"
-              : "text-slate-900"
+              : "text-[var(--foreground)]"
           }`}
         >
           {title}
         </p>
 
         {subtitle && (
-          <p className="mt-0.5 text-xs text-slate-400">
+          <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500 dark:text-[var(--muted)]">
             {subtitle}
           </p>
         )}
@@ -113,7 +119,7 @@ function SettingRow({
       {right ?? (
         <ChevronRight
           size={18}
-          className="shrink-0 text-slate-300"
+          className="shrink-0 text-slate-300 dark:text-slate-600 dark:text-slate-300"
         />
       )}
     </button>
@@ -130,7 +136,7 @@ function SettingGroup({
   children: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
       {children}
     </div>
   );
@@ -142,7 +148,7 @@ function SettingGroup({
 
 function Divider() {
   return (
-    <div className="ml-[72px] border-t border-slate-100" />
+    <div className="ml-[72px] border-t border-slate-100 dark:border-slate-600" />
   );
 }
 
@@ -159,11 +165,11 @@ function Modal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+      <div className="relative w-full max-w-md rounded-3xl bg-[var(--card)] p-6 shadow-2xl">
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+          className="absolute right-4 top-4 rounded-full p-2 text-slate-400 dark:text-slate-500hover:bg-black/5 dark:bg-white/10 hover:text-slate-700"
         >
           <X size={18} />
         </button>
@@ -339,11 +345,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* HEADER */}
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
           Settings
         </h1>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Manage your account and MyFinance preferences.
         </p>
       </div>
@@ -355,7 +361,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
         type="button"
         className="group relative mb-7 w-full overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 p-5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
       >
-        <div className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
+        <div className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-[var(--card)]/15 blur-2xl" />
 
         <div className="relative max-w-[75%]">
 
@@ -379,7 +385,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             and personalized financial guidance.
           </p>
 
-          <span className="mt-4 inline-flex rounded-full bg-white px-5 py-2 text-xs font-bold text-slate-900 shadow-sm transition group-hover:px-6">
+          <span className="mt-4 inline-flex rounded-full bg-[var(--card)] px-5 py-2 text-xs font-bold text-[var(--foreground)] shadow-sm transition group-hover:px-6">
             Upgrade
           </span>
 
@@ -390,7 +396,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* ACCOUNT */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Account
         </p>
 
@@ -437,7 +443,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* REGIONAL */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Regional Preferences
         </p>
 
@@ -482,7 +488,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* PREFERENCES */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Preferences
         </p>
 
@@ -511,26 +517,25 @@ const [passcodeConfirm, setPasscodeConfirm] =
       ? "Enabled"
       : "Disabled"
   }
-
-            right={
-              <span
-                className={`relative h-6 w-11 rounded-full transition ${
-                  theme === "dark"
-                    ? "bg-slate-900"
-                    : "bg-slate-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
-                    theme === "dark"
-                      ? "left-6"
-                      : "left-1"
-                  }`}
-                />
-              </span>
-            }
-            onClick={toggleTheme}
-          />
+  right={
+    <span
+      className={`relative h-6 w-11 rounded-full transition ${
+        theme === "dark"
+          ? "bg-cyan-500"
+          : "bg-slate-300"
+      }`}
+    >
+      <span
+        className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
+          theme === "dark"
+            ? "left-6"
+            : "left-1"
+        }`}
+      />
+    </span>
+  }
+  onClick={toggleTheme}
+/>
 
         </SettingGroup>
       </section>
@@ -539,7 +544,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* DATA */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Your Data
         </p>
 
@@ -607,7 +612,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* SUPPORT */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Support
         </p>
 
@@ -642,7 +647,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* LEGAL */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400">
+        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
           Terms & Privacy
         </p>
 
@@ -696,7 +701,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       {/* FOOTER */}
 
-      <p className="mt-8 text-center text-[11px] text-slate-400">
+      <p className="mt-8 text-center text-[11px] text-slate-400 dark:text-slate-500">
         MyFinance · Your Personal CFO
       </p>
 
@@ -711,11 +716,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
           setSavingTargetOpen(false)
         }
       >
-        <h2 className="text-xl font-bold text-slate-900">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">
           Monthly Saving Target
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           How much do you want to save each month?
         </p>
 
@@ -728,7 +733,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
           }
           type="number"
           min="0"
-          className="mt-6 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-cyan-500"
+          className="mt-6 w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none focus:border-cyan-500"
         />
 
         <button
@@ -768,7 +773,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
           setRegionalOpen(false)
         }
       >
-        <h2 className="text-xl font-bold text-slate-900">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">
           Regional Preferences
         </h2>
 
@@ -812,11 +817,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
           setRemindersOpen(false)
         }
       >
-        <h2 className="text-xl font-bold text-slate-900">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">
           Reminders
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Keep your financial habits on track.
         </p>
 
@@ -828,9 +833,9 @@ const [passcodeConfirm, setPasscodeConfirm] =
                 !settings.remindersEnabled,
             })
           }
-          className="mt-6 flex w-full items-center justify-between rounded-2xl bg-slate-50 p-4"
+          className="mt-6 flex w-full items-center justify-between rounded-2xl bg-black/5 dark:bg-[var(--card)]/5 p-4"
         >
-          <span className="text-sm font-semibold text-slate-900">
+          <span className="text-sm font-semibold text-[var(--foreground)]">
             Financial reminders
           </span>
 
@@ -842,7 +847,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             }`}
           >
             <span
-              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+              className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--card)] transition ${
                 settings.remindersEnabled
                   ? "left-6"
                   : "left-1"
@@ -865,29 +870,29 @@ const [passcodeConfirm, setPasscodeConfirm] =
     setPasscodeConfirm("");
   }}
 >
-  <h2 className="text-xl font-bold text-slate-900">
+  <h2 className="text-xl font-bold text-[var(--foreground)]">
     Passcode Lock
   </h2>
 
-  <p className="mt-1 text-sm leading-relaxed text-slate-500">
+  <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
     Protect your MyFinance account with a passcode.
   </p>
 
   {!settings.passcodeEnabled ? (
     <>
-      <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+      <div className="mt-5 rounded-2xl bg-black/5 dark:bg-[var(--card)]/5 p-4">
         <div className="flex items-center gap-3">
           <Lock
             size={20}
-            className="text-slate-600"
+            className="text-slate-600 dark:text-slate-300"
           />
 
           <div>
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="text-sm font-semibold text-[var(--foreground)]">
               Set up your passcode
             </p>
 
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-[var(--muted)]">
               Use a 4–6 digit passcode.
             </p>
           </div>
@@ -915,7 +920,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
               setPasscodeInput(value);
             }}
             placeholder="Enter 4–6 digits"
-            className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
           />
 
           <button
@@ -952,7 +957,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
               setPasscodeConfirm(value);
             }}
             placeholder="Enter passcode again"
-            className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
           />
 
           {passcodeConfirm.length > 0 &&
@@ -1044,18 +1049,18 @@ const [passcodeConfirm, setPasscodeConfirm] =
           setFeedbackOpen(false)
         }
       >
-        <h2 className="text-xl font-bold text-slate-900">
+        <h2 className="text-xl font-bold text-[var(--foreground)]">
           Send Feedback
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-[var(--muted)]">
           Tell us how we can make MyFinance better.
         </p>
 
         <textarea
           rows={5}
           placeholder="Write your feedback..."
-          className="mt-5 w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-cyan-500"
+          className="mt-5 w-full resize-none rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-cyan-500"
         />
 
         <button
@@ -1088,11 +1093,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
           <Trash2 size={24} />
         </div>
 
-        <h2 className="mt-5 text-xl font-bold text-slate-900">
+        <h2 className="mt-5 text-xl font-bold text-[var(--foreground)]">
           Delete Account Data?
         </h2>
 
-        <p className="mt-2 text-sm leading-relaxed text-slate-500">
+        <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
           This will permanently delete your transactions,
           investments, budgets, player progress, and settings.
           This action cannot be undone.
@@ -1105,7 +1110,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             onClick={() =>
               setDeleteOpen(false)
             }
-            className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
+            className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-slate-700"
           >
             Cancel
           </button>

@@ -13,122 +13,319 @@ const comparisonData = [
   { country: "ca" as const, value: 77 },
 ];
 
+
 export default function GlobalComparisonCard() {
+
   return (
-    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+    <section
+      className="
+      overflow-hidden
+      rounded-3xl
+      border border-[var(--border)]
+      bg-[var(--card)]
+      shadow-sm
+      "
+    >
+
 
       {/* Header */}
-      <div className="flex items-start justify-between p-6 pb-2">
+
+      <div className="
+        flex
+        items-start
+        justify-between
+        p-6
+        pb-2
+      ">
+
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+
+          <p className="
+            text-xs
+            font-semibold
+            uppercase
+            tracking-wider
+            text-[var(--muted)]
+          ">
             🌍 Global Comparison
           </p>
 
-          <h2 className="mt-1 text-xl font-bold text-slate-900">
+
+          <h2 className="
+            mt-1
+            text-xl
+            font-bold
+            text-[var(--foreground)]
+          ">
             See how your spending aligns worldwide
           </h2>
+
+
         </div>
 
+
+
         <button
-          className="rounded-full bg-slate-100 px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-200"
-          title="Filter comparison"
+          className="
+          rounded-full
+          bg-[var(--background)]
+          px-3
+          py-2
+          text-sm
+          text-[var(--muted)]
+          transition
+          hover:opacity-80
+          "
         >
           ☰
         </button>
+
+
       </div>
+
+
+
+
 
       {/* Map */}
+
       <div className="px-5 pt-3">
-        <div className="overflow-hidden rounded-2xl bg-slate-50 p-3">
-  <div className="flex justify-center">
-    <WorldMap
-      color="#79c95b"
-      title="Global spending comparison"
-      valueSuffix="%"
-      size="lg"
-      data={comparisonData}
-    />
-  </div>
-</div>
+
+
+        <div
+          className="
+          overflow-hidden
+          rounded-2xl
+          bg-[var(--background)]
+          p-3
+          "
+        >
+
+          <div className="flex justify-center">
+
+
+            <WorldMap
+              color="#06b6d4"
+              title="Global spending comparison"
+              valueSuffix="%"
+              size="lg"
+              data={comparisonData}
+            />
+
+
+          </div>
+
+
+        </div>
+
+
       </div>
 
+
+
+
+
       {/* Comparison */}
-      <div className="space-y-3 px-6 pb-6 pt-4">
 
-        {/* Shopping */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base">🛍️</span>
+      <div className="
+        space-y-3
+        px-6
+        pb-6
+        pt-4
+      ">
 
-            <span className="text-sm font-medium text-slate-700">
-              Shopping
-            </span>
+
+        {[
+          {
+            icon:"🛍️",
+            name:"Shopping",
+            value:"$120",
+            change:"-15%",
+            good:true,
+          },
+          {
+            icon:"🍔",
+            name:"Food",
+            value:"$560",
+            change:"+15%",
+            good:false,
+          },
+        ].map((item)=>(
+
+          <div
+            key={item.name}
+            className="
+            flex
+            items-center
+            justify-between
+            "
+          >
+
+            <div className="flex items-center gap-2">
+
+              <span className="text-base">
+                {item.icon}
+              </span>
+
+
+              <span className="
+                text-sm
+                font-medium
+                text-[var(--foreground)]
+              ">
+                {item.name}
+              </span>
+
+
+            </div>
+
+
+
+            <div className="flex items-center gap-2">
+
+              <span className="
+                text-sm
+                font-semibold
+                text-[var(--foreground)]
+              ">
+                {item.value}
+              </span>
+
+
+              <span
+                className={`
+                rounded-full
+                px-2
+                py-1
+                text-xs
+                font-semibold
+                ${
+                  item.good
+                  ?
+                  "bg-green-100 text-green-600 dark:bg-green-950/40 dark:text-green-400"
+                  :
+                  "bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400"
+                }
+                `}
+              >
+                {item.change}
+              </span>
+
+
+            </div>
+
+
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-900">
-              $120
-            </span>
+        ))}
 
-            <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-semibold text-green-600">
-              -15%
-            </span>
-          </div>
-        </div>
 
-        {/* Food */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base">🍔</span>
 
-            <span className="text-sm font-medium text-slate-700">
-              Food
-            </span>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-900">
-              $560
-            </span>
-
-            <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-600">
-              +15%
-            </span>
-          </div>
-        </div>
 
         {/* Overall */}
-        <div className="mt-4 rounded-2xl bg-slate-50 p-4">
-          <div className="flex items-center justify-between">
+
+        <div
+          className="
+          mt-4
+          rounded-2xl
+          bg-[var(--background)]
+          p-4
+          "
+        >
+
+          <div className="
+            flex
+            items-center
+            justify-between
+          ">
+
 
             <div>
-              <p className="text-xs text-slate-400">
+
+              <p className="
+                text-xs
+                text-[var(--muted)]
+              ">
                 Overall spending
               </p>
 
-              <p className="mt-1 text-lg font-bold text-slate-900">
+
+              <p className="
+                mt-1
+                text-lg
+                font-bold
+                text-[var(--foreground)]
+              ">
                 Better than 64%
               </p>
+
+
             </div>
 
-            <div className="rounded-full bg-green-100 px-3 py-2 text-xs font-bold text-green-600">
+
+
+            <div className="
+              rounded-full
+              bg-green-100
+              px-3
+              py-2
+              text-xs
+              font-bold
+              text-green-600
+              dark:bg-green-950/40
+              dark:text-green-400
+            ">
               GOOD
             </div>
 
+
           </div>
 
-          <p className="mt-2 text-xs leading-5 text-slate-400">
+
+
+          <p className="
+            mt-2
+            text-xs
+            leading-5
+            text-[var(--muted)]
+          ">
             Compared with the current demo global benchmark.
           </p>
+
+
         </div>
 
+
+
+
+
         {/* Button */}
-        <button className="mt-1 w-full rounded-2xl bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+
+        <button
+          className="
+          mt-1
+          w-full
+          rounded-2xl
+          bg-[var(--foreground)]
+          py-3
+          text-sm
+          font-semibold
+          text-[var(--card)]
+          transition
+          hover:opacity-90
+          "
+        >
           View Global Comparison →
         </button>
 
+
       </div>
 
+
     </section>
+
   );
+
 }
