@@ -12,6 +12,7 @@ import {
   Ellipsis,
 } from "lucide-react";
 
+
 const items = [
   {
     name: "Home",
@@ -45,10 +46,15 @@ const items = [
   },
 ];
 
+
+
 export default function BottomNavigation() {
+
   const pathname = usePathname();
 
+
   return (
+
     <nav
       className="
         fixed
@@ -57,26 +63,46 @@ export default function BottomNavigation() {
         right-0
         z-40
         border-t
-        border-slate-200
-        bg-white/95
+        border-[var(--border)]
+        bg-[var(--card)]
         backdrop-blur-xl
         shadow-[0_-10px_30px_rgba(0,0,0,.08)]
         lg:hidden
       "
       style={{
-        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingBottom:
+          "env(safe-area-inset-bottom)",
       }}
     >
+
       <div className="grid grid-cols-6 h-20">
 
+
         {items.map((item) => {
+
           const Icon = item.icon;
+
 
           const active =
             pathname === item.href ||
-            pathname.startsWith(item.href + "/");
+            pathname.startsWith(
+              item.href + "/"
+            );
+
+
+          const iconClass = active
+            ? "bg-[var(--primary)]/15 text-[var(--primary)]"
+            : "text-[var(--muted)]";
+
+
+          const textClass = active
+            ? "text-[var(--primary)]"
+            : "text-[var(--muted)]";
+
+
 
           return (
+
             <Link
               key={item.name}
               href={item.href}
@@ -90,30 +116,49 @@ export default function BottomNavigation() {
                 duration-200
               "
             >
+
               <div
-                className={`rounded-2xl p-2 transition-all duration-200 ${
-                  active
-                    ? "bg-teal-100 text-teal-600"
-                    : "text-slate-500"
-                }`}
+                className={`
+                  rounded-2xl
+                  p-2
+                  transition-all
+                  duration-200
+                  ${iconClass}
+                `}
               >
+
                 <Icon size={22} />
+
               </div>
 
+
+
               <span
-                className={`text-[11px] font-medium ${
-                  active
-                    ? "text-teal-600"
-                    : "text-slate-500"
-                }`}
+                className={`
+                  text-[11px]
+                  font-medium
+                  ${textClass}
+                `}
               >
+
                 {item.name}
+
               </span>
+
+
             </Link>
+
           );
+
+
         })}
 
+
       </div>
+
+
     </nav>
+
   );
+
 }

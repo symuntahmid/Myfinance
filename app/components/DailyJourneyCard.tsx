@@ -129,7 +129,14 @@ export default function DailyJourneyCard() {
 
           <div
             key={task.id}
-            className="flex items-center justify-between rounded-2xl bg-white/15 p-5 backdrop-blur-sm"
+            className="
+flex items-center justify-between
+rounded-2xl
+bg-white/15
+dark:bg-black/10
+p-5
+backdrop-blur-sm
+"
           >
 
             <div className="flex items-center gap-4">
@@ -142,7 +149,7 @@ export default function DailyJourneyCard() {
               ) : (
                 <Circle
                   size={24}
-                  className="text-white/70"
+                  className="text-white/60"
                 />
               )}
 
@@ -163,13 +170,32 @@ export default function DailyJourneyCard() {
 
             {task.completed ? (
 
-              <span className="rounded-xl bg-green-400/20 px-4 py-2 text-sm font-semibold text-green-100">
+              <span
+className="
+rounded-xl
+bg-green-400/20
+px-4
+py-2
+text-sm
+font-semibold
+text-green-100
+"
+>
                 ✓ Completed
               </span>
 
             ) : (
 
-              <span className="rounded-xl bg-white/10 px-4 py-2 text-sm text-white/70">
+              <span
+className="
+rounded-xl
+bg-white/10
+px-4
+py-2
+text-sm
+text-white/70
+"
+>
                 Complete through activity
               </span>
 
@@ -186,7 +212,15 @@ export default function DailyJourneyCard() {
       {progress.completed === progress.total &&
         progress.total > 0 && (
 
-        <div className="mt-8 rounded-2xl bg-white/20 p-5">
+        <div
+className="
+mt-8
+rounded-2xl
+bg-white/20
+dark:bg-black/10
+p-5
+"
+>
 
           <div className="flex items-center gap-3">
 

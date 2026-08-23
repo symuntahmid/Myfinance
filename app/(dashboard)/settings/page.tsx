@@ -5,6 +5,10 @@ import Link from "next/link";
 
 import { countries } from "@/app/data/countries";
 import {
+  useTheme,
+} from "@/app/context/ThemeContext";
+
+import {
   User,
   Sparkles,
   Target,
@@ -176,6 +180,12 @@ function Modal({
 
 export default function Settings() {
 
+
+  const {
+  theme,
+  toggleTheme,
+} = useTheme();
+
   const [passcodeStep, setPasscodeStep] =
   useState<"create" | "confirm">("create");
 
@@ -246,16 +256,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
     };
   }, []);
 
-  /* ========================================
-     DARK MODE
-  ======================================== */
-
-  useEffect(() => {
-    document.documentElement.classList.toggle(
-      "dark",
-      settings.darkMode
-    );
-  }, [settings.darkMode]);
+ 
 
   /* ========================================
      UPDATE
@@ -503,36 +504,32 @@ const [passcodeConfirm, setPasscodeConfirm] =
           <Divider />
 
           <SettingRow
-            icon={<Moon size={19} />}
-            title="Dark Mode"
-            subtitle={
-              settings.darkMode
-                ? "Enabled"
-                : "Disabled"
-            }
+  icon={<Moon size={19} />}
+  title="Dark Mode"
+  subtitle={
+    theme === "dark"
+      ? "Enabled"
+      : "Disabled"
+  }
+
             right={
               <span
                 className={`relative h-6 w-11 rounded-full transition ${
-                  settings.darkMode
+                  theme === "dark"
                     ? "bg-slate-900"
                     : "bg-slate-200"
                 }`}
               >
                 <span
                   className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
-                    settings.darkMode
+                    theme === "dark"
                       ? "left-6"
                       : "left-1"
                   }`}
                 />
               </span>
             }
-            onClick={() =>
-              changeSetting({
-                darkMode:
-                  !settings.darkMode,
-              })
-            }
+            onClick={toggleTheme}
           />
 
         </SettingGroup>
