@@ -299,8 +299,8 @@ export default function AIInsightCard({
 
 <section className="
 relative overflow-hidden rounded-[28px]
-border border-cyan-100
-bg-gradient-to-br from-cyan-50 via-white to-violet-50
+border border-[var(--border)]
+bg-[var(--card)]
 p-5 shadow-sm md:p-6
 ">
 
@@ -309,7 +309,7 @@ p-5 shadow-sm md:p-6
 pointer-events-none absolute
 -right-16 -top-16
 h-40 w-40 rounded-full
-bg-cyan-200/30 blur-3xl
+bg-[var(--primary)]/10 blur-3xl
 "/>
 
 
@@ -333,7 +333,7 @@ flex items-center gap-3
 
 <div className="
 flex h-11 w-11 items-center justify-center
-rounded-2xl bg-white text-cyan-600 shadow-sm
+rounded-2xl bg-[var(--background)] text-[var(--primary)] shadow-sm
 ">
 
 <Brain size={22}/>
@@ -352,7 +352,7 @@ flex items-center gap-2
 
 
 <h2 className="
-text-sm font-bold text-slate-950
+text-sm font-bold text-[var(--foreground)]
 ">
 
 {title}
@@ -372,7 +372,7 @@ className="text-violet-500"
 
 <p className="
 mt-0.5 text-[11px]
-text-slate-500
+text-[var(--muted)]
 ">
 
 {
@@ -404,9 +404,12 @@ unlocked
 
 <div className="
 flex items-center gap-1.5
-rounded-full border border-cyan-100
-bg-white px-3 py-1.5
-text-xs font-bold text-cyan-700
+rounded-full
+border border-[var(--border)]
+bg-[var(--background)]
+px-3 py-1.5
+text-xs font-bold
+text-[var(--primary)]
 shadow-sm
 ">
 
@@ -445,8 +448,9 @@ mt-5 space-y-3
 <div
 key={insight.id}
 className="
-rounded-2xl border border-white
-bg-white/90 p-4 shadow-sm
+rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+p-4 shadow-sm
 "
 >
 
@@ -469,7 +473,7 @@ flex items-start gap-3
 
 
 <p className="
-text-sm font-bold text-slate-900
+text-sm font-bold text-[var(--foreground)]
 ">
 
 {insight.title}
@@ -479,7 +483,7 @@ text-sm font-bold text-slate-900
 
 
 <p className="
-mt-1 text-sm leading-5 text-slate-600
+mt-1 text-sm leading-5 text-[var(--muted)]
 ">
 
 {insight.message}
@@ -491,16 +495,20 @@ mt-1 text-sm leading-5 text-slate-600
 
 {insight.action && (
 
-
 <p className="
-mt-3 rounded-xl bg-slate-50
-px-3 py-2 text-xs text-slate-600
+mt-3
+rounded-xl
+border border-[var(--border)]
+bg-[var(--card)]
+px-3
+py-2
+text-xs
+text-[var(--muted)]
 ">
 
 {insight.action}
 
 </p>
-
 
 )}
 
@@ -528,8 +536,8 @@ px-3 py-2 text-xs text-slate-600
 
 
 <div className="
-rounded-2xl border border-white
-bg-white/60 p-4
+rounded-2xl border border-[var(--border)]
+bg-[var(--background)] p-4
 ">
 
 
@@ -540,7 +548,7 @@ flex items-center gap-3
 
 <Lock
 size={18}
-className="text-slate-400"
+className="text-[var(--muted)]"
 />
 
 
@@ -549,7 +557,7 @@ className="text-slate-400"
 
 
 <p className="
-text-sm font-bold text-slate-900
+text-sm font-bold text-[var(--foreground)]
 ">
 
 {lockedCount} more insights locked
@@ -559,7 +567,7 @@ text-sm font-bold text-slate-900
 
 
 <p className="
-text-xs text-slate-500
+text-xs text-[var(--muted)]
 ">
 
 Watch 2 ads and use 10 Energy to unlock them
