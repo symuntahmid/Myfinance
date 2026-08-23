@@ -10,6 +10,7 @@ import {
 
 import { getAllocation } from "@/app/data/investments";
 
+
 const COLORS = [
   "#06b6d4",
   "#3b82f6",
@@ -20,108 +21,313 @@ const COLORS = [
   "#6366f1",
 ];
 
+
+
 export default function PortfolioAllocationChart() {
-  const allocation = getAllocation();
 
-  const data = Object.entries(allocation).map(
-    ([name, value]) => ({
-      name,
-      value,
-    })
-  );
 
-  if (data.length === 0) {
+  const allocation =
+    getAllocation();
+
+
+
+  const data =
+    Object.entries(allocation).map(
+      ([name, value]) => ({
+        name,
+        value,
+      })
+    );
+
+
+
+  if(data.length === 0){
+
     return null;
+
   }
 
-  const total = data.reduce(
-    (sum, item) => sum + item.value,
-    0
-  );
+
+
+  const total =
+    data.reduce(
+      (sum,item)=>sum + item.value,
+      0
+    );
+
+
 
   return (
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
-      <h2 className="text-2xl font-bold">
-        Portfolio Allocation
-      </h2>
 
-      <p className="mt-2 mb-6 text-slate-500">
-        Distribution of your investments.
-      </p>
+<div className="
+rounded-3xl
+border border-[var(--border)]
+bg-[var(--card)]
+p-8
+shadow-sm
+">
 
-      <div className="grid gap-8 md:grid-cols-2">
-        {/* Pie Chart */}
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={70}
-                outerRadius={110}
-                paddingAngle={3}
-              >
-                {data.map((_, index) => (
-                  <Cell
-                    key={index}
-                    fill={
-                      COLORS[index % COLORS.length]
-                    }
-                  />
-                ))}
-              </Pie>
 
-              <Tooltip
-                formatter={(value) => [
-                  `$${Number(value).toLocaleString()}`,
-                  "Value",
-                ]}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+<h2 className="
+text-2xl
+font-bold
+text-[var(--foreground)]
+">
+Portfolio Allocation
+</h2>
 
-        {/* Legend */}
-        <div className="flex flex-col justify-center space-y-4">
-          {data.map((item, index) => {
-            const percentage =
-              (item.value / total) * 100;
 
-            return (
-              <div
-                key={item.name}
-                className="flex items-center justify-between rounded-xl border border-slate-100 p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-4 w-4 rounded-full"
-                    style={{
-                      backgroundColor:
-                        COLORS[index % COLORS.length],
-                    }}
-                  />
+<p className="
+mt-2 mb-6
+text-[var(--muted)]
+">
+Distribution of your investments.
+</p>
 
-                  <span className="font-medium">
-                    {item.name}
-                  </span>
-                </div>
 
-                <div className="text-right">
-                  <div className="font-semibold">
-                    $
-                    {item.value.toLocaleString()}
-                  </div>
 
-                  <div className="text-sm text-slate-500">
-                    {percentage.toFixed(1)}%
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+
+
+<div className="
+grid gap-8 md:grid-cols-2
+">
+
+
+
+{/* Pie Chart */}
+
+<div className="h-80">
+
+
+<ResponsiveContainer
+width="100%"
+height="100%"
+>
+
+
+<PieChart>
+
+
+<Pie
+
+data={data}
+
+dataKey="value"
+
+nameKey="name"
+
+innerRadius={70}
+
+outerRadius={110}
+
+paddingAngle={3}
+
+>
+
+{
+data.map((_,index)=>(
+
+<Cell
+
+key={index}
+
+fill={
+COLORS[index % COLORS.length]
+}
+
+stroke="var(--card)"
+
+strokeWidth={3}
+
+/>
+
+))
+}
+
+
+</Pie>
+
+
+
+
+
+<Tooltip
+
+contentStyle={{
+
+borderRadius:"16px",
+
+border:
+"1px solid var(--border)",
+
+backgroundColor:
+"var(--card)",
+
+color:
+"var(--foreground)",
+
+boxShadow:
+"0 12px 35px rgba(0,0,0,.15)",
+
+}}
+
+formatter={(value)=>[
+
+`$${Number(value).toLocaleString()}`,
+
+"Value"
+
+]}
+
+/>
+
+
+
+</PieChart>
+
+
+</ResponsiveContainer>
+
+
+</div>
+
+
+
+
+
+
+
+{/* Legend */}
+
+<div className="
+flex flex-col
+justify-center
+space-y-4
+">
+
+
+{
+data.map((item,index)=>{
+
+
+const percentage =
+total === 0
+?
+0
+:
+(item.value / total) * 100;
+
+
+
+return (
+
+<div
+
+key={item.name}
+
+className="
+flex items-center
+justify-between
+rounded-xl
+border border-[var(--border)]
+bg-[var(--background)]
+p-3
+"
+
+>
+
+
+<div className="
+flex items-center gap-3
+">
+
+
+<div
+
+className="
+h-4 w-4
+rounded-full
+"
+
+style={{
+
+backgroundColor:
+COLORS[index % COLORS.length],
+
+}}
+
+/>
+
+
+
+<span className="
+font-medium
+text-[var(--foreground)]
+">
+
+{item.name}
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div className="text-right">
+
+
+<div className="
+font-semibold
+text-[var(--foreground)]
+">
+
+$
+{item.value.toLocaleString()}
+
+</div>
+
+
+
+<div className="
+text-sm
+text-[var(--muted)]
+">
+
+{percentage.toFixed(1)}%
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+);
+
+
+})
+
+}
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
   );
+
 }

@@ -13,148 +13,303 @@ import {
 
 import { getPortfolioHistory } from "@/app/data/portfolioHistory";
 
+
 export default function PortfolioGrowthChart() {
-  const history = getPortfolioHistory();
 
-  const data = history.map((item) => ({
-    day: new Date(item.date).toLocaleDateString(
-      "en-US",
-      {
-        month: "short",
-        day: "numeric",
-      }
-    ),
-    value: item.value,
-  }));
+  const history =
+    getPortfolioHistory();
 
-  if (data.length === 0) {
+
+  const data =
+    history.map((item)=>({
+
+      day:
+        new Date(item.date)
+        .toLocaleDateString(
+          "en-US",
+          {
+            month:"short",
+            day:"numeric",
+          }
+        ),
+
+      value:item.value,
+
+    }));
+
+
+
+  if(data.length===0){
+
     return (
-      <div className="rounded-3xl bg-white p-8 shadow-sm">
-        <h2 className="mb-2 text-2xl font-bold">
-          Portfolio Growth
-        </h2>
 
-        <p className="mb-6 text-slate-500">
-          Track the growth of your investment portfolio.
-        </p>
+<div className="
+rounded-3xl
+border border-[var(--border)]
+bg-[var(--card)]
+p-8
+shadow-sm
+">
 
-        <div className="flex h-64 items-center justify-center text-slate-500">
-          No portfolio history yet.
-        </div>
-      </div>
+
+<h2 className="
+mb-2
+text-2xl
+font-bold
+text-[var(--foreground)]
+">
+Portfolio Growth
+</h2>
+
+
+<p className="
+mb-6
+text-[var(--muted)]
+">
+Track the growth of your investment portfolio.
+</p>
+
+
+<div className="
+flex h-64
+items-center
+justify-center
+text-[var(--muted)]
+">
+No portfolio history yet.
+</div>
+
+
+</div>
+
     );
+
   }
 
-  return (
-    <div className="rounded-3xl bg-white p-8 shadow-sm">
-      <h2 className="mb-2 text-2xl font-bold">
-        Portfolio Growth
-      </h2>
 
-      <p className="mb-6 text-slate-500">
-        Track the growth of your investment portfolio.
-      </p>
 
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{
-              top: 20,
-              right: 20,
-              left: 10,
-              bottom: 10,
-            }}
-          >
-            {/* Gradient */}
-            <defs>
-              <linearGradient
-                id="portfolioGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="#06b6d4"
-                  stopOpacity={0.35}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="#06b6d4"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
 
-            {/* Softer Grid */}
-            <CartesianGrid
-              stroke="#F1F5F9"
-              strokeDasharray="4 4"
-              vertical={false}
-            />
+return (
 
-            {/* X Axis */}
-            <XAxis
-              dataKey="day"
-              tick={{ fontSize: 12, fill: "#64748b" }}
-              tickLine={false}
-              axisLine={false}
-            />
+<div className="
+rounded-3xl
+border border-[var(--border)]
+bg-[var(--card)]
+p-8
+shadow-sm
+">
 
-            {/* Y Axis */}
-            <YAxis
-              tick={{ fontSize: 12, fill: "#64748b" }}
-              tickFormatter={(value) => `$${value}`}
-              tickLine={false}
-              axisLine={false}
-              width={55}
-            />
 
-            {/* Premium Tooltip */}
-            <Tooltip
-              contentStyle={{
-                borderRadius: "16px",
-                border: "none",
-                backgroundColor: "#ffffff",
-                boxShadow:
-                  "0 12px 35px rgba(15,23,42,.15)",
-              }}
-              formatter={(value) => [
-                `$${Number(value).toLocaleString()}`,
-                "Portfolio Value",
-              ]}
-            />
+<h2 className="
+mb-2
+text-2xl
+font-bold
+text-[var(--foreground)]
+">
+Portfolio Growth
+</h2>
 
-            {/* Gradient Area */}
-            <Area
-              type="natural"
-              dataKey="value"
-              stroke="none"
-              fill="url(#portfolioGradient)"
-            />
 
-            {/* Line */}
-            <Line
-              type="natural"
-              dataKey="value"
-              stroke="#06b6d4"
-              strokeWidth={4}
-              dot={false}
-              activeDot={{
-                r: 8,
-                fill: "#06b6d4",
-                stroke: "#ffffff",
-                strokeWidth: 3,
-              }}
-              isAnimationActive
-              animationDuration={1500}
-              animationEasing="ease-out"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
+<p className="
+mb-6
+text-[var(--muted)]
+">
+Track the growth of your investment portfolio.
+</p>
+
+
+
+
+
+<div className="h-80">
+
+
+<ResponsiveContainer
+width="100%"
+height="100%"
+>
+
+
+<LineChart
+data={data}
+margin={{
+top:20,
+right:20,
+left:10,
+bottom:10,
+}}
+>
+
+
+
+<defs>
+
+<linearGradient
+id="portfolioGradient"
+x1="0"
+y1="0"
+x2="0"
+y2="1"
+>
+
+<stop
+offset="5%"
+stopColor="#06b6d4"
+stopOpacity={0.35}
+/>
+
+
+<stop
+offset="95%"
+stopColor="#06b6d4"
+stopOpacity={0}
+/>
+
+
+</linearGradient>
+
+</defs>
+
+
+
+
+
+<CartesianGrid
+stroke="var(--border)"
+strokeDasharray="4 4"
+vertical={false}
+/>
+
+
+
+
+
+<XAxis
+dataKey="day"
+tick={{
+fill:"var(--muted)",
+fontSize:12,
+}}
+tickLine={false}
+axisLine={false}
+/>
+
+
+
+
+
+<YAxis
+tick={{
+fill:"var(--muted)",
+fontSize:12,
+}}
+tickFormatter={(value)=>`$${value}`}
+tickLine={false}
+axisLine={false}
+width={55}
+/>
+
+
+
+
+
+<Tooltip
+
+contentStyle={{
+
+borderRadius:"16px",
+
+border:"1px solid var(--border)",
+
+backgroundColor:"var(--card)",
+
+color:"var(--foreground)",
+
+boxShadow:
+"0 12px 35px rgba(0,0,0,.15)",
+
+}}
+
+formatter={(value)=>[
+
+`$${Number(value).toLocaleString()}`,
+
+"Portfolio Value"
+
+]}
+
+/>
+
+
+
+
+
+<Area
+type="natural"
+dataKey="value"
+stroke="none"
+fill="url(#portfolioGradient)"
+/>
+
+
+
+
+
+<Line
+
+type="natural"
+
+dataKey="value"
+
+stroke="#06b6d4"
+
+strokeWidth={4}
+
+dot={false}
+
+style={{
+
+filter:
+"drop-shadow(0 0 7px rgba(6,182,212,0.55))",
+
+}}
+
+activeDot={{
+
+r:8,
+
+fill:"#06b6d4",
+
+stroke:"#ffffff",
+
+strokeWidth:3,
+
+}}
+
+isAnimationActive
+
+animationDuration={1500}
+
+animationEasing="ease-out"
+
+/>
+
+
+
+
+
+</LineChart>
+
+
+</ResponsiveContainer>
+
+
+</div>
+
+
+
+</div>
+
+);
+
 }
