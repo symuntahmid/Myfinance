@@ -1,6 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 
 
 type Props = {
@@ -14,6 +23,45 @@ export default function BudgetProgressCard({
   budget,
   spent,
 }: Props) {
+
+
+  const [,forceCurrencyUpdate] =
+    useState(0);
+
+
+
+  useEffect(()=>{
+
+
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
+
+
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
+
+
+    return()=>{
+
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
+      );
+
+    };
+
+
+  },[]);
+
+
+
 
 
   const remaining =
@@ -50,7 +98,6 @@ export default function BudgetProgressCard({
         hover:shadow-lg
         "
       >
-
 
 
         <div className="
@@ -91,7 +138,6 @@ export default function BudgetProgressCard({
 
 
 
-
         <div className="mt-6">
 
 
@@ -103,14 +149,16 @@ export default function BudgetProgressCard({
           text-[var(--muted)]
           ">
 
+
             <span>
               Spent
             </span>
 
 
             <span>
-              ${spent.toLocaleString()} / $
-              {budget.toLocaleString()}
+              {formatCurrency(spent)}
+              {" / "}
+              {formatCurrency(budget)}
             </span>
 
 
@@ -153,7 +201,6 @@ export default function BudgetProgressCard({
 
 
 
-
         <div className="
         mt-8
         grid
@@ -161,7 +208,6 @@ export default function BudgetProgressCard({
         gap-6
         text-center
         ">
-
 
 
           <div>
@@ -180,12 +226,11 @@ export default function BudgetProgressCard({
             font-bold
             text-[var(--foreground)]
             ">
-              ${budget.toLocaleString()}
+              {formatCurrency(budget)}
             </p>
 
 
           </div>
-
 
 
 
@@ -207,13 +252,11 @@ export default function BudgetProgressCard({
             font-bold
             text-red-500
             ">
-              ${spent.toLocaleString()}
+              {formatCurrency(spent)}
             </p>
 
 
           </div>
-
-
 
 
 
@@ -243,14 +286,12 @@ export default function BudgetProgressCard({
               `}
             >
 
-              ${remaining.toLocaleString()}
+              {formatCurrency(remaining)}
 
             </p>
 
 
           </div>
-
-
 
 
         </div>

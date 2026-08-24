@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 
 import AddGoalModal from "@/app/components/AddGoalModal";
+import { formatCurrency } from "@/app/utils/currency";
+
 import {
   getGoals,
   deleteGoal,
@@ -39,19 +41,44 @@ export default function GoalsPage() {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [withdrawGoal, setWithdrawGoal] = useState<Goal | null>(null);
 
+  const [, forceCurrencyUpdate] = useState(0);
+
   useEffect(() => {
-    function refreshGoals() {
-      setGoals(getGoals());
-    }
+  function refreshGoals() {
+    setGoals(getGoals());
+  }
 
-    refreshGoals();
+  function refreshCurrency() {
+    forceCurrencyUpdate(
+      value => value + 1
+    );
+  }
 
-    window.addEventListener("goalsUpdated", refreshGoals);
+  refreshGoals();
 
-    return () => {
-      window.removeEventListener("goalsUpdated", refreshGoals);
-    };
-  }, []);
+  window.addEventListener(
+    "goalsUpdated",
+    refreshGoals
+  );
+
+  window.addEventListener(
+    "currencyUpdated",
+    refreshCurrency
+  );
+
+  return () => {
+    window.removeEventListener(
+      "goalsUpdated",
+      refreshGoals
+    );
+
+    window.removeEventListener(
+      "currencyUpdated",
+      refreshCurrency
+    );
+  };
+
+}, []);
 
   const activeGoalsCount = goals.filter(
     (g) => g.savedAmount < g.targetAmount
@@ -108,7 +135,7 @@ export default function GoalsPage() {
 
         {/* Summary */}
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
             <p className="text-sm text-slate-500">Active Goals</p>
 
             <div className="mt-3 flex items-center justify-between">
@@ -120,7 +147,7 @@ export default function GoalsPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
             <p className="text-sm text-slate-500">Completed</p>
 
             <div className="mt-3 flex items-center justify-between">
@@ -132,20 +159,50 @@ export default function GoalsPage() {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Saved</p>
+          <div className="
+rounded-3xl
+bg-[var(--card)]
+border border-[var(--border)]
+p-6
+shadow-sm
+">
 
-            <div className="mt-3 flex items-center justify-between">
-              <h2 className="text-3xl font-bold">
-                ${totalSaved.toLocaleString()}
-              </h2>
+  <p className="
+  text-sm
+  text-[var(--muted)]
+  ">
+    Saved
+  </p>
 
-              <div className="rounded-2xl bg-cyan-100 p-3">💰</div>
-            </div>
-          </div>
+  <div className="
+  mt-3
+  flex
+  items-center
+  justify-between
+  ">
 
-          <div className="rounded-3xl bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Goal Completion</p>
+    <h2 className="
+    text-3xl
+    font-bold
+    text-[var(--foreground)]
+    ">
+      {formatCurrency(totalSaved)}
+    </h2>
+
+    <div className="
+    rounded-2xl
+    bg-cyan-100
+    p-3
+    ">
+      💰
+    </div>
+
+  </div>
+
+</div>
+
+          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
+            <p className="text-sm text-[var(--muted)]">Goal Completion</p>
 
             <h2 className="mt-3 text-3xl font-bold text-cyan-600">
               {averageCompletion}%
@@ -275,13 +332,13 @@ export default function GoalsPage() {
                   <div className="mt-3 text-cyan-100">
                     <p className="mt-3 text-base text-cyan-100">
                       <span className="font-semibold">
-                        ${goal.savedAmount.toLocaleString()}
+                        {formatCurrency(goal.savedAmount)}
                       </span>
 
                       {" "}saved of{" "}
 
                       <span className="font-semibold">
-                        ${goal.targetAmount.toLocaleString()}
+                        {formatCurrency(goal.targetAmount)}
                       </span>
                     </p>
 
@@ -303,27 +360,34 @@ export default function GoalsPage() {
                   <div className="mt-8 space-y-4">
                     <div className="mt-8 grid grid-cols-3 gap-4 rounded-3xl bg-white/14 border border-white/15 p-4 backdrop-blur">
                       <div>
-                        <p className="text-xs text-cyan-100">Saved</p>
-                        <h3 className="mt-1 font-bold text-green-300">
-                          ${goal.savedAmount.toLocaleString()}
-                        </h3>
-                      </div>
+  <p className="text-xs text-cyan-100">
+    Saved
+  </p>
 
-                      <div>
-                        <p className="text-xs text-cyan-100">Goal</p>
-                        <h3 className="mt-1 font-bold">
-                          ${goal.targetAmount.toLocaleString()}
-                        </h3>
-                      </div>
+  <h3 className="mt-1 font-bold text-green-300">
+    {formatCurrency(goal.savedAmount)}
+  </h3>
+</div>
+
+<div>
+  <p className="text-xs text-cyan-100">
+    Goal
+  </p>
+
+  <h3 className="mt-1 font-bold">
+    {formatCurrency(goal.targetAmount)}
+  </h3>
+</div>
 
                       <div>
                         <p className="text-xs text-cyan-100">Remaining</p>
                         <h3 className="mt-1 font-bold text-orange-300">
-                          $
-                          {Math.max(
-                            goal.targetAmount - goal.savedAmount,
-                            0
-                          ).toLocaleString()}
+                          {formatCurrency(
+  Math.max(
+    goal.targetAmount - goal.savedAmount,
+    0
+  )
+)}
                         </h3>
                       </div>
                     </div>

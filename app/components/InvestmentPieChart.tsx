@@ -19,6 +19,10 @@ import {
   getPortfolioSummary,
 } from "../data/investments";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 
 const COLORS = [
   "#14b8a6",
@@ -48,9 +52,7 @@ function CustomTooltip({
   }
 
 
-
   const item = payload[0];
-
 
 
   return (
@@ -75,16 +77,16 @@ function CustomTooltip({
       </p>
 
 
-
       <p className="
       mt-2
       text-xl
       font-bold
       text-[var(--foreground)]
       ">
-        ${Number(item.value).toLocaleString()}
+        {formatCurrency(
+          Number(item.value)
+        )}
       </p>
-
 
 
       <p className="
@@ -115,8 +117,14 @@ export default function InvestmentPieChart() {
 
   const [portfolio,setPortfolio] =
     useState(
-      getPortfolioSummary()
+      () => getPortfolioSummary()
     );
+
+
+
+  const [,forceCurrencyUpdate] =
+    useState(0);
+
 
 
 
@@ -157,8 +165,10 @@ export default function InvestmentPieChart() {
 
             percent:
               total === 0
-              ? 0
-              : (value / total) * 100,
+              ?
+              0
+              :
+              (value / total) * 100,
 
           })
         );
@@ -175,6 +185,16 @@ export default function InvestmentPieChart() {
 
 
 
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
+
+
+
     refreshChart();
 
 
@@ -182,6 +202,12 @@ export default function InvestmentPieChart() {
     window.addEventListener(
       "investmentsUpdated",
       refreshChart
+    );
+
+
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
     );
 
 
@@ -195,6 +221,12 @@ export default function InvestmentPieChart() {
       );
 
 
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
+      );
+
+
     };
 
 
@@ -205,20 +237,16 @@ export default function InvestmentPieChart() {
 
 
 
+
   const largestHolding =
     data.length > 0
-
     ?
-
     [...data].sort(
       (a,b)=>
-        b.value - a.value
+        b.value-a.value
     )[0]
-
     :
-
     null;
-
 
 
 
@@ -236,10 +264,6 @@ export default function InvestmentPieChart() {
       shadow-sm
       "
     >
-
-
-
-      {/* Header */}
 
 
       <div className="
@@ -281,10 +305,8 @@ export default function InvestmentPieChart() {
           font-semibold
           text-[var(--primary)]
           ">
-            {portfolio.totalAssets} Assets •{" "}
-            {data.length} Categories
+            {portfolio.totalAssets} Assets • {data.length} Categories
           </p>
-
 
 
         </div>
@@ -293,8 +315,8 @@ export default function InvestmentPieChart() {
 
 
 
-
-        {largestHolding && (
+        {
+          largestHolding && (
 
           <div
             className="
@@ -304,31 +326,25 @@ export default function InvestmentPieChart() {
             bg-[var(--primary)]/10
             px-5
             py-4
-            shadow-sm
             "
           >
-
 
             <p className="
             text-xs
             uppercase
-            tracking-wide
             text-[var(--muted)]
             ">
               Largest Holding
             </p>
 
 
-
             <h3 className="
             mt-1
-            text-lg
             font-bold
             text-[var(--foreground)]
             ">
               {largestHolding.name}
             </h3>
-
 
 
             <p className="
@@ -342,157 +358,127 @@ export default function InvestmentPieChart() {
 
           </div>
 
-        )}
-
+          )
+        }
 
 
       </div>
 
 
-
-
-
-
-
-
-      {/* Chart */}
 
 
 
       <div className="h-80">
 
 
-        {
-          data.length === 0
+      {
+        data.length === 0
 
-          ?
+        ?
 
-          (
+        <div className="
+        flex
+        h-full
+        items-center
+        justify-center
+        text-[var(--muted)]
+        ">
+          No investments yet
+        </div>
 
-            <div className="
-            flex
-            h-full
-            items-center
-            justify-center
-            text-[var(--muted)]
-            ">
-              No investments yet
-            </div>
 
-          )
+        :
 
-          :
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
 
-          (
+          <PieChart>
 
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
+
+            <Pie
+
+              data={data}
+
+              dataKey="value"
+
+              nameKey="name"
+
+              cx="50%"
+
+              cy="50%"
+
+              outerRadius={105}
+
+              innerRadius={65}
+
+              paddingAngle={3}
+
+              animationDuration={900}
+
             >
 
+              {
+                data.map(
+                  (_,index)=>(
 
-              <PieChart>
+                    <Cell
+
+                      key={index}
+
+                      fill={
+                        COLORS[
+                          index %
+                          COLORS.length
+                        ]
+                      }
+
+                      stroke="var(--card)"
+
+                      strokeWidth={3}
+
+                    />
+
+                  )
+                )
+              }
 
 
-
-                <Pie
-
-                  data={data}
-
-                  dataKey="value"
-
-                  nameKey="name"
-
-                  cx="50%"
-
-                  cy="50%"
-
-                  outerRadius={105}
-
-                  innerRadius={65}
-
-                  paddingAngle={3}
-
-                  animationDuration={900}
-
-                  label={({percent}) =>
-                    `${(
-                      (percent ?? 0) * 100
-                    ).toFixed(0)}%`
-                  }
-
-                >
+            </Pie>
 
 
 
-                  {
-                    data.map(
-                      (entry,index)=>(
-
-
-                        <Cell
-
-                          key={index}
-
-                          fill={
-                            COLORS[
-                              index %
-                              COLORS.length
-                            ]
-                          }
-
-                          stroke="var(--card)"
-
-                          strokeWidth={3}
-
-                        />
-
-
-                      )
-                    )
-                  }
+            <Tooltip
+              content={
+                <CustomTooltip/>
+              }
+            />
 
 
 
-                </Pie>
+            <Legend
+
+              verticalAlign="bottom"
+
+              iconType="circle"
+
+              wrapperStyle={{
+                paddingTop:20,
+              }}
+
+            />
 
 
+          </PieChart>
 
 
-                <Tooltip
-                  content={
-                    <CustomTooltip />
-                  }
-                />
+        </ResponsiveContainer>
 
-
-
-                <Legend
-
-                  verticalAlign="bottom"
-
-                  iconType="circle"
-
-                  wrapperStyle={{
-                    paddingTop:20,
-                  }}
-
-                />
-
-
-
-              </PieChart>
-
-
-            </ResponsiveContainer>
-
-          )
-        }
-
+      }
 
 
       </div>
-
 
 
     </div>

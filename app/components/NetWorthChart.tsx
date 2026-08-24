@@ -19,6 +19,10 @@ import {
   getSummary,
 } from "../data/transactions";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 
 
 function CustomTooltip({
@@ -65,13 +69,15 @@ function CustomTooltip({
 
 
       <p className="
-      mt-2
-      text-xl
-      font-bold
-      text-[var(--foreground)]
-      ">
-        ${payload[0].value.toLocaleString()}
-      </p>
+mt-2
+text-xl
+font-bold
+text-[var(--foreground)]
+">
+  {formatCurrency(
+    Number(payload[0].value)
+  )}
+</p>
 
 
 
@@ -103,57 +109,81 @@ export default function NetWorthChart() {
       getSummary()
     );
 
+    const [, forceCurrencyUpdate] =
+  useState(0);
 
 
   useEffect(()=>{
 
 
-    function refreshSummary(){
+  function refreshSummary(){
 
-      setSummary(
-        getSummary()
-      );
+    setSummary(
+      getSummary()
+    );
 
-    }
-
-
-
-    refreshSummary();
+  }
 
 
 
-    window.addEventListener(
+  const currencyListener = () => {
+
+    forceCurrencyUpdate(
+      value => value + 1
+    );
+
+  };
+
+
+
+  refreshSummary();
+
+
+
+  window.addEventListener(
+    "transactionsUpdated",
+    refreshSummary
+  );
+
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refreshSummary
+  );
+
+
+  window.addEventListener(
+    "currencyUpdated",
+    currencyListener
+  );
+
+
+
+  return ()=>{
+
+
+    window.removeEventListener(
       "transactionsUpdated",
       refreshSummary
     );
 
 
-    window.addEventListener(
+    window.removeEventListener(
       "investmentsUpdated",
       refreshSummary
     );
 
 
-
-    return ()=>{
-
-
-      window.removeEventListener(
-        "transactionsUpdated",
-        refreshSummary
-      );
+    window.removeEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
 
 
-      window.removeEventListener(
-        "investmentsUpdated",
-        refreshSummary
-      );
+  };
 
 
-    };
-
-
-  },[]);
+},[]);
 
 
 
@@ -247,13 +277,15 @@ export default function NetWorthChart() {
 
 
           <h2 className="
-          mt-2
-          text-4xl
-          font-bold
-          text-[var(--foreground)]
-          ">
-            ${summary.netWorth.toLocaleString()}
-          </h2>
+mt-2
+text-4xl
+font-bold
+text-[var(--foreground)]
+">
+  {formatCurrency(
+    summary.netWorth
+  )}
+</h2>
 
 
 

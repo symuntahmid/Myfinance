@@ -20,6 +20,11 @@ import {
   getSummary,
 } from "../data/transactions";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
+
 
 
 function CustomTooltip({
@@ -67,7 +72,9 @@ function CustomTooltip({
       font-bold
       text-[var(--foreground)]
       ">
-        ${Number(item.value).toLocaleString()}
+        {formatCurrency(
+          Number(item.value)
+        )}
       </p>
 
 
@@ -86,21 +93,35 @@ export default function IncomeExpenseChart() {
 
   const [summary,setSummary] =
     useState(
-      getSummary()
+      () => getSummary()
     );
+
+
+  const [,forceCurrencyUpdate] =
+    useState(0);
 
 
 
   useEffect(()=>{
 
 
-    function refresh(){
+    const refresh = () => {
 
       setSummary(
         getSummary()
       );
 
-    }
+    };
+
+
+
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
 
 
 
@@ -120,8 +141,14 @@ export default function IncomeExpenseChart() {
     );
 
 
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
 
-    return ()=>{
+
+
+    return()=>{
 
 
       window.removeEventListener(
@@ -133,6 +160,12 @@ export default function IncomeExpenseChart() {
       window.removeEventListener(
         "investmentsUpdated",
         refresh
+      );
+
+
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
       );
 
 
@@ -176,14 +209,12 @@ export default function IncomeExpenseChart() {
     <div
       className="
       rounded-3xl
-      border
-      border-[var(--border)]
+      border border-[var(--border)]
       bg-[var(--card)]
       p-8
       shadow-sm
       "
     >
-
 
 
       <div className="
@@ -241,7 +272,6 @@ export default function IncomeExpenseChart() {
         ">
 
 
-
           <div
             className="
             rounded-xl
@@ -263,12 +293,13 @@ export default function IncomeExpenseChart() {
             font-bold
             text-green-600
             ">
-              ${summary.income.toLocaleString()}
+              {formatCurrency(
+                summary.income
+              )}
             </p>
 
 
           </div>
-
 
 
 
@@ -295,19 +326,19 @@ export default function IncomeExpenseChart() {
             font-bold
             text-red-600
             ">
-              ${summary.expense.toLocaleString()}
+              {formatCurrency(
+                summary.expense
+              )}
             </p>
 
 
           </div>
 
 
-
         </div>
 
 
       </div>
-
 
 
 
@@ -321,81 +352,54 @@ export default function IncomeExpenseChart() {
           height="100%"
         >
 
-
           <BarChart data={data}>
 
 
             <CartesianGrid
-
               strokeDasharray="3 3"
-
               vertical={false}
-
               stroke="currentColor"
-
               opacity={0.15}
-
             />
 
 
 
             <XAxis
-
               dataKey="name"
-
               tickLine={false}
-
               axisLine={false}
-
               tick={{
                 fill:"var(--muted)"
               }}
-
             />
 
 
 
             <YAxis
-
               tickLine={false}
-
               axisLine={false}
-
               tick={{
                 fill:"var(--muted)"
               }}
-
             />
 
 
 
             <Tooltip
-
               cursor={{
                 fill:"rgba(148,163,184,0.15)",
               }}
-
               content={
                 <CustomTooltip />
               }
-
             />
 
 
 
             <Bar
-
               dataKey="amount"
-
-              radius={[
-                12,
-                12,
-                0,
-                0
-              ]}
-
+              radius={[12,12,0,0]}
               animationDuration={900}
-
             >
 
               {

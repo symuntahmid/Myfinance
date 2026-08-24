@@ -29,6 +29,7 @@ import { getBudgets } from "@/app/data/budgets";
 
 import { getSummary } from "@/app/data/transactions";
 import AIInsightCard from "@/app/components/ai/AIInsightCard";
+import { formatCurrency } from "@/app/utils/currency";
 
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -163,9 +164,8 @@ const totalSpent = getSummary().expense;
                   </p>
 
                   <h3 className="mt-2 text-2xl font-bold">
-                    $
-                    {portfolio.invested.toLocaleString()}
-                  </h3>
+  {formatCurrency(portfolio.invested)}
+</h3>
                 </div>
 
                 <div>
@@ -174,9 +174,8 @@ const totalSpent = getSummary().expense;
                   </p>
 
                   <h3 className="mt-2 text-2xl font-bold">
-                    $
-                    {portfolio.current.toLocaleString()}
-                  </h3>
+  {formatCurrency(portfolio.current)}
+</h3>
                 </div>
 
                 <div>
@@ -191,9 +190,11 @@ const totalSpent = getSummary().expense;
                         : "text-red-500"
                     }`}
                   >
-                    {portfolio.profit >= 0 ? "+" : ""}
-                    $
-                    {portfolio.profit.toLocaleString()}
+                    {portfolio.profit >= 0 ? "+" : "-"}
+
+{formatCurrency(
+  Math.abs(portfolio.profit)
+)}
                   </h3>
                 </div>
 

@@ -9,6 +9,8 @@ import {
   addTransaction,
 } from "@/app/data/transactions";
 
+import { formatCurrency } from "@/app/utils/currency";
+
 type Props = {
   open: boolean;
   goal: Goal | null;
@@ -39,7 +41,15 @@ export default function AddMoneyModal({
       <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
         <div
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-lg rounded-[32px] bg-white shadow-2xl"
+          className="
+w-full
+max-w-lg
+rounded-[32px]
+bg-[var(--card)]
+border
+border-[var(--border)]
+shadow-2xl
+"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
@@ -73,10 +83,10 @@ export default function AddMoneyModal({
                 {goal.emoji} {goal.title}
               </h3>
 
-              <p className="mt-2 text-slate-600">
-                ${goal.savedAmount.toLocaleString()} of $
-                {goal.targetAmount.toLocaleString()}
-              </p>
+              <p className="mt-2 text-[var(--muted)]">
+  {formatCurrency(goal.savedAmount)} of{" "}
+  {formatCurrency(goal.targetAmount)}
+</p>
             </div>
 
             {/* Amount */}
@@ -89,12 +99,12 @@ export default function AddMoneyModal({
             />
 
             {/* Available Cash */}
-            <p className="mt-3 text-sm text-slate-500">
-              Available Cash:
-              <span className="ml-2 font-semibold text-cyan-600">
-                ${availableCash.toLocaleString()}
-              </span>
-            </p>
+            <p className="mt-3 text-sm text-[var(--muted)]">
+  Available Cash:
+  <span className="ml-2 font-semibold text-cyan-600">
+    {formatCurrency(availableCash)}
+  </span>
+</p>
 
             {/* Buttons */}
             <div className="mt-8 flex gap-4">
