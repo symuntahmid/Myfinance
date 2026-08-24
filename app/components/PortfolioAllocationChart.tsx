@@ -70,8 +70,34 @@ export default function PortfolioAllocationChart() {
 
 
 
-  const allocation =
-    getAllocation();
+  const [allocation, setAllocation] =
+  useState(() => getAllocation());
+
+
+useEffect(() => {
+
+  const refresh = () => {
+    setAllocation(getAllocation());
+  };
+
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refresh
+  );
+
+
+  return () => {
+
+    window.removeEventListener(
+      "investmentsUpdated",
+      refresh
+    );
+
+  };
+
+
+}, []);
 
 
 

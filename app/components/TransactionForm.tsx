@@ -167,6 +167,7 @@ export default function TransactionForm({
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [source, setSource] = useState("");
+
   const [customSource, setCustomSource] = useState("");
   const [date, setDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -369,17 +370,37 @@ export default function TransactionForm({
 
       {/* Modal */}
       <div className="fixed inset-0 z-[1101] flex items-center justify-center p-5">
-        <div className="flex max-h-[90vh] w-full max-w-sm flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div className="
+flex
+max-h-[90vh]
+w-full
+max-w-sm
+flex-col
+overflow-hidden
+rounded-3xl
+bg-[var(--card)]
+shadow-2xl
+">
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6 pb-2">
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="
+text-xl
+font-bold
+text-[var(--foreground)]
+">
               {editingTransaction ? "Edit Transaction" : `Add ${type}`}
             </h2>
 
             <button
               onClick={handleClose}
               aria-label="Close"
-              className="rounded-full p-1.5 text-slate-500 transition hover:bg-slate-100"
+             className="
+rounded-full
+p-1.5
+text-[var(--muted)]
+transition
+hover:bg-[var(--background)]
+"
             >
               <X size={20} />
             </button>
@@ -407,7 +428,7 @@ export default function TransactionForm({
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0.00"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 pr-9 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-3 pr-9 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                   />
 
                   <button
@@ -432,8 +453,21 @@ export default function TransactionForm({
                       onClick={() => setCalcOpen(false)}
                     />
 
-                    <div className="absolute left-0 top-full z-[1103] mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
-                      <div className="mb-2 min-h-[2.25rem] rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-right text-sm text-slate-700">
+                    <div className="
+absolute
+left-0
+top-full
+z-[1103]
+mt-2
+w-56
+rounded-2xl
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-3
+shadow-xl
+">
+                      <div className="mb-2 min-h-[2.25rem] rounded-lg border border-[var(--border)] bg-slate-50 px-3 py-2 text-right text-sm text-slate-700">
                         {calcExpr ? formatForDisplay(calcExpr) : "0"}
                       </div>
 
@@ -484,8 +518,8 @@ export default function TransactionForm({
                     onChange={(e) => setCategory(e.target.value)}
                     className={`w-full appearance-none rounded-xl border px-3 py-3 pr-8 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 ${
                       category
-                        ? "border-slate-200 text-slate-800"
-                        : "border-slate-200 text-slate-400"
+                        ? "border-[var(--border)] text-[var(--foreground)]"
+                        : "border-[var(--border)] text-slate-400"
                     }`}
                   >
                     <option value="" disabled hidden>
@@ -528,7 +562,7 @@ export default function TransactionForm({
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-3 py-3 pr-9 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                  className="w-full rounded-xl border border-[var(--border)] px-3 py-3 pr-9 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                 />
 
                 <Calendar
@@ -554,8 +588,8 @@ export default function TransactionForm({
                   onChange={(e) => setSource(e.target.value)}
                   className={`w-full appearance-none rounded-xl border px-3 py-3 pr-8 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 ${
                     source
-                      ? "border-slate-200 text-slate-800"
-                      : "border-slate-200 text-slate-400"
+                      ? "border-[var(--border)] text-[var(--foreground)]"
+                      : "border-[var(--border)] text-slate-400"
                   }`}
                 >
                   <option value="" disabled hidden>
@@ -580,17 +614,17 @@ export default function TransactionForm({
                   value={customSource}
                   onChange={(e) => setCustomSource(e.target.value)}
                   placeholder="Type a source..."
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                  className="mt-2 w-full rounded-xl border border-[var(--border)] px-3 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                 />
               )}
             </div>
 
             {/* Investment Funding */}
             {showInvestmentFunding && (
-              <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="space-y-4 rounded-2xl border border-[var(--border)] bg-slate-50 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-800">
+                    <h3 className="text-sm font-semibold text-[var(--foreground)]">
                       Investment Funding
                     </h3>
                     <p className="text-xs text-slate-500">
@@ -621,7 +655,7 @@ export default function TransactionForm({
                         className={`rounded-xl border p-3 text-left text-sm transition ${
                           investmentFunding === opt.value
                             ? "border-cyan-500 bg-cyan-50 text-cyan-800"
-                            : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                            : "border-[var(--border)] bg-[var(--background)] text-slate-700 hover:bg-slate-50"
                         }`}
                       >
                         {opt.label}
@@ -643,11 +677,11 @@ export default function TransactionForm({
             )}
 
             {/* More Options */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50">
+            <div className="rounded-2xl border border-[var(--border)] bg-slate-50">
               <button
                 type="button"
                 onClick={() => setShowMore(!showMore)}
-                className="flex w-full items-center justify-between px-4 py-3.5 text-sm font-semibold text-slate-800"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-sm font-semibold text-[var(--foreground)]"
                 aria-expanded={showMore}
               >
                 <span>More Options</span>
@@ -660,7 +694,7 @@ export default function TransactionForm({
               </button>
 
               {showMore && (
-                <div className="space-y-4 border-t border-slate-200 p-4">
+                <div className="space-y-4 border-t border-[var(--border)] p-4">
                   {/* Notes */}
                   <div>
                     <label
@@ -677,7 +711,7 @@ export default function TransactionForm({
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       placeholder="Write a note..."
-                      className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                      className="w-full resize-none rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-3 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                     />
                   </div>
 
@@ -687,7 +721,7 @@ export default function TransactionForm({
                       <div className="flex items-center gap-2">
                         <Repeat size={14} className="text-slate-500" />
                         <div>
-                          <p className="text-sm font-semibold text-slate-800">
+                          <p className="text-sm font-semibold text-[var(--foreground)]">
                             Auto Repeat
                           </p>
                           <p className="text-xs text-slate-500">
@@ -706,7 +740,7 @@ export default function TransactionForm({
                         }`}
                       >
                         <span
-                          className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                          className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--background)] transition ${
                             autoRepeat ? "left-6" : "left-1"
                           }`}
                         />
@@ -727,7 +761,7 @@ export default function TransactionForm({
                                 | "yearly"
                             )
                           }
-                          className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                          className="w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                         >
                           {repeatFrequencyOptions.map((opt) => (
                             <option key={opt.value} value={opt.value}>
@@ -750,7 +784,7 @@ export default function TransactionForm({
                       <div className="flex items-center gap-2">
                         <Bell size={14} className="text-slate-500" />
                         <div>
-                          <p className="text-sm font-semibold text-slate-800">
+                          <p className="text-sm font-semibold text-[var(--foreground)]">
                             Reminder
                           </p>
                           <p className="text-xs text-slate-500">
@@ -769,7 +803,7 @@ export default function TransactionForm({
                         }`}
                       >
                         <span
-                          className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                          className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--background)] transition ${
                             reminder ? "left-6" : "left-1"
                           }`}
                         />
@@ -791,7 +825,7 @@ export default function TransactionForm({
                                   | "custom"
                               )
                             }
-                            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                            className="w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2.5 pr-8 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                           >
                             {reminderTypeOptions.map((opt) => (
                               <option key={opt.value} value={opt.value}>
@@ -813,7 +847,7 @@ export default function TransactionForm({
                             onChange={(e) =>
                               setReminderDate(e.target.value)
                             }
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
                           />
                         )}
 

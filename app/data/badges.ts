@@ -5,20 +5,43 @@ export type BadgeCategory =
   | "Psychology"
   | "Premium";
 
+
+export type BadgeMetric =
+  | "XP"
+  | "AMOUNT"
+  | "COUNT"
+  | "DAYS"
+  | "MONTHS";
+
+
 export type Badge = {
+
   id: string;
+
   name: string;
+
   description: string;
+
   icon: string;
+
   category: BadgeCategory;
+
   requirement: string;
 
   // Value needed to unlock the badge.
-  // The meaning depends on the category.
   target: number;
 
+  // What the target value represents.
+  metric: BadgeMetric;
+
+  // XP earned after unlocking.
+  reward: number;
+
   premium: boolean;
+
 };
+
+
 
 export const badges: Badge[] = [
 
@@ -35,8 +58,11 @@ export const badges: Badge[] = [
     category: "Points",
     requirement: "Earn 100 XP",
     target: 100,
+    metric: "XP",
+    reward: 50,
     premium: false,
   },
+
 
   {
     id: "momentum",
@@ -47,8 +73,11 @@ export const badges: Badge[] = [
     category: "Points",
     requirement: "Earn 500 XP",
     target: 500,
+    metric: "XP",
+    reward: 150,
     premium: false,
   },
+
 
   {
     id: "money-master",
@@ -59,8 +88,11 @@ export const badges: Badge[] = [
     category: "Points",
     requirement: "Earn 1,000 XP",
     target: 1000,
+    metric: "XP",
+    reward: 500,
     premium: false,
   },
+
 
   {
     id: "financial-champion",
@@ -71,13 +103,17 @@ export const badges: Badge[] = [
     category: "Points",
     requirement: "Earn 5,000 XP",
     target: 5000,
+    metric: "XP",
+    reward: 1000,
     premium: false,
   },
+
 
 
   /* ==========================================
      SAVING
   ========================================== */
+
 
   {
     id: "first-saver",
@@ -86,10 +122,13 @@ export const badges: Badge[] = [
       "You started building the habit of paying yourself first.",
     icon: "🐿️",
     category: "Saving",
-    requirement: "Save your first $100",
+    requirement: "Save your first 100 currency units",
     target: 100,
+    metric: "AMOUNT",
+    reward: 100,
     premium: false,
   },
+
 
   {
     id: "safety-builder",
@@ -98,10 +137,13 @@ export const badges: Badge[] = [
       "You're creating a stronger financial safety net.",
     icon: "🛡️",
     category: "Saving",
-    requirement: "Save $1,000",
+    requirement: "Save 1,000 currency units",
     target: 1000,
+    metric: "AMOUNT",
+    reward: 250,
     premium: false,
   },
+
 
   {
     id: "saving-streak",
@@ -112,8 +154,11 @@ export const badges: Badge[] = [
     category: "Saving",
     requirement: "Save money for 3 consecutive months",
     target: 3,
+    metric: "MONTHS",
+    reward: 300,
     premium: false,
   },
+
 
   {
     id: "emergency-ready",
@@ -124,13 +169,14 @@ export const badges: Badge[] = [
     category: "Saving",
     requirement: "Reach your emergency-fund target",
     target: 1,
+    metric: "COUNT",
+    reward: 500,
     premium: false,
   },
-
-
-  /* ==========================================
+    /* ==========================================
      INVESTMENT
   ========================================== */
+
 
   {
     id: "first-investor",
@@ -141,8 +187,11 @@ export const badges: Badge[] = [
     category: "Investment",
     requirement: "Make your first investment",
     target: 1,
+    metric: "COUNT",
+    reward: 150,
     premium: false,
   },
+
 
   {
     id: "portfolio-builder",
@@ -151,10 +200,14 @@ export const badges: Badge[] = [
       "You're moving from saving money to growing it.",
     icon: "📊",
     category: "Investment",
-    requirement: "Invest a total of $1,000",
+    requirement:
+      "Invest a total of 1,000 currency units",
     target: 1000,
+    metric: "AMOUNT",
+    reward: 300,
     premium: false,
   },
+
 
   {
     id: "long-term-thinker",
@@ -163,10 +216,14 @@ export const badges: Badge[] = [
       "You understand that wealth building takes patience.",
     icon: "🧠",
     category: "Investment",
-    requirement: "Maintain an investment for 12 months",
+    requirement:
+      "Maintain an investment for 12 months",
     target: 12,
+    metric: "MONTHS",
+    reward: 500,
     premium: false,
   },
+
 
   {
     id: "diversifier",
@@ -175,15 +232,20 @@ export const badges: Badge[] = [
       "You're learning not to put all your financial eggs in one basket.",
     icon: "💎",
     category: "Investment",
-    requirement: "Invest across 3 asset types",
+    requirement:
+      "Invest across 3 asset types",
     target: 3,
+    metric: "COUNT",
+    reward: 400,
     premium: false,
   },
+
 
 
   /* ==========================================
      PSYCHOLOGY / BEHAVIOR
   ========================================== */
+
 
   {
     id: "goal-focused",
@@ -192,10 +254,14 @@ export const badges: Badge[] = [
       "You consistently make financial decisions with a goal in mind.",
     icon: "🎯",
     category: "Psychology",
-    requirement: "Maintain a financial goal for 30 days",
+    requirement:
+      "Maintain a financial goal for 30 days",
     target: 30,
+    metric: "DAYS",
+    reward: 200,
     premium: false,
   },
+
 
   {
     id: "mindful-spender",
@@ -204,10 +270,14 @@ export const badges: Badge[] = [
       "You're becoming more intentional about where your money goes.",
     icon: "🧘",
     category: "Psychology",
-    requirement: "Track spending consistently for 30 days",
+    requirement:
+      "Track spending consistently for 30 days",
     target: 30,
+    metric: "DAYS",
+    reward: 250,
     premium: false,
   },
+
 
   {
     id: "habit-builder",
@@ -216,10 +286,14 @@ export const badges: Badge[] = [
       "Small financial actions are becoming consistent habits.",
     icon: "🔄",
     category: "Psychology",
-    requirement: "Record financial activity for 14 consecutive days",
+    requirement:
+      "Record financial activity for 14 consecutive days",
     target: 14,
+    metric: "DAYS",
+    reward: 150,
     premium: false,
   },
+
 
   {
     id: "impulse-controller",
@@ -228,10 +302,14 @@ export const badges: Badge[] = [
       "You are learning to pause before making unnecessary purchases.",
     icon: "🛑",
     category: "Psychology",
-    requirement: "Maintain an intentional spending streak",
+    requirement:
+      "Maintain an intentional spending streak",
     target: 30,
+    metric: "DAYS",
+    reward: 300,
     premium: false,
   },
+
 
   {
     id: "growth-mindset",
@@ -240,15 +318,17 @@ export const badges: Badge[] = [
       "Your financial behavior continues to improve over time.",
     icon: "🌿",
     category: "Psychology",
-    requirement: "Improve your financial score for 3 consecutive months",
+    requirement:
+      "Improve your financial score for 3 consecutive months",
     target: 3,
+    metric: "MONTHS",
+    reward: 500,
     premium: false,
   },
-
-
-  /* ==========================================
+    /* ==========================================
      PREMIUM
   ========================================== */
+
 
   {
     id: "wealth-architect",
@@ -260,8 +340,11 @@ export const badges: Badge[] = [
     requirement:
       "Reach strong milestones across saving and investing",
     target: 1,
+    metric: "COUNT",
+    reward: 1000,
     premium: true,
   },
+
 
   {
     id: "financial-strategist",
@@ -273,8 +356,11 @@ export const badges: Badge[] = [
     requirement:
       "Maintain strong saving, investment, and goal habits",
     target: 1,
+    metric: "COUNT",
+    reward: 1500,
     premium: true,
   },
+
 
   {
     id: "money-psychology-master",
@@ -286,6 +372,8 @@ export const badges: Badge[] = [
     requirement:
       "Maintain healthy financial habits over an extended period",
     target: 1,
+    metric: "COUNT",
+    reward: 2000,
     premium: true,
   },
 

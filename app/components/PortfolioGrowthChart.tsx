@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -17,9 +18,7 @@ import {
 } from "recharts";
 
 import { getPortfolioHistory } from "@/app/data/portfolioHistory";
-
 import { formatCurrency } from "@/app/utils/currency";
-
 
 
 export default function PortfolioGrowthChart() {
@@ -30,7 +29,7 @@ export default function PortfolioGrowthChart() {
 
 
 
-  useEffect(()=>{
+  useEffect(() => {
 
 
     const currencyListener = () => {
@@ -48,7 +47,7 @@ export default function PortfolioGrowthChart() {
     );
 
 
-    return()=>{
+    return () => {
 
       window.removeEventListener(
         "currencyUpdated",
@@ -58,78 +57,111 @@ export default function PortfolioGrowthChart() {
     };
 
 
-  },[]);
+  }, []);
 
 
 
 
-  const history =
-    getPortfolioHistory();
+
+  const history = useMemo(() => {
+
+    try {
+
+      const data =
+        getPortfolioHistory();
+
+
+      return Array.isArray(data)
+        ? data
+        : [];
+
+
+    } catch {
+
+      return [];
+
+    }
+
+  }, []);
 
 
 
-  const data =
-    history.map((item)=>({
+
+
+  const data = useMemo(() => {
+
+
+    return history.map((item) => ({
+
 
       day:
         new Date(item.date)
-        .toLocaleDateString(
-          "en-US",
-          {
-            month:"short",
-            day:"numeric",
-          }
-        ),
+          .toLocaleDateString(
+            "en-US",
+            {
+              month: "short",
+              day: "numeric",
+            }
+          ),
 
-      value:item.value,
+
+      value:
+        Number(item.value) || 0,
+
 
     }));
 
 
+  }, [history]);
 
 
-  if(data.length===0){
+
+
+
+
+  if (data.length === 0) {
 
     return (
 
-<div className="
-rounded-3xl
-border border-[var(--border)]
-bg-[var(--card)]
-p-8
-shadow-sm
-">
+      <div className="
+        rounded-3xl
+        border border-[var(--border)]
+        bg-[var(--card)]
+        p-8
+        shadow-sm
+      ">
 
 
-<h2 className="
-mb-2
-text-2xl
-font-bold
-text-[var(--foreground)]
-">
-Portfolio Growth
-</h2>
+        <h2 className="
+          mb-2
+          text-2xl
+          font-bold
+          text-[var(--foreground)]
+        ">
+          Portfolio Growth
+        </h2>
 
 
-<p className="
-mb-6
-text-[var(--muted)]
-">
-Track the growth of your investment portfolio.
-</p>
+        <p className="
+          mb-6
+          text-[var(--muted)]
+        ">
+          Track the growth of your investment portfolio.
+        </p>
 
 
-<div className="
-flex h-64
-items-center
-justify-center
-text-[var(--muted)]
-">
-No portfolio history yet.
-</div>
+        <div className="
+          flex
+          h-64
+          items-center
+          justify-center
+          text-[var(--muted)]
+        ">
+          No portfolio history yet.
+        </div>
 
 
-</div>
+      </div>
 
     );
 
@@ -139,275 +171,279 @@ No portfolio history yet.
 
 
 
-return (
 
-<div className="
-rounded-3xl
-border border-[var(--border)]
-bg-[var(--card)]
-p-8
-shadow-sm
-">
 
+  return (
 
-<h2 className="
-mb-2
-text-2xl
-font-bold
-text-[var(--foreground)]
-">
-Portfolio Growth
-</h2>
+    <div className="
+      rounded-3xl
+      border border-[var(--border)]
+      bg-[var(--card)]
+      p-8
+      shadow-sm
+    ">
 
 
-<p className="
-mb-6
-text-[var(--muted)]
-">
-Track the growth of your investment portfolio.
-</p>
+      <h2 className="
+        mb-2
+        text-2xl
+        font-bold
+        text-[var(--foreground)]
+      ">
+        Portfolio Growth
+      </h2>
 
 
+      <p className="
+        mb-6
+        text-[var(--muted)]
+      ">
+        Track the growth of your investment portfolio.
+      </p>
 
 
 
-<div className="h-80">
 
 
-<ResponsiveContainer
-width="100%"
-height="100%"
->
+      <div className="h-80">
 
 
-<LineChart
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+        >
 
-data={data}
 
-margin={{
-top:20,
-right:20,
-left:10,
-bottom:10,
-}}
+          <LineChart
 
->
+            data={data}
 
+            margin={{
+              top:20,
+              right:20,
+              left:10,
+              bottom:10,
+            }}
 
-<defs>
+          >
 
-<linearGradient
 
-id="portfolioGradient"
 
-x1="0"
+            <defs>
 
-y1="0"
+              <linearGradient
 
-x2="0"
+                id="portfolioGradient"
 
-y2="1"
+                x1="0"
 
->
+                y1="0"
 
+                x2="0"
 
-<stop
-offset="5%"
-stopColor="#06b6d4"
-stopOpacity={0.35}
-/>
+                y2="1"
 
+              >
 
-<stop
-offset="95%"
-stopColor="#06b6d4"
-stopOpacity={0}
-/>
+                <stop
+                  offset="5%"
+                  stopColor="#06b6d4"
+                  stopOpacity={0.35}
+                />
 
 
-</linearGradient>
+                <stop
+                  offset="95%"
+                  stopColor="#06b6d4"
+                  stopOpacity={0}
+                />
 
 
-</defs>
+              </linearGradient>
 
 
+            </defs>
 
 
 
-<CartesianGrid
 
-stroke="var(--border)"
 
-strokeDasharray="4 4"
+            <CartesianGrid
 
-vertical={false}
+              stroke="var(--border)"
 
-/>
+              strokeDasharray="4 4"
 
+              vertical={false}
 
+            />
 
 
 
-<XAxis
 
-dataKey="day"
 
-tick={{
-fill:"var(--muted)",
-fontSize:12,
-}}
+            <XAxis
 
-tickLine={false}
+              dataKey="day"
 
-axisLine={false}
+              tick={{
+                fill:"var(--muted)",
+                fontSize:12,
+              }}
 
-/>
+              tickLine={false}
 
+              axisLine={false}
 
+            />
 
 
 
-<YAxis
 
-tick={{
-fill:"var(--muted)",
-fontSize:12,
-}}
 
-tickFormatter={(value)=>
-  formatCurrency(Number(value))
-}
+            <YAxis
 
-tickLine={false}
+              tick={{
+                fill:"var(--muted)",
+                fontSize:12,
+              }}
 
-axisLine={false}
+              tickFormatter={(value) =>
+                formatCurrency(
+                  Number(value)
+                )
+              }
 
-width={70}
+              tickLine={false}
 
-/>
+              axisLine={false}
 
+              width={80}
 
+            />
 
 
 
 
 
-<Tooltip
 
 
-contentStyle={{
+            <Tooltip
 
-borderRadius:"16px",
 
-border:
-"1px solid var(--border)",
+              contentStyle={{
 
-backgroundColor:
-"var(--card)",
+                borderRadius:"16px",
 
-color:
-"var(--foreground)",
+                border:
+                  "1px solid var(--border)",
 
-boxShadow:
-"0 12px 35px rgba(0,0,0,.15)",
+                backgroundColor:
+                  "var(--card)",
 
-}}
+                color:
+                  "var(--foreground)",
 
+                boxShadow:
+                  "0 12px 35px rgba(0,0,0,.15)",
 
-formatter={(value)=>[
+              }}
 
-formatCurrency(
-Number(value)
-),
 
-"Portfolio Value"
+              formatter={(value) => [
 
-]}
+                formatCurrency(
+                  Number(value)
+                ),
 
+                "Portfolio Value"
 
-/>
+              ]}
 
 
+            />
 
 
 
 
 
-<Area
 
-type="natural"
 
-dataKey="value"
+            <Area
 
-stroke="none"
+              type="natural"
 
-fill="url(#portfolioGradient)"
+              dataKey="value"
 
-/>
+              stroke="none"
 
+              fill="url(#portfolioGradient)"
 
+            />
 
 
 
 
 
-<Line
 
-type="natural"
 
-dataKey="value"
+            <Line
 
-stroke="#06b6d4"
+              type="natural"
 
-strokeWidth={4}
+              dataKey="value"
 
-dot={false}
+              stroke="#06b6d4"
 
-style={{
+              strokeWidth={4}
 
-filter:
-"drop-shadow(0 0 7px rgba(6,182,212,0.55))",
+              dot={false}
 
-}}
+              style={{
 
-activeDot={{
+                filter:
+                  "drop-shadow(0 0 7px rgba(6,182,212,0.55))",
 
-r:8,
+              }}
 
-fill:"#06b6d4",
 
-stroke:"#ffffff",
+              activeDot={{
 
-strokeWidth:3,
+                r:8,
 
-}}
+                fill:"#06b6d4",
 
-isAnimationActive
+                stroke:"#ffffff",
 
-animationDuration={1500}
+                strokeWidth:3,
 
-animationEasing="ease-out"
+              }}
 
-/>
 
+              isAnimationActive
 
+              animationDuration={1500}
 
+              animationEasing="ease-out"
 
+            />
 
 
 
-</LineChart>
 
 
-</ResponsiveContainer>
+          </LineChart>
 
 
-</div>
+        </ResponsiveContainer>
 
 
+      </div>
 
-</div>
 
-);
+
+    </div>
+
+  );
 
 }

@@ -53,8 +53,6 @@ export default function MoneyPage() {
 
   }
 
-
-
   useEffect(()=>{
 
     refreshData();
@@ -120,8 +118,6 @@ mt-2 text-[var(--muted)]
 Good morning, Symun 👋
 </p>
 
-
-
 <div className="
 mt-6 rounded-3xl
 bg-gradient-to-r
@@ -149,9 +145,6 @@ Keep it up. You're building strong financial habits.
 
 
 </div>
-
-
-
 
 
 {/* Balance */}
@@ -200,10 +193,6 @@ text-emerald-300
 </div>
 
 
-
-
-
-
 {/* Stats */}
 
 <div className="
@@ -213,22 +202,22 @@ grid grid-cols-3 gap-3 md:gap-6
 
 {[
 {
-title:"Income",
-value:`+${formatCurrency(summary.income)}`,
-color:"text-green-600",
-desc:"This Month"
+  title:"Income",
+  value:`+${formatCurrency(summary.income)}`,
+  color:"text-green-600",
+  desc:"This Month"
 },
 {
-title:"Expenses",
-value:`-${formatCurrency(summary.expense)}`,
-color:"text-red-500",
-desc:"This Month"
+  title:"Expenses",
+  value:`-${formatCurrency(summary.expense)}`,
+  color:"text-red-500",
+  desc:"This Month"
 },
 {
-title:"Available Cash",
-value:formatCurrency(summary.availableCash),
-color:"text-cyan-600",
-desc:"Income − Expenses"
+  title:"Available Cash",
+  value:formatCurrency(summary.availableCash),
+  color:"text-cyan-600",
+  desc:"Income − Expenses"
 }
 
 ].map((item)=>(
@@ -278,11 +267,6 @@ text-[var(--muted)]
 </div>
 
 
-
-
-
-
-
 {/* Charts */}
 
 <div className="
@@ -298,8 +282,6 @@ grid gap-6 lg:grid-cols-3
 <div>
 <SpendingInsights />
 </div>
-
-
 
 <Link href="/money/analytics">
 
@@ -370,19 +352,11 @@ financial health and AI insights.
 
 </div>
 
-
-
-
-
-
-
 {/* Floating */}
 
 <FloatingActionButton
 onClick={()=>setSheetOpen(true)}
 />
-
-
 
 
 
@@ -428,9 +402,6 @@ setFormOpen(true);
 />
 
 
-
-
-
 <TransactionForm
 
 open={formOpen}
@@ -446,11 +417,6 @@ refreshData();
 }}
 
 />
-
-
-
-
-
 
 
 {/* Recent Activity */}
@@ -491,10 +457,6 @@ View All →
 
 </div>
 
-
-
-
-
 {
 transactions.length===0 ? (
 
@@ -522,7 +484,6 @@ Add your first income, expense or investment.
 
 </div>
 
-
 ) : (
 
 
@@ -533,7 +494,6 @@ Add your first income, expense or investment.
 transactions
 .slice(0,3)
 .map((transaction)=>(
-
 
 <div
 key={transaction.id}
@@ -548,9 +508,7 @@ hover:bg-[var(--card)]
 "
 >
 
-
 <div>
-
 
 <p className="
 font-semibold
@@ -559,12 +517,10 @@ text-[var(--foreground)]
 {transaction.source}
 </p>
 
-
 <div className="
 mt-1 flex items-center gap-2
 text-sm text-[var(--muted)]
 ">
-
 
 <span>
 {transaction.date}
@@ -585,9 +541,6 @@ text-sm text-[var(--muted)]
 
 
 </div>
-
-
-
 
 
 <div className="text-right">
@@ -619,8 +572,6 @@ transaction.type==="Expense"
 {formatCurrency(transaction.amount)}
 
 </p>
-
-
 
 <span
 className={`
@@ -658,7 +609,6 @@ transaction.type==="Expense"
 
 }
 
-
 </div>
 
 
@@ -666,8 +616,6 @@ transaction.type==="Expense"
 
 
 }
-
-
 
 </div>
 

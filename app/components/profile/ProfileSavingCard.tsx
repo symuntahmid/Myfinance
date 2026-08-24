@@ -8,9 +8,13 @@ import {
 } from "lucide-react";
 
 import { getMonthlyReport } from "@/app/data/transactions";
+import { formatCurrency } from "@/app/utils/currency";
 
 
 export default function ProfileSavingCard() {
+
+  const [, forceCurrencyUpdate] =
+    useState(0);
 
   const [mounted, setMounted] =
     useState(false);
@@ -23,33 +27,53 @@ export default function ProfileSavingCard() {
 
   useEffect(() => {
 
-    setMounted(true);
+  setMounted(true);
 
 
-    const refresh = () => {
-      setReport(getMonthlyReport());
-    };
+  const refresh = () => {
+    setReport(getMonthlyReport());
+  };
 
 
-    refresh();
+  const currencyListener = () => {
+    forceCurrencyUpdate(
+      value => value + 1
+    );
+  };
 
 
-    window.addEventListener(
+  refresh();
+
+
+  window.addEventListener(
+    "transactionsUpdated",
+    refresh
+  );
+
+
+  window.addEventListener(
+    "currencyUpdated",
+    currencyListener
+  );
+
+
+  return () => {
+
+    window.removeEventListener(
       "transactionsUpdated",
       refresh
     );
 
 
-    return () => {
+    window.removeEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
 
-      window.removeEventListener(
-        "transactionsUpdated",
-        refresh
-      );
+  };
 
-    };
 
-  }, []);
+}, []);
 
 
 
@@ -82,11 +106,7 @@ export default function ProfileSavingCard() {
 
 
 
-  const formatMoney = (value:number) =>
-    `$${value.toLocaleString(undefined,{
-      minimumFractionDigits:2,
-      maximumFractionDigits:2,
-    })}`;
+  
 
 
 
@@ -148,10 +168,8 @@ export default function ProfileSavingCard() {
             font-black
             tracking-tight
           ">
-            {formatMoney(saving)}
+            {formatCurrency(saving)}
           </p>
-
-
 
           <div
             className="
@@ -176,10 +194,6 @@ export default function ProfileSavingCard() {
 
 
         </div>
-
-
-
-
 
         <div
           className="

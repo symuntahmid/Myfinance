@@ -14,6 +14,8 @@ import AIInvestmentInsights from "@/app/components/AIInvestmentInsights";
 import AddInvestmentModal from "@/app/components/AddInvestmentModal";
 import EditInvestmentModal from "@/app/components/EditInvestmentModal";
 
+import { formatCurrency } from "@/app/utils/currency";
+
 import {
   getInvestments,
   getPortfolioSummary,
@@ -21,7 +23,6 @@ import {
   deleteInvestment,
   Investment,
 } from "@/app/data/investments";
-
 
 
 export default function InvestmentsPage() {
@@ -39,29 +40,79 @@ export default function InvestmentsPage() {
     useState<Investment[]>([]);
 
 
+
   const [summary,setSummary] =
-    useState(getPortfolioSummary());
+    useState(() => {
+
+      try {
+
+        return getPortfolioSummary();
+
+      } catch {
+
+        return {
+          invested:0,
+          current:0,
+          profit:0,
+          returnPercentage:0,
+        };
+
+      }
+
+    });
+
+
+
+  const [,forceCurrencyUpdate] =
+    useState(0);
+
 
 
 
   function refreshPortfolio(){
 
-    setInvestments(
-      getInvestments()
-    );
+    try {
 
-    setSummary(
-      getPortfolioSummary()
-    );
+      setInvestments(
+        getInvestments()
+      );
+
+
+      setSummary(
+        getPortfolioSummary()
+      );
+
+
+    } catch(error){
+
+      console.error(
+        "Investment loading error:",
+        error
+      );
+
+    }
 
   }
 
 
 
 
+
   useEffect(()=>{
 
+
     refreshPortfolio();
+
+
+
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
+
 
 
     window.addEventListener(
@@ -70,21 +121,32 @@ export default function InvestmentsPage() {
     );
 
 
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
+
+
+
     return()=>{
+
 
       window.removeEventListener(
         "investmentsUpdated",
         refreshPortfolio
       );
 
+
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
+      );
+
+
     };
 
 
   },[]);
-
-
-
-
 
 
   function handleDelete(id:string){
@@ -113,11 +175,6 @@ export default function InvestmentsPage() {
   }
 
 
-
-
-
-
-
   function handleDeleteAll(){
 
 
@@ -144,11 +201,6 @@ export default function InvestmentsPage() {
   }
 
 
-
-
-
-
-
   return (
 
 <>
@@ -164,7 +216,6 @@ items-center
 justify-between
 gap-4
 ">
-
 
 <div>
 
@@ -190,9 +241,6 @@ Manage all your investments in one place.
 
 
 </div>
-
-
-
 
 <div className="flex gap-3">
 
@@ -224,10 +272,6 @@ Add Investment
 
 </button>
 
-
-
-
-
 {investments.length > 0 && (
 
 <button
@@ -252,18 +296,10 @@ Delete All
 
 )}
 
-
 </div>
 
 
 </div>
-
-
-
-
-
-
-
 
 
 {/* Summary Cards */}
@@ -273,8 +309,6 @@ grid
 gap-6
 md:grid-cols-4
 ">
-
-
 
 <div className="
 rounded-3xl
@@ -299,15 +333,11 @@ text-3xl
 font-bold
 ">
 
-${summary.invested.toLocaleString()}
+{formatCurrency(summary.invested)}
 
 </h2>
 
 </div>
-
-
-
-
 
 <div className="
 rounded-3xl
@@ -332,15 +362,11 @@ text-3xl
 font-bold
 ">
 
-${summary.current.toLocaleString()}
+{formatCurrency(summary.current)}
 
 </h2>
 
 </div>
-
-
-
-
 
 <div className="
 rounded-3xl
@@ -359,7 +385,6 @@ Total Profit
 
 </p>
 
-
 <h2 className={`mt-2 text-3xl font-bold ${
 summary.profit >= 0
 ?
@@ -370,16 +395,11 @@ summary.profit >= 0
 
 {summary.profit >= 0 ? "+" : ""}
 
-${summary.profit.toLocaleString()}
+{formatCurrency(summary.profit)}
 
 </h2>
 
-
 </div>
-
-
-
-
 
 <div className="
 rounded-3xl
@@ -399,7 +419,6 @@ Portfolio Return
 
 </p>
 
-
 <h2 className="
 mt-2
 text-3xl
@@ -411,19 +430,9 @@ text-cyan-600
 
 </h2>
 
-
 </div>
 
-
-
 </div>
-
-
-
-
-
-
-
 
 
 {/* Investment Table */}
@@ -438,7 +447,6 @@ p-8
 shadow-sm
 ">
 
-
 {
 investments.length === 0
 
@@ -449,7 +457,6 @@ py-20
 text-center
 ">
 
-
 <h3 className="
 text-2xl
 font-bold
@@ -459,7 +466,6 @@ No Investments Yet
 
 </h3>
 
-
 <p className="
 mt-3
 text-[var(--muted)]
@@ -468,7 +474,6 @@ text-[var(--muted)]
 Start tracking your portfolio by adding your first investment.
 
 </p>
-
 
 <button
 
@@ -497,7 +502,6 @@ Add First Investment
 
 
 :
-
 
 <table className="w-full">
 
@@ -538,14 +542,9 @@ Return
 Actions
 </th>
 
-
 </tr>
 
 </thead>
-
-
-
-
 
 <tbody>
 
@@ -553,12 +552,9 @@ Actions
 {
 investments.map((investment)=>{
 
-
 const profit =
 investment.currentValue -
 investment.investedAmount;
-
-
 
 const percentage =
 investment.investedAmount === 0
@@ -568,8 +564,6 @@ investment.investedAmount === 0
 (profit /
 investment.investedAmount) *
 100;
-
-
 
 return (
 
@@ -585,7 +579,6 @@ last:border-0
 
 >
 
-
 <td className="
 py-5
 font-semibold
@@ -595,34 +588,23 @@ font-semibold
 
 </td>
 
-
-
 <td>
 
 {investment.type}
 
 </td>
 
-
-
-
 <td className="text-right">
 
-${investment.investedAmount.toLocaleString()}
+{formatCurrency(investment.investedAmount)}
 
 </td>
 
-
-
-
 <td className="text-right">
 
-${investment.currentValue.toLocaleString()}
+{formatCurrency(investment.currentValue)}
 
 </td>
-
-
-
 
 <td className={`text-right font-semibold ${
 profit >= 0
@@ -634,12 +616,9 @@ profit >= 0
 
 {profit >= 0 ? "+" : ""}
 
-${profit.toLocaleString()}
+{formatCurrency(profit)}
 
 </td>
-
-
-
 
 
 <td className={`text-right font-semibold ${
@@ -653,10 +632,6 @@ percentage >= 0
 {percentage.toFixed(2)}%
 
 </td>
-
-
-
-
 
 <td>
 
@@ -686,9 +661,6 @@ hover:bg-slate-100
 
 </button>
 
-
-
-
 <button
 
 onClick={()=>
@@ -710,8 +682,6 @@ hover:bg-red-50
 
 </button>
 
-
-
 </div>
 
 </td>
@@ -726,8 +696,6 @@ hover:bg-red-50
 
 }
 
-
-
 </tbody>
 
 
@@ -736,13 +704,7 @@ hover:bg-red-50
 
 }
 
-
 </div>
-
-
-
-
-
 
 
 {/* Charts */}
@@ -756,14 +718,9 @@ hover:bg-red-50
 <PortfolioAllocationChart/>
 </div>
 
-
 <div className="mt-8">
 <AIInvestmentInsights/>
 </div>
-
-
-
-
 
 
 {/* Modals */}
@@ -778,8 +735,6 @@ setOpenModal(false)
 
 />
 
-
-
 <EditInvestmentModal
 
 open={editingInvestment !== null}
@@ -792,8 +747,6 @@ refreshPortfolio();
 }}
 
 />
-
-
 
 </>
 

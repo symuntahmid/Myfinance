@@ -1,6 +1,8 @@
 "use client";
 
 import WorldMap from "react-svg-worldmap";
+import { formatCurrency } from "@/app/utils/currency";
+import { useEffect, useState } from "react";
 
 const comparisonData = [
   { country: "bd" as const, value: 58 },
@@ -15,6 +17,41 @@ const comparisonData = [
 
 
 export default function GlobalComparisonCard() {
+
+  const [, forceCurrencyUpdate] =
+    useState(0);
+
+
+  useEffect(() => {
+
+    const currencyListener = () => {
+
+      forceCurrencyUpdate(
+        value => value + 1
+      );
+
+    };
+
+
+    window.addEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "currencyUpdated",
+        currencyListener
+      );
+
+    };
+
+
+  }, []);
+
+
 
   return (
 
@@ -137,21 +174,21 @@ export default function GlobalComparisonCard() {
 
 
         {[
-          {
-            icon:"🛍️",
-            name:"Shopping",
-            value:"$120",
-            change:"-15%",
-            good:true,
-          },
-          {
-            icon:"🍔",
-            name:"Food",
-            value:"$560",
-            change:"+15%",
-            good:false,
-          },
-        ].map((item)=>(
+  {
+    icon:"🛍️",
+    name:"Shopping",
+    value:120,
+    change:"-15%",
+    good:true,
+  },
+  {
+    icon:"🍔",
+    name:"Food",
+    value:560,
+    change:"+15%",
+    good:false,
+  },
+].map((item)=>(
 
           <div
             key={item.name}
@@ -189,7 +226,7 @@ export default function GlobalComparisonCard() {
                 font-semibold
                 text-[var(--foreground)]
               ">
-                {item.value}
+                {formatCurrency(item.value)}
               </span>
 
 
