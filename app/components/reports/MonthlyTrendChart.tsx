@@ -7,6 +7,9 @@ import {
   Transaction,
 } from "../../data/transactions";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
 
 type MonthData = {
   key: string;
@@ -132,12 +135,7 @@ function getLastSixMonths(): MonthData[] {
 
 function formatMoney(amount:number){
 
-  return `$${amount.toLocaleString(
-    undefined,
-    {
-      maximumFractionDigits:0,
-    }
-  )}`;
+  return formatCurrency(amount);
 
 }
 
@@ -152,24 +150,39 @@ const [
   setTransactionsVersion
 ] = useState(0);
 
-
+const [, forceCurrencyUpdate] =
+  useState(0);
 
 useEffect(()=>{
 
+const refresh = () => {
 
-const refresh = ()=>{
+  setTransactionsVersion(
+    value => value + 1
+  );
 
-setTransactionsVersion(
-(value)=>value+1
-);
+};
+
+
+const currencyListener = () => {
+
+  forceCurrencyUpdate(
+    value => value + 1
+  );
 
 };
 
 
 
 window.addEventListener(
-"transactionsUpdated",
-refresh
+  "transactionsUpdated",
+  refresh
+);
+
+
+window.addEventListener(
+  "currencyUpdated",
+  currencyListener
 );
 
 
@@ -177,9 +190,16 @@ refresh
 return()=>{
 
 window.removeEventListener(
-"transactionsUpdated",
-refresh
+  "transactionsUpdated",
+  refresh
 );
+
+
+window.removeEventListener(
+  "currencyUpdated",
+  currencyListener
+);
+
 
 };
 

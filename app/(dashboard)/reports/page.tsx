@@ -17,6 +17,7 @@ import {
 import FinancialHealthCard from "../../components/reports/FinancialHealthCard";
 import MonthlyTrendChart from "../../components/reports/MonthlyTrendChart";
 
+import { formatCurrency } from "@/app/utils/currency";
 
 export default function ReportsPage() {
 
@@ -32,86 +33,105 @@ export default function ReportsPage() {
     getPortfolioSummary()
   );
 
-
-  useEffect(() => {
-
-    const refreshReport = () => {
-
-      setReport(getMonthlyReport());
-
-      setScore(
-        getFinancialHealthScore()
-      );
-
-      setPortfolio(
-        getPortfolioSummary()
-      );
-
-    };
+  const [, forceCurrencyUpdate] =
+  useState(0);
 
 
-    refreshReport();
+ useEffect(() => {
+
+  const refreshReport = () => {
+
+    setReport(getMonthlyReport());
+
+    setScore(
+      getFinancialHealthScore()
+    );
+
+    setPortfolio(
+      getPortfolioSummary()
+    );
+
+  };
 
 
-    // Complete review task only once
-    const completed =
-      completeTask(2);
+  const currencyListener = () => {
+
+    forceCurrencyUpdate(
+      value => value + 1
+    );
+
+  };
 
 
-    if (completed) {
-
-      addXP(10);
-
-      window.dispatchEvent(
-        new Event("dailyJourneyUpdated")
-      );
-
-    }
+  refreshReport();
 
 
+  // Complete review task only once
+  const completed =
+    completeTask(2);
 
-    window.addEventListener(
+
+  if (completed) {
+
+    addXP(10);
+
+    window.dispatchEvent(
+      new Event("dailyJourneyUpdated")
+    );
+
+  }
+
+
+
+  window.addEventListener(
+    "transactionsUpdated",
+    refreshReport
+  );
+
+
+  window.addEventListener(
+    "investmentsUpdated",
+    refreshReport
+  );
+
+
+  window.addEventListener(
+    "currencyUpdated",
+    currencyListener
+  );
+
+
+
+  return () => {
+
+    window.removeEventListener(
       "transactionsUpdated",
       refreshReport
     );
 
 
-    window.addEventListener(
+    window.removeEventListener(
       "investmentsUpdated",
       refreshReport
     );
 
 
+    window.removeEventListener(
+      "currencyUpdated",
+      currencyListener
+    );
 
-    return () => {
-
-      window.removeEventListener(
-        "transactionsUpdated",
-        refreshReport
-      );
-
-
-      window.removeEventListener(
-        "investmentsUpdated",
-        refreshReport
-      );
-
-    };
+  };
 
 
-  }, []);
-
-
+}, []);
 
   const formatMoney = (
-    amount?: number
-  ) =>
-    `$${(amount ?? 0).toLocaleString(
-      undefined,
-      {
-        maximumFractionDigits: 2,
-      }
-    )}`;
+  amount?: number
+) =>
+  formatCurrency(
+    amount ?? 0
+  );
 
 
 

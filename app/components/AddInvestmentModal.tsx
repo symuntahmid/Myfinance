@@ -11,6 +11,10 @@ import {
 import { useState } from "react";
 import { Calculator, X } from "lucide-react";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 type AddInvestmentModalProps = {
   open: boolean;
   onClose: () => void;
@@ -275,16 +279,25 @@ export default function AddInvestmentModal({
 
       <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
         <div
-          className="w-full max-w-2xl overflow-hidden rounded-[32px] bg-white shadow-2xl"
+          className="
+w-full
+max-w-2xl
+overflow-hidden
+rounded-[32px]
+bg-[var(--card)]
+border
+border-[var(--border)]
+shadow-2xl
+"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
 
-          <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
+          <div className="flex items-center justify-between border-b border-[var(--border)] px-8 py-6">
             <div>
-              <h2 className="text-3xl font-bold">Add Investment</h2>
+              <h2 className="text-3xl font-bold text-[var(--foreground)]">Add Investment</h2>
 
-              <p className="mt-1 text-slate-500">
+              <p className="mt-1 text-[var(--muted)]">
                 Track your portfolio professionally.
               </p>
             </div>
@@ -317,7 +330,9 @@ export default function AddInvestmentModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Apple Inc., Bitcoin..."
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                  className="w-full rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                 />
               </div>
 
@@ -337,7 +352,9 @@ export default function AddInvestmentModal({
                   onChange={(e) =>
                     setType(e.target.value as InvestmentType)
                   }
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                  className="w-full rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                 >
                   {investmentTypes.map((option) => (
                     <option key={option} value={option}>
@@ -362,7 +379,9 @@ export default function AddInvestmentModal({
                   type="date"
                   value={purchaseDate}
                   onChange={(e) => setPurchaseDate(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                  className="w-full rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                 />
               </div>
 
@@ -385,7 +404,9 @@ export default function AddInvestmentModal({
                     value={investedAmount}
                     onChange={(e) => setInvestedAmount(e.target.value)}
                     placeholder="10000"
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 pr-14 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 pr-14 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                   />
 
                   <button
@@ -394,7 +415,7 @@ export default function AddInvestmentModal({
                     aria-label="Open calculator for amount invested"
                     className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 transition hover:bg-slate-100"
                   >
-                    <Calculator size={18} className="text-slate-500" />
+                    <Calculator size={18} className="text-[var(--muted)]" />
                   </button>
                 </div>
 
@@ -424,7 +445,9 @@ export default function AddInvestmentModal({
                     value={currentValue}
                     onChange={(e) => setCurrentValue(e.target.value)}
                     placeholder="12500"
-                    className="w-full rounded-2xl border border-slate-200 px-4 py-3 pr-14 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                    className="w-full rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 pr-14 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                   />
 
                   <button
@@ -433,7 +456,7 @@ export default function AddInvestmentModal({
                     aria-label="Open calculator for current value"
                     className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 transition hover:bg-slate-100"
                   >
-                    <Calculator size={18} className="text-slate-500" />
+                    <Calculator size={18} className="text-[var(--muted)]" />
                   </button>
                 </div>
 
@@ -446,12 +469,12 @@ export default function AddInvestmentModal({
 
               {/* Investment Funding */}
 
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 md:col-span-2">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--background)] p-5 md:col-span-2">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-semibold">Investment Funding</h3>
 
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-[var(--muted)]">
                       Where is this investment money coming from?
                     </p>
                   </div>
@@ -479,7 +502,7 @@ export default function AddInvestmentModal({
                         className={`rounded-xl border p-3 text-left transition ${
                           investmentFunding === option.value
                             ? "border-cyan-500 bg-cyan-50"
-                            : "border-slate-200 bg-white hover:bg-slate-50"
+                            : "border-[var(--border)] bg-[var(--background)] hover:bg-[var(--accent)]"
                         }`}
                       >
                         {option.label}
@@ -515,7 +538,9 @@ export default function AddInvestmentModal({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Optional notes..."
-                  className="w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
+                  className="w-full resize-none rounded-2xl border border-[var(--border)]
+bg-[var(--background)]
+text-[var(--foreground)] px-4 py-3 outline-none transition focus:border-[var(--primary)] focus:ring-4 focus:ring-cyan-100"
                 />
               </div>
             </div>
@@ -527,7 +552,8 @@ export default function AddInvestmentModal({
             <div className="flex gap-4">
               <button
                 onClick={handleClose}
-                className="flex-1 rounded-2xl border border-slate-300 py-4 font-semibold transition hover:bg-white"
+                className="flex-1 rounded-2xl border border-slate-300 py-4 font-semibold transition hover:bg-[var(--card)]
+border border-[var(--border)]"
               >
                 Cancel
               </button>
@@ -553,7 +579,8 @@ export default function AddInvestmentModal({
           onClick={closeCalculator}
         >
           <div
-            className="w-80 rounded-3xl bg-white p-6 shadow-2xl"
+            className="w-80 rounded-3xl bg-[var(--card)]
+border border-[var(--border)] p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-5 flex items-center justify-between">

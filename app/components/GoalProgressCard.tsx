@@ -9,6 +9,10 @@ import {
   Goal,
 } from "@/app/data/goals";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 
 export default function GoalProgressCard() {
 
@@ -16,40 +20,66 @@ export default function GoalProgressCard() {
   const [goals,setGoals] =
     useState<Goal[]>([]);
 
-
+const [, forceCurrencyUpdate] =
+  useState(0);
 
   useEffect(()=>{
 
 
-    function refreshGoals(){
+function refreshGoals(){
 
-      setGoals(
-        getGoals()
-      );
+  setGoals(
+    getGoals()
+  );
 
-    }
-
-
-
-    refreshGoals();
+}
 
 
+const currencyListener = () => {
 
-    window.addEventListener(
-      "goalsUpdated",
-      refreshGoals
-    );
+  forceCurrencyUpdate(
+    value => value + 1
+  );
+
+};
 
 
 
-    return () =>
-      window.removeEventListener(
-        "goalsUpdated",
-        refreshGoals
-      );
+refreshGoals();
 
 
-  },[]);
+
+window.addEventListener(
+  "goalsUpdated",
+  refreshGoals
+);
+
+
+window.addEventListener(
+  "currencyUpdated",
+  currencyListener
+);
+
+
+
+return () => {
+
+window.removeEventListener(
+  "goalsUpdated",
+  refreshGoals
+);
+
+
+window.removeEventListener(
+  "currencyUpdated",
+  currencyListener
+);
+
+
+};
+
+
+},[]);
 
 
 
@@ -155,7 +185,7 @@ export default function GoalProgressCard() {
               {
                 goals.length === 0
                 ? "Create your first savings goal."
-                : `$${totalSaved.toLocaleString()} saved of $${totalTarget.toLocaleString()}`
+                : `${formatCurrency(totalSaved)} saved of ${formatCurrency(totalTarget)}`
               }
 
             </p>
