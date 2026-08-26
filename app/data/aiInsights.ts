@@ -21,6 +21,10 @@ import type {
   AIInsightType,
 } from "@/app/data/types/AIInsight";
 
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
 
 type InsightRule = {
   id: string;
@@ -39,7 +43,9 @@ type InsightRule = {
 ===================================================== */
 
 function money(value: number) {
-  return `৳${Math.round(value).toLocaleString()}`;
+  return formatCurrency(
+    Math.round(value)
+  );
 }
 
 

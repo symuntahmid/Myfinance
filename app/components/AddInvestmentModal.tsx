@@ -224,52 +224,92 @@ export default function AddInvestmentModal({
   }
 
   function saveInvestment() {
-    if (!isFormValid) return;
 
-    const investment: Investment = {
-      id:
-        typeof crypto !== "undefined" && "randomUUID" in crypto
-          ? crypto.randomUUID()
-          : generateId(),
-      name,
-      type,
-      purchaseDate,
-      investedAmount: parsedInvested,
-      currentValue: parsedCurrent,
-      notes,
-    };
+  if (!isFormValid) return;
 
-    addInvestment(investment);
 
-    // If this investment is funded from tracked money, also log a linked
-    // Expense so the cash/bank/card balance reflects the outflow.
-    if (deductFromBalance) {
-      const funding = investmentFundingOptions.find(
-        (option) => option.value === investmentFunding
-      );
+  const investment: Investment = {
 
-      const expense: Transaction = {
-        id: Date.now() + Math.floor(Math.random() * 100000),
-        type: "Expense",
-        source: funding?.source ?? "💵 Cash",
-        // A dedicated category (rather than reusing an investment-style
-        // label) keeps analytics clean — e.g. "35% of income went to
-        // investment funding" instead of blending it into general spend.
-        category: "📈 Investment Funding",
-        amount: parsedInvested,
-        date: purchaseDate,
-        note: `Investment: ${name}`,
-        autoRepeat: false,
-        reminder: false,
-      };
+    id:
+      typeof crypto !== "undefined" &&
+      "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : generateId(),
 
-      addTransaction(expense);
-    }
+    name,
 
-    resetForm();
-    onClose();
-  }
+    type,
 
+    purchaseDate,
+
+    investedAmount: parsedInvested,
+
+    currentValue: parsedCurrent,
+
+    notes,
+
+  };
+
+
+
+  // Save investment portfolio data
+  addInvestment(investment);
+
+
+
+
+  // Create investment transaction for reports
+  const transaction: Transaction = {
+
+    id:
+      Date.now() +
+      Math.floor(Math.random() * 100000),
+
+
+    type: "Investment",
+
+
+    source:
+      deductFromBalance
+        ? investmentFundingOptions.find(
+            (option) =>
+              option.value === investmentFunding
+          )?.source ?? "💵 Cash"
+        : "External Funding",
+
+
+    category: "Investment",
+
+
+    amount: parsedInvested,
+
+
+    date: purchaseDate,
+
+
+    note:
+      `Investment: ${name}`,
+
+
+    autoRepeat: false,
+
+
+    reminder: false,
+
+  };
+
+
+
+// Always create Investment transaction for reports
+addTransaction(transaction);
+
+
+
+  resetForm();
+
+  onClose();
+
+}
   return (
     <>
       <div

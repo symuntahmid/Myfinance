@@ -17,11 +17,36 @@ const DEFAULT_ACHIEVEMENTS: Achievement[] = [
     icon: "⭐",
     unlocked: false,
   },
+
   {
     id: 3,
     title: "Daily Hero",
     description: "Complete today's journey.",
     icon: "🔥",
+    unlocked: false,
+  },
+
+  {
+    id: 4,
+    title: "3 Day Streak",
+    description: "Complete your Daily Journey for 3 days in a row.",
+    icon: "🔥",
+    unlocked: false,
+  },
+
+  {
+    id: 5,
+    title: "7 Day Streak",
+    description: "Maintain a 7 day money habit streak.",
+    icon: "⚡",
+    unlocked: false,
+  },
+
+  {
+    id: 6,
+    title: "30 Day Streak",
+    description: "Become a Smart CFO with a 30 day streak.",
+    icon: "🏆",
     unlocked: false,
   },
 

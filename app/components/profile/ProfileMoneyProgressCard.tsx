@@ -41,11 +41,20 @@ export default function ProfileMoneyProgressCard() {
 
 
 
-  if (!mounted || !player) {
-    return (
-      <section className="h-64 animate-pulse rounded-[28px] bg-slate-100" />
-    );
-  }
+ if (!mounted || !player) {
+  return (
+    <section
+      className="
+      h-64
+      animate-pulse
+      rounded-[28px]
+      bg-[var(--card)]
+      border
+      border-[var(--border)]
+      "
+    />
+  );
+}
 
 
 

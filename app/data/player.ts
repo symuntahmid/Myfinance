@@ -145,6 +145,7 @@ export function savePlayer(
 ========================================== */
 
 export function addXP(amount: number) {
+
   if (amount <= 0) {
     return;
   }
@@ -152,6 +153,26 @@ export function addXP(amount: number) {
   const player = getPlayer();
 
   player.xp += amount;
+
+  savePlayer(player);
+}
+
+
+/* ==========================================
+   STREAK
+========================================== */
+
+export function updateStreak(
+  streak: number
+) {
+
+  if (streak < 0) {
+    return;
+  }
+
+  const player = getPlayer();
+
+  player.streak = streak;
 
   savePlayer(player);
 }

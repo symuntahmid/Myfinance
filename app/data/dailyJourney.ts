@@ -1,3 +1,6 @@
+import { updateStreak } from "./player";
+import { unlockAchievement } from "./achievements";
+
 export type DailyTask = {
   id: number;
   title: string;
@@ -7,6 +10,8 @@ export type DailyTask = {
 
 const STORAGE_KEY = "myfinance-daily-journey";
 const DATE_STORAGE_KEY = "myfinance-daily-journey-date";
+const STREAK_STORAGE_KEY =
+  "myfinance-daily-streak";
 
 const DEFAULT_TASKS: DailyTask[] = [
   {
@@ -205,29 +210,62 @@ export function saveDailyTasks(
    COMPLETE TASK
 ========================================== */
 
+/* ==========================================
+   COMPLETE TASK
+========================================== */
+
 export function completeTask(
   id: number
 ): boolean {
+
   const tasks = getDailyTasks();
+
 
   const task = tasks.find(
     (task) => task.id === id
   );
 
+
   /*
    * Already completed today.
-   * Do not award XP again.
    */
 
   if (!task || task.completed) {
     return false;
   }
 
+
+
   task.completed = true;
+
+
+
+  const completed =
+    tasks.every(
+      (task) => task.completed
+    );
+
+
+
+  /*
+   * Update streak BEFORE
+   * notifying the UI.
+   */
+
+  if (completed) {
+
+    updateDailyStreak();
+
+  }
+
+
 
   saveDailyTasks(tasks);
 
+
+
   return true;
+
 }
 
 /* ==========================================
@@ -250,6 +288,139 @@ export function getJourneyProgress() {
         : (completed / tasks.length) * 100,
   };
 }
+
+/* ==========================================
+   STREAK SYSTEM
+========================================== */
+
+function getStreakData() {
+
+  const saved =
+    localStorage.getItem(
+      STREAK_STORAGE_KEY
+    );
+
+  if (!saved) {
+
+    return {
+      streak: 0,
+      lastCompleted: "",
+    };
+
+  }
+
+  return JSON.parse(saved);
+
+}
+
+
+
+function saveStreakData(data:any){
+
+  localStorage.setItem(
+    STREAK_STORAGE_KEY,
+    JSON.stringify(data)
+  );
+
+}
+
+
+
+function updateDailyStreak(){
+
+  const today =
+    getTodayKey();
+
+
+  const data =
+    getStreakData();
+
+
+
+  if(
+    data.lastCompleted === today
+  ){
+    return;
+  }
+
+
+
+  const yesterday =
+    new Date();
+
+
+  yesterday.setDate(
+    yesterday.getDate() - 1
+  );
+
+
+  const yesterdayKey =
+    [
+      yesterday.getFullYear(),
+      String(
+        yesterday.getMonth()+1
+      ).padStart(2,"0"),
+      String(
+        yesterday.getDate()
+      ).padStart(2,"0"),
+    ].join("-");
+
+
+
+  if(
+    data.lastCompleted === yesterdayKey
+  ){
+
+    data.streak += 1;
+
+  }
+  else{
+
+    data.streak = 1;
+
+  }
+
+
+
+  data.lastCompleted = today;
+
+
+
+  saveStreakData(data);
+
+
+
+  updateStreak(
+    data.streak
+  );
+
+
+
+  // Achievements
+
+  if(data.streak >= 3){
+
+    unlockAchievement(4);
+
+  }
+
+
+  if(data.streak >= 7){
+
+    unlockAchievement(5);
+
+  }
+
+
+  if(data.streak >= 30){
+
+    unlockAchievement(6);
+
+  }
+
+
+}
+
 
 /* ==========================================
    RESET DAILY JOURNEY
