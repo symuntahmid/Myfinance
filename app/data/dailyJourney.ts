@@ -13,6 +13,9 @@ const DATE_STORAGE_KEY = "myfinance-daily-journey-date";
 const STREAK_STORAGE_KEY =
   "myfinance-daily-streak";
 
+const STREAK_HISTORY_KEY =
+  "myfinance-streak-history";
+
 const DEFAULT_TASKS: DailyTask[] = [
   {
     id: 1,
@@ -206,9 +209,6 @@ export function saveDailyTasks(
   );
 }
 
-/* ==========================================
-   COMPLETE TASK
-========================================== */
 
 /* ==========================================
    COMPLETE TASK
@@ -332,92 +332,127 @@ function updateDailyStreak(){
     getTodayKey();
 
 
-  const data =
-    getStreakData();
+  const history =
+    JSON.parse(
+      localStorage.getItem(
+        STREAK_HISTORY_KEY
+      ) || "[]"
+    );
 
 
-
-  if(
-    data.lastCompleted === today
-  ){
+  // Prevent duplicate completion same day
+  if(history.includes(today)){
     return;
   }
 
 
-
-  const yesterday =
-    new Date();
+  history.push(today);
 
 
-  yesterday.setDate(
-    yesterday.getDate() - 1
+
+  localStorage.setItem(
+    STREAK_HISTORY_KEY,
+    JSON.stringify(history)
   );
 
 
-  const yesterdayKey =
-    [
-      yesterday.getFullYear(),
-      String(
-        yesterday.getMonth()+1
-      ).padStart(2,"0"),
-      String(
-        yesterday.getDate()
-      ).padStart(2,"0"),
-    ].join("-");
+
+  let streak = 1;
 
 
 
-  if(
-    data.lastCompleted === yesterdayKey
+  const sortedHistory =
+    history.sort(
+      (a:string,b:string)=>
+        new Date(b).getTime()
+        -
+        new Date(a).getTime()
+    );
+
+
+
+  for(
+    let i = 0;
+    i < sortedHistory.length - 1;
+    i++
   ){
 
-    data.streak += 1;
+    const current =
+      new Date(
+        sortedHistory[i]
+      );
+
+
+    const previous =
+      new Date(
+        sortedHistory[i + 1]
+      );
+
+
+    const difference =
+      (
+        current.getTime()
+        -
+        previous.getTime()
+      )
+      /
+      (1000 * 60 * 60 * 24);
+
+
+
+    if(difference === 1){
+
+      streak++;
+
+    }
+    else{
+
+      break;
+
+    }
 
   }
-  else{
-
-    data.streak = 1;
-
-  }
 
 
 
-  data.lastCompleted = today;
+  saveStreakData({
 
+    streak,
 
+    lastCompleted:
+      today,
 
-  saveStreakData(data);
+  });
 
 
 
   updateStreak(
-    data.streak
+    streak
   );
 
 
 
   // Achievements
 
-  if(data.streak >= 3){
+  if(streak >= 3){
 
     unlockAchievement(4);
 
   }
 
 
-  if(data.streak >= 7){
+  if(streak >= 7){
 
     unlockAchievement(5);
 
   }
 
 
-  if(data.streak >= 30){
+  if(streak >= 30){
 
     unlockAchievement(6);
 
   }
-
 
 }
 
