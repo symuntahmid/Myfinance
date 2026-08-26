@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+
 import {
   CheckCircle2,
   Rocket,
   User,
+  Sparkles,
 } from "lucide-react";
 
 import {
@@ -43,23 +45,17 @@ export default function ProfileCard({
 
 
   const [player,setPlayer] =
-    useState<
-      ReturnType<typeof getPlayer> | null
-    >(null);
-
+    useState<ReturnType<typeof getPlayer>|null>(null);
 
 
   const [level,setLevel] =
-    useState<
-      ReturnType<typeof getLevel> | null
-    >(null);
+    useState<ReturnType<typeof getLevel>|null>(null);
 
 
 
   const [profile,setProfile] =
-    useState(
-      getProfile()
-    );
+    useState(getProfile());
+
 
 
 
@@ -70,61 +66,51 @@ export default function ProfileCard({
 
 
 
-    const refreshPlayer = () => {
+    const refresh=()=>{
 
-      setPlayer(
-        getPlayer()
-      );
+      setPlayer(getPlayer());
 
-      setLevel(
-        getLevel()
-      );
+      setLevel(getLevel());
 
-      setProfile(
-        getProfile()
-      );
+      setProfile(getProfile());
 
     };
 
 
-
-    refreshPlayer();
+    refresh();
 
 
 
     window.addEventListener(
       "player-updated",
-      refreshPlayer
+      refresh
     );
 
 
     window.addEventListener(
       "profileUpdated",
-      refreshPlayer
+      refresh
     );
 
 
 
-    return ()=>{
-
+    return()=>{
 
       window.removeEventListener(
         "player-updated",
-        refreshPlayer
+        refresh
       );
 
 
       window.removeEventListener(
         "profileUpdated",
-        refreshPlayer
+        refresh
       );
-
 
     };
 
 
   },[]);
-
 
 
 
@@ -135,82 +121,15 @@ export default function ProfileCard({
     !level
   ){
 
-    return (
-
+    return(
       <section
-        className="
-        rounded-[28px]
-        border
-        border-[var(--border)]
-        bg-[var(--card)]
-        p-6
-        shadow-sm
-        "
-      >
-
-        <div className="
-        mx-auto
-        h-24
-        w-24
-        animate-pulse
-        rounded-full
-        bg-[var(--border)]
-        " />
-
-
-        <div className="
-        mx-auto
-        mt-5
-        h-7
-        w-32
-        animate-pulse
-        rounded-lg
-        bg-[var(--border)]
-        " />
-
-
-        <div className="
-        mx-auto
-        mt-2
-        h-4
-        w-40
-        animate-pulse
-        rounded
-        bg-[var(--border)]
-        " />
-
-
-        <div className="
-        mx-auto
-        mt-6
-        h-8
-        w-64
-        animate-pulse
-        rounded-full
-        bg-[var(--border)]
-        " />
-
-
-        <div className="
-        mt-8
-        h-4
-        animate-pulse
-        rounded-full
-        bg-[var(--border)]
-        " />
-
-
-        <div className="
-        mt-3
-        h-3
-        animate-pulse
-        rounded-full
-        bg-[var(--border)]
-        " />
-
-
-      </section>
-
+      className="
+      h-72
+      rounded-[28px]
+      bg-[var(--card)]
+      animate-pulse
+      "
+      />
     );
 
   }
@@ -226,480 +145,409 @@ export default function ProfileCard({
 
 
 
+  const name =
+    profile.displayName ||
+    `${profile.firstName} ${profile.lastName}`.trim() ||
+    player.name;
 
-  return (
-
-    <section
-
-      className={`
-      relative
-      overflow-hidden
-      rounded-[30px]
-      border
-      border-[var(--border)]
-      bg-gradient-to-br
-      from-[var(--card)]
-      via-[var(--background)]
-      to-cyan-50
-      shadow-sm
-      ${
-        compact
-        ? "p-5"
-        : "p-6 md:p-8"
-      }
-      `}
-
-    >
 
-
-      {!compact && (
-
-        <>
-
-          <div className="
-          pointer-events-none
-          absolute
-          -right-20
-          -top-20
-          h-48
-          w-48
-          rounded-full
-          bg-cyan-200/30
-          blur-3xl
-          " />
-
-
-          <div className="
-          pointer-events-none
-          absolute
-          -bottom-24
-          -left-20
-          h-48
-          w-48
-          rounded-full
-          bg-teal-200/30
-          blur-3xl
-          " />
-
-        </>
-
-      )}
-
 
+return(
 
 
+<section
+className="
+relative
+overflow-hidden
+rounded-[32px]
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-6
+shadow-[var(--shadow-soft)]
+"
+>
 
 
-      <div
-        className={`
-        relative
-        ${
-          compact
-          ? "flex items-center gap-4"
-          : "flex flex-col items-center text-center"
-        }
-        `}
-      >
 
+{/* subtle AI glow */}
 
-        <div
-          className={`
-          relative
-          shrink-0
-          ${
-            compact
-            ? "h-16 w-16"
-            : "h-28 w-28"
-          }
-          `}
-        >
+<div
+className="
+absolute
+-right-20
+-top-20
+h-48
+w-48
+rounded-full
+bg-cyan-400/10
+blur-3xl
+"
+/>
 
 
-          <div
-            className="
-            relative
-            h-full
-            w-full
-            overflow-hidden
-            rounded-full
-            border-4
-            border-[var(--card)]
-            bg-gradient-to-br
-            from-cyan-100
-            to-teal-100
-            shadow-lg
-            "
-          >
 
+<div className="relative">
 
-            {!avatarError ? (
 
-              <Image
 
-                src="/images/quokka/quokka-profile.png"
+{/* identity */}
 
-                alt="Premium quokka profile"
 
-                fill
+<div
+className="
+flex
+items-center
+gap-5
+"
+>
 
-                sizes={
-                  compact
-                  ? "64px"
-                  : "112px"
-                }
 
-                className="object-cover"
+<div
+className="
+relative
+h-16
+w-16
+shrink-0
+overflow-hidden
+rounded-full
+border-2
+border-[var(--border)]
+bg-gradient-to-br
+from-cyan-400
+to-teal-400
+"
+>
 
-                onError={()=>
-                  setAvatarError(true)
-                }
 
-              />
+{
+!avatarError ?
 
-            ) : (
 
-              <div className="
-              flex
-              h-full
-              w-full
-              items-center
-              justify-center
-              bg-gradient-to-br
-              from-teal-500
-              to-cyan-500
-              text-white
-              ">
+<Image
 
-                <User
-                  size={
-                    compact
-                    ? 28
-                    : 42
-                  }
-                />
+src="/images/quokka/quokka-profile.png"
 
-              </div>
+alt="Profile"
 
-            )}
+fill
 
+sizes="64px"
 
-          </div>
+className="object-cover"
 
+onError={()=>
+setAvatarError(true)
+}
 
+/>
 
 
-          <span
+:
 
-            className={`
-            absolute
-            bottom-1
-            right-1
-            rounded-full
-            border-2
-            border-[var(--card)]
-            bg-emerald-500
 
-            ${
-              compact
-              ? "h-4 w-4"
-              : "h-5 w-5"
-            }
+<div
+className="
+flex
+h-full
+items-center
+justify-center
+text-white
+"
+>
 
-            `}
+<User size={24}/>
 
-          />
+</div>
 
 
+}
 
-        </div>
 
 
+</div>
 
 
 
 
-        <div
 
-          className={
-            compact
-            ? "min-w-0 flex-1"
-            : "mt-5"
-          }
+<div
+className="
+min-w-0
+"
+>
 
-        >
 
+<div
+className="
+flex
+items-center
+gap-2
+"
+>
 
 
-          <div
-            className={`
-            flex
-            items-center
-            ${
-              compact
-              ? "justify-start"
-              : "justify-center"
-            }
-            gap-2
-            `}
-          >
+<h2
+className="
+font-premium
+truncate
+text-2xl
+text-[var(--foreground)]
+"
+>
 
+{name}
 
-            <h2
+</h2>
 
-              className={`
-              font-bold
-              tracking-tight
-              text-[var(--foreground)]
-              ${
-                compact
-                ? "text-lg"
-                : "text-3xl"
-              }
-              `}
 
-            >
+<CheckCircle2
+size={17}
+className="
+fill-cyan-500
+text-white
+"
+/>
 
-              {
-                profile.displayName ||
-                `${profile.firstName} ${profile.lastName}`.trim() ||
-                player.name
-              }
 
+</div>
 
-            </h2>
 
 
+{
+profile.username &&
+<p
+className="
+mt-1
+text-sm
+text-[var(--muted)]
+"
+>
+@{profile.username}
+</p>
+}
 
-            <CheckCircle2
 
-              size={
-                compact
-                ? 17
-                : 21
-              }
 
-              className="
-              fill-cyan-500
-              text-white
-              "
 
-            />
+</div>
 
 
-          </div>
+</div>
 
 
 
 
 
-          {profile.username && (
 
-            <p
 
-              className={`
-              text-[var(--muted)]
-              ${
-                compact
-                ? "mt-0.5 text-[11px]"
-                : "mt-1 text-xs"
-              }
-              `}
+{/* Level */}
 
-            >
 
-              @{profile.username}
+<div
+className="
+mt-7
+rounded-3xl
+bg-[var(--background)]
+p-5
+"
+>
 
-            </p>
 
-          )}
+<div
+className="
+flex
+items-center
+justify-between
+"
+>
 
 
+<div>
 
+<p
+className="
+text-xs
+uppercase
+tracking-wider
+text-[var(--muted)]
+"
+>
+Financial Level
+</p>
 
 
+<p
+className="
+mt-1
+text-xl
+font-semibold
+text-[var(--foreground)]
+"
+>
 
-          {!compact && (
+Level {level.level}
 
-            <div
+</p>
 
-              className="
-              mt-4
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-[var(--border)]
-              bg-[var(--card)]/80
-              px-4
-              py-2
-              text-sm
-              font-medium
-              text-[var(--foreground)]
-              shadow-sm
-              "
 
-            >
+</div>
 
-              <span>
-                Smarter money. Bigger dreams.
-              </span>
 
 
-              <Rocket
-                size={15}
-                className="text-cyan-500"
-              />
 
+<span
+className="
+rounded-full
+bg-cyan-500/10
+px-3
+py-1.5
+text-xs
+font-semibold
+text-cyan-600
+dark:text-cyan-400
+"
+>
 
-            </div>
+{level.currentXP}
+/
+{level.nextLevelXP}
+XP
 
-          )}
+</span>
 
 
-        </div>
 
+</div>
 
-      </div>
 
 
 
 
 
+<div
+className="
+mt-5
+h-2
+overflow-hidden
+rounded-full
+bg-[var(--border)]
+"
+>
 
-      <div
+<div
 
-        className={`
-        relative
-        ${
-          compact
-          ? "mt-5"
-          : "mt-7"
-        }
-        `}
+className="
+h-full
+rounded-full
+bg-gradient-to-r
+from-cyan-500
+to-teal-400
+transition-all
+duration-700
+"
 
-      >
+style={{
+width:`${progress}%`
+}}
 
+/>
 
-        <div className="
-        mb-3
-        flex
-        items-center
-        justify-between
-        gap-3
-        ">
+</div>
 
 
-          <div className="
-          flex
-          items-center
-          gap-2
-          ">
 
-            <span className="text-lg">
-              ⭐
-            </span>
 
+<div
+className="
+mt-3
+flex
+justify-between
+text-xs
+text-[var(--muted)]
+"
+>
 
-            <span className="
-            font-bold
-            text-[var(--foreground)]
-            ">
-              Level {level.level}
-            </span>
+<span>
+Building financial confidence
+</span>
 
 
-          </div>
+<span>
+{Math.round(progress)}%
+</span>
 
 
+</div>
 
-          <span className="
-          rounded-full
-          bg-[var(--primary)]/10
-          px-3
-          py-1.5
-          text-xs
-          font-bold
-          text-[var(--primary)]
-          ">
 
-            {level.currentXP.toLocaleString()}
-            {" / "}
-            {level.nextLevelXP.toLocaleString()}
-            {" XP"}
+</div>
 
-          </span>
 
 
-        </div>
 
 
 
 
-        <div className="
-        h-3
-        overflow-hidden
-        rounded-full
-        bg-[var(--border)]
-        ">
 
+{/* Motivation */}
 
-          <div
 
-            className="
-            h-full
-            rounded-full
-            bg-gradient-to-r
-            from-violet-500
-            via-cyan-500
-            to-teal-400
-            transition-all
-            duration-700
-            "
+{
+!compact &&
 
-            style={{
-              width:`${progress}%`,
-            }}
+<div
+className="
+mt-5
+flex
+items-start
+gap-3
+rounded-2xl
+border
+border-cyan-500/20
+bg-cyan-500/5
+p-4
+"
+>
 
-          />
 
+<Sparkles
+size={18}
+className="
+mt-0.5
+text-cyan-500
+"
+/>
 
-        </div>
 
+<p
+className="
+text-sm
+leading-6
+text-[var(--foreground)]
+"
+>
 
+You are building a stronger money system.
+Small actions create long-term wealth.
 
+</p>
 
-        {!compact && (
 
-          <div className="
-          mt-2
-          flex
-          items-center
-          justify-between
-          text-[11px]
-          text-[var(--muted)]
-          ">
+</div>
 
-            <span>
-              Financial journey
-            </span>
 
+}
 
-            <span>
-              {Math.round(progress)}% complete
-            </span>
 
 
-          </div>
+</div>
 
-        )}
 
+</section>
 
-      </div>
 
+);
 
-    </section>
-
-  );
 
 }

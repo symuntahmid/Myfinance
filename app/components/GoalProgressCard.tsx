@@ -114,191 +114,317 @@ window.removeEventListener(
 
   return (
 
-    <Link href="/goals">
+<Link href="/goals">
 
-      <div
-        className="
-        cursor-pointer
-        rounded-3xl
-        bg-[var(--card)]
-        border
-        border-[var(--border)]
-        p-6
-        shadow-sm
-        transition
-        hover:-translate-y-1
-        hover:shadow-xl
-        "
-      >
+<div
+className="
+group
+relative
+overflow-hidden
+cursor-pointer
+rounded-[32px]
+border
+border-[var(--border)]
+bg-gradient-to-br
+from-[var(--card)]
+via-[var(--card)]
+to-cyan-500/10
+p-6
+shadow-sm
+transition-all
+duration-300
+hover:-translate-y-1
+hover:shadow-xl
+"
+>
 
 
+{/* Glow */}
 
-        <div className="
-        flex
-        items-center
-        justify-between
-        ">
+<div
+className="
+pointer-events-none
+absolute
+-right-16
+-top-16
+h-40
+w-40
+rounded-full
+bg-cyan-400/20
+blur-3xl
+"
+/>
 
 
 
-          <div>
 
+<div className="relative">
 
-            <p className="
-            text-sm
-            font-medium
-            text-[var(--muted)]
-            ">
-              Financial Goals
-            </p>
 
+{/* Header */}
 
+<div
+className="
+flex
+items-start
+justify-between
+gap-4
+"
+>
 
-            <h2 className="
-            mt-2
-            text-2xl
-            font-bold
-            text-[var(--foreground)]
-            ">
 
-              {
-                goals.length === 0
-                ? "No Goals Yet"
-                : `${goals.length} Goal${
-                    goals.length > 1
-                    ? "s"
-                    : ""
-                  }`
-              }
+<div>
 
-            </h2>
 
+<p
+className="
+flex
+items-center
+gap-2
+text-xs
+font-bold
+uppercase
+tracking-wider
+text-[var(--muted)]
+"
+>
 
+🎯 My Future Goals
 
+</p>
 
-            <p className="
-            mt-2
-            text-sm
-            text-[var(--muted)]
-            ">
 
-              {
-                goals.length === 0
-                ? "Create your first savings goal."
-                : `${formatCurrency(totalSaved)} saved of ${formatCurrency(totalTarget)}`
-              }
 
-            </p>
+<h2
+className="
+mt-2
+text-2xl
+font-black
+text-[var(--foreground)]
+"
+>
 
 
-          </div>
+{
+goals.length === 0
 
+?
 
+"Start your journey"
 
+:
 
+`${goals.length} milestone${
+goals.length > 1
+? "s"
+: ""
+} in progress`
 
-          <div className="
-          rounded-2xl
-          bg-[var(--primary)]/10
-          p-4
-          ">
+}
 
-            <Target
-              className="
-              h-8
-              w-8
-              text-[var(--primary)]
-              "
-            />
 
-          </div>
+</h2>
 
 
 
-        </div>
 
+<p
+className="
+mt-2
+text-sm
+text-[var(--muted)]
+"
+>
 
 
+{
+goals.length === 0
 
+?
 
+"Create your first savings goal and build your future."
 
-        <div className="mt-6">
+:
 
+`${formatCurrency(totalSaved)} saved of ${formatCurrency(totalTarget)}`
 
+}
 
-          <div className="
-          mb-2
-          flex
-          justify-between
-          text-sm
-          ">
 
+</p>
 
-            <span className="
-            text-[var(--muted)]
-            ">
-              Overall Progress
-            </span>
 
+</div>
 
 
-            <span className="
-            font-semibold
-            text-[var(--primary)]
-            ">
 
-              {progress.toFixed(0)}%
 
-            </span>
 
+<div
+className="
+rounded-2xl
+bg-cyan-500/10
+p-4
+transition
+group-hover:scale-110
+"
+>
 
 
-          </div>
+<Target
+className="
+h-8
+w-8
+text-cyan-500
+"
+/>
 
 
+</div>
 
 
 
-          <div className="
-          h-3
-          overflow-hidden
-          rounded-full
-          bg-[var(--border)]
-          ">
+</div>
 
 
-            <div
 
-              className="
-              h-full
-              rounded-full
-              bg-gradient-to-r
-              from-cyan-500
-              to-blue-600
-              transition-all
-              duration-700
-              "
 
-              style={{
-                width:`${Math.min(progress,100)}%`,
-              }}
 
-            />
 
+{/* Progress */}
 
-          </div>
 
+<div
+className="
+mt-7
+rounded-2xl
+bg-[var(--background)]
+p-4
+"
+>
 
 
-        </div>
+<div
+className="
+mb-3
+flex
+items-center
+justify-between
+"
+>
 
 
+<span
+className="
+text-sm
+font-semibold
+text-[var(--muted)]
+"
+>
+Your progress
+</span>
 
-      </div>
 
 
-    </Link>
+<span
+className="
+rounded-full
+bg-cyan-500/10
+px-3
+py-1
+text-xs
+font-black
+text-cyan-600
+dark:text-cyan-400
+"
+>
 
-  );
+{progress.toFixed(0)}%
+
+</span>
+
+
+</div>
+
+
+
+
+<div
+className="
+h-3
+overflow-hidden
+rounded-full
+bg-[var(--border)]
+"
+>
+
+
+<div
+
+className="
+h-full
+rounded-full
+bg-gradient-to-r
+from-cyan-500
+to-blue-600
+transition-all
+duration-700
+"
+
+style={{
+width:`${Math.min(progress,100)}%`,
+}}
+
+/>
+
+
+</div>
+
+
+
+
+<p
+className="
+mt-3
+text-xs
+font-medium
+text-[var(--muted)]
+"
+>
+
+
+{
+progress >= 100
+
+?
+
+"🎉 Goal completed! Amazing work."
+
+:
+
+"🚀 Keep going, your future is getting closer."
+
+}
+
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+</Link>
+
+);
 
 }

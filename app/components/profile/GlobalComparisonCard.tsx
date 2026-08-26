@@ -4,6 +4,7 @@ import WorldMap from "react-svg-worldmap";
 import { formatCurrency } from "@/app/utils/currency";
 import { useEffect, useState } from "react";
 
+
 const comparisonData = [
   { country: "bd" as const, value: 58 },
   { country: "in" as const, value: 72 },
@@ -16,13 +17,17 @@ const comparisonData = [
 ];
 
 
+
 export default function GlobalComparisonCard() {
+
 
   const [, forceCurrencyUpdate] =
     useState(0);
 
 
-  useEffect(() => {
+
+  useEffect(()=>{
+
 
     const currencyListener = () => {
 
@@ -39,7 +44,7 @@ export default function GlobalComparisonCard() {
     );
 
 
-    return () => {
+    return()=>{
 
       window.removeEventListener(
         "currencyUpdated",
@@ -49,319 +54,433 @@ export default function GlobalComparisonCard() {
     };
 
 
-  }, []);
+  },[]);
+
+
+
+
+  const categories = [
+    {
+      icon:"🛍️",
+      name:"Shopping",
+      value:120,
+      change:"-15%",
+      good:true,
+    },
+    {
+      icon:"🍔",
+      name:"Food",
+      value:560,
+      change:"+15%",
+      good:false,
+    },
+  ];
 
 
 
   return (
 
-    <section
-      className="
-      overflow-hidden
-      rounded-3xl
-      border border-[var(--border)]
-      bg-[var(--card)]
-      shadow-sm
-      "
-    >
+<section
+className="
+relative
+overflow-hidden
+rounded-[32px]
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-5
+shadow-sm
+transition
+hover:shadow-xl
+md:p-7
+"
+>
 
 
-      {/* Header */}
+{/* Glow */}
 
-      <div className="
-        flex
-        items-start
-        justify-between
-        p-6
-        pb-2
-      ">
+<div
+className="
+pointer-events-none
+absolute
+-right-20
+-top-20
+h-56
+w-56
+rounded-full
+bg-cyan-500/10
+blur-3xl
+"
+/>
 
-        <div>
 
-          <p className="
-            text-xs
-            font-semibold
-            uppercase
-            tracking-wider
-            text-[var(--muted)]
-          ">
-            🌍 Global Comparison
-          </p>
 
+<div className="relative">
 
-          <h2 className="
-            mt-1
-            text-xl
-            font-bold
-            text-[var(--foreground)]
-          ">
-            See how your spending aligns worldwide
-          </h2>
 
+{/* Header */}
 
-        </div>
+<div>
 
 
+<p
+className="
+text-xs
+font-bold
+uppercase
+tracking-widest
+text-[var(--muted)]
+"
+>
+🌍 Global Benchmark
+</p>
 
-        <button
-          className="
-          rounded-full
-          bg-[var(--background)]
-          px-3
-          py-2
-          text-sm
-          text-[var(--muted)]
-          transition
-          hover:opacity-80
-          "
-        >
-          ☰
-        </button>
 
+<h2
+className="
+mt-2
+text-xl
+font-black
+text-[var(--foreground)]
+md:text-2xl
+"
+>
+Your spending position worldwide
+</h2>
 
-      </div>
 
+<p
+className="
+mt-2
+text-sm
+text-[var(--muted)]
+"
+>
+Compare your habits with global spending patterns.
+</p>
 
 
+</div>
 
 
-      {/* Map */}
 
-      <div className="px-5 pt-3">
 
 
-        <div
-          className="
-          overflow-hidden
-          rounded-2xl
-          bg-[var(--background)]
-          p-3
-          "
-        >
+{/* Map */}
 
-          <div className="flex justify-center">
+<div
+className="
+mt-6
+rounded-[26px]
+border
+border-[var(--border)]
+bg-[var(--background)]
+p-3
+sm:p-5
+"
+>
 
 
-            <WorldMap
-              color="#06b6d4"
-              title="Global spending comparison"
-              valueSuffix="%"
-              size="lg"
-              data={comparisonData}
-            />
+<div
+className="
+flex
+justify-center
+overflow-hidden
+"
+>
 
 
-          </div>
+<WorldMap
 
+color="#06b6d4"
 
-        </div>
+title="Global spending comparison"
 
+valueSuffix="%"
 
-      </div>
+size="lg"
 
+data={comparisonData}
 
+/>
 
 
+</div>
 
-      {/* Comparison */}
 
-      <div className="
-        space-y-3
-        px-6
-        pb-6
-        pt-4
-      ">
+</div>
 
 
-        {[
-  {
-    icon:"🛍️",
-    name:"Shopping",
-    value:120,
-    change:"-15%",
-    good:true,
-  },
-  {
-    icon:"🍔",
-    name:"Food",
-    value:560,
-    change:"+15%",
-    good:false,
-  },
-].map((item)=>(
 
-          <div
-            key={item.name}
-            className="
-            flex
-            items-center
-            justify-between
-            "
-          >
 
-            <div className="flex items-center gap-2">
 
-              <span className="text-base">
-                {item.icon}
-              </span>
 
 
-              <span className="
-                text-sm
-                font-medium
-                text-[var(--foreground)]
-              ">
-                {item.name}
-              </span>
+{/* Category Comparison */}
 
 
-            </div>
+<div
+className="
+mt-6
+space-y-3
+"
+>
 
 
+{categories.map((item)=>(
 
-            <div className="flex items-center gap-2">
 
-              <span className="
-                text-sm
-                font-semibold
-                text-[var(--foreground)]
-              ">
-                {formatCurrency(item.value)}
-              </span>
+<div
 
+key={item.name}
 
-              <span
-                className={`
-                rounded-full
-                px-2
-                py-1
-                text-xs
-                font-semibold
-                ${
-                  item.good
-                  ?
-                  "bg-green-100 text-green-600 dark:bg-green-950/40 dark:text-green-400"
-                  :
-                  "bg-red-100 text-red-600 dark:bg-red-950/40 dark:text-red-400"
-                }
-                `}
-              >
-                {item.change}
-              </span>
+className="
+flex
+items-center
+justify-between
+rounded-2xl
+border
+border-[var(--border)]
+bg-[var(--background)]
+p-4
+transition
+hover:scale-[1.01]
+"
 
+>
 
-            </div>
 
+<div
+className="
+flex
+items-center
+gap-3
+"
+>
 
-          </div>
 
-        ))}
+<div
+className="
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-xl
+bg-[var(--card)]
+text-xl
+shadow-sm
+"
+>
+{item.icon}
+</div>
 
 
 
+<div>
 
+<p
+className="
+text-sm
+font-bold
+text-[var(--foreground)]
+"
+>
+{item.name}
+</p>
 
-        {/* Overall */}
 
-        <div
-          className="
-          mt-4
-          rounded-2xl
-          bg-[var(--background)]
-          p-4
-          "
-        >
+<p
+className="
+text-xs
+text-[var(--muted)]
+"
+>
+Monthly spending
+</p>
 
-          <div className="
-            flex
-            items-center
-            justify-between
-          ">
 
+</div>
 
-            <div>
 
-              <p className="
-                text-xs
-                text-[var(--muted)]
-              ">
-                Overall spending
-              </p>
+</div>
 
 
-              <p className="
-                mt-1
-                text-lg
-                font-bold
-                text-[var(--foreground)]
-              ">
-                Better than 64%
-              </p>
 
 
-            </div>
 
 
+<div
+className="
+flex
+items-center
+gap-2
+"
+>
 
-            <div className="
-              rounded-full
-              bg-green-100
-              px-3
-              py-2
-              text-xs
-              font-bold
-              text-green-600
-              dark:bg-green-950/40
-              dark:text-green-400
-            ">
-              GOOD
-            </div>
 
+<p
+className="
+text-sm
+font-black
+text-[var(--foreground)]
+"
+>
+{formatCurrency(item.value)}
+</p>
 
-          </div>
 
 
+<span
+className={`
+rounded-full
+px-2.5
+py-1
+text-xs
+font-bold
 
-          <p className="
-            mt-2
-            text-xs
-            leading-5
-            text-[var(--muted)]
-          ">
-            Compared with the current demo global benchmark.
-          </p>
+${
+item.good
 
+?
 
-        </div>
+"bg-emerald-500/10 text-emerald-500"
 
+:
 
+"bg-red-500/10 text-red-500"
 
+}
 
+`}
+>
 
-        {/* Button */}
+{item.change}
 
-        <button
-          className="
-          mt-1
-          w-full
-          rounded-2xl
-          bg-[var(--foreground)]
-          py-3
-          text-sm
-          font-semibold
-          text-[var(--card)]
-          transition
-          hover:opacity-90
-          "
-        >
-          View Global Comparison →
-        </button>
+</span>
 
 
-      </div>
+</div>
 
 
-    </section>
+
+</div>
+
+
+))}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* Result Card */}
+
+
+<div
+
+className="
+mt-5
+rounded-[26px]
+border
+border-[var(--border)]
+bg-gradient-to-br
+from-emerald-500/10
+to-cyan-500/10
+p-5
+"
+
+>
+
+
+<div
+className="
+flex
+items-center
+justify-between
+"
+>
+
+
+<div>
+
+
+<p
+className="
+text-xs
+font-semibold
+text-[var(--muted)]
+"
+>
+Overall spending health
+</p>
+
+
+<h3
+className="
+mt-1
+text-xl
+font-black
+text-[var(--foreground)]
+"
+>
+Better than 64%
+</h3>
+
+
+</div>
+
+
+
+
+<div
+className="
+rounded-full
+bg-emerald-500/15
+px-4
+py-2
+text-xs
+font-black
+text-emerald-500
+"
+>
+GOOD
+</div>
+
+
+</div>
+
+
+
+<p
+className="
+mt-3
+text-sm
+leading-5
+text-[var(--muted)]
+"
+>
+Your spending habits are healthier than most benchmark users.
+</p>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
 
   );
 

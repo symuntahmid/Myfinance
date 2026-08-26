@@ -4,70 +4,220 @@ type StatCardProps = {
   icon: React.ReactNode;
 };
 
+
 export default function StatCard({
   title,
   value,
   icon,
 }: StatCardProps) {
+
+
+  const getTheme = () => {
+
+    if(title === "Net Worth") {
+
+      return {
+        icon:
+          "bg-cyan-500/10 text-cyan-500",
+        glow:
+          "from-cyan-500/10",
+        label:
+          "Financial foundation",
+      };
+
+    }
+
+
+    if(title === "Monthly Income") {
+
+      return {
+        icon:
+          "bg-emerald-500/10 text-emerald-500",
+        glow:
+          "from-emerald-500/10",
+        label:
+          "Money coming in",
+      };
+
+    }
+
+
+    if(title === "Expenses") {
+
+      return {
+        icon:
+          "bg-rose-500/10 text-rose-500",
+        glow:
+          "from-rose-500/10",
+        label:
+          "Money awareness",
+      };
+
+    }
+
+
+    if(title === "Investments") {
+
+      return {
+        icon:
+          "bg-violet-500/10 text-violet-500",
+        glow:
+          "from-violet-500/10",
+        label:
+          "Future wealth",
+      };
+
+    }
+
+
+    return {
+      icon:
+        "bg-[var(--primary)]/10 text-[var(--primary)]",
+      glow:
+        "from-[var(--primary)]/10",
+      label:
+        "Financial progress",
+    };
+
+  };
+
+
+
+  const theme = getTheme();
+
+
+
   return (
-    <div
-      className="
-        bg-[var(--card)]
-        rounded-2xl
-        p-5
-        border
-        border-[var(--border)]
-        shadow-sm
-        hover:shadow-lg
-        hover:-translate-y-1
-        transition-all
-        duration-300
-        cursor-pointer
-      "
-    >
 
-      <div className="flex items-center justify-between">
-
-        <div>
-
-          <p className="text-sm text-[var(--muted)]">
-            {title}
-          </p>
+<div
+className="
+group
+relative
+overflow-hidden
+rounded-[28px]
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-5
+shadow-sm
+transition-all
+duration-300
+hover:-translate-y-1
+hover:shadow-xl
+"
+>
 
 
-          <h2
-            className="
-              mt-2
-              text-3xl
-              font-bold
-              text-[var(--foreground)]
-            "
-          >
-            {value}
-          </h2>
+{/* Background Glow */}
 
-        </div>
-
-
-
-        <div
-          className="
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-xl
-            bg-[var(--primary)]/10
-            text-[var(--primary)]
-          "
-        >
-          {icon}
-        </div>
+<div
+className={`
+pointer-events-none
+absolute
+-right-10
+-top-10
+h-32
+w-32
+rounded-full
+bg-gradient-to-br
+${theme.glow}
+to-transparent
+blur-3xl
+`}
+/>
 
 
-      </div>
 
-    </div>
+
+<div
+className="
+relative
+flex
+items-start
+justify-between
+gap-4
+"
+>
+
+
+<div>
+
+
+<p
+className="
+text-xs
+font-semibold
+uppercase
+tracking-wider
+text-[var(--muted)]
+"
+>
+{title}
+</p>
+
+
+
+<h2
+className="
+mt-3
+text-2xl
+font-black
+tracking-tight
+text-[var(--foreground)]
+sm:text-3xl
+"
+>
+{value}
+</h2>
+
+
+
+<p
+className="
+mt-2
+text-xs
+font-medium
+text-[var(--muted)]
+"
+>
+{theme.label}
+</p>
+
+
+</div>
+
+
+
+
+<div
+className={`
+flex
+h-12
+w-12
+shrink-0
+items-center
+justify-center
+rounded-2xl
+${theme.icon}
+transition-transform
+duration-300
+group-hover:scale-110
+`}
+>
+
+{icon}
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
   );
+
 }

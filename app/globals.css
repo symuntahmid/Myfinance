@@ -1,21 +1,29 @@
 @import "tailwindcss";
 
 
+/* ==========================================
+   PREMIUM LIGHT THEME
+========================================== */
+
 :root {
 
-  --background: #F4F7FB;
+  --background: #F8F8F6;
 
-  --foreground: #1B2A41;
+  --foreground: #1F2937;
+
 
   --primary: #0F9D8A;
 
   --primary-dark: #0B7C6E;
 
+
   --card: #FFFFFF;
 
-  --border: #E6ECF2;
+  --border: #E8E8E5;
 
-  --muted: #6B7A90;
+
+  --muted: #6B7280;
+
 
   --success: #22C55E;
 
@@ -23,37 +31,73 @@
 
   --danger: #EF4444;
 
+
+
+  /* AI BRAND COLORS */
+
+  --ai-purple: #8B5CF6;
+
+  --ai-blue: #06B6D4;
+
+
+  /* PREMIUM SHADOW */
+
+  --shadow-soft:
+    0 10px 30px rgba(15,23,42,0.06);
+
 }
 
 
 
+
+
 /* ==========================================
-   DARK MODE VARIABLES
+   DARK MODE
 ========================================== */
+
 
 .dark {
 
-  --background: #0F172A;
+  --background: #0B0F14;
+
 
   --foreground: #E5E7EB;
+
 
   --primary: #14B8A6;
 
   --primary-dark: #0F766E;
 
-  --card: #111827;
 
-  --border: #1F2937;
+  --card: #121820;
 
-  --muted: #94A3B8;
 
-  --success: #22C55E;
+  --border: #202938;
+
+
+  --muted: #9CA3AF;
+
+
+  --success: #34D399;
 
   --warning: #FBBF24;
 
   --danger: #F87171;
 
+
+
+  --ai-purple: #A78BFA;
+
+  --ai-blue: #22D3EE;
+
+
+
+  --shadow-soft:
+    0 10px 30px rgba(0,0,0,0.35);
+
 }
+
+
 
 
 
@@ -61,16 +105,185 @@
    GLOBAL BODY
 ========================================== */
 
+
+html {
+
+  scroll-behavior:
+    smooth;
+
+}
+
+
+
 body {
 
-  background: var(--background);
+  background:
+    var(--background);
 
-  color: var(--foreground);
 
-  font-family: Arial, Helvetica, sans-serif;
+  color:
+    var(--foreground);
+
+
+  font-family:
+    var(--font-geist-sans),
+    sans-serif;
+
+
+  letter-spacing:
+    -0.015em;
+
 
   transition:
-    background-color 0.25s ease,
-    color 0.25s ease;
+
+    background-color .25s ease,
+
+    color .25s ease;
+
+}
+
+
+
+
+
+
+
+/* ==========================================
+   PREMIUM TYPOGRAPHY SYSTEM
+
+   Use:
+   className="font-premium"
+
+   For:
+   - Welcome text
+   - AI titles
+   - Emotional messages
+========================================== */
+
+
+.font-premium {
+
+  font-family:
+    var(--font-serif),
+    serif;
+
+
+  letter-spacing:
+    -0.035em;
+
+
+  font-weight:
+    600;
+
+}
+
+
+
+
+
+/* ==========================================
+   HEADINGS
+
+   Notion / Claude style
+========================================== */
+
+
+h1,
+h2,
+h3 {
+
+  letter-spacing:
+    -0.025em;
+
+
+  text-wrap:
+    balance;
+
+}
+
+
+
+
+
+
+/* ==========================================
+   CARD QUALITY
+========================================== */
+
+
+.card-premium {
+
+  background:
+    var(--card);
+
+
+  border:
+    1px solid var(--border);
+
+
+  box-shadow:
+    var(--shadow-soft);
+
+
+  border-radius:
+    28px;
+
+}
+
+
+
+
+
+
+/* ==========================================
+   TEXT RENDERING
+========================================== */
+
+
+* {
+
+  text-rendering:
+    optimizeLegibility;
+
+
+  -webkit-font-smoothing:
+    antialiased;
+
+
+  -moz-osx-font-smoothing:
+    grayscale;
+
+}
+
+/* ==========================================
+   PREMIUM CLAUDE STYLE TYPOGRAPHY
+========================================== */
+
+.font-display {
+
+  font-family:
+    var(--font-serif),
+    serif;
+
+  font-weight:
+    500;
+
+  letter-spacing:
+    -0.04em;
+
+  line-height:
+    0.95;
+
+}
+
+
+.font-body {
+
+  font-family:
+    var(--font-geist-sans),
+    sans-serif;
+
+  letter-spacing:
+    -0.015em;
 
 }

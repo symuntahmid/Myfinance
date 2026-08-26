@@ -10,6 +10,7 @@ import {
   Lock,
   Sparkles,
   Zap,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -27,6 +28,7 @@ import type {
 } from "@/app/data/types/AIInsight";
 
 import AIInsightEnergy from "./AIInsightEnergy";
+
 
 
 type AIInsightCardProps = {
@@ -72,7 +74,7 @@ function getInsightIcon(
 
 export default function AIInsightCard({
 
-  title = "Your Smart CFO Insights",
+  title = "Your Smart CFO",
 
 }: AIInsightCardProps) {
 
@@ -99,9 +101,6 @@ export default function AIInsightCard({
 
 
 
-  /* ==========================================
-     REFRESH DATA
-  ========================================== */
 
   const refresh = () => {
 
@@ -128,17 +127,11 @@ export default function AIInsightCard({
       hasUnlockedInsights()
     );
 
-
   };
 
 
 
 
-
-
-  /* ==========================================
-     LOAD
-  ========================================== */
 
 
   useEffect(()=>{
@@ -213,52 +206,25 @@ export default function AIInsightCard({
 
 
 
-
-
-  /* ==========================================
-     UNLOCK
-  ========================================== */
-
-
   const handleUnlock = () => {
-
-
-    console.log(
-      "CLICKED UNLOCK"
-    );
-
 
 
     const success =
       unlockAIInsights();
 
 
-
-    console.log(
-      "UNLOCK SUCCESS:",
-      success
-    );
-
-
-
     if(!success){
 
-
       setShowEnergy(true);
-
 
       return;
 
     }
 
 
-
     refresh();
 
-
   };
-
-
 
 
 
@@ -275,42 +241,70 @@ export default function AIInsightCard({
 
 
 
-
-
-  const visibleInsights = unlocked
-
+  const visibleInsights =
+    unlocked
     ? insights.slice(0,4)
-
     : insights.slice(0,1);
 
 
 
-  const lockedCount = unlocked
-
+  const lockedCount =
+    unlocked
     ? 0
-
     : 3;
-
 
 
 
 
   return (
 
-<section className="
-relative overflow-hidden rounded-[28px]
-border border-[var(--border)]
-bg-[var(--card)]
-p-5 shadow-sm md:p-6
-">
+<section
+className="
+relative
+overflow-hidden
+rounded-[32px]
+border
+border-[var(--border)]
+bg-gradient-to-br
+from-violet-500/10
+via-[var(--card)]
+to-cyan-500/10
+p-5
+shadow-xl
+shadow-violet-500/10
+md:p-6
+"
+>
 
 
-<div className="
-pointer-events-none absolute
--right-16 -top-16
-h-40 w-40 rounded-full
-bg-[var(--primary)]/10 blur-3xl
-"/>
+<div
+className="
+pointer-events-none
+absolute
+-right-20
+-top-20
+h-52
+w-52
+rounded-full
+bg-violet-500/20
+blur-3xl
+"
+/>
+
+
+<div
+className="
+pointer-events-none
+absolute
+-bottom-20
+-left-20
+h-52
+w-52
+rounded-full
+bg-cyan-400/20
+blur-3xl
+"
+/>
 
 
 
@@ -318,45 +312,72 @@ bg-[var(--primary)]/10 blur-3xl
 
 
 
+{/* AI HEADER */}
 
 
-<div className="
-flex items-start justify-between gap-4
-">
+<div
+className="
+flex
+items-center
+justify-between
+gap-4
+"
+>
 
 
+<div
+className="
+flex
+items-center
+gap-3
+"
+>
 
-<div className="
-flex items-center gap-3
-">
 
+<div
+className="
+flex
+h-12
+w-12
+items-center
+justify-center
+rounded-2xl
+bg-gradient-to-br
+from-violet-500
+to-cyan-500
+text-white
+shadow-lg
+"
+>
 
-<div className="
-flex h-11 w-11 items-center justify-center
-rounded-2xl bg-[var(--background)] text-[var(--primary)] shadow-sm
-">
-
-<Brain size={22}/>
+<Brain size={24}/>
 
 </div>
-
 
 
 
 <div>
 
 
-<div className="
-flex items-center gap-2
-">
+<div
+className="
+flex
+items-center
+gap-2
+"
+>
 
 
-<h2 className="
-text-sm font-bold text-[var(--foreground)]
-">
-
+<h2
+className="
+font-display
+text-xl
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
 {title}
-
 </h2>
 
 
@@ -370,25 +391,64 @@ className="text-violet-500"
 
 
 
-<p className="
-mt-0.5 text-[11px]
+<p
+className="
+mt-1
+text-xs
 text-[var(--muted)]
-">
+"
+>
 
-{
-unlocked
+Your personal AI financial coach
 
-?
-
-"4 Smart CFO insights unlocked ✨"
-
-:
-
-"Your first Smart CFO insight is free today ✨"
-
-}
+</p>
 
 
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div
+className="
+flex
+items-center
+gap-2
+rounded-full
+border
+border-[var(--border)]
+bg-[var(--background)]
+px-3
+py-2
+"
+>
+
+
+<Zap
+size={14}
+className="
+fill-yellow-400
+text-yellow-500
+"
+/>
+
+
+<div>
+
+<p
+className="
+text-sm
+font-semibold
+tracking-tight
+text-[var(--foreground)]
+"
+>
+{credits}
 </p>
 
 
@@ -399,47 +459,15 @@ unlocked
 
 
 
-
-
-
-<div className="
-flex items-center gap-1.5
-rounded-full
-border border-[var(--border)]
-bg-[var(--background)]
-px-3 py-1.5
-text-xs font-bold
-text-[var(--primary)]
-shadow-sm
-">
-
-
-<Zap
-size={13}
-className="fill-cyan-400 text-cyan-500"
-/>
-
-
-{credits}
-
-
 </div>
+{/* INSIGHTS */}
 
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div className="
-mt-5 space-y-3
-">
+<div
+className="
+mt-6
+space-y-3
+"
+>
 
 
 {visibleInsights.map((insight)=>(
@@ -448,19 +476,41 @@ mt-5 space-y-3
 <div
 key={insight.id}
 className="
-rounded-2xl border border-[var(--border)]
-bg-[var(--background)]
-p-4 shadow-sm
+rounded-3xl
+border
+border-[var(--border)]
+bg-[var(--background)]/80
+p-4
+shadow-sm
+transition
+hover:shadow-md
 "
 >
 
 
-<div className="
-flex items-start gap-3
-">
+<div
+className="
+flex
+items-start
+gap-3
+"
+>
 
 
-<div className="text-xl">
+<div
+className="
+flex
+h-10
+w-10
+shrink-0
+items-center
+justify-center
+rounded-2xl
+bg-[var(--card)]
+text-xl
+shadow-sm
+"
+>
 
 {getInsightIcon(insight.type)}
 
@@ -469,22 +519,35 @@ flex items-start gap-3
 
 
 
-<div className="min-w-0">
+<div
+className="
+min-w-0
+"
+>
 
 
-<p className="
-text-sm font-bold text-[var(--foreground)]
-">
-
+<p
+className="
+text-sm
+font-semibold
+tracking-tight
+text-[var(--foreground)]
+"
+>
 {insight.title}
-
 </p>
 
 
 
-<p className="
-mt-1 text-sm leading-5 text-[var(--muted)]
-">
+
+<p
+className="
+mt-2
+text-sm
+leading-6
+text-[var(--muted)]
+"
+>
 
 {insight.message}
 
@@ -493,24 +556,53 @@ mt-1 text-sm leading-5 text-[var(--muted)]
 
 
 
+
 {insight.action && (
 
-<p className="
-mt-3
-rounded-xl
-border border-[var(--border)]
-bg-[var(--card)]
+<div
+className="
+mt-4
+rounded-2xl
+border
+border-violet-500/20
+bg-violet-500/5
 px-3
-py-2
+py-3
+"
+>
+
+<p
+className="
+text-xs
+font-semibold
+text-violet-600
+dark:text-violet-400
+"
+>
+
+💡 Next Action
+
+</p>
+
+
+<p
+className="
+mt-1
 text-xs
 text-[var(--muted)]
-">
+"
+>
 
 {insight.action}
 
 </p>
 
+
+</div>
+
 )}
+
+
 
 
 
@@ -527,53 +619,93 @@ text-[var(--muted)]
 
 
 
+</div>
 
 
 
+
+
+
+
+{/* LOCKED INSIGHTS */}
 
 
 {!unlocked && (
 
 
-<div className="
-rounded-2xl border border-[var(--border)]
-bg-[var(--background)] p-4
-">
+<div
+className="
+mt-4
+rounded-3xl
+border
+border-violet-500/20
+bg-gradient-to-br
+from-violet-500/10
+to-cyan-500/10
+p-5
+"
+>
 
 
-<div className="
-flex items-center gap-3
-">
+<div
+className="
+flex
+items-start
+gap-3
+"
+>
 
+
+<div
+className="
+rounded-2xl
+bg-violet-500/10
+p-3
+"
+>
 
 <Lock
-size={18}
-className="text-[var(--muted)]"
+size={20}
+className="
+text-violet-500
+"
 />
+
+
+</div>
 
 
 
 <div>
 
 
-<p className="
-text-sm font-bold text-[var(--foreground)]
-">
+<h3
+className="
+font-display
+text-lg
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
+{lockedCount} AI opportunities discovered
+</h3>
 
-{lockedCount} more insights locked
+
+
+<p
+className="
+mt-1
+text-xs
+leading-5
+text-[var(--muted)]
+"
+>
+
+Unlock your complete Smart CFO analysis
+and discover hidden money patterns.
 
 </p>
-
-
-
-<p className="
-text-xs text-[var(--muted)]
-">
-
-Watch 2 ads and use 10 Energy to unlock them
-
-</p>
-
 
 
 </div>
@@ -590,23 +722,22 @@ Watch 2 ads and use 10 Energy to unlock them
 
 
 
-</div>
 
-
-
-
-
-
-
+{/* ACTION BUTTON */}
 
 
 {!unlocked && (
 
 
-<div className="mt-4">
+<div
+className="
+mt-5
+"
+>
 
 
 {
+
 
 showEnergy
 
@@ -621,21 +752,51 @@ showEnergy
 
 
 <button
+
 type="button"
+
 onClick={handleUnlock}
+
 className="
-flex w-full items-center justify-center
-gap-2 rounded-xl bg-slate-950
-px-4 py-3 text-xs font-bold
-text-white transition hover:bg-slate-800
+group
+flex
+w-full
+items-center
+justify-center
+gap-2
+rounded-2xl
+bg-gradient-to-r
+from-violet-600
+to-cyan-600
+px-5
+py-4
+text-sm
+font-semibold
+text-white
+shadow-lg
+shadow-violet-500/20
+transition
+hover:scale-[1.01]
 "
+
 >
 
 
-<Sparkles size={14}/>
+<Sparkles
+size={16}
+/>
 
 
-Unlock 3 More Insights · 10 Energy
+Unlock AI Insights
+
+
+<ChevronRight
+size={16}
+className="
+transition
+group-hover:translate-x-1
+"
+/>
 
 
 </button>
@@ -644,10 +805,53 @@ Unlock 3 More Insights · 10 Energy
 }
 
 
+
 </div>
 
 
 )}
+
+
+
+
+
+{/* UNLOCKED STATE */}
+
+
+{unlocked && (
+
+
+<div
+className="
+mt-5
+flex
+items-center
+justify-center
+gap-2
+rounded-2xl
+bg-emerald-500/10
+px-4
+py-3
+text-sm
+font-bold
+text-emerald-600
+dark:text-emerald-400
+"
+>
+
+
+<Sparkles size={16}/>
+
+
+All Smart CFO insights unlocked
+
+
+</div>
+
+
+)}
+
+
 
 
 
