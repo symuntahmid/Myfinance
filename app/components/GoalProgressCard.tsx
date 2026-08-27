@@ -181,16 +181,15 @@ className="
 flex
 items-center
 gap-2
+font-body
 text-xs
 font-medium
 uppercase
-tracking-[0.12em]
+tracking-[0.14em]
 text-[var(--muted)]
 "
 >
-
 🎯 My Future Goals
-
 </p>
 
 
@@ -201,7 +200,8 @@ mt-2
 font-display
 text-3xl
 font-medium
-tracking-[-0.04em]
+tracking-[-0.055em]
+leading-tight
 text-[var(--foreground)]
 "
 >
@@ -233,9 +233,10 @@ goals.length > 1
 <p
 className="
 mt-3
+font-body
 text-sm
 font-normal
-tracking-tight
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -320,9 +321,10 @@ justify-between
 
 <span
 className="
+font-body
 text-sm
-font-medium
-tracking-tight
+font-normal
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -337,8 +339,10 @@ rounded-full
 bg-cyan-500/10
 px-3
 py-1
+font-body
 text-xs
-font-semibold
+font-medium
+tracking-tight
 text-cyan-600
 dark:text-cyan-400
 "
@@ -391,9 +395,11 @@ width:`${Math.min(progress,100)}%`,
 <p
 className="
 mt-3
+font-body
 text-xs
 font-normal
-leading-relaxed
+leading-5
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >

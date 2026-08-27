@@ -164,16 +164,17 @@ export default function WelcomeBanner() {
 
   {/* Greeting */}
 
-  <h2
+ <h2
   className="
   font-display
   max-w-full
   truncate
-  text-3xl
+  text-4xl
   font-medium
-  tracking-tight
+  tracking-[-0.045em]
+  leading-[1.05]
   text-[var(--foreground)]
-  sm:text-4xl
+  sm:text-5xl
   "
 >
   Welcome back, {displayName} 👋
@@ -195,7 +196,8 @@ export default function WelcomeBanner() {
     px-4
     py-3
     text-sm
-    leading-relaxed
+leading-6
+font-body
     transition-all
 
     ${
@@ -249,10 +251,15 @@ export default function WelcomeBanner() {
 
 
 
-      <p className="
-      font-medium
-      "
-      >
+      <p
+className="
+font-body
+text-sm
+font-normal
+leading-6
+tracking-[-0.015em]
+"
+>
 
         {journeyCompleted
 

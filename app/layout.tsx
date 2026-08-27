@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import {
   Geist,
   Geist_Mono,
-  Cormorant_Garamond,
+  Source_Serif_4,
 } from "next/font/google";
 
 import "./globals.css";
@@ -60,10 +60,10 @@ const geistMono = Geist_Mono({
 
 
 
-const cormorant = Cormorant_Garamond({
+const anthropicSerif = Source_Serif_4({
 
   variable:
-    "--font-serif",
+    "--font-anthropic-serif",
 
   subsets:
     ["latin"],
@@ -124,7 +124,7 @@ export default function RootLayout({
 
         ${geistMono.variable}
 
-        ${cormorant.variable}
+        ${anthropicSerif.variable}
 
         h-full
 

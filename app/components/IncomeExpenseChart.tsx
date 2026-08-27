@@ -66,12 +66,16 @@ function CustomTooltip({
       </p>
 
 
-      <p className="
-      mt-2
-      text-xl
-      font-bold
-      text-[var(--foreground)]
-      ">
+ <p
+className="
+mt-2
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
         {formatCurrency(
           Number(item.value)
         )}
@@ -228,36 +232,48 @@ export default function IncomeExpenseChart() {
         <div>
 
 
-          <p className="
-          text-sm
-          font-semibold
-          uppercase
-          tracking-wide
-          text-[var(--muted)]
-          ">
-            Cash Flow Overview
-          </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Cash Flow Overview
+</p>
 
 
 
-          <h2 className="
-          mt-2
-          text-3xl
-          font-bold
-          text-[var(--foreground)]
-          ">
-            Income vs Expenses
-          </h2>
+<h2
+className="
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+Income vs Expenses
+</h2>
 
 
 
-          <p className="
-          mt-2
-          font-semibold
-          text-[var(--primary)]
-          ">
-            Compare your monthly money flow
-          </p>
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--primary)]
+"
+>
+Compare your monthly money flow
+</p>
 
 
         </div>
@@ -281,18 +297,29 @@ export default function IncomeExpenseChart() {
             "
           >
 
-            <p className="
-            text-xs
-            text-[var(--muted)]
-            ">
-              Income
-            </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Income
+</p>
 
 
-            <p className="
-            font-bold
-            text-green-600
-            ">
+<p
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.04em]
+text-green-600
+"
+>
               {formatCurrency(
                 summary.income
               )}
@@ -314,18 +341,29 @@ export default function IncomeExpenseChart() {
             "
           >
 
-            <p className="
-            text-xs
-            text-[var(--muted)]
-            ">
+            <p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Expense
             </p>
 
 
-            <p className="
-            font-bold
-            text-red-600
-            ">
+           <p
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.04em]
+text-green-600
+"
+>
               {formatCurrency(
                 summary.expense
               )}

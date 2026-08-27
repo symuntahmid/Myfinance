@@ -141,10 +141,11 @@ backdrop-blur
 
 <p
 className="
+font-body
 text-xs
-font-semibold
+font-medium
 uppercase
-tracking-wider
+tracking-[0.14em]
 text-white/80
 "
 >
@@ -155,11 +156,11 @@ Daily Journey
 <h2
 className="
 font-display
-text-2xl
+text-3xl
 font-medium
-leading-tight
-tracking-tight
-sm:text-3xl
+leading-[1.05]
+tracking-[-0.05em]
+sm:text-4xl
 "
 >
 Build Better Money Habits
@@ -186,8 +187,10 @@ className="
 mb-3
 flex
 justify-between
+font-body
 text-sm
-font-semibold
+font-medium
+tracking-[-0.015em]
 "
 >
 
@@ -311,9 +314,10 @@ className="text-white/60"
 
 <p
 className="
+font-body
 text-sm
-font-semibold
-tracking-tight
+font-medium
+tracking-[-0.015em]
 sm:text-base
 "
 >
@@ -324,7 +328,9 @@ sm:text-base
 
 <p
 className="
+font-body
 text-xs
+tracking-[-0.01em]
 text-white/80
 "
 >
@@ -449,9 +455,10 @@ p-3
 <h3
 className="
 font-display
-text-xl
+text-2xl
 font-medium
-tracking-tight
+leading-tight
+tracking-[-0.045em]
 "
 >
 Daily Journey Complete!
@@ -460,7 +467,10 @@ Daily Journey Complete!
 
 <p
 className="
+font-body
 text-sm
+leading-6
+tracking-[-0.015em]
 text-white/90
 "
 >

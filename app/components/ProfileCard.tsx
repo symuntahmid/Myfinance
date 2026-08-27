@@ -289,15 +289,16 @@ gap-2
 
 <h2
 className="
-font-premium
+font-display
 truncate
-text-2xl
+text-3xl
+font-medium
+tracking-[-0.05em]
+leading-tight
 text-[var(--foreground)]
 "
 >
-
 {name}
-
 </h2>
 
 
@@ -319,7 +320,9 @@ profile.username &&
 <p
 className="
 mt-1
+font-body
 text-sm
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -367,9 +370,11 @@ justify-between
 
 <p
 className="
+font-body
 text-xs
+font-medium
 uppercase
-tracking-wider
+tracking-[0.14em]
 text-[var(--muted)]
 "
 >
@@ -380,14 +385,14 @@ Financial Level
 <p
 className="
 mt-1
-text-xl
-font-semibold
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-
 Level {level.level}
-
 </p>
 
 
@@ -402,8 +407,10 @@ rounded-full
 bg-cyan-500/10
 px-3
 py-1.5
+font-body
 text-xs
-font-semibold
+font-medium
+tracking-tight
 text-cyan-600
 dark:text-cyan-400
 "
@@ -463,7 +470,9 @@ className="
 mt-3
 flex
 justify-between
+font-body
 text-xs
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -522,8 +531,10 @@ text-cyan-500
 
 <p
 className="
+font-body
 text-sm
 leading-6
+tracking-[-0.015em]
 text-[var(--foreground)]
 "
 >

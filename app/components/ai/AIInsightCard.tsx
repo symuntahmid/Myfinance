@@ -373,7 +373,8 @@ className="
 font-display
 text-xl
 font-medium
-tracking-tight
+tracking-[-0.04em]
+leading-tight
 text-[var(--foreground)]
 "
 >
@@ -394,13 +395,13 @@ className="text-violet-500"
 <p
 className="
 mt-1
+font-body
 text-xs
+tracking-[-0.01em]
 text-[var(--muted)]
 "
 >
-
 Your personal AI financial coach
-
 </p>
 
 
@@ -442,9 +443,10 @@ text-yellow-500
 
 <p
 className="
-text-sm
-font-semibold
-tracking-tight
+font-display
+text-lg
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
@@ -528,9 +530,10 @@ min-w-0
 
 <p
 className="
-text-sm
-font-semibold
-tracking-tight
+font-display
+text-base
+font-medium
+tracking-[-0.035em]
 text-[var(--foreground)]
 "
 >
@@ -543,8 +546,10 @@ text-[var(--foreground)]
 <p
 className="
 mt-2
+font-body
 text-sm
 leading-6
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -684,7 +689,8 @@ className="
 font-display
 text-lg
 font-medium
-tracking-tight
+tracking-[-0.04em]
+leading-tight
 text-[var(--foreground)]
 "
 >
@@ -771,7 +777,8 @@ to-cyan-600
 px-5
 py-4
 text-sm
-font-semibold
+font-medium
+tracking-[-0.01em]
 text-white
 shadow-lg
 shadow-violet-500/20

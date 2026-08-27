@@ -77,23 +77,32 @@ function CustomTooltip({
       </p>
 
 
-      <p className="
-      mt-2
-      text-xl
-      font-bold
-      text-[var(--foreground)]
-      ">
+<p
+className="
+mt-2
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
         {formatCurrency(
           Number(item.value)
         )}
       </p>
 
 
-      <p className="
-      mt-1
-      font-semibold
-      text-[var(--primary)]
-      ">
+     <p
+className="
+mt-1
+font-body
+text-sm
+font-medium
+tracking-tight
+text-[var(--primary)]
+"
+>
         {item.payload.percent.toFixed(1)}%
       </p>
 
@@ -277,34 +286,46 @@ export default function InvestmentPieChart() {
         <div>
 
 
-          <p className="
-          text-sm
-          font-semibold
-          uppercase
-          tracking-wide
-          text-[var(--muted)]
-          ">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
             Investment Allocation
           </p>
 
 
 
-          <h2 className="
-          mt-2
-          text-3xl
-          font-bold
-          text-[var(--foreground)]
-          ">
+<h2
+className="
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Portfolio Diversification
           </h2>
 
 
 
-          <p className="
-          mt-2
-          font-semibold
-          text-[var(--primary)]
-          ">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--primary)]
+"
+>
             {portfolio.totalAssets} Assets • {data.length} Categories
           </p>
 
@@ -329,29 +350,44 @@ export default function InvestmentPieChart() {
             "
           >
 
-            <p className="
-            text-xs
-            uppercase
-            text-[var(--muted)]
-            ">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Largest Holding
             </p>
 
 
-            <h3 className="
-            mt-1
-            font-bold
-            text-[var(--foreground)]
-            ">
+<h3
+className="
+mt-1
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
+text-[var(--foreground)]
+"
+>
               {largestHolding.name}
             </h3>
 
 
-            <p className="
-            mt-1
-            font-semibold
-            text-[var(--primary)]
-            ">
+           <p
+className="
+mt-1
+font-body
+text-sm
+font-medium
+tracking-tight
+text-[var(--primary)]
+"
+>
               {largestHolding.percent.toFixed(1)}%
             </p>
 
@@ -376,15 +412,19 @@ export default function InvestmentPieChart() {
 
         ?
 
-        <div className="
-        flex
-        h-full
-        items-center
-        justify-center
-        text-[var(--muted)]
-        ">
-          No investments yet
-        </div>
+<div
+className="
+flex
+h-full
+items-center
+justify-center
+font-body
+text-sm
+text-[var(--muted)]
+"
+>
+No investments yet
+</div>
 
 
         :

@@ -164,7 +164,7 @@ body {
 .font-premium {
 
   font-family:
-    var(--font-serif),
+    var(--font-anthropic-serif),
     serif;
 
 
@@ -173,7 +173,10 @@ body {
 
 
   font-weight:
-    600;
+    500;
+
+  line-height:
+    1.1;
 
 }
 
@@ -193,11 +196,13 @@ h2,
 h3 {
 
   letter-spacing:
-    -0.025em;
-
+    -0.035em;
 
   text-wrap:
     balance;
+
+  font-weight:
+    600;
 
 }
 
@@ -262,17 +267,20 @@ h3 {
 .font-display {
 
   font-family:
-    var(--font-serif),
+    var(--font-anthropic-serif),
     serif;
+
 
   font-weight:
     500;
 
+
   letter-spacing:
-    -0.04em;
+    -0.045em;
+
 
   line-height:
-    0.95;
+    1.05;
 
 }
 

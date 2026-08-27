@@ -103,20 +103,7 @@ px-4 md:px-0
 
 <div>
 
-<h1 className="
-text-4xl font-bold
-tracking-tight
-text-[var(--foreground)]
-">
-My Money
-</h1>
-
-
-<p className="
-mt-2 text-[var(--muted)]
-">
-Good morning, Symun 👋
-</p>
+{/* Header removed */}
 
 <div className="
 mt-6 rounded-3xl
@@ -127,16 +114,28 @@ to-cyan-500
 p-7 text-white shadow-xl
 ">
 
-<h2 className="
-text-xl md:text-2xl font-bold
-">
+<h2
+className="
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
+md:text-3xl
+"
+>
 You're saving 18% more than last month.
 </h2>
 
 
-<p className="
-mt-2 text-white/80
-">
+<p
+className="
+mt-3
+font-body
+text-sm
+leading-relaxed
+text-white/80
+"
+>
 Keep it up. You're building strong financial habits.
 </p>
 
@@ -161,19 +160,30 @@ shadow-2xl
 ">
 
 
-<p className="
-text-xs uppercase
-tracking-[0.3em]
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.25em]
 text-white/50
-">
+"
+>
 Current Balance
 </p>
 
 
-<h2 className="
-mt-4 text-4xl
-md:text-6xl font-bold
-">
+<h2
+className="
+mt-4
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+md:text-6xl
+"
+>
 {formatCurrency(summary.availableCash)}
 </h2>
 
@@ -235,19 +245,30 @@ hover:shadow-xl
 "
 >
 
-<p className="
-text-xs uppercase
-tracking-[0.2em]
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
-">
+"
+>
 {item.title}
 </p>
 
 
-<h3 className={`
-mt-4 text-4xl font-bold
+<h3
+className={`
+mt-4
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
 ${item.color}
-`}>
+`}
+>
 {item.value}
 </h3>
 
@@ -436,9 +457,15 @@ mb-8 flex items-center justify-between
 ">
 
 
-<h2 className="
-text-xl font-bold md:text-2xl
-">
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
 Recent Activity
 </h2>
 
@@ -510,10 +537,15 @@ hover:bg-[var(--card)]
 
 <div>
 
-<p className="
-font-semibold
+<p
+className="
+font-body
+text-sm
+font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 {transaction.source}
 </p>
 
@@ -548,7 +580,10 @@ text-sm text-[var(--muted)]
 
 <p
 className={`
-text-lg font-bold
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
 ${
 transaction.type==="Income"
 ?"text-green-600"

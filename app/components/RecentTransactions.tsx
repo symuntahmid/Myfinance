@@ -169,9 +169,10 @@ hover:opacity-80
 
           <p
 className="
-text-lg
+font-display
+text-2xl
 font-medium
-tracking-tight
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
@@ -179,11 +180,13 @@ text-[var(--foreground)]
 </p>
 
 
-          <p
+<p
 className="
 mt-2
+font-body
 text-sm
 leading-relaxed
+tracking-[-0.015em]
 text-[var(--muted)]
 "
 >
@@ -209,25 +212,65 @@ text-[var(--muted)]
               "
             >
 
-              <th className="py-3 text-left text-sm font-medium
-tracking-tight text-[var(--muted)]">
-                Type
-              </th>
+<th
+className="
+py-3
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+  Type
+</th>
 
-              <th className="py-3 text-left text-sm font-medium
-tracking-tight text-[var(--muted)]">
+              <th
+className="
+py-3
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
                 Source
               </th>
 
-              <th className="py-3 text-left text-sm font-medium
-tracking-tight text-[var(--muted)]">
+              <th
+className="
+py-3
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
                 Category
               </th>
 
-              <th className="py-3 text-right text-sm font-medium
-tracking-tight text-[var(--muted)]">
-                Amount
-              </th>
+<th
+className="
+py-3
+text-right
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Amount
+</th>
 
             </tr>
 
@@ -286,10 +329,12 @@ tracking-tight text-[var(--muted)]">
 
 
 
-                <td
+<td
 className="
+font-body
+text-sm
 font-normal
-tracking-tight
+tracking-[-0.015em]
 text-[var(--foreground)]
 "
 >
@@ -300,9 +345,14 @@ text-[var(--foreground)]
 
 
 
-                <td className="
-                text-[var(--muted)]
-                ">
+                <td
+className="
+font-body
+text-sm
+tracking-[-0.015em]
+text-[var(--muted)]
+"
+>
 
                   {transaction.category || "-"}
 
@@ -314,9 +364,10 @@ text-[var(--foreground)]
                 <td
                   className={`
                   text-right
-text-lg
+font-display
+text-2xl
 font-medium
-tracking-tight
+tracking-[-0.04em]
 
                   ${
                     transaction.type === "Income"
