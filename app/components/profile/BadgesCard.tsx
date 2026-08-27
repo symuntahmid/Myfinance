@@ -49,13 +49,16 @@ function BadgesCard() {
       <div className="flex items-center justify-between">
 
 
-        <h2 className="
-          text-sm
-          font-semibold
-          text-[var(--foreground)]
-        ">
-          Your Badges
-        </h2>
+        <h2
+className="
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
+Your Badges
+</h2>
 
 
 
@@ -66,7 +69,8 @@ function BadgesCard() {
           items-center
           gap-1
           text-xs
-          font-medium
+font-normal
+tracking-tight
           text-[var(--muted)]
           transition
           hover:text-[var(--foreground)]
@@ -117,22 +121,29 @@ function BadgesCard() {
 
 
 
-              <p className="
-                mt-2
-                text-xs
-                font-semibold
-                text-[var(--foreground)]
-              ">
+              <p
+className="
+mt-2
+text-xs
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
                 {badge.name}
               </p>
 
 
 
-              <p className="
-                mt-1
-                text-[10px]
-                text-purple-400
-              ">
+              <p
+className="
+mt-1
+text-[10px]
+font-normal
+tracking-tight
+text-purple-400
+"
+>
                 {badge.requirement}
               </p>
 
@@ -174,14 +185,17 @@ function BadgesCard() {
 
 
 
-            <p className="
-              mt-3
-              text-sm
-              font-semibold
-              text-[var(--foreground)]
-            ">
-              No badges unlocked yet
-            </p>
+            <p
+className="
+mt-3
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
+No badges unlocked yet
+</p>
 
 
 
@@ -259,23 +273,27 @@ function BadgesCard() {
           ">
 
 
-            <h3 className="
-              text-sm
-              font-bold
-              text-[var(--foreground)]
-            ">
+            <h3
+className="
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
               Badge Progress
             </h3>
 
 
 
             <span className="
-              text-xs
-              font-semibold
-              text-[var(--muted)]
-            ">
-              {unlockedBadges.length}/{badges.length}
-            </span>
+  text-xs
+  font-medium
+  tracking-tight
+  text-[var(--muted)]
+">
+  {unlockedBadges.length}/{badges.length}
+</span>
 
 
           </div>
@@ -283,12 +301,15 @@ function BadgesCard() {
 
 
 
-          <p className="
-            mt-1
-            text-sm
-            font-semibold
-            text-[var(--foreground)]
-          ">
+          <p
+className="
+mt-2
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
 
             {unlockedBadges.length === 0
               ? "Your journey starts here."
@@ -304,7 +325,9 @@ function BadgesCard() {
           <p className="
             mt-1
             text-[10px]
-            text-[var(--muted)]
+font-normal
+tracking-tight
+text-[var(--muted)]
           ">
             Continue your financial journey to unlock more.
           </p>

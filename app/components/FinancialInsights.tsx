@@ -82,25 +82,31 @@ export default function FinancialInsights() {
 
 
       <h2
-        className="
-        text-2xl
-        font-bold
-        text-[var(--foreground)]
-        "
-      >
-        Financial Insights
-      </h2>
+  className="
+  font-display
+  text-3xl
+  font-medium
+  tracking-[-0.04em]
+  text-[var(--foreground)]
+  "
+>
+  Financial Insights
+</h2>
 
 
 
       <p
-        className="
-        mt-2
-        text-[var(--muted)]
-        "
-      >
-        Personalized observations based on your finances.
-      </p>
+  className="
+  mt-3
+  text-sm
+  font-normal
+  leading-relaxed
+  tracking-tight
+  text-[var(--muted)]
+  "
+>
+  Personalized observations based on your finances.
+</p>
 
 
 
@@ -121,15 +127,17 @@ export default function FinancialInsights() {
             key={index}
 
             className="
-            rounded-2xl
-            bg-[var(--background)]
-            border
-            border-[var(--border)]
-            p-4
-            text-sm
-            leading-6
-            text-[var(--foreground)]
-            "
+rounded-2xl
+bg-[var(--background)]
+border
+border-[var(--border)]
+p-4
+text-sm
+font-normal
+leading-7
+tracking-tight
+text-[var(--foreground)]
+"
 
           >
 

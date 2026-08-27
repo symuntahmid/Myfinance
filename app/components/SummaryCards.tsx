@@ -121,13 +121,14 @@ export default function SummaryCards() {
   return (
 
     <div
-      className="
-      mt-10
-      grid
-      grid-cols-2
-      gap-6
-      "
-    >
+  className="
+  mt-8
+  grid
+  grid-cols-2
+  gap-4
+  md:gap-6
+  "
+>
 
 
       <StatCard

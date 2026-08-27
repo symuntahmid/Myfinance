@@ -117,25 +117,30 @@ export default function RecentTransactions() {
       ">
 
 
-        <h2 className="
-        text-2xl
-        font-bold
-        text-[var(--foreground)]
-        ">
-          Recent Transactions
-        </h2>
+        <h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+  Recent Transactions
+</h2>
 
 
 
         <Link
           href="/money/transactions"
           className="
-          text-sm
-          font-semibold
-          text-[var(--primary)]
-          transition
-          hover:opacity-80
-          "
+text-sm
+font-medium
+tracking-tight
+text-[var(--primary)]
+transition
+hover:opacity-80
+"
         >
           View All →
         </Link>
@@ -162,19 +167,26 @@ export default function RecentTransactions() {
           "
         >
 
-          <p className="
-          text-lg
-          font-semibold
-          text-[var(--foreground)]
-          ">
-            No transactions yet
-          </p>
+          <p
+className="
+text-lg
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
+  No transactions yet
+</p>
 
 
-          <p className="
-          mt-2
-          text-[var(--muted)]
-          ">
+          <p
+className="
+mt-2
+text-sm
+leading-relaxed
+text-[var(--muted)]
+"
+>
             Your latest transactions will appear here.
           </p>
 
@@ -197,19 +209,23 @@ export default function RecentTransactions() {
               "
             >
 
-              <th className="py-3 text-left text-sm font-semibold text-[var(--muted)]">
+              <th className="py-3 text-left text-sm font-medium
+tracking-tight text-[var(--muted)]">
                 Type
               </th>
 
-              <th className="py-3 text-left text-sm font-semibold text-[var(--muted)]">
+              <th className="py-3 text-left text-sm font-medium
+tracking-tight text-[var(--muted)]">
                 Source
               </th>
 
-              <th className="py-3 text-left text-sm font-semibold text-[var(--muted)]">
+              <th className="py-3 text-left text-sm font-medium
+tracking-tight text-[var(--muted)]">
                 Category
               </th>
 
-              <th className="py-3 text-right text-sm font-semibold text-[var(--muted)]">
+              <th className="py-3 text-right text-sm font-medium
+tracking-tight text-[var(--muted)]">
                 Amount
               </th>
 
@@ -270,10 +286,13 @@ export default function RecentTransactions() {
 
 
 
-                <td className="
-                font-medium
-                text-[var(--foreground)]
-                ">
+                <td
+className="
+font-normal
+tracking-tight
+text-[var(--foreground)]
+"
+>
 
                   {transaction.source}
 
@@ -295,8 +314,9 @@ export default function RecentTransactions() {
                 <td
                   className={`
                   text-right
-                  text-lg
-                  font-bold
+text-lg
+font-medium
+tracking-tight
 
                   ${
                     transaction.type === "Income"

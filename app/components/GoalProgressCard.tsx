@@ -182,9 +182,9 @@ flex
 items-center
 gap-2
 text-xs
-font-bold
+font-medium
 uppercase
-tracking-wider
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
@@ -198,8 +198,10 @@ text-[var(--muted)]
 <h2
 className="
 mt-2
-text-2xl
-font-black
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
@@ -230,8 +232,10 @@ goals.length > 1
 
 <p
 className="
-mt-2
+mt-3
 text-sm
+font-normal
+tracking-tight
 text-[var(--muted)]
 "
 >
@@ -317,7 +321,8 @@ justify-between
 <span
 className="
 text-sm
-font-semibold
+font-medium
+tracking-tight
 text-[var(--muted)]
 "
 >
@@ -333,7 +338,7 @@ bg-cyan-500/10
 px-3
 py-1
 text-xs
-font-black
+font-semibold
 text-cyan-600
 dark:text-cyan-400
 "
@@ -387,7 +392,8 @@ width:`${Math.min(progress,100)}%`,
 className="
 mt-3
 text-xs
-font-medium
+font-normal
+leading-relaxed
 text-[var(--muted)]
 "
 >

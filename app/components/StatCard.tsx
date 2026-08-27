@@ -146,9 +146,9 @@ gap-4
 <p
 className="
 text-xs
-font-semibold
+font-medium
 uppercase
-tracking-wider
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
@@ -160,11 +160,12 @@ text-[var(--muted)]
 <h2
 className="
 mt-3
-text-2xl
-font-black
-tracking-tight
+text-3xl
+font-display
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-sm:text-3xl
+sm:text-4xl
 "
 >
 {value}
@@ -174,9 +175,10 @@ sm:text-3xl
 
 <p
 className="
-mt-2
+mt-3
 text-xs
-font-medium
+font-normal
+tracking-tight
 text-[var(--muted)]
 "
 >

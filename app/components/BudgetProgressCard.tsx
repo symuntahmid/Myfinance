@@ -107,13 +107,17 @@ export default function BudgetProgressCard({
         ">
 
 
-          <h2 className="
-          text-2xl
-          font-bold
-          text-[var(--foreground)]
-          ">
-            Monthly Budget
-          </h2>
+          <h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+  Monthly Budget
+</h2>
 
 
 
@@ -124,8 +128,9 @@ export default function BudgetProgressCard({
             px-3
             py-1
             text-sm
-            font-semibold
-            text-[var(--primary)]
+font-medium
+tracking-tight
+text-[var(--primary)]
             "
           >
             {percentage.toFixed(0)}% Used
@@ -141,13 +146,17 @@ export default function BudgetProgressCard({
         <div className="mt-6">
 
 
-          <div className="
-          mb-2
-          flex
-          justify-between
-          text-sm
-          text-[var(--muted)]
-          ">
+          <div
+className="
+mb-3
+flex
+justify-between
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
 
 
             <span>
@@ -212,86 +221,103 @@ export default function BudgetProgressCard({
 
           <div>
 
-            <p className="
-            text-sm
-            text-[var(--muted)]
-            ">
-              Budget
-            </p>
+  <p
+    className="
+    text-sm
+    font-normal
+    tracking-tight
+    text-[var(--muted)]
+    "
+  >
+    Budget
+  </p>
 
 
-            <p className="
-            mt-2
-            text-xl
-            font-bold
-            text-[var(--foreground)]
-            ">
-              {formatCurrency(budget)}
-            </p>
+  <p
+    className="
+    mt-2
+    text-2xl
+    font-display
+    font-medium
+    tracking-[-0.03em]
+    text-[var(--foreground)]
+    "
+  >
+    {formatCurrency(budget)}
+  </p>
 
-
-          </div>
-
-
-
-
-
-          <div>
-
-            <p className="
-            text-sm
-            text-[var(--muted)]
-            ">
-              Spent
-            </p>
-
-
-            <p className="
-            mt-2
-            text-xl
-            font-bold
-            text-red-500
-            ">
-              {formatCurrency(spent)}
-            </p>
-
-
-          </div>
+</div>
 
 
 
 
 
-          <div>
+<div>
 
-            <p className="
-            text-sm
-            text-[var(--muted)]
-            ">
-              Remaining
-            </p>
-
-
-
-            <p
-              className={`
-              mt-2
-              text-xl
-              font-bold
-              ${
-                remaining >= 0
-                ? "text-green-600"
-                : "text-red-600"
-              }
-              `}
-            >
-
-              {formatCurrency(remaining)}
-
-            </p>
+  <p
+    className="
+    text-sm
+    font-normal
+    tracking-tight
+    text-[var(--muted)]
+    "
+  >
+    Spent
+  </p>
 
 
-          </div>
+  <p
+    className="
+    mt-2
+    text-2xl
+    font-display
+    font-medium
+    tracking-[-0.03em]
+    text-red-500
+    "
+  >
+    {formatCurrency(spent)}
+  </p>
+
+</div>
+
+
+
+
+
+<div>
+
+  <p
+    className="
+    text-sm
+    font-normal
+    tracking-tight
+    text-[var(--muted)]
+    "
+  >
+    Remaining
+  </p>
+
+
+
+  <p
+    className={`
+    mt-2
+    text-2xl
+    font-display
+    font-medium
+    tracking-[-0.03em]
+    ${
+      remaining >= 0
+      ? "text-green-600"
+      : "text-red-600"
+    }
+    `}
+  >
+    {formatCurrency(remaining)}
+  </p>
+
+</div>
 
 
         </div>
