@@ -132,31 +132,46 @@ export default function PortfolioGrowthChart() {
       ">
 
 
-        <h2 className="
-          mb-2
-          text-2xl
-          font-bold
-          text-[var(--foreground)]
-        ">
-          Portfolio Growth
-        </h2>
+<h2
+className="
+mb-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+  Portfolio Growth
+</h2>
 
 
-        <p className="
-          mb-6
-          text-[var(--muted)]
-        ">
-          Track the growth of your investment portfolio.
-        </p>
+<p
+className="
+mb-6
+font-body
+text-sm
+leading-relaxed
+tracking-tight
+text-[var(--muted)]
+"
+>
+  Track the growth of your investment portfolio.
+</p>
 
 
-        <div className="
-          flex
-          h-64
-          items-center
-          justify-center
-          text-[var(--muted)]
-        ">
+<div
+className="
+flex
+h-64
+items-center
+justify-center
+font-body
+text-sm
+tracking-tight
+text-[var(--muted)]
+"
+>
           No portfolio history yet.
         </div>
 
@@ -184,22 +199,32 @@ export default function PortfolioGrowthChart() {
     ">
 
 
-      <h2 className="
-        mb-2
-        text-2xl
-        font-bold
-        text-[var(--foreground)]
-      ">
-        Portfolio Growth
-      </h2>
+<h2
+className="
+mb-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+  Portfolio Growth
+</h2>
 
 
-      <p className="
-        mb-6
-        text-[var(--muted)]
-      ">
-        Track the growth of your investment portfolio.
-      </p>
+<p
+className="
+mb-6
+font-body
+text-sm
+leading-relaxed
+tracking-tight
+text-[var(--muted)]
+"
+>
+  Track the growth of your investment portfolio.
+</p>
 
 
 

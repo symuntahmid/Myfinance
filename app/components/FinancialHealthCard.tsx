@@ -58,15 +58,17 @@ export default function FinancialHealthCard({
         />
 
 
-        <h2
-          className="
-          text-2xl
-          font-bold
-          text-[var(--foreground)]
-          "
-        >
-          Financial Health
-        </h2>
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+  Financial Health
+</h2>
 
 
       </div>
@@ -81,27 +83,33 @@ export default function FinancialHealthCard({
       <div className="mt-8 text-center">
 
 
-        <div
-          className="
-          text-6xl
-          font-extrabold
-          text-[var(--foreground)]
-          "
-        >
-          {score}
-        </div>
+<div
+className="
+font-display
+text-7xl
+font-medium
+tracking-[-0.05em]
+text-[var(--foreground)]
+"
+>
+  {score}
+</div>
 
 
 
-        <p
-          className="
-          mt-2
-          text-lg
-          text-[var(--muted)]
-          "
-        >
-          {label}
-        </p>
+<p
+className="
+mt-3
+font-body
+text-sm
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+  {label}
+</p>
 
 
 
@@ -147,14 +155,17 @@ export default function FinancialHealthCard({
       {/* Description */}
 
 
-      <p
-        className="
-        mt-4
-        text-center
-        text-sm
-        text-[var(--muted)]
-        "
-      >
+<p
+className="
+mt-5
+text-center
+font-body
+text-sm
+leading-relaxed
+tracking-tight
+text-[var(--muted)]
+"
+>
         Based on your actual income, expenses, savings,
         investments and financial activity this month.
       </p>

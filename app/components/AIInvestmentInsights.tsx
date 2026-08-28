@@ -98,23 +98,30 @@ className="h-6 w-6 text-cyan-700"
 
 <div>
 
-<h2 className="
-text-2xl
-font-bold
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-">
-
+"
+>
 AI Portfolio Insights
-
 </h2>
 
 
-<p className="
+<p
+className="
+mt-2
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
-
+"
+>
 Personalized recommendations based on your portfolio.
-
 </p>
 
 
@@ -156,26 +163,40 @@ text-green-600
 
 <div>
 
-<h3 className="
-font-semibold
+<h3
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
 text-[var(--foreground)]
-">
+"
+>
 
 Portfolio Health
 
 </h3>
 
 
-<p className="
+<p
+className="
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 Your current portfolio health is
 
-<span className="
-font-bold
+<span
+className="
+font-body
+font-semibold
 text-cyan-700
-">
+"
+>
 
 {" "}
 {health}
@@ -216,19 +237,30 @@ text-cyan-600
 
 <div>
 
-<h3 className="
-font-semibold
+<h3
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
 text-[var(--foreground)]
-">
+"
+>
 
 Largest Holding
 
 </h3>
 
 
-<p className="
+<p
+className="
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 {
 largestAsset
@@ -266,20 +298,31 @@ p-5
 ">
 
 
-<h3 className="
-font-semibold
+<h3
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
 text-[var(--foreground)]
-">
+"
+>
 
 AI Recommendation
 
 </h3>
 
 
-<p className="
-mt-2
+<p
+className="
+mt-3
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 {
 largestPercentage > 70

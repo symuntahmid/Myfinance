@@ -140,19 +140,30 @@ shadow-sm
 ">
 
 
-<h2 className="
-text-2xl
-font-bold
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-">
+"
+>
 Portfolio Allocation
 </h2>
 
 
-<p className="
-mt-2 mb-6
+<p
+className="
+mt-3
+mb-6
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Distribution of your investments.
 </p>
 
@@ -334,13 +345,16 @@ COLORS[index % COLORS.length],
 
 
 
-<span className="
+<span
+className="
+font-body
+text-sm
 font-medium
+tracking-tight
 text-[var(--foreground)]
-">
-
+"
+>
 {item.name}
-
 </span>
 
 
@@ -355,26 +369,32 @@ text-[var(--foreground)]
 <div className="text-right">
 
 
-<div className="
-font-semibold
+<div
+className="
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
 text-[var(--foreground)]
-">
-
+"
+>
 {formatCurrency(
   item.value
 )}
-
 </div>
 
 
 
-<div className="
-text-sm
+<div
+className="
+font-body
+text-xs
+font-medium
+tracking-tight
 text-[var(--muted)]
-">
-
+"
+>
 {percentage.toFixed(1)}%
-
 </div>
 
 

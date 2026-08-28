@@ -219,24 +219,30 @@ gap-4
 
 <div>
 
-<h1 className="
-text-4xl
-font-bold
+<h1
+className="
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
 text-[var(--foreground)]
-">
-
+"
+>
 My Investments
-
 </h1>
 
 
-<p className="
-mt-2
+<p
+className="
+mt-3
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
-
+"
+>
 Manage all your investments in one place.
-
 </p>
 
 
@@ -259,7 +265,8 @@ rounded-2xl
 bg-[var(--primary)]
 px-5
 py-3
-font-semibold
+font-body
+font-medium
 text-white
 hover:opacity-90
 "
@@ -283,7 +290,8 @@ rounded-2xl
 bg-red-600
 px-5
 py-3
-font-semibold
+font-body
+font-medium
 text-white
 hover:bg-red-700
 "
@@ -318,20 +326,31 @@ p-6
 shadow-sm
 ">
 
-<p className="
-text-sm
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
-">
+"
+>
 
 Total Invested
 
 </p>
 
-<h2 className="
-mt-2
-text-3xl
-font-bold
-">
+<h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
 
 {formatCurrency(summary.invested)}
 
@@ -347,20 +366,31 @@ p-6
 shadow-sm
 ">
 
-<p className="
-text-sm
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
-">
+"
+>
 
 Current Value
 
 </p>
 
-<h2 className="
-mt-2
-text-3xl
-font-bold
-">
+<h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
 
 {formatCurrency(summary.current)}
 
@@ -376,22 +406,38 @@ p-6
 shadow-sm
 ">
 
-<p className="
-text-sm
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
-">
+"
+>
 
 Total Profit
 
 </p>
 
-<h2 className={`mt-2 text-3xl font-bold ${
+<h2
+className={`
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+
+${
 summary.profit >= 0
 ?
 "text-green-600"
 :
 "text-red-600"
-}`}>
+}
+`}
+>
 
 {summary.profit >= 0 ? "+" : ""}
 
@@ -410,21 +456,31 @@ shadow-sm
 ">
 
 
-<p className="
-text-sm
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
-">
+"
+>
 
 Portfolio Return
 
 </p>
 
-<h2 className="
-mt-2
-text-3xl
-font-bold
+<h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
 text-cyan-600
-">
+"
+>
 
 {summary.returnPercentage.toFixed(2)}%
 
@@ -457,19 +513,28 @@ py-20
 text-center
 ">
 
-<h3 className="
-text-2xl
-font-bold
-">
-
+<h3
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
 No Investments Yet
-
 </h3>
 
-<p className="
+<p
+className="
 mt-3
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 Start tracking your portfolio by adding your first investment.
 
@@ -487,7 +552,8 @@ rounded-2xl
 bg-[var(--primary)]
 px-6
 py-3
-font-semibold
+font-body
+font-medium
 text-white
 "
 
@@ -514,31 +580,108 @@ border-[var(--border)]
 ">
 
 
-<th className="py-4 text-left">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Investment
 </th>
 
-<th className="py-4 text-left">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Type
 </th>
 
-<th className="py-4 text-right">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Invested
 </th>
 
-<th className="py-4 text-right">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Current
 </th>
 
-<th className="py-4 text-right">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Profit
 </th>
 
-<th className="py-4 text-right">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Return
 </th>
 
-<th className="py-4 text-right">
+<th
+className="
+py-4
+text-left
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
 Actions
 </th>
 
@@ -579,34 +722,68 @@ last:border-0
 
 >
 
-<td className="
+<td
+className="
 py-5
-font-semibold
-">
+font-body
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
 
 {investment.name}
 
 </td>
 
-<td>
-
+<td
+className="
+font-body
+text-sm
+tracking-tight
+text-[var(--foreground)]
+"
+>
 {investment.type}
-
 </td>
 
-<td className="text-right">
+<td
+className="
+text-right
+font-body
+text-sm
+tracking-tight
+text-[var(--foreground)]
+"
+>
 
 {formatCurrency(investment.investedAmount)}
 
 </td>
 
-<td className="text-right">
+<td
+className="
+text-right
+font-body
+text-sm
+tracking-tight
+text-[var(--foreground)]
+"
+>
 
 {formatCurrency(investment.currentValue)}
 
 </td>
 
-<td className={`text-right font-semibold ${
+<td className={`
+text-right
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
+
+${
 profit >= 0
 ?
 "text-green-600"
@@ -621,7 +798,14 @@ profit >= 0
 </td>
 
 
-<td className={`text-right font-semibold ${
+<td className={`
+text-right
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
+
+${
 percentage >= 0
 ?
 "text-green-600"

@@ -153,12 +153,28 @@ export default function ReportsPage() {
 
       <div>
 
-        <h1 className="text-4xl font-bold">
-          Monthly Report
-        </h1>
+<h1
+className="
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+text-[var(--foreground)]
+"
+>
+  Monthly Report
+</h1>
 
 
-        <p className="mt-2 text-[var(--muted)]">
+<p
+className="
+mt-3
+font-body
+text-sm
+tracking-tight
+text-[var(--muted)]
+"
+>
           A clear picture of your financial performance this month.
         </p>
 
@@ -180,12 +196,29 @@ export default function ReportsPage() {
 
         <div className="mb-4">
 
-          <h2 className="text-2xl font-bold">
+  <h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Monthly Overview
           </h2>
 
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
             How your money moved this month.
           </p>
 
@@ -198,17 +231,44 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
-              Income
-            </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Income
+</p>
 
-            <h3 className="mt-2 text-3xl font-bold text-green-600">
+<h3
+className="
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-green-600
+"
+>
               {formatMoney(report.income)}
             </h3>
 
-            <p className="mt-2 text-xs text-[var(--muted)]">
-              Money received this month
-            </p>
+<p
+className="
+mt-2
+font-body
+text-xs
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
+  Money received this month
+</p>
 
           </div>
 
@@ -217,15 +277,42 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Expenses
             </p>
 
-            <h3 className="mt-2 text-3xl font-bold text-red-600">
+<h3
+className="
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-red-600
+"
+>
               {formatMoney(report.expense)}
             </h3>
 
-            <p className="mt-2 text-xs text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-xs
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
               Money spent this month
             </p>
 
@@ -236,15 +323,42 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Invested This Month
             </p>
 
-            <h3 className="mt-2 text-3xl font-bold text-indigo-600">
+<h3
+className="
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-indigo-600
+"
+>
               {formatMoney(report.investmentSpent)}
             </h3>
 
-            <p className="mt-2 text-xs text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-xs
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
               Money allocated to investments
             </p>
 
@@ -255,23 +369,48 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Net Cash Flow
             </p>
 
 
-            <h3
-              className={`mt-2 text-3xl font-bold ${
-                report.netCashFlow >= 0
-                  ? "text-teal-600"
-                  : "text-red-600"
-              }`}
-            >
-              {formatMoney(report.netCashFlow)}
-            </h3>
+<h3
+className={`
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+${
+report.netCashFlow >= 0
+? "text-teal-600"
+: "text-red-600"
+}
+`}
+>
+  {formatMoney(report.netCashFlow)}
+</h3>
 
 
-            <p className="mt-2 text-xs text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-xs
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
               Cash remaining after this month's activity
             </p>
 
@@ -296,12 +435,29 @@ export default function ReportsPage() {
 
         <div className="mb-4">
 
-          <h2 className="text-2xl font-bold">
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Cash Flow
           </h2>
 
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
             Your income, spending, investments, and transfers.
           </p>
 
@@ -317,12 +473,30 @@ export default function ReportsPage() {
 
               <div>
 
-                <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
                   Available Cash
                 </p>
 
 
-                <h3 className="mt-2 text-4xl font-bold">
+<h3
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
                   {formatMoney(report.availableCash)}
                 </h3>
 
@@ -390,17 +564,44 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Savings Rate
             </p>
 
 
-            <h3 className="mt-3 text-5xl font-bold text-teal-600">
+<h3
+className="
+mt-3
+font-display
+text-6xl
+font-medium
+tracking-[-0.05em]
+text-teal-600
+"
+>
               {Math.max(report.savingsRate, 0).toFixed(1)}%
             </h3>
 
 
-            <p className="mt-3 text-sm text-[var(--muted)]">
+<p
+className="
+mt-3
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
               Percentage of income remaining after this month's activity.
             </p>
 
@@ -436,12 +637,29 @@ export default function ReportsPage() {
 
         <div className="mb-4">
 
-          <h2 className="text-2xl font-bold">
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Investment Performance
           </h2>
 
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
             Current value and performance of your portfolio.
           </p>
 
@@ -455,11 +673,29 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Portfolio Value
             </p>
 
-            <h3 className="mt-2 text-3xl font-bold text-indigo-600">
+<h3
+className="
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-indigo-600
+"
+>
               {formatMoney(report.investment)}
             </h3>
 
@@ -470,12 +706,30 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Total Invested
             </p>
 
 
-            <h3 className="mt-2 text-3xl font-bold">
+<h3
+className="
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
               {formatMoney(report.investedAmount)}
             </h3>
 
@@ -487,21 +741,37 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Profit / Loss
             </p>
 
 
-            <h3
-              className={`mt-2 text-3xl font-bold ${
-                investmentProfitPositive
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {investmentProfitPositive ? "+" : ""}
-              {formatMoney(report.investmentProfit)}
-            </h3>
+<h3
+className={`
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+${
+investmentProfitPositive
+? "text-green-600"
+: "text-red-600"
+}
+`}
+>
+  {investmentProfitPositive ? "+" : ""}
+  {formatMoney(report.investmentProfit)}
+</h3>
 
 
           </div>
@@ -511,21 +781,37 @@ export default function ReportsPage() {
 
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
-            <p className="text-sm text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
               Return
             </p>
 
 
-            <h3
-              className={`mt-2 text-3xl font-bold ${
-                investmentReturnPositive
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {investmentReturnPositive ? "+" : ""}
-              {report.investmentReturn.toFixed(2)}%
-            </h3>
+<h3
+className={`
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+${
+investmentReturnPositive
+? "text-green-600"
+: "text-red-600"
+}
+`}
+>
+  {investmentReturnPositive ? "+" : ""}
+  {report.investmentReturn.toFixed(2)}%
+</h3>
 
 
           </div>
@@ -549,12 +835,29 @@ export default function ReportsPage() {
 
           <div className="mb-4">
 
-            <h2 className="text-2xl font-bold">
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
               Expense Breakdown
             </h2>
 
 
-            <p className="mt-1 text-sm text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
               Where your money went this month.
             </p>
 
@@ -652,12 +955,29 @@ export default function ReportsPage() {
         <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
 
 
-          <h2 className="text-xl font-bold">
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Recent Activity
           </h2>
 
 
-          <p className="mt-1 text-sm text-[var(--muted)]">
+<p
+className="
+mt-2
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
             Latest financial activity this month.
           </p>
 
@@ -684,12 +1004,27 @@ export default function ReportsPage() {
 
                     <div>
 
-                      <p className="font-medium">
+<p
+className="
+font-body
+text-sm
+font-medium
+tracking-tight
+text-[var(--foreground)]
+"
+>
                         {transaction.source}
                       </p>
 
 
-                      <p className="text-xs text-[var(--muted)]">
+<p
+className="
+font-body
+text-xs
+tracking-tight
+text-[var(--muted)]
+"
+>
                         {transaction.type}
                       </p>
 
@@ -752,12 +1087,30 @@ export default function ReportsPage() {
         <section className="rounded-2xl bg-slate-900 p-6 text-white shadow-xl">
 
 
-          <p className="text-sm text-white/60">
-            NET WORTH
-          </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-white/60
+"
+>
+NET WORTH
+</p>
 
 
-          <h2 className="mt-2 text-4xl font-bold">
+<h2
+className="
+mt-3
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+text-white
+"
+>
             {formatMoney(report.netWorth)}
           </h2>
 
@@ -823,12 +1176,30 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
 
-          <h3 className="text-xl font-bold">
+<h3
+className="
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
             Your report is waiting for real data.
           </h3>
 
 
-          <p className="mx-auto mt-2 max-w-xl text-sm text-[var(--muted)]">
+<p
+className="
+mx-auto
+mt-3
+max-w-xl
+font-body
+text-sm
+tracking-tight
+text-[var(--muted)]
+"
+>
 
             Add income, expenses, or investments to start building your financial report.
 

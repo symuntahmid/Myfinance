@@ -259,23 +259,30 @@ shadow-sm
 <div className="mb-6">
 
 
-<h2 className="
-text-2xl
-font-bold
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-">
-
+"
+>
 Financial Trend
-
 </h2>
 
 
 
-<p className="
-mt-1
+<p
+className="
+mt-2
+font-body
 text-sm
+font-normal
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 Your financial activity over the last six months.
 
@@ -299,21 +306,31 @@ text-center
 ">
 
 
-<p className="
+<p
+className="
+font-body
+text-sm
 font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 
 Not enough data yet
 
 </p>
 
 
-<p className="
-mt-1
+<p
+className="
+mt-2
+font-body
 text-sm
+font-normal
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 
 Add income, expenses, or investments to see your financial trend.
 
@@ -350,9 +367,14 @@ rounded-full
 bg-green-500
 "/>
 
-<span className="
+<span
+className="
+font-body
+text-sm
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Income
 </span>
 
@@ -370,9 +392,14 @@ rounded-full
 bg-red-500
 "/>
 
-<span className="
+<span
+className="
+font-body
+text-sm
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Expenses
 </span>
 
@@ -390,9 +417,14 @@ rounded-full
 bg-indigo-500
 "/>
 
-<span className="
+<span
+className="
+font-body
+text-sm
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Investments
 </span>
 
@@ -423,12 +455,16 @@ justify-between
 ">
 
 
-<span className="
+<span
+className="
 w-10
+font-body
 text-sm
-font-semibold
+font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 
 {month.label}
 
@@ -438,8 +474,10 @@ text-[var(--foreground)]
 
 <span
 className={`
-text-sm
-font-semibold
+font-display
+text-xl
+font-medium
+tracking-[-0.03em]
 ${
 month.cashFlow>=0
 ?
@@ -473,11 +511,15 @@ month.cashFlow
 <div className="flex items-center gap-3">
 
 
-<span className="
+<span
+className="
 w-20
+font-body
 text-xs
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Income
 </span>
 
@@ -507,13 +549,17 @@ width:`${
 </div>
 
 
-<span className="
+<span
+className="
 w-16
 text-right
+font-body
 text-xs
 font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 
 {formatMoney(
 month.income
@@ -533,11 +579,15 @@ month.income
 <div className="flex items-center gap-3">
 
 
-<span className="
+<span
+className="
 w-20
+font-body
 text-xs
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Expenses
 </span>
 
@@ -567,13 +617,17 @@ width:`${
 </div>
 
 
-<span className="
+<span
+className="
 w-16
 text-right
+font-body
 text-xs
 font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 
 {formatMoney(
 month.expense
@@ -593,11 +647,15 @@ month.expense
 <div className="flex items-center gap-3">
 
 
-<span className="
+<span
+className="
 w-20
+font-body
 text-xs
+tracking-tight
 text-[var(--muted)]
-">
+"
+>
 Invested
 </span>
 
@@ -627,13 +685,17 @@ width:`${
 </div>
 
 
-<span className="
+<span
+className="
 w-16
 text-right
+font-body
 text-xs
 font-medium
+tracking-tight
 text-[var(--foreground)]
-">
+"
+>
 
 {formatMoney(
 month.investment

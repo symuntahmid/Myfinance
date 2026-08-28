@@ -59,21 +59,30 @@ function CustomTooltip({
     >
 
 
-      <p className="
-      text-sm
-      text-[var(--muted)]
-      ">
-        {label}
-      </p>
+<p
+className="
+font-body
+text-sm
+font-normal
+tracking-tight
+text-[var(--muted)]
+"
+>
+  {label}
+</p>
 
 
 
-      <p className="
+<p
+className="
 mt-2
-text-xl
-font-bold
+font-display
+text-2xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-">
+"
+>
   {formatCurrency(
     Number(payload[0].value)
   )}
@@ -81,15 +90,18 @@ text-[var(--foreground)]
 
 
 
-      <p className="
-      mt-1
-      text-sm
-      font-semibold
-      text-green-600
-      ">
-        ▲ Net Worth
-      </p>
-
+<p
+className="
+mt-2
+font-body
+text-sm
+font-medium
+tracking-tight
+text-green-600
+"
+>
+  ▲ Net Worth
+</p>
 
     </div>
 
@@ -246,7 +258,7 @@ export default function NetWorthChart() {
       border
       border-[var(--border)]
       bg-[var(--card)]
-      p-8
+      p-6 md:p-8
       shadow-sm
       "
     >
@@ -264,24 +276,32 @@ export default function NetWorthChart() {
         <div>
 
 
-          <p className="
-          text-sm
-          font-semibold
-          uppercase
-          tracking-wide
-          text-[var(--muted)]
-          ">
-            Net Worth Trend
-          </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Net Worth Trend
+</p>
 
 
 
-          <h2 className="
-mt-2
-text-4xl
-font-bold
+<h2
+className="
+mt-3
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
 text-[var(--foreground)]
-">
+md:text-6xl
+"
+>
   {formatCurrency(
     summary.netWorth
   )}
@@ -289,13 +309,18 @@ text-[var(--foreground)]
 
 
 
-          <p className="
-          mt-2
-          font-semibold
-          text-green-600
-          ">
-            ▲ Growing steadily
-          </p>
+<p
+className="
+mt-3
+font-body
+text-sm
+font-medium
+tracking-tight
+text-green-600
+"
+>
+▲ Growing steadily
+</p>
 
 
         </div>
