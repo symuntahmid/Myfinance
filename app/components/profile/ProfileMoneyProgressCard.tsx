@@ -306,8 +306,10 @@ size={32}
 
 <p
 className="
-text-4xl
-font-black
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
 text-[var(--foreground)]
 "
 >
@@ -317,7 +319,11 @@ text-[var(--foreground)]
 
 <p
 className="
-font-semibold
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
@@ -340,14 +346,15 @@ rounded-xl
 bg-orange-500/10
 px-4
 py-2
-text-sm
-font-bold
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.08em]
 text-orange-500
 "
 >
-
 Keep Going 🔥
-
 </div>
 
 
@@ -360,7 +367,9 @@ Keep Going 🔥
 <p
 className="
 mt-4
+font-body
 text-sm
+leading-relaxed
 text-[var(--muted)]
 "
 >
@@ -380,8 +389,9 @@ Complete your Daily Journey every day to build your streak.
 <div
 className="
 mt-8
-flex
-justify-between
+grid
+grid-cols-7
+gap-2
 "
 >
 

@@ -207,7 +207,8 @@ className="
 rounded-3xl
 bg-[var(--card)]
 border border-[var(--border)]
-p-8
+p-5
+sm:p-8
 shadow-xl
 "
 >
@@ -219,10 +220,11 @@ shadow-xl
 
 <p
 className="
-text-sm
-font-semibold
+font-body
+text-xs
+font-medium
 uppercase
-tracking-widest
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
@@ -233,9 +235,11 @@ AI Financial Insights
 
 <h2
 className="
-mt-2
-text-3xl
-font-bold
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
@@ -371,8 +375,10 @@ flex
 items-center
 justify-between
 rounded-2xl
-border border-[var(--border)]
-p-5
+border
+border-[var(--border)]
+p-4
+sm:p-5
 transition
 hover:border-[var(--primary)]
 hover:shadow-md
@@ -394,13 +400,16 @@ gap-4
 <div
 className="
 flex
-h-14
-w-14
+h-12
+w-12
+sm:h-14
+sm:w-14
 items-center
 justify-center
 rounded-2xl
 bg-[var(--background)]
-text-2xl
+text-xl
+sm:text-2xl
 "
 >
 
@@ -416,7 +425,11 @@ text-2xl
 
 <p
 className="
-text-sm
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.08em]
 text-[var(--muted)]
 "
 >
@@ -427,9 +440,13 @@ text-[var(--muted)]
 
 <h3
 className="
-mt-1
-font-semibold
+mt-2
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
 text-[var(--foreground)]
+break-words
 "
 >
 {value}

@@ -125,24 +125,26 @@ blur-3xl
 
 <p
 className="
+font-body
 text-xs
-font-bold
+font-medium
 uppercase
-tracking-widest
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
 🌍 Global Benchmark
 </p>
 
-
 <h2
 className="
-mt-2
-text-xl
-font-black
+mt-3
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-md:text-2xl
+md:text-4xl
 "
 >
 Your spending position worldwide
@@ -151,8 +153,10 @@ Your spending position worldwide
 
 <p
 className="
-mt-2
+mt-3
+font-body
 text-sm
+leading-relaxed
 text-[var(--muted)]
 "
 >
@@ -186,6 +190,8 @@ className="
 flex
 justify-center
 overflow-hidden
+scale-90
+sm:scale-100
 "
 >
 
@@ -281,8 +287,10 @@ shadow-sm
 
 <p
 className="
+font-body
 text-sm
-font-bold
+font-medium
+tracking-tight
 text-[var(--foreground)]
 "
 >
@@ -321,8 +329,10 @@ gap-2
 
 <p
 className="
-text-sm
-font-black
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
 text-[var(--foreground)]
 "
 >
@@ -336,8 +346,9 @@ className={`
 rounded-full
 px-2.5
 py-1
+font-body
 text-xs
-font-bold
+font-medium
 
 ${
 item.good
@@ -413,8 +424,11 @@ justify-between
 
 <p
 className="
+font-body
 text-xs
-font-semibold
+font-medium
+uppercase
+tracking-[0.12em]
 text-[var(--muted)]
 "
 >
@@ -424,9 +438,11 @@ Overall spending health
 
 <h3
 className="
-mt-1
-text-xl
-font-black
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
@@ -445,8 +461,11 @@ rounded-full
 bg-emerald-500/15
 px-4
 py-2
+font-body
 text-xs
-font-black
+font-medium
+uppercase
+tracking-[0.08em]
 text-emerald-500
 "
 >

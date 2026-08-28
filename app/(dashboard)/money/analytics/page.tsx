@@ -17,6 +17,8 @@ className="
 mx-auto
 max-w-7xl
 space-y-8
+px-4
+md:px-0
 "
 >
 
@@ -39,9 +41,10 @@ gap-4
 
 <h1
 className="
-text-4xl
-font-bold
-tracking-tight
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
 text-[var(--foreground)]
 "
 >
@@ -52,8 +55,11 @@ Money Analytics
 
 <p
 className="
-mt-2
-text-lg
+mt-3
+font-body
+text-sm
+leading-relaxed
+tracking-tight
 text-[var(--muted)]
 "
 >
@@ -79,7 +85,8 @@ border-[var(--border)]
 bg-[var(--card)]
 px-6
 py-3
-font-semibold
+font-body
+font-medium
 text-[var(--foreground)]
 shadow-sm
 transition
@@ -120,9 +127,11 @@ shadow-2xl
 
 <p
 className="
-text-sm
+font-body
+text-xs
+font-medium
 uppercase
-tracking-[0.35em]
+tracking-[0.18em]
 text-cyan-300
 "
 >
@@ -135,19 +144,19 @@ AI ANALYTICS
 <h2
 className="
 mt-5
-text-4xl
-md:text-5xl
-font-bold
+font-display
+text-5xl
+font-medium
 leading-tight
+tracking-[-0.05em]
+md:text-6xl
 "
 >
-
 Understand
 
 <br />
 
 your money.
-
 </h2>
 
 
@@ -158,8 +167,11 @@ your money.
 className="
 mt-5
 max-w-2xl
-text-lg
+font-body
+text-base
+leading-relaxed
 text-white/70
+md:text-lg
 "
 >
 See where your income comes from, where your expenses go,
@@ -205,17 +217,6 @@ xl:grid-cols-2
 
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div>

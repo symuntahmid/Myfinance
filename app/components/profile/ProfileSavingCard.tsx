@@ -120,7 +120,8 @@ export default function ProfileSavingCard() {
       from-emerald-400
       via-teal-400
       to-cyan-400
-      p-7
+      p-5
+sm:p-7
       text-white
       shadow-xl
       "
@@ -148,28 +149,53 @@ export default function ProfileSavingCard() {
         <div>
 
 
-          <div className="flex items-center gap-3">
+          <div
+className="
+flex
+items-center
+gap-3
+"
+>
 
-            <Coins size={28}/>
+<div
+className="
+rounded-2xl
+bg-white/20
+p-3
+"
+>
+<Coins size={24}/>
+</div>
+
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-white/80
+"
+>
+This Month's Saving
+</p>
+
+</div>
 
 
-            <p className="text-lg font-bold">
-              This Month's Saving
-            </p>
 
-
-          </div>
-
-
-
-          <p className="
-            mt-4
-            text-5xl
-            font-black
-            tracking-tight
-          ">
-            {formatCurrency(saving)}
-          </p>
+          <p
+className="
+mt-5
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+md:text-6xl
+"
+>
+{formatCurrency(saving)}
+</p>
 
           <div
             className="

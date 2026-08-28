@@ -115,9 +115,29 @@ export default function GoalsPage() {
                 <Target size={24} />
               </div>
 
-              <h1 className="text-4xl font-bold">Financial Goals</h1>
+  <h1
+className="
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+md:text-6xl
+"
+>
+Financial Goals
+</h1>
 
-              <p className="mt-4 max-w-xs text-sm leading-7 text-cyan-100">
+<p
+className="
+mt-4
+max-w-md
+font-body
+text-sm
+leading-relaxed
+tracking-tight
+text-cyan-100
+"
+>
                 Every dollar you save today brings you one step closer to
                 the life you truly want.
               </p>
@@ -136,10 +156,30 @@ export default function GoalsPage() {
         {/* Summary */}
         <div className="grid gap-4 md:grid-cols-4">
           <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Active Goals</p>
+           <p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Active Goals
+</p>
 
             <div className="mt-3 flex items-center justify-between">
-              <h2 className="text-4xl font-bold">{activeGoalsCount}</h2>
+              <h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>{activeGoalsCount}</h2>
 
               <div className="rounded-2xl bg-cyan-100 p-3">
                 <Target className="text-cyan-600" size={22} />
@@ -148,10 +188,29 @@ export default function GoalsPage() {
           </div>
 
           <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Completed</p>
+            <p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Completed</p>
 
             <div className="mt-3 flex items-center justify-between">
-              <h2 className="text-4xl font-bold">{completedGoalsCount}</h2>
+              <h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>{completedGoalsCount}</h2>
 
               <div className="rounded-2xl bg-green-100 p-3 text-green-600">
                 🏆
@@ -237,7 +296,13 @@ shadow-sm
             </button>
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div
+className="
+grid
+gap-6
+md:grid-cols-2
+"
+>
             {goals.map((goal) => {
               const progressPercent = getProgressPercent(
                 goal.savedAmount,
@@ -248,7 +313,8 @@ shadow-sm
               return (
                 <div
                   key={goal.id}
-                  className="relative overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#06b6d4_0%,#0ea5e9_45%,#2563eb_78%,#4f46e5_100%)] p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
+                  className="relative overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#06b6d4_0%,#0ea5e9_45%,#2563eb_78%,#4f46e5_100%)] p-6
+sm:p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
                 >
                   {/* Lighting effect */}
                   <div className="pointer-events-none absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
@@ -285,7 +351,16 @@ shadow-sm
                               onClick={() => setOpenMenuId(null)}
                             />
 
-                            <div className="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl">
+<div
+className="
+absolute
+right-0
+z-20
+mt-2
+w-40
+sm:w-44
+"
+>
                               <button
                                 type="button"
                                 onClick={() => {
@@ -317,8 +392,26 @@ shadow-sm
                       </div>
 
                       <div className="text-right">
-                        <p className="text-xs uppercase tracking-widest text-cyan-100/80">Progress</p>
-                        <h2 className="text-4xl font-extrabold">
+ <p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-cyan-100/80
+"
+>
+Progress
+</p>
+<h2
+className="
+font-display
+text-5xl
+font-medium
+tracking-[-0.05em]
+"
+>
                           {Math.round(progressPercent)}%
                         </h2>
                       </div>
@@ -326,7 +419,15 @@ shadow-sm
                   </div>
 
                   {/* Title */}
-                  <h2 className="mt-6 text-3xl font-extrabold tracking-tight">{goal.title}</h2>
+                  <h2
+className="
+mt-6
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+"
+>{goal.title}</h2>
 
                   {/* Saved */}
                   <div className="mt-3 text-cyan-100">

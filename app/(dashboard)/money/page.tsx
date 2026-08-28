@@ -111,7 +111,8 @@ bg-gradient-to-r
 from-emerald-500
 via-teal-500
 to-cyan-500
-p-7 text-white shadow-xl
+p-5
+sm:p-7 text-white shadow-xl
 ">
 
 <h2
@@ -154,7 +155,8 @@ bg-gradient-to-br
 from-slate-900
 via-slate-800
 to-slate-900
-p-8
+p-6
+sm:p-8
 text-white
 shadow-2xl
 ">
@@ -206,7 +208,11 @@ text-emerald-300
 {/* Stats */}
 
 <div className="
-grid grid-cols-3 gap-3 md:gap-6
+grid
+grid-cols-1
+sm:grid-cols-3
+gap-4
+md:gap-6
 ">
 
 
@@ -314,7 +320,8 @@ border border-cyan-200
 bg-gradient-to-r
 from-cyan-500
 to-blue-600
-p-8
+p-6
+sm:p-8
 text-white
 shadow-xl
 transition
@@ -329,25 +336,43 @@ flex items-center justify-between
 
 <div>
 
-<p className="
-text-sm uppercase
-tracking-[0.3em]
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.18em]
 text-white/70
-">
+"
+>
 Analytics
 </p>
 
 
-<h2 className="
-mt-2 text-3xl font-bold
-">
+<h2
+className="
+mt-3
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+"
+>
 Explore Money Analytics
 </h2>
 
 
-<p className="
-mt-3 max-w-xl text-white/80
-">
+<p
+className="
+mt-3
+max-w-xl
+font-body
+text-sm
+leading-relaxed
+text-white/80
+"
+>
 View detailed expense breakdown,
 income sources, category trends,
 financial health and AI insights.
@@ -357,7 +382,13 @@ financial health and AI insights.
 </div>
 
 
-<div className="text-5xl">
+<div
+className="
+hidden
+text-5xl
+sm:block
+"
+>
 📊
 </div>
 
@@ -447,7 +478,8 @@ refreshData();
 rounded-3xl
 border border-[var(--border)]
 bg-[var(--card)]
-p-8
+p-6
+sm:p-8
 shadow-xl
 ">
 
@@ -473,9 +505,13 @@ Recent Activity
 <Link
 href="/money/transactions"
 className="
-text-sm font-semibold
-text-indigo-600
-hover:text-indigo-700
+font-body
+text-sm
+font-medium
+tracking-tight
+text-[var(--primary)]
+transition
+hover:opacity-80
 "
 >
 View All →
@@ -494,17 +530,28 @@ border-[var(--border)]
 py-14 text-center
 ">
 
-<p className="
-text-lg font-semibold
+<p
+className="
+font-display
+text-2xl
+font-medium
+tracking-[-0.03em]
 text-[var(--foreground)]
-">
+"
+>
 No transactions yet
 </p>
 
 
-<p className="
-mt-2 text-[var(--muted)]
-">
+<p
+className="
+mt-2
+font-body
+text-sm
+leading-relaxed
+text-[var(--muted)]
+"
+>
 Add your first income, expense or investment.
 </p>
 
@@ -613,7 +660,7 @@ className={`
 mt-2 inline-block
 rounded-full
 px-3 py-1
-text-xs font-semibold
+text-xs font-medium uppercase tracking-[0.08em]
 ${
 transaction.type==="Income"
 ?

@@ -48,20 +48,34 @@ function CustomTooltip({
       rounded-3xl
       border border-[var(--border)]
       bg-[var(--card)]
-      p-5
+      p-4
+sm:p-5
       shadow-xl
     ">
 
-      <p className="
-        mb-3
-        font-bold
-        text-[var(--foreground)]
-      ">
-        {label}
-      </p>
+<p
+className="
+mb-3
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
+text-[var(--foreground)]
+"
+>
+{label}
+</p>
 
 
-      <p className="font-bold text-green-600">
+<p
+className="
+font-body
+text-sm
+font-medium
+tracking-tight
+text-green-600
+"
+>
   Income:{" "}
   {formatCurrency(
     Number(payload[0]?.value || 0)
@@ -69,7 +83,15 @@ function CustomTooltip({
 </p>
 
 
-<p className="font-bold text-red-500">
+<p
+className="
+font-body
+text-sm
+font-medium
+tracking-tight
+text-red-500
+"
+>
   Expense:{" "}
   {formatCurrency(
     Number(payload[1]?.value || 0)
@@ -77,7 +99,15 @@ function CustomTooltip({
 </p>
 
 
-<p className="font-bold text-cyan-600">
+<p
+className="
+font-body
+text-sm
+font-medium
+tracking-tight
+text-cyan-600
+"
+>
   Savings:{" "}
   {formatCurrency(
     Number(payload[2]?.value || 0)
@@ -187,9 +217,6 @@ const [, forceCurrencyUpdate] = useState(0);
         new Date();
 
 
-
-
-
       // 7D and 30D daily view
 
       if(
@@ -202,8 +229,6 @@ const [, forceCurrencyUpdate] = useState(0);
           range==="30D"
           ? 30
           : 7;
-
-
 
         const days:ChartItem[] = [];
 
@@ -261,10 +286,6 @@ const [, forceCurrencyUpdate] = useState(0);
 
 
         }
-
-
-
-
 
         transactions.forEach((t)=>{
 
@@ -375,11 +396,6 @@ const [, forceCurrencyUpdate] = useState(0);
 
 
       }
-
-
-
-
-
       transactions.forEach((t)=>{
 
 
@@ -433,22 +449,19 @@ const [, forceCurrencyUpdate] = useState(0);
       range
     ]);
 
-
-
-
-
-
-
-
   return (
 
-<div className="
+<div
+className="
 rounded-3xl
 border border-[var(--border)]
 bg-[var(--card)]
-p-6
+p-4
+sm:p-5
+sm:p-8
 shadow-xl
-">
+"
+>
 
 
 
@@ -462,24 +475,31 @@ gap-4
 ">
 
 
-<h2 className="
-text-2xl
-font-bold
+<h2
+className="
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
 text-[var(--foreground)]
-">
+"
+>
 Financial Trend
 </h2>
 
 
 
 
-<div className="
+<div
+className="
 flex
+flex-wrap
 gap-1
 rounded-full
 bg-[var(--background)]
 p-1
-">
+"
+>
 
 
 {
@@ -494,8 +514,11 @@ className={`
 rounded-full
 px-3
 py-2
-text-sm
-font-semibold
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.08em]
 transition
 ${
 range===item
@@ -522,11 +545,12 @@ range===item
 </div>
 
 
-
-
-
-
-<div className="h-[380px]">
+<div
+className="
+h-[300px]
+sm:h-[380px]
+"
+>
 
 
 <ResponsiveContainer
@@ -553,7 +577,7 @@ axisLine={false}
 tick={{
 fill:"var(--muted)",
 fontSize:13,
-fontWeight:600,
+fontWeight:500,
 }}
 />
 
@@ -568,8 +592,6 @@ strokeWidth:2,
 strokeDasharray:"5 5",
 }}
 />
-
-
 
 
 

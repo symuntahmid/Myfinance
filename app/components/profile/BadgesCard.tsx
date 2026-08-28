@@ -40,7 +40,7 @@ function BadgesCard() {
       rounded-3xl
       border border-[var(--border)]
       bg-[var(--card)]
-      p-5
+      p-6
       shadow-sm
       "
     >
@@ -49,11 +49,13 @@ function BadgesCard() {
       <div className="flex items-center justify-between">
 
 
-        <h2
+<h2
 className="
-text-sm
+font-body
+text-xs
 font-medium
-tracking-tight
+uppercase
+tracking-[0.12em]
 text-[var(--foreground)]
 "
 >
@@ -68,9 +70,10 @@ Your Badges
           flex
           items-center
           gap-1
-          text-xs
-font-normal
-tracking-tight
+font-body
+text-xs
+font-medium
+tracking-[0.08em]
           text-[var(--muted)]
           transition
           hover:text-[var(--foreground)]
@@ -90,7 +93,15 @@ tracking-tight
 
 
 
-      <div className="mt-5 grid grid-cols-3 gap-3">
+<div
+className="
+mt-5
+grid
+grid-cols-3
+gap-2
+sm:gap-3
+"
+>
 
 
         {visibleBadges.length > 0 ? (
@@ -106,8 +117,10 @@ tracking-tight
                 className="
                 mx-auto
                 flex
-                h-20
-                w-20
+h-16
+w-16
+sm:h-20
+sm:w-20
                 items-center
                 justify-center
                 rounded-full
@@ -124,6 +137,7 @@ tracking-tight
               <p
 className="
 mt-2
+font-body
 text-xs
 font-medium
 tracking-tight
@@ -273,25 +287,30 @@ No badges unlocked yet
           ">
 
 
-            <h3
+<h3
 className="
-text-sm
+font-body
+text-xs
 font-medium
-tracking-tight
+uppercase
+tracking-[0.12em]
 text-[var(--foreground)]
 "
 >
-              Badge Progress
-            </h3>
+Badge Progress
+</h3>
 
 
 
-            <span className="
-  text-xs
-  font-medium
-  tracking-tight
-  text-[var(--muted)]
-">
+<span
+className="
+font-body
+text-xs
+font-medium
+tracking-[0.08em]
+text-[var(--muted)]
+"
+>
   {unlockedBadges.length}/{badges.length}
 </span>
 
