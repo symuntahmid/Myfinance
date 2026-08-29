@@ -1,329 +1,308 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import AddBudgetModal from "@/app/components/AddBudgetModal";
 import BudgetProgressCard from "@/app/components/BudgetProgressCard";
-import { getSummary } from "@/app/data/transactions";
-import { getTransactions } from "@/app/data/transactions";
 
-import {
-  getBudgets,
-  deleteBudget,
-  Budget,
-} from "@/app/data/budgets";
+import { getSummary, getTransactions } from "@/app/data/transactions";
+import { getBudgets, deleteBudget, Budget } from "@/app/data/budgets";
+import { formatCurrency } from "@/app/utils/currency";
 
-import {
-  MoreVertical,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+
+// Categories are stored as "🍔 Food" style strings in some places and as
+// plain names in others. Strip any leading emoji/symbol + space so budgets
+// and transactions can be compared on the same basis.
+function normalizeCategory(category?: string) {
+  return category?.replace(/^[^\s]+\s/, "") ?? "";
+}
 
 export default function BudgetPage() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [openModal, setOpenModal] = useState(false);
-  const [editingBudget, setEditingBudget] =
-  useState<Budget | null>(null);
-
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
-  const totalBudget = budgets.reduce(
-  (sum, budget) => sum + budget.amount,
-  0
-);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
-// Temporary
-const totalSpent = getSummary().expense;
+  const totalBudget = budgets.reduce((sum, budget) => sum + budget.amount, 0);
+  const totalSpent = getSummary().expense;
 
   useEffect(() => {
     loadBudgets();
 
-    function refresh() {
-      loadBudgets();
+    const refresh = () => loadBudgets();
+
+    window.addEventListener("budgetsUpdated", refresh);
+    return () => window.removeEventListener("budgetsUpdated", refresh);
+  }, []);
+
+  // Close the open dropdown menu when clicking anywhere outside of it.
+  useEffect(() => {
+    if (!menuOpenId) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpenId(null);
+      }
     }
 
-    window.addEventListener(
-      "budgetsUpdated",
-      refresh
-    );
-
-    return () =>
-      window.removeEventListener(
-        "budgetsUpdated",
-        refresh
-      );
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpenId]);
 
   function loadBudgets() {
     setBudgets(getBudgets());
   }
 
+  function calculateSpent(budget: Budget) {
+    return getTransactions()
+      .filter((transaction) => {
+        if (transaction.type !== "Expense") return false;
+
+        const month = transaction.date.slice(0, 7);
+        const category = normalizeCategory(transaction.category);
+
+        return (
+          month === budget.month &&
+          category === normalizeCategory(budget.category)
+        );
+      })
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+  }
+
+  function handleDelete(budget: Budget) {
+    const confirmed = window.confirm(`Delete "${budget.category}" budget?`);
+    if (!confirmed) return;
+
+    deleteBudget(budget.id);
+    loadBudgets();
+    setMenuOpenId(null);
+
+    window.dispatchEvent(new Event("budgetsUpdated"));
+  }
+
   return (
     <>
       <div className="space-y-8">
-
-        <div className="flex items-center justify-between">
+        {/* HEADER */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold">
+            <h1 className="font-display text-5xl font-medium tracking-[-0.05em] text-[var(--foreground)] md:text-6xl">
               Budgeting
             </h1>
-
-            <p className="mt-2 text-slate-500">
+            <p className="mt-2 font-body text-sm text-[var(--muted)]">
               Plan and manage your monthly spending.
             </p>
           </div>
 
           <button
             onClick={() => setOpenModal(true)}
-            className="rounded-2xl bg-[var(--primary)] px-6 py-3 font-semibold text-white"
+            className="rounded-2xl bg-[var(--primary)] px-6 py-3 font-body font-medium text-white transition hover:opacity-90"
           >
             + Add Budget
           </button>
         </div>
 
-        <div className="mb-8">
-  <BudgetProgressCard
-    budget={totalBudget}
-    spent={totalSpent}
-  />
-</div>
+        {/* PROGRESS */}
+        <div>
+          <BudgetProgressCard budget={totalBudget} spent={totalSpent} />
+        </div>
 
-{budgets.length === 0 ? (
-
-          <div className="rounded-3xl bg-white p-16 text-center shadow-sm">
-            <h2 className="text-2xl font-bold">
+        {/* EMPTY STATE */}
+        {budgets.length === 0 ? (
+          <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-16 text-center shadow-sm">
+            <h2 className="font-display text-3xl font-medium tracking-tight text-[var(--foreground)]">
               No Budgets Yet
             </h2>
-
-            <p className="mt-3 text-slate-500">
+            <p className="mt-3 font-body text-sm text-[var(--muted)]">
               Create your first monthly budget.
             </p>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {budgets.map((budget) => {
-  const spent = getTransactions()
-  .filter((transaction) => {
-    if (transaction.type !== "Expense") return false;
+              const spent = calculateSpent(budget);
+              const remaining = budget.amount - spent;
+              const percentage =
+                budget.amount === 0
+                  ? 0
+                  : Math.min((spent / budget.amount) * 100, 100);
 
-    const month = transaction.date.slice(0, 7);
+              const status =
+                spent > budget.amount
+                  ? "over"
+                  : percentage >= 90
+                  ? "warning"
+                  : "good";
 
-    const category = transaction.category
-      ?.replace(/^[^\s]+\s/, "");
+              const isMenuOpen = menuOpenId === budget.id;
 
-    return (
-      month === budget.month &&
-      category === budget.category
-    );
-  })
-  .reduce(
-    (sum, transaction) => sum + transaction.amount,
-    0
-  );
+              return (
+                <div
+                  key={budget.id}
+                  className="relative rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm"
+                >
+                  {/* CARD HEADER */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-display text-2xl font-medium tracking-tight text-[var(--foreground)]">
+                        {budget.category}
+                      </h3>
 
-  const remaining = budget.amount - spent;
+                      <span className="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-600">
+                        {percentage.toFixed(0)}%
+                      </span>
+                    </div>
 
-  const percentage =
-    budget.amount === 0
-      ? 0
-      : Math.min((spent / budget.amount) * 100, 100);
+                    <button
+                      onClick={() => setMenuOpenId(isMenuOpen ? null : budget.id)}
+                      className="rounded-xl p-2 transition hover:bg-[var(--background)]"
+                      aria-label="Budget options"
+                    >
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
 
-      const status =
-  spent > budget.amount
-    ? "over"
-    : percentage >= 90
-    ? "warning"
-    : "good";
+                  {/* MENU */}
+                  {isMenuOpen && (
+                    <div
+                      ref={menuRef}
+                      className="absolute right-6 top-16 z-20 w-44 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-2 shadow-xl"
+                    >
+                      <button
+                        onClick={() => {
+                          setEditingBudget(budget);
+                          setOpenModal(true);
+                          setMenuOpenId(null);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2 font-body text-sm text-[var(--foreground)] transition hover:bg-[var(--background)]"
+                      >
+                        <Pencil size={16} />
+                        Edit Budget
+                      </button>
 
-  return (
-    <div
-      key={budget.id}
-      className="rounded-3xl bg-white p-6 shadow-sm"
-    >
-      <div className="relative flex items-center justify-between">
-  <div className="flex items-center gap-3">
-    <h3 className="text-xl font-bold">
-      {budget.category}
-    </h3>
+                      <button
+                        onClick={() => handleDelete(budget)}
+                        className="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2 font-body text-sm text-red-600 transition hover:bg-red-500/10"
+                      >
+                        <Trash2 size={16} />
+                        Delete Budget
+                      </button>
+                    </div>
+                  )}
 
-    <span className="rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700">
-      {percentage.toFixed(0)}%
-    </span>
-  </div>
+                  <p className="mt-2 font-body text-sm text-[var(--muted)]">
+                    {budget.month}
+                  </p>
 
-  <button
-    onClick={() =>
-      setMenuOpenId(
-        menuOpenId === budget.id
-          ? null
-          : budget.id
-      )
-    }
-    className="rounded-xl p-2 transition hover:bg-slate-100"
-  >
-    <MoreVertical size={18} />
-</button>
+                  {/* PROGRESS */}
+                  <div className="mt-6">
+                    <div className="mb-3 flex justify-between font-body text-sm">
+                      <span className="text-[var(--muted)]">Spent</span>
+                      <span className="font-medium text-[var(--foreground)]">
+                        {formatCurrency(spent)} {" / "} {formatCurrency(budget.amount)}
+                      </span>
+                    </div>
 
-{menuOpenId === budget.id && (
-  <div className="absolute right-0 top-12 z-20 w-44 rounded-2xl border bg-white p-2 shadow-xl">
-    <button
-  onClick={() => {
-    setEditingBudget(budget);
+                    <div className="h-3 overflow-hidden rounded-full bg-[var(--background)]">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ${
+                          status === "over"
+                            ? "bg-red-500"
+                            : status === "warning"
+                            ? "bg-amber-500"
+                            : "bg-cyan-500"
+                        }`}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
 
-    setOpenModal(true);
+                  {/* VALUES */}
+                  <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+                    <div className="rounded-2xl bg-[var(--background)] p-4">
+                      <p className="font-body text-xs text-[var(--muted)]">Budget</p>
+                      <p className="mt-2 font-display text-lg font-medium tracking-tight text-[var(--foreground)]">
+                        {formatCurrency(budget.amount)}
+                      </p>
+                    </div>
 
-    setMenuOpenId(null);
-  }}
-  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-slate-100"
->
-  <Pencil size={16} />
-  Edit Budget
-</button>
+                    <div className="rounded-2xl bg-[var(--background)] p-4">
+                      <p className="font-body text-xs text-[var(--muted)]">Spent</p>
+                      <p className="mt-2 font-display text-lg font-medium tracking-tight text-red-500">
+                        {formatCurrency(spent)}
+                      </p>
+                    </div>
 
-    <button
-      onClick={() => {
-        const confirmed = window.confirm(
-          `Delete "${budget.category}" budget?`
-        );
+                    <div className="rounded-2xl bg-[var(--background)] p-4">
+                      <p className="font-body text-xs text-[var(--muted)]">Left</p>
+                      <p className="mt-2 font-display text-lg font-medium tracking-tight text-green-600">
+                        {formatCurrency(Math.max(remaining, 0))}
+                      </p>
+                    </div>
+                  </div>
 
-        if (!confirmed) return;
+                  {/* STATUS */}
+                  <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--background)] p-4">
+                    {status === "good" && (
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl">✅</span>
+                        <div>
+                          <p className="font-body font-medium text-green-600">
+                            You&apos;re on track
+                          </p>
+                          <p className="mt-1 font-body text-sm text-[var(--muted)]">
+                            Great job! Your spending is within budget.
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
-        deleteBudget(budget.id);
+                    {status === "warning" && (
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl">⚠️</span>
+                        <div>
+                          <p className="font-body font-medium text-amber-600">
+                            Budget almost used
+                          </p>
+                          <p className="mt-1 font-body text-sm text-[var(--muted)]">
+                            You&apos;ve used {percentage.toFixed(0)}% of this budget.
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
-        setMenuOpenId(null);
-      }}
-      className="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-red-600 hover:bg-red-50"
-    >
-      <Trash2 size={16} />
-      Delete Budget
-    </button>
-  </div>
-)}
-</div>
-
-      <p className="mt-2 text-slate-500">
-        {budget.month}
-      </p>
-
-      <div className="mt-6">
-        <div className="mb-2 flex justify-between text-sm text-slate-500">
-          <span>
-            ${spent.toLocaleString()}
-          </span>
-
-          <span>
-            ${budget.amount.toLocaleString()}
-          </span>
-        </div>
-
-        <div className="h-3 overflow-hidden rounded-full bg-slate-200">
-          <div
-            className="h-full rounded-full bg-cyan-500 transition-all duration-700"
-            style={{
-              width: `${percentage}%`,
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="mt-6 grid grid-cols-3 gap-4 text-center">
-        <div>
-          <p className="text-xs text-slate-500">
-            Budget
-          </p>
-
-          <p className="mt-1 font-bold">
-            ${budget.amount.toLocaleString()}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-xs text-slate-500">
-            Spent
-          </p>
-
-          <p className="mt-1 font-bold text-red-500">
-            ${spent.toLocaleString()}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-xs text-slate-500">
-            Left
-          </p>
-
-          <p className="mt-1 font-bold text-green-600">
-            ${remaining.toLocaleString()}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-  {status === "good" && (
-    <div className="flex items-center gap-2 text-green-600">
-      <span className="text-xl">✅</span>
-
-      <div>
-        <p className="font-semibold">
-          You're on track
-        </p>
-
-        <p className="text-sm text-slate-500">
-          Great job! Your spending is within budget.
-        </p>
-      </div>
-    </div>
-  )}
-
-  {status === "warning" && (
-    <div className="flex items-center gap-2 text-amber-600">
-      <span className="text-xl">⚠️</span>
-
-      <div>
-        <p className="font-semibold">
-          Budget almost used
-        </p>
-
-        <p className="text-sm text-slate-500">
-          You've used {percentage.toFixed(0)}% of this budget.
-        </p>
-      </div>
-    </div>
-  )}
-
-  {status === "over" && (
-    <div className="flex items-center gap-2 text-red-600">
-      <span className="text-xl">🚨</span>
-
-      <div>
-        <p className="font-semibold">
-          Budget exceeded
-        </p>
-
-        <p className="text-sm text-slate-500">
-          You're over budget by $
-          {Math.abs(remaining).toLocaleString()}.
-        </p>
-      </div>
-    </div>
-  )}
-</div>
-    </div>
-  );
-})}
+                    {status === "over" && (
+                      <div className="flex items-start gap-3">
+                        <span className="text-xl">🚨</span>
+                        <div>
+                          <p className="font-body font-medium text-red-600">
+                            Budget exceeded
+                          </p>
+                          <p className="mt-1 font-body text-sm text-[var(--muted)]">
+                            You&apos;re over budget by {formatCurrency(Math.abs(remaining))}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
       <AddBudgetModal
-  open={openModal}
-  editingBudget={editingBudget}
-  onClose={() => {
-    setOpenModal(false);
-
-    setEditingBudget(null);
-  }}
-/>
+        open={openModal}
+        editingBudget={editingBudget}
+        onClose={() => {
+          setOpenModal(false);
+          setEditingBudget(null);
+        }}
+      />
     </>
   );
 }
