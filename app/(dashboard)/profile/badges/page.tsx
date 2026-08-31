@@ -27,156 +27,228 @@ export default function BadgesPage() {
     <div className="mx-auto max-w-4xl pb-10">
 
 
-      {/* HEADER */}
+{/* HEADER */}
 
-      <div className="mb-8 flex items-start gap-3">
+<div
+className="
+mb-8
+flex
+items-start
+gap-3
+"
+>
 
-        <Link
-          href="/profile"
-          className="
-          flex h-10 w-10 shrink-0 items-center justify-center
-          rounded-xl
-          border border-slate-200
-          bg-white
-          text-slate-600
-          shadow-sm
-          transition
-          hover:bg-slate-50
-          dark:border-slate-700
-          dark:bg-slate-900
-          dark:text-slate-300
-          dark:hover:bg-slate-800
-          "
-        >
-          <ArrowLeft size={18}/>
-        </Link>
-
-
-        <div>
-
-          <h1
-            className="
-            text-3xl
-            font-bold
-            tracking-tight
-            text-slate-950
-            dark:text-white
-            "
-          >
-            Badges
-          </h1>
+<Link
+href="/profile"
+className="
+flex
+h-10
+w-10
+shrink-0
+items-center
+justify-center
+rounded-xl
+border
+border-[var(--border)]
+bg-[var(--card)]
+text-[var(--muted)]
+shadow-sm
+transition
+hover:bg-[var(--background)]
+hover:text-[var(--foreground)]
+"
+>
+<ArrowLeft size={18}/>
+</Link>
 
 
-          <p
-            className="
-            mt-1
-            text-sm
-            text-slate-500
-            dark:text-slate-400
-            "
-          >
-            Your financial achievements, habits, and milestones.
-          </p>
+<div>
+
+<h1
+className="
+font-display
+text-4xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+Badges
+</h1>
 
 
-        </div>
-
-      </div>
-
-
-
-
-
-      {/* SUMMARY */}
-
-
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
-
-
-        <div
-          className="
-          rounded-2xl
-          border border-slate-200
-          bg-white
-          p-5
-          shadow-sm
-          dark:border-slate-700
-          dark:bg-slate-900
-          "
-        >
-
-          <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-            Total Badges
-          </p>
+<p
+className="
+mt-1
+font-body
+text-sm
+leading-relaxed
+tracking-tight
+text-[var(--muted)]
+"
+>
+Your financial achievements, habits, and milestones.
+</p>
 
 
-          <p className="mt-2 text-2xl font-bold text-slate-950 dark:text-white">
-            {badges.length}
-          </p>
+</div>
 
 
-        </div>
+</div>
+
+
+{/* SUMMARY */}
+
+<div
+className="
+mb-8
+grid
+gap-4
+sm:grid-cols-3
+"
+>
+
+
+<div
+className="
+rounded-2xl
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-5
+shadow-sm
+"
+>
+
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Total Badges
+</p>
+
+
+<p
+className="
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-[var(--foreground)]
+"
+>
+{badges.length}
+</p>
+
+
+</div>
 
 
 
 
-        <div
-          className="
-          rounded-2xl
-          border border-slate-200
-          bg-white
-          p-5
-          shadow-sm
-          dark:border-slate-700
-          dark:bg-slate-900
-          "
-        >
 
-          <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-            Unlocked
-          </p>
+<div
+className="
+rounded-2xl
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-5
+shadow-sm
+"
+>
 
-
-          <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-            0
-          </p>
-
-
-        </div>
-
-
-
-
-        <div
-          className="
-          rounded-2xl
-          border border-slate-200
-          bg-white
-          p-5
-          shadow-sm
-          dark:border-slate-700
-          dark:bg-slate-900
-          "
-        >
-
-          <p className="text-xs font-medium text-slate-400 dark:text-slate-500">
-            Premium
-          </p>
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Unlocked
+</p>
 
 
-          <p className="mt-2 text-2xl font-bold text-violet-600 dark:text-violet-400">
-            {
-              badges.filter(
-                badge=>badge.premium
-              ).length
-            }
-          </p>
+<p
+className="
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-emerald-500
+"
+>
+0
+</p>
 
 
-        </div>
+</div>
 
 
-      </div>
+
+
+
+
+<div
+className="
+rounded-2xl
+border
+border-[var(--border)]
+bg-[var(--card)]
+p-5
+shadow-sm
+"
+>
+
+<p
+className="
+font-body
+text-xs
+font-medium
+uppercase
+tracking-[0.12em]
+text-[var(--muted)]
+"
+>
+Premium
+</p>
+
+
+<p
+className="
+mt-2
+font-display
+text-3xl
+font-medium
+tracking-[-0.04em]
+text-violet-500
+"
+>
+
+{
+badges.filter(
+badge=>badge.premium
+).length
+}
+
+</p>
+
+
+</div>
+
+
+</div>
 
 
 
@@ -185,301 +257,331 @@ export default function BadgesPage() {
       {/* CATEGORY BUTTONS */}
 
 
-      <div className="mb-8 flex gap-2 overflow-x-auto pb-1">
-
-
-        {
-          categories.map(category=>(
-
-            <button
-              key={category}
-              type="button"
-              className="
-              shrink-0
-              rounded-full
-              border border-slate-200
-              bg-white
-              px-4
-              py-2
-              text-xs
-              font-semibold
-              text-slate-600
-              transition
-              hover:border-cyan-200
-              hover:bg-cyan-50
-              hover:text-cyan-700
-              dark:border-slate-700
-              dark:bg-slate-900
-              dark:text-slate-300
-              dark:hover:bg-cyan-950/30
-              "
-            >
-              {category}
-            </button>
+{/* CATEGORY BUTTONS */}
+
+<div
+className="
+mb-8
+flex
+gap-2
+overflow-x-auto
+pb-1
+"
+>
+
+{
+categories.map(category=>(
+
+<button
+key={category}
+type="button"
+className="
+shrink-0
+rounded-full
+border
+border-[var(--border)]
+bg-[var(--card)]
+px-4
+py-2
+font-body
+text-xs
+font-medium
+tracking-tight
+text-[var(--muted)]
+transition
+hover:border-cyan-300
+hover:bg-cyan-500/10
+hover:text-cyan-500
+"
+>
+{category}
+</button>
+
+))
+}
+
+</div>
+
+
+  {/* BADGES */}
+
+<div
+className="
+grid
+gap-5
+sm:grid-cols-2
+lg:grid-cols-3
+"
+>
+
+{
+badges.map((badge)=>(
+
+
+<div
+key={badge.id}
+className={`
+relative
+overflow-hidden
+rounded-3xl
+border
+p-5
+shadow-sm
+transition
 
-          ))
-        }
+${
+badge.premium
 
+?
 
-      </div>
-
-
-
+`
+border-violet-300
+bg-gradient-to-br
+from-violet-500/10
+via-fuchsia-500/5
+to-transparent
+`
 
-
-      {/* BADGES */}
-
-
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-
-        {
-          badges.map((badge)=>(
-
-
-            <div
-              key={badge.id}
-              className={`
-              relative
-              overflow-hidden
-              rounded-3xl
-              border
-              p-5
-              shadow-sm
-              transition
-
-              ${
-                badge.premium
-                ?
-                `
-                border-violet-200
-                bg-gradient-to-br
-                from-white
-                via-violet-50/40
-                to-fuchsia-50/40
+:
 
-                dark:border-violet-800
-                dark:from-slate-900
-                dark:via-violet-950/30
-                dark:to-fuchsia-950/30
-                `
-                :
-                `
-                border-slate-200
-                bg-white
-
-                dark:border-slate-700
-                dark:bg-slate-900
-                `
-              }
-              `}
-            >
+`
+border-[var(--border)]
+bg-[var(--card)]
+`
 
+}
 
+`}
+>
 
-              {
-                badge.premium && (
+
+{
+badge.premium && (
 
-                  <div
-                    className="
-                    absolute
-                    right-4
-                    top-4
-                    flex
-                    items-center
-                    gap-1
-                    rounded-full
-                    bg-violet-100
-                    px-2.5
-                    py-1
-                    text-[10px]
-                    font-bold
-                    text-violet-700
+<div
+className="
+absolute
+right-4
+top-4
+flex
+items-center
+gap-1
+rounded-full
+bg-violet-500/10
+px-2.5
+py-1
+font-body
+text-[10px]
+font-semibold
+text-violet-500
+"
+>
 
-                    dark:bg-violet-950/50
-                    dark:text-violet-300
-                    "
-                  >
+<Sparkles size={11}/>
 
-                    <Sparkles size={11}/>
+PREMIUM
 
-                    PREMIUM
+</div>
 
-                  </div>
+)
+}
 
-                )
-              }
 
 
 
 
-              {/* ICON */}
+{/* ICON */}
 
-              <div
-                className={`
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-2xl
-                text-3xl
+<div
+className={`
+flex
+h-16
+w-16
+items-center
+justify-center
+rounded-2xl
+text-3xl
 
-                ${
-                  badge.premium
-                  ?
-                  "bg-violet-100 dark:bg-violet-950/50"
-                  :
-                  "bg-slate-100 dark:bg-slate-800"
-                }
-                `}
-              >
-                {badge.icon}
-              </div>
+${
+badge.premium
 
+?
 
+"bg-violet-500/10"
 
+:
 
+"bg-[var(--background)]"
 
-              <h2
-                className="
-                mt-5
-                text-base
-                font-bold
-                text-slate-950
-                dark:text-white
-                "
-              >
-                {badge.name}
-              </h2>
+}
 
+`}
+>
 
+{badge.icon}
 
+</div>
 
-              <p
-                className="
-                mt-1
-                text-xs
-                leading-relaxed
-                text-slate-500
-                dark:text-slate-400
-                "
-              >
-                {badge.description}
-              </p>
 
 
 
 
+<h2
+className="
+mt-5
+font-display
+text-lg
+font-medium
+tracking-[-0.02em]
+text-[var(--foreground)]
+"
+>
+{badge.name}
+</h2>
 
-              {/* REQUIREMENT */}
 
 
-              <div
-                className="
-                mt-5
-                rounded-2xl
-                bg-slate-50
-                p-3
 
-                dark:bg-slate-800
-                "
-              >
+<p
+className="
+mt-1
+font-body
+text-xs
+leading-relaxed
+tracking-tight
+text-[var(--muted)]
+"
+>
+{badge.description}
+</p>
 
-                <p className="
-                text-[10px]
-                font-bold
-                uppercase
-                tracking-wider
-                text-slate-400
-                dark:text-slate-500
-                ">
-                  Requirement
-                </p>
 
 
-                <p
-                  className="
-                  mt-1
-                  text-xs
-                  font-semibold
-                  text-slate-700
-                  dark:text-slate-200
-                  "
-                >
-                  {badge.requirement}
-                </p>
 
 
-              </div>
+{/* REQUIREMENT */}
 
+<div
+className="
+mt-5
+rounded-2xl
+bg-[var(--background)]
+p-3
+"
+>
 
 
+<p
+className="
+font-body
+text-[10px]
+font-semibold
+uppercase
+tracking-wider
+text-[var(--muted)]
+"
+>
+Requirement
+</p>
 
 
-              {/* STATUS */}
+<p
+className="
+mt-1
+font-body
+text-xs
+font-medium
+text-[var(--foreground)]
+"
+>
+{badge.requirement}
+</p>
 
 
-              <div className="mt-4 flex items-center gap-2">
+</div>
 
 
-                {
-                  badge.premium
-                  ?
 
-                  <>
 
-                    <Lock
-                      size={15}
-                      className="text-violet-500"
-                    />
 
-                    <span className="
-                    text-xs
-                    font-semibold
-                    text-violet-600
-                    dark:text-violet-400
-                    ">
-                      Premium badge
-                    </span>
+{/* STATUS */}
 
-                  </>
+<div
+className="
+mt-4
+flex
+items-center
+gap-2
+"
+>
 
-                  :
 
-                  <>
+{
+badge.premium
 
-                    <CheckCircle2
-                      size={15}
-                      className="text-slate-300 dark:text-slate-600"
-                    />
+?
 
-                    <span className="
-                    text-xs
-                    font-semibold
-                    text-slate-400
-                    dark:text-slate-500
-                    ">
-                      Locked
-                    </span>
+<>
 
-                  </>
+<Lock
+size={15}
+className="text-violet-500"
+/>
 
-                }
 
+<span
+className="
+font-body
+text-xs
+font-medium
+text-violet-500
+"
+>
+Premium badge
+</span>
 
-              </div>
+</>
 
 
+:
 
-            </div>
+<>
 
+<CheckCircle2
+size={15}
+className="text-[var(--muted)]"
+/>
 
-          ))
-        }
 
+<span
+className="
+font-body
+text-xs
+font-medium
+text-[var(--muted)]
+"
+>
+Locked
+</span>
 
-      </div>
+</>
+
+}
+
+
+
+</div>
+
+
+
+</div>
+
+
+))
+}
+
+
+</div>
 
 
     </div>
