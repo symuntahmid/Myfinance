@@ -18,6 +18,8 @@ import {
   Transaction,
 } from "@/app/data/transactions";
 
+import { formatCurrency } from "@/app/utils/currency";
+
 type TransactionFormProps = {
   open: boolean;
   type: "Income" | "Expense" | "Investment";
@@ -278,60 +280,99 @@ export default function TransactionForm({
     onClose();
   }
 
-  function saveTransaction() {
-    if (!isFormValid) return;
+function saveTransaction() {
+  if (!isFormValid) return;
 
-    const transaction: Transaction = {
-      id: editingTransaction ? editingTransaction.id : generateId(),
 
-      type,
-      amount: parsedAmount,
-      source: resolvedSource,
-      category,
-      note,
-      date,
+  const transaction: Transaction = {
+    id: editingTransaction
+      ? editingTransaction.id
+      : generateId(),
 
-      // Auto Repeat
-      autoRepeat,
-      repeatFrequency: autoRepeat ? repeatFrequency : undefined,
+    type,
+    amount: parsedAmount,
+    source: resolvedSource,
+    category,
+    note,
+    date,
 
-      // Reminder
-      reminder,
-      reminderType: reminder ? reminderType : undefined,
-      reminderDate:
-        reminder && reminderType === "custom" ? reminderDate : undefined,
-    };
+    autoRepeat,
+    repeatFrequency:
+      autoRepeat
+        ? repeatFrequency
+        : undefined,
 
-    if (editingTransaction) {
-      updateTransaction(transaction);
-    } else {
-      addTransaction(transaction);
-      if (type === "Investment") {
-  addInvestment({
-    id: crypto.randomUUID(),
+    reminder,
+    reminderType:
+      reminder
+        ? reminderType
+        : undefined,
 
-    name: category,
+    reminderDate:
+      reminder && reminderType === "custom"
+        ? reminderDate
+        : undefined,
+  };
 
-    type: category.replace(/^.*?\s/, "") as any,
 
-    investedAmount: parsedAmount,
 
-    currentValue: parsedAmount,
+  if (editingTransaction) {
 
-    purchaseDate: date,
+    updateTransaction(transaction);
 
-    notes: note,
-  });
-}
 
-      // If this new investment is funded from tracked money, also log a
-      // linked Expense so the cash/bank/card balance reflects the outflow.
-      
+  } else {
+
+    addTransaction(transaction);
+
+
+    // Refresh Summary Cards
+    window.dispatchEvent(
+      new Event("transactionsUpdated")
+    );
+
+
+
+    // Save Investment Data
+    if (type === "Investment") {
+
+
+      addInvestment({
+
+        id: crypto.randomUUID(),
+
+        name: category,
+
+        type:
+          category.replace(/^.*?\s/, "") as any,
+
+        investedAmount: parsedAmount,
+
+        currentValue: parsedAmount,
+
+        purchaseDate: date,
+
+        notes: note,
+
+      });
+
+
+
+      window.dispatchEvent(
+        new Event("investmentsUpdated")
+      );
+
     }
 
-    resetForm();
-    onClose();
   }
+
+
+
+  resetForm();
+
+  onClose();
+
+}
 
   function handleCalcPress(key: string) {
     if (key === "C") {
