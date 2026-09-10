@@ -17,7 +17,6 @@ import {
 import {
   User,
   Sparkles,
-  Target,
   Globe2,
   Languages,
   Coins,
@@ -204,8 +203,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
   const [settings, setSettings] =
     useState(getSettings());
 
-  const [savingTargetOpen, setSavingTargetOpen] =
-    useState(false);
 
   const [regionalOpen, setRegionalOpen] =
     useState(false);
@@ -222,10 +219,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
   const [deleteOpen, setDeleteOpen] =
     useState(false);
 
-  const [savingTarget, setSavingTarget] =
-    useState(
-      String(settings.monthlySavingTarget)
-    );
 
   const [country, setCountry] =
     useState(settings.country);
@@ -426,15 +419,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
           />
 
           <Divider />
-
-          <SettingRow
-            icon={<Target size={19} />}
-            title="Monthly Saving Target"
-            subtitle={`$${settings.monthlySavingTarget.toLocaleString()} per month`}
-            onClick={() =>
-              setSavingTargetOpen(true)
-            }
-          />
 
         </SettingGroup>
       </section>
@@ -705,62 +689,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
         MyFinance · Your Personal CFO
       </p>
 
-
-      {/* ======================================
-          SAVING TARGET MODAL
-      ====================================== */}
-
-      <Modal
-        open={savingTargetOpen}
-        onClose={() =>
-          setSavingTargetOpen(false)
-        }
-      >
-        <h2 className="text-xl font-bold text-[var(--foreground)]">
-          Monthly Saving Target
-        </h2>
-
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          How much do you want to save each month?
-        </p>
-
-        <input
-          value={savingTarget}
-          onChange={(event) =>
-            setSavingTarget(
-              event.target.value
-            )
-          }
-          type="number"
-          min="0"
-          className="mt-6 w-full rounded-xl border border-[var(--border)] px-4 py-3 outline-none focus:border-cyan-500"
-        />
-
-        <button
-          type="button"
-          onClick={() => {
-            const value =
-              Number(savingTarget);
-
-            if (
-              !Number.isFinite(value) ||
-              value < 0
-            ) {
-              return;
-            }
-
-            changeSetting({
-              monthlySavingTarget:
-                value,
-            });
-
-            setSavingTargetOpen(false);
-          }}
-          className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800"
-        >
-          Save Target
-        </button>
-      </Modal>
 
 
       {/* ======================================

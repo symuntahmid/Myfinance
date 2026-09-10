@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -22,22 +23,61 @@ import {
   updateSettings,
 } from "@/app/data/settings";
 
+import {
+ Currency
+} from "@/app/data/currencies";
+
 
 export default function CurrencyPage() {
 
-  const [search, setSearch] =
-    useState("");
+ const [search, setSearch] =
+  useState("");
 
 
-  const [selected, setSelected] =
-    useState(() => {
+const [selected, setSelected] =
+  useState(() => {
 
-      const settings =
-        getSettings();
+    const settings =
+      getSettings();
 
-      return settings.currency || "USD";
+    return settings.currency || "USD";
 
-    });
+  });
+
+
+
+useEffect(()=>{
+
+  const refreshCurrency = () => {
+
+    const settings =
+      getSettings();
+
+
+    setSelected(
+      settings.currency || "USD"
+    );
+
+  };
+
+
+  window.addEventListener(
+    "currencyUpdated",
+    refreshCurrency
+  );
+
+
+  return()=>{
+
+    window.removeEventListener(
+      "currencyUpdated",
+      refreshCurrency
+    );
+
+  };
+
+
+},[]);
 
 
 
@@ -73,9 +113,9 @@ export default function CurrencyPage() {
 
 
 
-  const handleSelect = (
-    currency: (typeof currencies)[number]
-  ) => {
+ const handleSelect = (
+  currency: Currency
+)=>{
 
     setSelected(
       currency.code
@@ -121,8 +161,7 @@ export default function CurrencyPage() {
             bg-[var(--card)]
             text-[var(--muted)]
             shadow-sm transition
-            hover:bg-black/5
-            dark:hover:bg-white/5
+            hover:bg-[var(--background)]
           "
         >
           <ArrowLeft size={18}/>
