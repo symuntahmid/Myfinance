@@ -8,7 +8,9 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { badges } from "@/app/data/badges";
+import {
+  getBadgeProgress,
+} from "@/app/data/badgeProgress";
 
 
 export default function BadgesPage() {
@@ -21,6 +23,14 @@ export default function BadgesPage() {
     "Premium",
   ];
 
+
+  const badgeProgress =
+  getBadgeProgress();
+
+  const badges =
+  badgeProgress.map(
+    (item) => item.badge
+  );
 
   return (
 
@@ -189,7 +199,11 @@ tracking-[-0.04em]
 text-emerald-500
 "
 >
-0
+{
+  badgeProgress.filter(
+    (item) => item.unlocked
+  ).length
+}
 </p>
 
 
@@ -252,11 +266,6 @@ badge=>badge.premium
 
 
 
-
-
-      {/* CATEGORY BUTTONS */}
-
-
 {/* CATEGORY BUTTONS */}
 
 <div
@@ -315,8 +324,13 @@ lg:grid-cols-3
 >
 
 {
-badges.map((badge)=>(
+badgeProgress.map((item)=>{
 
+const badge = item.badge;
+const isUnlocked = item.unlocked;
+
+
+return (
 
 <div
 key={badge.id}
@@ -576,8 +590,9 @@ Locked
 
 </div>
 
+)
 
-))
+})
 }
 
 
