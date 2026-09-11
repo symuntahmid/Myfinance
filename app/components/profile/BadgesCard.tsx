@@ -1,35 +1,44 @@
 "use client";
 
 import Link from "next/link";
+
 import {
   ArrowUpRight,
   Trophy,
   Lock,
 } from "lucide-react";
 
-import { badges } from "@/app/data/badges";
-import { getPlayer } from "@/app/data/player";
+import {
+  getBadgeProgress,
+} from "@/app/data/badgeProgress";
+
+import {
+  useEffect,
+  useState,
+} from "react";
 
 
 function BadgesCard() {
 
-  const player = getPlayer();
+
+  const badgeProgress =
+    getBadgeProgress();
 
 
-  const unlockedBadges = badges.filter((badge) => {
 
-    if (badge.category === "Points") {
-      return player.xp >= badge.target;
-    }
-
-    return false;
-
-  });
+  const unlockedBadges =
+    badgeProgress.filter(
+      (item) => item.unlocked
+    );
 
 
 
   const visibleBadges =
-    unlockedBadges.slice(0, 3);
+    unlockedBadges
+      .slice(0, 3)
+      .map(
+        (item) => item.badge
+      );
 
 
 
@@ -49,18 +58,18 @@ function BadgesCard() {
       <div className="flex items-center justify-between">
 
 
-<h2
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--foreground)]
-"
->
-Your Badges
-</h2>
+        <h2
+          className="
+          font-body
+          text-xs
+          font-medium
+          uppercase
+          tracking-[0.12em]
+          text-[var(--foreground)]
+          "
+        >
+          Your Badges
+        </h2>
 
 
 
@@ -70,10 +79,10 @@ Your Badges
           flex
           items-center
           gap-1
-font-body
-text-xs
-font-medium
-tracking-[0.08em]
+          font-body
+          text-xs
+          font-medium
+          tracking-[0.08em]
           text-[var(--muted)]
           transition
           hover:text-[var(--foreground)]
@@ -93,141 +102,160 @@ tracking-[0.08em]
 
 
 
-<div
-className="
-mt-5
-grid
-grid-cols-3
-gap-2
-sm:gap-3
-"
->
+      <div
+        className="
+        mt-5
+        grid
+        grid-cols-3
+        gap-2
+        sm:gap-3
+        "
+      >
 
 
-        {visibleBadges.length > 0 ? (
+        {
+          visibleBadges.length > 0 ? (
 
-          visibleBadges.map((badge)=>(
+            visibleBadges.map(
+              (badge)=>(
+
+              <div
+                key={badge.id}
+                className="text-center"
+              >
+
+
+                <div
+                  className="
+                  mx-auto
+                  flex
+                  h-16
+                  w-16
+                  sm:h-20
+                  sm:w-20
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[var(--background)]
+                  text-4xl
+                  shadow-sm
+                  "
+                >
+
+                  {badge.icon}
+
+                </div>
+
+
+
+                <p
+                  className="
+                  mt-2
+                  font-body
+                  text-xs
+                  font-medium
+                  tracking-tight
+                  text-[var(--foreground)]
+                  "
+                >
+
+                  {badge.name}
+
+                </p>
+
+
+
+                <p
+                  className="
+                  mt-1
+                  text-[10px]
+                  font-normal
+                  tracking-tight
+                  text-purple-400
+                  "
+                >
+
+                  {badge.requirement}
+
+                </p>
+
+
+              </div>
+
+            ))
+
+          ) : (
+
 
             <div
-              key={badge.id}
-              className="text-center"
+              className="
+              col-span-3
+              flex
+              flex-col
+              items-center
+              justify-center
+              py-5
+              text-center
+              "
             >
+
 
               <div
                 className="
-                mx-auto
                 flex
-h-16
-w-16
-sm:h-20
-sm:w-20
+                h-16
+                w-16
                 items-center
                 justify-center
                 rounded-full
                 bg-[var(--background)]
-                text-4xl
-                shadow-sm
+                text-slate-400
                 "
               >
-                {badge.icon}
+
+                <Lock size={25}/>
+
               </div>
 
 
 
               <p
-className="
-mt-2
-font-body
-text-xs
-font-medium
-tracking-tight
-text-[var(--foreground)]
-"
->
-                {badge.name}
+                className="
+                mt-3
+                text-sm
+                font-medium
+                tracking-tight
+                text-[var(--foreground)]
+                "
+              >
+
+                No badges unlocked yet
+
               </p>
 
 
 
               <p
-className="
-mt-1
-text-[10px]
-font-normal
-tracking-tight
-text-purple-400
-"
->
-                {badge.requirement}
+                className="
+                mt-1
+                max-w-xs
+                text-xs
+                text-[var(--muted)]
+                "
+              >
+
+                Keep learning and improving your money habits
+                to unlock your first badge.
+
               </p>
 
 
             </div>
 
-          ))
 
-        ) : (
+          )
 
-
-          <div className="
-            col-span-3
-            flex
-            flex-col
-            items-center
-            justify-center
-            py-5
-            text-center
-          ">
-
-
-            <div
-              className="
-              flex
-              h-16
-              w-16
-              items-center
-              justify-center
-              rounded-full
-              bg-[var(--background)]
-              text-slate-400
-              "
-            >
-
-              <Lock size={25}/>
-
-            </div>
-
-
-
-            <p
-className="
-mt-3
-text-sm
-font-medium
-tracking-tight
-text-[var(--foreground)]
-"
->
-No badges unlocked yet
-</p>
-
-
-
-            <p className="
-              mt-1
-              max-w-xs
-              text-xs
-              text-[var(--muted)]
-            ">
-              Keep learning and improving your money habits
-              to unlock your first badge.
-            </p>
-
-
-          </div>
-
-
-        )}
+        }
 
 
       </div>
@@ -279,40 +307,44 @@ No badges unlocked yet
         <div className="min-w-0 flex-1">
 
 
-          <div className="
+          <div
+            className="
             flex
             items-center
             justify-between
             gap-3
-          ">
+            "
+          >
 
 
-<h3
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--foreground)]
-"
->
-Badge Progress
-</h3>
+            <h3
+              className="
+              font-body
+              text-xs
+              font-medium
+              uppercase
+              tracking-[0.12em]
+              text-[var(--foreground)]
+              "
+            >
+              Badge Progress
+            </h3>
 
 
 
-<span
-className="
-font-body
-text-xs
-font-medium
-tracking-[0.08em]
-text-[var(--muted)]
-"
->
-  {unlockedBadges.length}/{badges.length}
-</span>
+            <span
+              className="
+              font-body
+              text-xs
+              font-medium
+              tracking-[0.08em]
+              text-[var(--muted)]
+              "
+            >
+
+              {unlockedBadges.length}/{badgeProgress.length}
+
+            </span>
 
 
           </div>
@@ -320,35 +352,45 @@ text-[var(--muted)]
 
 
 
-          <p
-className="
-mt-2
-text-sm
-font-medium
-tracking-tight
-text-[var(--foreground)]
-"
->
 
-            {unlockedBadges.length === 0
+          <p
+            className="
+            mt-2
+            text-sm
+            font-medium
+            tracking-tight
+            text-[var(--foreground)]
+            "
+          >
+
+            {
+              unlockedBadges.length === 0
               ? "Your journey starts here."
-              : `${unlockedBadges.length} badge${
-                  unlockedBadges.length === 1 ? "" : "s"
-                } unlocked`
+              :
+              `${unlockedBadges.length} badge${
+                unlockedBadges.length === 1
+                ? ""
+                : "s"
+              } unlocked`
             }
 
           </p>
 
 
 
-          <p className="
+
+          <p
+            className="
             mt-1
             text-[10px]
-font-normal
-tracking-tight
-text-[var(--muted)]
-          ">
+            font-normal
+            tracking-tight
+            text-[var(--muted)]
+            "
+          >
+
             Continue your financial journey to unlock more.
+
           </p>
 
 

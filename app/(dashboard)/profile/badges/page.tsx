@@ -359,8 +359,19 @@ to-transparent
 :
 
 `
-border-[var(--border)]
-bg-[var(--card)]
+${
+  isUnlocked
+  ?
+  `
+  border-emerald-500/30
+  bg-emerald-500/5
+  `
+  :
+  `
+  border-[var(--border)]
+  bg-[var(--card)]
+  `
+}
 `
 
 }
@@ -512,6 +523,42 @@ text-[var(--foreground)]
 </p>
 
 
+<div
+className="
+mt-3
+h-2
+overflow-hidden
+rounded-full
+bg-[var(--border)]
+"
+>
+<div
+className="
+h-full
+rounded-full
+bg-cyan-500
+transition-all
+duration-700
+"
+style={{
+width:`${item.progress}%`
+}}
+/>
+</div>
+
+
+<p
+className="
+mt-2
+font-body
+text-[11px]
+text-[var(--muted)]
+"
+>
+{item.current} / {item.target}
+</p>
+
+
 </div>
 
 
@@ -531,9 +578,7 @@ gap-2
 
 
 {
-badge.premium
-
-?
+badge.premium ? (
 
 <>
 
@@ -541,7 +586,6 @@ badge.premium
 size={15}
 className="text-violet-500"
 />
-
 
 <span
 className="
@@ -556,16 +600,36 @@ Premium badge
 
 </>
 
-
-:
+) : isUnlocked ? (
 
 <>
 
 <CheckCircle2
 size={15}
-className="text-[var(--muted)]"
+className="text-emerald-500"
 />
 
+<span
+className="
+font-body
+text-xs
+font-medium
+text-emerald-500
+"
+>
+Unlocked
+</span>
+
+</>
+
+) : (
+
+<>
+
+<Lock
+size={15}
+className="text-[var(--muted)]"
+/>
 
 <span
 className="
@@ -580,6 +644,7 @@ Locked
 
 </>
 
+)
 }
 
 
