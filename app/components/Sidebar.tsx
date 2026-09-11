@@ -1,6 +1,14 @@
 "use client";
 
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+
 import NavItem from "./NavItem";
+
 
 import {
   LayoutDashboard,
@@ -11,13 +19,66 @@ import {
   User,
 } from "lucide-react";
 
+
 import { usePathname } from "next/navigation";
+
+
+import { t } from "@/app/data/i18n";
+
 
 
 export default function Sidebar() {
 
+
   const pathname =
     usePathname();
+
+
+
+  const [, refresh] =
+    useState(0);
+
+
+
+  /*
+    Update sidebar text
+    after changing language
+  */
+
+  useEffect(() => {
+
+
+    const handleLanguageUpdate = () => {
+
+      refresh(
+        value => value + 1
+      );
+
+    };
+
+
+
+    window.addEventListener(
+      "languageUpdated",
+      handleLanguageUpdate
+    );
+
+
+
+    return () => {
+
+      window.removeEventListener(
+        "languageUpdated",
+        handleLanguageUpdate
+      );
+
+    };
+
+
+  }, []);
+
+
+
 
 
   return (
@@ -37,6 +98,7 @@ export default function Sidebar() {
         shadow-sm
       "
     >
+
 
 
       <div className="mb-12">
@@ -62,7 +124,7 @@ export default function Sidebar() {
             text-[var(--muted)]
           "
         >
-          Your Personal Wealth Hub
+          {t("wealthHub")}
         </p>
 
 
@@ -72,7 +134,9 @@ export default function Sidebar() {
 
 
 
+
       <nav className="space-y-2">
+
 
 
         <NavItem
@@ -84,8 +148,10 @@ export default function Sidebar() {
             <LayoutDashboard size={20} />
           }
         >
-          Dashboard
+          {t("dashboard")}
         </NavItem>
+
+
 
 
 
@@ -98,8 +164,10 @@ export default function Sidebar() {
             <User size={20} />
           }
         >
-          Profile
+          {t("profile")}
         </NavItem>
+
+
 
 
 
@@ -112,8 +180,10 @@ export default function Sidebar() {
             <Wallet size={20} />
           }
         >
-          My Money
+          {t("myMoney")}
         </NavItem>
+
+
 
 
 
@@ -126,8 +196,10 @@ export default function Sidebar() {
             <LineChart size={20} />
           }
         >
-          My Investments
+          {t("investments")}
         </NavItem>
+
+
 
 
 
@@ -140,8 +212,10 @@ export default function Sidebar() {
             <FileText size={20} />
           }
         >
-          Reports
+          {t("reports")}
         </NavItem>
+
+
 
 
 
@@ -154,11 +228,13 @@ export default function Sidebar() {
             <Settings size={20} />
           }
         >
-          Settings
+          {t("settings")}
         </NavItem>
 
 
+
       </nav>
+
 
 
     </aside>

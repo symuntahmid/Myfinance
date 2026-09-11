@@ -1,11 +1,20 @@
 "use client";
 
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+
 import Link from "next/link";
+
+
 import { usePathname } from "next/navigation";
+
 
 import {
   LayoutDashboard,
-  GraduationCap,
   Wallet,
   LineChart,
   FileText,
@@ -13,47 +22,127 @@ import {
 } from "lucide-react";
 
 
-const items = [
-  {
-    name: "Home",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Academy",
-    href: "/academy",
-    icon: GraduationCap,
-  },
-  {
-    name: "Money",
-    href: "/money",
-    icon: Wallet,
-  },
-  {
-    name: "Invest",
-    href: "/investments",
-    icon: LineChart,
-  },
-  {
-    name: "Reports",
-    href: "/reports",
-    icon: FileText,
-  },
-  {
-    name: "More",
-    href: "/profile",
-    icon: Ellipsis,
-  },
-];
+import { t } from "@/app/data/i18n";
+
 
 
 
 export default function BottomNavigation() {
 
-  const pathname = usePathname();
+
+
+  const pathname =
+    usePathname();
+
+
+
+  const [, refresh] =
+    useState(0);
+
+
+
+
+
+  /*
+    Refresh navigation labels
+    when language changes
+  */
+
+  useEffect(() => {
+
+
+    const handleLanguageUpdate = () => {
+
+      refresh(
+        value => value + 1
+      );
+
+    };
+
+
+
+    window.addEventListener(
+      "languageUpdated",
+      handleLanguageUpdate
+    );
+
+
+
+    return () => {
+
+      window.removeEventListener(
+        "languageUpdated",
+        handleLanguageUpdate
+      );
+
+    };
+
+
+  }, []);
+
+
+
+
+
+
+
+  const items = [
+
+
+    {
+      key: "dashboard",
+      name: t("dashboard"),
+      href: "/dashboard",
+      icon: LayoutDashboard,
+    },
+
+
+
+    {
+      key: "myMoney",
+      name: t("myMoney"),
+      href: "/money",
+      icon: Wallet,
+    },
+
+
+
+    {
+      key: "investments",
+      name: t("investments"),
+      href: "/investments",
+      icon: LineChart,
+    },
+
+
+
+    {
+      key: "reports",
+      name: t("reports"),
+      href: "/reports",
+      icon: FileText,
+    },
+
+
+
+    {
+      key: "more",
+      name: "More",
+      href: "/profile",
+      icon: Ellipsis,
+    },
+
+
+  ];
+
+
+
+
+
 
 
   return (
+
 
     <nav
       className="
@@ -66,7 +155,7 @@ export default function BottomNavigation() {
         border-[var(--border)]
         bg-[var(--card)]
         backdrop-blur-xl
-        shadow-[0_-10px_30px_rgba(0,0,0,.08)]
+        shadow-[0_-10px-30px_rgba(0,0,0,.08)]
         lg:hidden
       "
       style={{
@@ -75,12 +164,28 @@ export default function BottomNavigation() {
       }}
     >
 
-      <div className="grid grid-cols-6 h-20">
+
+
+
+
+      <div
+        className="
+          grid
+          grid-cols-5
+          h-20
+        "
+      >
+
+
+
 
 
         {items.map((item) => {
 
-          const Icon = item.icon;
+
+          const Icon =
+            item.icon;
+
 
 
           const active =
@@ -90,21 +195,29 @@ export default function BottomNavigation() {
             );
 
 
-          const iconClass = active
-            ? "bg-[var(--primary)]/15 text-[var(--primary)]"
-            : "text-[var(--muted)]";
+
+          const iconClass =
+            active
+              ? "bg-[var(--primary)]/15 text-[var(--primary)]"
+              : "text-[var(--muted)]";
 
 
-          const textClass = active
-            ? "text-[var(--primary)]"
-            : "text-[var(--muted)]";
+
+          const textClass =
+            active
+              ? "text-[var(--primary)]"
+              : "text-[var(--muted)]";
+
+
+
 
 
 
           return (
 
+
             <Link
-              key={item.name}
+              key={item.key}
               href={item.href}
               className="
                 flex
@@ -117,6 +230,9 @@ export default function BottomNavigation() {
               "
             >
 
+
+
+
               <div
                 className={`
                   rounded-2xl
@@ -127,9 +243,13 @@ export default function BottomNavigation() {
                 `}
               >
 
-                <Icon size={22} />
+                <Icon size={22}/>
 
               </div>
+
+
+
+
 
 
 
@@ -146,7 +266,10 @@ export default function BottomNavigation() {
               </span>
 
 
+
+
             </Link>
+
 
           );
 
@@ -154,11 +277,15 @@ export default function BottomNavigation() {
         })}
 
 
+
       </div>
+
 
 
     </nav>
 
+
   );
+
 
 }

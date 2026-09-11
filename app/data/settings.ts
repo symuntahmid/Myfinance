@@ -1,36 +1,70 @@
 export type AppSettings = {
 
   country: string;
+
+  // language code
+  // Example:
+  // en = English
+  // bn = Bangla
+  // hi = Hindi
   language: string;
+
   currency: string;
+
 
   remindersEnabled: boolean;
 
+
   darkMode: boolean;
 
+
   passcodeEnabled: boolean;
+
   passcodeHash: string | null;
 
 };
 
 
-const STORAGE_KEY = "myfinance-settings";
+
+const STORAGE_KEY =
+  "myfinance-settings";
+
 
 
 const DEFAULT_SETTINGS: AppSettings = {
 
-  country: "Bangladesh",
-  language: "English",
-  currency: "USD",
 
-  remindersEnabled: true,
+  country:
+    "Bangladesh",
 
-  darkMode: false,
 
-  passcodeEnabled: false,
-  passcodeHash: null,
+  language:
+    "en",
+
+
+  currency:
+    "USD",
+
+
+  remindersEnabled:
+    true,
+
+
+  darkMode:
+    false,
+
+
+  passcodeEnabled:
+    false,
+
+
+  passcodeHash:
+    null,
 
 };
+
+
+
 
 
 /* ==========================================
@@ -39,29 +73,52 @@ const DEFAULT_SETTINGS: AppSettings = {
 
 export function getSettings(): AppSettings {
 
-  if (typeof window === "undefined") {
+
+  if (
+    typeof window === "undefined"
+  ) {
+
     return DEFAULT_SETTINGS;
+
   }
+
 
 
   const saved =
-    localStorage.getItem(STORAGE_KEY);
+    localStorage.getItem(
+      STORAGE_KEY
+    );
+
 
 
   if (!saved) {
+
     return DEFAULT_SETTINGS;
+
   }
+
 
 
   try {
 
+
+    const parsed =
+      JSON.parse(saved);
+
+
+
     return {
+
       ...DEFAULT_SETTINGS,
-      ...JSON.parse(saved),
+
+      ...parsed,
+
     };
 
 
+
   } catch {
+
 
     console.error(
       "Failed to load MyFinance settings."
@@ -70,9 +127,13 @@ export function getSettings(): AppSettings {
 
     return DEFAULT_SETTINGS;
 
+
   }
 
+
 }
+
+
 
 
 
@@ -84,22 +145,40 @@ export function saveSettings(
   settings: AppSettings
 ) {
 
-  if (typeof window === "undefined") {
+
+  if (
+    typeof window === "undefined"
+  ) {
+
     return;
+
   }
 
 
+
   localStorage.setItem(
+
     STORAGE_KEY,
+
     JSON.stringify(settings)
+
   );
+
+
 
 
   window.dispatchEvent(
-    new Event("settingsUpdated")
+
+    new Event(
+      "settingsUpdated"
+    )
+
   );
 
+
 }
+
+
 
 
 
@@ -111,16 +190,24 @@ export function updateSettings(
   updates: Partial<AppSettings>
 ) {
 
+
   const current =
     getSettings();
 
 
+
   saveSettings({
+
     ...current,
+
     ...updates,
+
   });
 
+
 }
+
+
 
 
 
@@ -130,11 +217,17 @@ export function updateSettings(
 
 export function resetSettings() {
 
+
   saveSettings(
+
     DEFAULT_SETTINGS
+
   );
 
+
 }
+
+
 
 
 
@@ -143,5 +236,7 @@ export function resetSettings() {
 ========================================== */
 
 export {
+
   STORAGE_KEY as SETTINGS_STORAGE_KEY
+
 };
