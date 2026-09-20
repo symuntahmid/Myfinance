@@ -3,25 +3,34 @@
 import Image from "next/image";
 
 import {
+  t,
+} from "@/app/data/i18n";
+
+
+import {
   CheckCircle2,
   Rocket,
   User,
   Sparkles,
 } from "lucide-react";
 
+
 import {
   getPlayer,
   getLevel,
 } from "@/app/data/player";
 
+
 import {
   getProfile,
 } from "@/app/data/profile";
+
 
 import {
   useEffect,
   useState,
 } from "react";
+
 
 
 type Props = {
@@ -30,13 +39,17 @@ type Props = {
 
 
 
+
+
 export default function ProfileCard({
   compact = false,
 }: Props) {
 
 
+
   const [mounted,setMounted] =
     useState(false);
+
 
 
   const [avatarError,setAvatarError] =
@@ -44,17 +57,36 @@ export default function ProfileCard({
 
 
 
+
   const [player,setPlayer] =
-    useState<ReturnType<typeof getPlayer>|null>(null);
+    useState<ReturnType<typeof getPlayer>|null>(
+      null
+    );
+
 
 
   const [level,setLevel] =
-    useState<ReturnType<typeof getLevel>|null>(null);
+    useState<ReturnType<typeof getLevel>|null>(
+      null
+    );
 
 
 
   const [profile,setProfile] =
-    useState(getProfile());
+    useState(
+      getProfile()
+    );
+
+
+
+  /*
+    Force component refresh
+    when language changes
+  */
+
+  const [,refreshLanguage] =
+    useState(0);
+
 
 
 
@@ -66,18 +98,43 @@ export default function ProfileCard({
 
 
 
-    const refresh=()=>{
+    const refresh = () => {
 
-      setPlayer(getPlayer());
 
-      setLevel(getLevel());
+      setPlayer(
+        getPlayer()
+      );
 
-      setProfile(getProfile());
+
+      setLevel(
+        getLevel()
+      );
+
+
+      setProfile(
+        getProfile()
+      );
+
 
     };
 
 
+
+    const handleLanguageUpdate = () => {
+
+
+      refreshLanguage(
+        value => value + 1
+      );
+
+
+    };
+
+
+
+
     refresh();
+
 
 
 
@@ -94,7 +151,17 @@ export default function ProfileCard({
 
 
 
+    window.addEventListener(
+      "languageUpdated",
+      handleLanguageUpdate
+    );
+
+
+
+
+
     return()=>{
+
 
       window.removeEventListener(
         "player-updated",
@@ -102,12 +169,22 @@ export default function ProfileCard({
       );
 
 
+
       window.removeEventListener(
         "profileUpdated",
         refresh
       );
 
+
+
+      window.removeEventListener(
+        "languageUpdated",
+        handleLanguageUpdate
+      );
+
+
     };
+
 
 
   },[]);
@@ -180,7 +257,7 @@ absolute
 h-48
 w-48
 rounded-full
-bg-cyan-400/10
+bg-[var(--primary)]/10
 blur-3xl
 "
 />
@@ -214,8 +291,8 @@ rounded-full
 border-2
 border-[var(--border)]
 bg-gradient-to-br
-from-cyan-400
-to-teal-400
+from-[var(--primary)]
+to-[var(--secondary)]
 "
 >
 
@@ -305,7 +382,7 @@ text-[var(--foreground)]
 <CheckCircle2
 size={17}
 className="
-fill-cyan-500
+fill-[var(--primary)]
 text-white
 "
 />
@@ -378,7 +455,7 @@ tracking-[0.14em]
 text-[var(--muted)]
 "
 >
-Financial Level
+{t("financialLevel")}
 </p>
 
 
@@ -404,15 +481,14 @@ Level {level.level}
 <span
 className="
 rounded-full
-bg-cyan-500/10
+bg-[var(--primary)]/10
 px-3
 py-1.5
 font-body
 text-xs
 font-medium
 tracking-tight
-text-cyan-600
-dark:text-cyan-400
+text-[var(--primary)]
 "
 >
 
@@ -448,8 +524,8 @@ className="
 h-full
 rounded-full
 bg-gradient-to-r
-from-cyan-500
-to-teal-400
+from-[var(--primary)]
+to-[var(--secondary)]
 transition-all
 duration-700
 "
@@ -478,7 +554,7 @@ text-[var(--muted)]
 >
 
 <span>
-Building financial confidence
+{t("buildingFinancialConfidence")}
 </span>
 
 
@@ -491,11 +567,6 @@ Building financial confidence
 
 
 </div>
-
-
-
-
-
 
 
 
@@ -513,8 +584,8 @@ items-start
 gap-3
 rounded-2xl
 border
-border-cyan-500/20
-bg-cyan-500/5
+border-[var(--primary)]/20
+bg-[var(--primary)]/5
 p-4
 "
 >
@@ -524,7 +595,7 @@ p-4
 size={18}
 className="
 mt-0.5
-text-cyan-500
+text-[var(--primary)]
 "
 />
 
@@ -539,8 +610,7 @@ text-[var(--foreground)]
 "
 >
 
-You are building a stronger money system.
-Small actions create long-term wealth.
+{t("moneySystemMessage")}
 
 </p>
 

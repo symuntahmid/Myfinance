@@ -39,20 +39,20 @@ export default function LanguagePage() {
 
 
       const currentLanguage =
-        settings.language || "English";
+        settings.language || "en";
 
 
       const matched =
         languages.find(
           (language)=>
-            language.name === currentLanguage
+            language.code === currentLanguage
         );
 
 
       return (
         matched?.code ||
         languages[0]?.code ||
-        "EN"
+        "en"
       );
 
     });
@@ -108,7 +108,7 @@ export default function LanguagePage() {
       updateSettings({
 
         language:
-          language.name,
+          language.code,
 
       });
 

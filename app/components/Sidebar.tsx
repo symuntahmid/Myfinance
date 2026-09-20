@@ -35,9 +35,8 @@ export default function Sidebar() {
 
 
 
-  const [, refresh] =
-    useState(0);
-
+const [, setRefresh] =
+  useState(0);
 
 
   /*
@@ -50,9 +49,9 @@ export default function Sidebar() {
 
     const handleLanguageUpdate = () => {
 
-      refresh(
-        value => value + 1
-      );
+setRefresh(
+  value => value + 1
+);
 
     };
 

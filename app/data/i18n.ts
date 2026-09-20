@@ -12,7 +12,7 @@ import {
 
 export function t(
   key: TranslationKey
-): string {
+) {
 
 
   const settings =
@@ -20,72 +20,29 @@ export function t(
 
 
 
-  const selectedLanguage =
-    settings.language || "English";
+  const language =
+    settings.language || "en";
 
 
 
-  const languageCode =
-    Object.keys(translations).find(
-      (code) => {
-
-        const language =
-          getLanguageName(code);
-
-        return language === selectedLanguage;
-
-      }
-    ) || "en";
+  const currentTranslation =
+    translations[language];
 
 
 
-  return (
-    translations[
-      languageCode
-    ][key]
-    ??
-    translations.en[key]
-  );
+  if (
+    currentTranslation &&
+    currentTranslation[key]
+  ) {
 
-}
+    return currentTranslation[key];
 
+  }
 
 
-/*
-  Convert language code
-  to saved language name
 
-  Example:
+  // fallback to English
 
-  bn -> Bangla
-  es -> Spanish
-*/
-
-function getLanguageName(
-  code: string
-) {
-
-  const names: Record<
-    string,
-    string
-  > = {
-
-    en: "English",
-    bn: "Bangla",
-    hi: "Hindi",
-    ar: "Arabic",
-    es: "Spanish",
-    pt: "Portuguese",
-    fr: "French",
-    de: "German",
-    id: "Indonesian",
-    vi: "Vietnamese",
-    ko: "Korean",
-    ja: "Japanese",
-
-  };
-
-
-  return names[code];
+  return translations.en[key];
 
 }

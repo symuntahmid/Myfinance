@@ -12,7 +12,8 @@ export type TranslationKey =
   | "developerMode"
   | "financialLevel"
   | "buildingFinancialConfidence"
-  | "moneySystemMessage";
+  | "moneySystemMessage"
+  | "more";
 
 
 
@@ -25,7 +26,6 @@ export const translations: Record<
   string,
   LanguageTranslation
 > = {
-
 
 
   en: {
@@ -51,7 +51,6 @@ export const translations: Record<
     settings:
       "Settings",
 
-
     myProfile:
       "My Profile",
 
@@ -73,11 +72,10 @@ export const translations: Record<
     moneySystemMessage:
       "You are building a stronger money system. Small actions create long-term wealth.",
 
+    more:
+      "More",
+
   },
-
-
-
-
 
 
 
@@ -104,7 +102,6 @@ export const translations: Record<
     settings:
       "সেটিংস",
 
-
     myProfile:
       "আমার প্রোফাইল",
 
@@ -126,11 +123,10 @@ export const translations: Record<
     moneySystemMessage:
       "আপনি একটি শক্তিশালী অর্থ ব্যবস্থা তৈরি করছেন। ছোট ছোট পদক্ষেপ দীর্ঘমেয়াদী সম্পদ তৈরি করে।",
 
+    more:
+      "আরও",
+
   },
-
-
-
-
 
 
 
@@ -157,7 +153,6 @@ export const translations: Record<
     settings:
       "सेटिंग्स",
 
-
     myProfile:
       "मेरी प्रोफ़ाइल",
 
@@ -179,13 +174,10 @@ export const translations: Record<
     moneySystemMessage:
       "आप एक मजबूत वित्तीय प्रणाली बना रहे हैं। छोटे कदम लंबे समय में धन बनाते हैं।",
 
+    more:
+      "अधिक",
+
   },
-
-
-
-
-
-
 
 
 
@@ -212,7 +204,6 @@ export const translations: Record<
     settings:
       "الإعدادات",
 
-
     myProfile:
       "ملفي الشخصي",
 
@@ -234,13 +225,10 @@ export const translations: Record<
     moneySystemMessage:
       "أنت تبني نظامًا ماليًا أقوى. الإجراءات الصغيرة تصنع ثروة طويلة الأجل.",
 
+    more:
+      "المزيد",
+
   },
-
-
-
-
-
-
 
 
 
@@ -267,7 +255,6 @@ export const translations: Record<
     settings:
       "Configuración",
 
-
     myProfile:
       "Mi perfil",
 
@@ -289,17 +276,12 @@ export const translations: Record<
     moneySystemMessage:
       "Estás construyendo un sistema financiero más sólido. Las pequeñas acciones crean riqueza a largo plazo.",
 
+    more:
+      "Más",
+
   },
 
-
-
-
-
-
-
-
-
-  pt: {
+    pt: {
 
     wealthHub:
       "Seu centro pessoal de gestão financeira",
@@ -322,7 +304,6 @@ export const translations: Record<
     settings:
       "Configurações",
 
-
     myProfile:
       "Meu perfil",
 
@@ -344,13 +325,10 @@ export const translations: Record<
     moneySystemMessage:
       "Você está construindo um sistema financeiro mais forte. Pequenas ações criam riqueza a longo prazo.",
 
+    more:
+      "Mais",
+
   },
-
-
-
-
-
-
 
 
 
@@ -377,7 +355,6 @@ export const translations: Record<
     settings:
       "Paramètres",
 
-
     myProfile:
       "Mon profil",
 
@@ -399,13 +376,10 @@ export const translations: Record<
     moneySystemMessage:
       "Vous construisez un système financier plus solide. Les petites actions créent une richesse durable.",
 
+    more:
+      "Plus",
+
   },
-
-
-
-
-
-
 
 
 
@@ -432,7 +406,6 @@ export const translations: Record<
     settings:
       "Einstellungen",
 
-
     myProfile:
       "Mein Profil",
 
@@ -454,13 +427,10 @@ export const translations: Record<
     moneySystemMessage:
       "Sie bauen ein stärkeres Finanzsystem auf. Kleine Schritte schaffen langfristigen Wohlstand.",
 
+    more:
+      "Mehr",
+
   },
-
-
-
-
-
-
 
 
 
@@ -487,7 +457,6 @@ export const translations: Record<
     settings:
       "Pengaturan",
 
-
     myProfile:
       "Profil Saya",
 
@@ -509,13 +478,10 @@ export const translations: Record<
     moneySystemMessage:
       "Anda sedang membangun sistem keuangan yang lebih kuat. Tindakan kecil menciptakan kekayaan jangka panjang.",
 
+    more:
+      "Lainnya",
+
   },
-
-
-
-
-
-
 
 
 
@@ -542,7 +508,6 @@ export const translations: Record<
     settings:
       "Cài đặt",
 
-
     myProfile:
       "Hồ sơ của tôi",
 
@@ -564,13 +529,10 @@ export const translations: Record<
     moneySystemMessage:
       "Bạn đang xây dựng hệ thống tài chính vững mạnh hơn. Những hành động nhỏ tạo nên sự giàu có lâu dài.",
 
+    more:
+      "Thêm",
+
   },
-
-
-
-
-
-
 
 
 
@@ -597,7 +559,6 @@ export const translations: Record<
     settings:
       "설정",
 
-
     myProfile:
       "내 프로필",
 
@@ -619,13 +580,10 @@ export const translations: Record<
     moneySystemMessage:
       "더 강력한 금융 시스템을 구축하고 있습니다. 작은 행동이 장기적인 부를 만듭니다.",
 
+    more:
+      "더보기",
+
   },
-
-
-
-
-
-
 
 
 
@@ -652,7 +610,6 @@ export const translations: Record<
     settings:
       "設定",
 
-
     myProfile:
       "マイプロフィール",
 
@@ -674,8 +631,10 @@ export const translations: Record<
     moneySystemMessage:
       "より強い資産管理システムを構築しています。小さな行動が長期的な豊かさを作ります。",
 
-  },
+    more:
+      "もっと見る",
 
+  },
 
 
 };
