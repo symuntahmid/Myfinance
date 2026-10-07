@@ -13,20 +13,45 @@ export type TranslationKey =
   | "financialLevel"
   | "buildingFinancialConfidence"
   | "moneySystemMessage"
-  | "more";
-
-
+  | "more"
+  | "moneyStreak"
+  | "keepGoing"
+  | "dailyJourneyMessage"
+  | "days"
+  | "dayStreak"
+  | "dailyJourney"
+  | "today"
+  | "investmentPortfolio"
+  | "assets"
+  | "invested"
+  | "currentValue"
+  | "profit"
+  | "return"
+  | "welcomeBack"
+  | "dailyJourneyComplete"
+  | "dailyJourneyChallenge"
+  | "xpUntilLevel"
+  | "buildBetterMoneyHabits"
+  | "progress"
+  | "done"
+  | "complete"
+  | "xpEarnedMessage"
+  | "trackExpense"
+  | "reviewSpending"
+  | "betterMoneyDecision";
 
 type LanguageTranslation =
   Record<TranslationKey, string>;
 
 
-
 export const translations: Record<
-  string,
+  "en" | "bn",
   LanguageTranslation
 > = {
 
+  /* ==========================================
+     ENGLISH
+  ========================================== */
 
   en: {
 
@@ -75,9 +100,87 @@ export const translations: Record<
     more:
       "More",
 
+    moneyStreak:
+      "Money Streak",
+
+    keepGoing:
+      "Keep Going",
+
+    dailyJourneyMessage:
+      "Complete your Daily Journey every day to build your streak.",
+
+    days:
+      "Days",
+
+    dayStreak:
+      "Day Streak",
+
+    dailyJourney:
+      "Daily Journey",
+
+    today:
+      "Today",
+
+    investmentPortfolio:
+      "Investment Portfolio",
+
+    assets:
+      "Assets",
+
+    invested:
+      "Invested",
+
+    currentValue:
+      "Current Value",
+
+    profit:
+      "Profit",
+
+    return:
+      "Return",
+
+    welcomeBack:
+      "Welcome back",
+
+    dailyJourneyComplete:
+      "Congratulations! You completed today's Daily Journey. Come back tomorrow for a new challenge.",
+
+    dailyJourneyChallenge:
+      "Complete today's Daily Journey and earn +45 XP.",
+
+    xpUntilLevel:
+      "Only {xp} XP until Level {level}!",
+
+    buildBetterMoneyHabits:
+      "Build Better Money Habits",
+
+    progress:
+      "Progress",
+
+    done:
+  "Done",
+
+complete:
+  "Complete",
+
+xpEarnedMessage:
+  "XP earned. Your money habits are improving.",
+
+trackExpense:
+  "Track one expense",
+
+reviewSpending:
+  "Review your spending",
+
+betterMoneyDecision:
+  "Make one better money decision",
+
   },
 
 
+  /* ==========================================
+     BANGLA
+  ========================================== */
 
   bn: {
 
@@ -126,515 +229,80 @@ export const translations: Record<
     more:
       "আরও",
 
+    moneyStreak:
+      "টাকার অভ্যাসের ধারাবাহিকতা",
+
+    keepGoing:
+      "চালিয়ে যান",
+
+    dailyJourneyMessage:
+      "ধারাবাহিকতা গড়তে প্রতিদিনের যাত্রা সম্পন্ন করুন।",
+
+    days:
+      "দিন",
+
+    dayStreak:
+      "দিনের ধারাবাহিকতা",
+
+    dailyJourney:
+      "দৈনিক যাত্রা",
+
+    today:
+      "আজ",
+
+    investmentPortfolio:
+      "বিনিয়োগ পোর্টফোলিও",
+
+    assets:
+      "সম্পদ",
+
+    invested:
+      "বিনিয়োগকৃত",
+
+    currentValue:
+      "বর্তমান মূল্য",
+
+    profit:
+      "লাভ",
+
+    return:
+      "রিটার্ন",
+
+    welcomeBack:
+      "স্বাগতম",
+
+    dailyJourneyComplete:
+      "🎉 দারুণ! আজকের যাত্রা শেষ। আগামীকাল নতুন চ্যালেঞ্জ অপেক্ষায়!",
+
+    dailyJourneyChallenge:
+      "আজকের যাত্রা শেষ করুন এবং +৪৫ XP পান।",
+
+    xpUntilLevel:
+      "পরবর্তী Level {level}-এ যেতে আর মাত্র {xp} XP বাকি!",
+
+    buildBetterMoneyHabits:
+      "টাকার অভ্যাস হোক আরও ভালো",
+
+    progress:
+      "অগ্রগতি",
+
+    done:
+  "সম্পন্ন",
+
+complete:
+  "শেষ করুন",
+
+xpEarnedMessage:
+  "XP অর্জন করেছেন। আপনার টাকার অভ্যাস আরও ভালো হচ্ছে।",
+
+trackExpense:
+  "একটি খরচ লিখুন",
+
+reviewSpending:
+  "আপনার খরচ দেখুন",
+
+betterMoneyDecision:
+  "টাকা নিয়ে একটি ভালো সিদ্ধান্ত নিন",
   },
-
-
-
-  hi: {
-
-    wealthHub:
-      "आपका व्यक्तिगत धन प्रबंधन केंद्र",
-
-    dashboard:
-      "डैशबोर्ड",
-
-    profile:
-      "प्रोफ़ाइल",
-
-    myMoney:
-      "मेरा पैसा",
-
-    investments:
-      "मेरे निवेश",
-
-    reports:
-      "रिपोर्ट",
-
-    settings:
-      "सेटिंग्स",
-
-    myProfile:
-      "मेरी प्रोफ़ाइल",
-
-    profileDescription:
-      "आपकी वित्तीय पहचान, प्रगति और धन संबंधी आदतें।",
-
-    editProfile:
-      "प्रोफ़ाइल संपादित करें",
-
-    developerMode:
-      "डेवलपर मोड",
-
-    financialLevel:
-      "वित्तीय स्तर",
-
-    buildingFinancialConfidence:
-      "वित्तीय आत्मविश्वास का निर्माण",
-
-    moneySystemMessage:
-      "आप एक मजबूत वित्तीय प्रणाली बना रहे हैं। छोटे कदम लंबे समय में धन बनाते हैं।",
-
-    more:
-      "अधिक",
-
-  },
-
-
-
-  ar: {
-
-    wealthHub:
-      "مركز إدارة ثروتك الشخصي",
-
-    dashboard:
-      "لوحة التحكم",
-
-    profile:
-      "الملف الشخصي",
-
-    myMoney:
-      "أموالي",
-
-    investments:
-      "استثماراتي",
-
-    reports:
-      "التقارير",
-
-    settings:
-      "الإعدادات",
-
-    myProfile:
-      "ملفي الشخصي",
-
-    profileDescription:
-      "هويتك المالية وتقدمك وعاداتك المالية.",
-
-    editProfile:
-      "تعديل الملف الشخصي",
-
-    developerMode:
-      "وضع المطور",
-
-    financialLevel:
-      "المستوى المالي",
-
-    buildingFinancialConfidence:
-      "بناء الثقة المالية",
-
-    moneySystemMessage:
-      "أنت تبني نظامًا ماليًا أقوى. الإجراءات الصغيرة تصنع ثروة طويلة الأجل.",
-
-    more:
-      "المزيد",
-
-  },
-
-
-
-  es: {
-
-    wealthHub:
-      "Tu centro personal de gestión financiera",
-
-    dashboard:
-      "Panel de control",
-
-    profile:
-      "Perfil",
-
-    myMoney:
-      "Mi dinero",
-
-    investments:
-      "Mis inversiones",
-
-    reports:
-      "Informes",
-
-    settings:
-      "Configuración",
-
-    myProfile:
-      "Mi perfil",
-
-    profileDescription:
-      "Tu identidad financiera, progreso y hábitos monetarios.",
-
-    editProfile:
-      "Editar perfil",
-
-    developerMode:
-      "Modo desarrollador",
-
-    financialLevel:
-      "Nivel financiero",
-
-    buildingFinancialConfidence:
-      "Construyendo confianza financiera",
-
-    moneySystemMessage:
-      "Estás construyendo un sistema financiero más sólido. Las pequeñas acciones crean riqueza a largo plazo.",
-
-    more:
-      "Más",
-
-  },
-
-    pt: {
-
-    wealthHub:
-      "Seu centro pessoal de gestão financeira",
-
-    dashboard:
-      "Painel",
-
-    profile:
-      "Perfil",
-
-    myMoney:
-      "Meu dinheiro",
-
-    investments:
-      "Meus investimentos",
-
-    reports:
-      "Relatórios",
-
-    settings:
-      "Configurações",
-
-    myProfile:
-      "Meu perfil",
-
-    profileDescription:
-      "Sua identidade financeira, progresso e hábitos financeiros.",
-
-    editProfile:
-      "Editar perfil",
-
-    developerMode:
-      "Modo desenvolvedor",
-
-    financialLevel:
-      "Nível financeiro",
-
-    buildingFinancialConfidence:
-      "Construindo confiança financeira",
-
-    moneySystemMessage:
-      "Você está construindo um sistema financeiro mais forte. Pequenas ações criam riqueza a longo prazo.",
-
-    more:
-      "Mais",
-
-  },
-
-
-
-  fr: {
-
-    wealthHub:
-      "Votre centre personnel de gestion financière",
-
-    dashboard:
-      "Tableau de bord",
-
-    profile:
-      "Profil",
-
-    myMoney:
-      "Mon argent",
-
-    investments:
-      "Mes investissements",
-
-    reports:
-      "Rapports",
-
-    settings:
-      "Paramètres",
-
-    myProfile:
-      "Mon profil",
-
-    profileDescription:
-      "Votre identité financière, vos progrès et vos habitudes financières.",
-
-    editProfile:
-      "Modifier le profil",
-
-    developerMode:
-      "Mode développeur",
-
-    financialLevel:
-      "Niveau financier",
-
-    buildingFinancialConfidence:
-      "Construire la confiance financière",
-
-    moneySystemMessage:
-      "Vous construisez un système financier plus solide. Les petites actions créent une richesse durable.",
-
-    more:
-      "Plus",
-
-  },
-
-
-
-  de: {
-
-    wealthHub:
-      "Ihr persönliches Finanzzentrum",
-
-    dashboard:
-      "Dashboard",
-
-    profile:
-      "Profil",
-
-    myMoney:
-      "Mein Geld",
-
-    investments:
-      "Meine Investitionen",
-
-    reports:
-      "Berichte",
-
-    settings:
-      "Einstellungen",
-
-    myProfile:
-      "Mein Profil",
-
-    profileDescription:
-      "Ihre finanzielle Identität, Fortschritte und Geldgewohnheiten.",
-
-    editProfile:
-      "Profil bearbeiten",
-
-    developerMode:
-      "Entwicklermodus",
-
-    financialLevel:
-      "Finanzlevel",
-
-    buildingFinancialConfidence:
-      "Finanzielles Vertrauen aufbauen",
-
-    moneySystemMessage:
-      "Sie bauen ein stärkeres Finanzsystem auf. Kleine Schritte schaffen langfristigen Wohlstand.",
-
-    more:
-      "Mehr",
-
-  },
-
-
-
-  id: {
-
-    wealthHub:
-      "Pusat pengelolaan keuangan pribadi Anda",
-
-    dashboard:
-      "Dasbor",
-
-    profile:
-      "Profil",
-
-    myMoney:
-      "Uang Saya",
-
-    investments:
-      "Investasi Saya",
-
-    reports:
-      "Laporan",
-
-    settings:
-      "Pengaturan",
-
-    myProfile:
-      "Profil Saya",
-
-    profileDescription:
-      "Identitas keuangan, perkembangan, dan kebiasaan uang Anda.",
-
-    editProfile:
-      "Edit Profil",
-
-    developerMode:
-      "Mode Pengembang",
-
-    financialLevel:
-      "Tingkat Keuangan",
-
-    buildingFinancialConfidence:
-      "Membangun kepercayaan finansial",
-
-    moneySystemMessage:
-      "Anda sedang membangun sistem keuangan yang lebih kuat. Tindakan kecil menciptakan kekayaan jangka panjang.",
-
-    more:
-      "Lainnya",
-
-  },
-
-
-
-  vi: {
-
-    wealthHub:
-      "Trung tâm quản lý tài chính cá nhân của bạn",
-
-    dashboard:
-      "Bảng điều khiển",
-
-    profile:
-      "Hồ sơ",
-
-    myMoney:
-      "Tiền của tôi",
-
-    investments:
-      "Khoản đầu tư của tôi",
-
-    reports:
-      "Báo cáo",
-
-    settings:
-      "Cài đặt",
-
-    myProfile:
-      "Hồ sơ của tôi",
-
-    profileDescription:
-      "Danh tính tài chính, tiến trình và thói quen tiền bạc của bạn.",
-
-    editProfile:
-      "Chỉnh sửa hồ sơ",
-
-    developerMode:
-      "Chế độ nhà phát triển",
-
-    financialLevel:
-      "Cấp độ tài chính",
-
-    buildingFinancialConfidence:
-      "Xây dựng sự tự tin tài chính",
-
-    moneySystemMessage:
-      "Bạn đang xây dựng hệ thống tài chính vững mạnh hơn. Những hành động nhỏ tạo nên sự giàu có lâu dài.",
-
-    more:
-      "Thêm",
-
-  },
-
-
-
-  ko: {
-
-    wealthHub:
-      "개인 자산 관리 허브",
-
-    dashboard:
-      "대시보드",
-
-    profile:
-      "프로필",
-
-    myMoney:
-      "내 돈",
-
-    investments:
-      "내 투자",
-
-    reports:
-      "보고서",
-
-    settings:
-      "설정",
-
-    myProfile:
-      "내 프로필",
-
-    profileDescription:
-      "나의 금융 정체성, 진행 상황 및 돈 관리 습관",
-
-    editProfile:
-      "프로필 수정",
-
-    developerMode:
-      "개발자 모드",
-
-    financialLevel:
-      "재정 레벨",
-
-    buildingFinancialConfidence:
-      "금융 자신감 형성",
-
-    moneySystemMessage:
-      "더 강력한 금융 시스템을 구축하고 있습니다. 작은 행동이 장기적인 부를 만듭니다.",
-
-    more:
-      "더보기",
-
-  },
-
-
-
-  ja: {
-
-    wealthHub:
-      "あなたの個人資産管理ハブ",
-
-    dashboard:
-      "ダッシュボード",
-
-    profile:
-      "プロフィール",
-
-    myMoney:
-      "私のお金",
-
-    investments:
-      "投資",
-
-    reports:
-      "レポート",
-
-    settings:
-      "設定",
-
-    myProfile:
-      "マイプロフィール",
-
-    profileDescription:
-      "あなたの金融アイデンティティ、進捗、資産管理習慣。",
-
-    editProfile:
-      "プロフィールを編集",
-
-    developerMode:
-      "開発者モード",
-
-    financialLevel:
-      "財務レベル",
-
-    buildingFinancialConfidence:
-      "金融への自信を築いています",
-
-    moneySystemMessage:
-      "より強い資産管理システムを構築しています。小さな行動が長期的な豊かさを作ります。",
-
-    more:
-      "もっと見る",
-
-  },
-
 
 };

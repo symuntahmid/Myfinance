@@ -2,47 +2,30 @@ import {
   getSettings,
 } from "./settings";
 
-
 import {
   translations,
   TranslationKey,
 } from "./translations";
 
 
-
 export function t(
   key: TranslationKey
-) {
-
+): string {
 
   const settings =
     getSettings();
 
 
-
   const language =
-    settings.language || "en";
+    settings.language === "bn"
+      ? "bn"
+      : "en";
 
 
-
-  const currentTranslation =
-    translations[language];
-
-
-
-  if (
-    currentTranslation &&
-    currentTranslation[key]
-  ) {
-
-    return currentTranslation[key];
-
-  }
-
-
-
-  // fallback to English
-
-  return translations.en[key];
+  return (
+    translations[language][key]
+    ??
+    translations.en[key]
+  );
 
 }

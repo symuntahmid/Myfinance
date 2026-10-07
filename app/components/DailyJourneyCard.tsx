@@ -14,6 +14,7 @@ import {
 } from "../data/dailyJourney";
 
 import { unlockAchievement } from "../data/achievements";
+import { t } from "@/app/data/i18n";
 
 export default function DailyJourneyCard() {
   const [, forceUpdate] = useState(0);
@@ -149,7 +150,7 @@ tracking-[0.14em]
 text-white/80
 "
 >
-Daily Journey
+{t("dailyJourney")}
 </p>
 
 
@@ -163,7 +164,7 @@ tracking-[-0.05em]
 sm:text-4xl
 "
 >
-Build Better Money Habits
+{t("buildBetterMoneyHabits")}
 </h2>
 
 
@@ -171,10 +172,6 @@ Build Better Money Habits
 
 
 </div>
-
-
-
-
 
 
 {/* Progress */}
@@ -195,7 +192,7 @@ tracking-[-0.015em]
 >
 
 <span>
-Progress
+{t("progress")}
 </span>
 
 
@@ -237,12 +234,6 @@ width:`${progress.percent}%`
 
 
 </div>
-
-
-
-
-
-
 
 
 {/* Tasks */}
@@ -365,7 +356,7 @@ font-bold
 text-emerald-100
 "
 >
-✓ Done
+✓ {t("done")}
 </span>
 
 
@@ -383,7 +374,7 @@ text-white/70
 sm:block
 "
 >
-Complete
+{t("complete")}
 </span>
 
 
@@ -461,7 +452,7 @@ leading-tight
 tracking-[-0.045em]
 "
 >
-Daily Journey Complete!
+{t("dailyJourneyComplete")}
 </h3>
 
 
@@ -474,7 +465,7 @@ tracking-[-0.015em]
 text-white/90
 "
 >
-🎉 +45 XP earned. Your money habits are improving.
++45 {t("xpEarnedMessage")}
 </p>
 
 
