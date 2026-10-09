@@ -85,7 +85,15 @@ export type TranslationKey =
   | "type"
   | "source"
   | "category"
-  | "amount";
+  | "amount"
+  | "yourSmartCFO"
+  | "personalAIFinancialCoach"
+  | "nextAction"
+  | "aiOpportunitiesDiscovered"
+  | "unlockCompleteSmartCFO"
+  | "hiddenMoneyPatterns"
+  | "unlockAIInsights"
+  | "allSmartCFOInsightsUnlocked";
    
 type LanguageTranslation =
   Record<TranslationKey, string>;
@@ -368,7 +376,31 @@ expensesHigherIncome:
     amount:
       "Amount",
 
-    
+      yourSmartCFO:
+      "Your Smart CFO",
+
+    personalAIFinancialCoach:
+      "Your personal AI financial coach",
+
+    nextAction:
+      "Next Action",
+
+    aiOpportunitiesDiscovered:
+      "{count} AI opportunities discovered",
+
+    unlockCompleteSmartCFO:
+      "Unlock your complete Smart CFO analysis",
+
+    hiddenMoneyPatterns:
+      "Discover hidden money patterns.",
+
+    unlockAIInsights:
+      "Unlock AI Insights",
+
+    allSmartCFOInsightsUnlocked:
+      "All Smart CFO insights unlocked",  
+
+  
   },
 
 
@@ -640,6 +672,32 @@ expensesHigherIncome:
 
     amount:
       "পরিমাণ",
+
+
+      yourSmartCFO:
+      "আপনার স্মার্ট CFO",
+
+    personalAIFinancialCoach:
+      "আপনার ব্যক্তিগত AI অর্থ কোচ",
+
+    nextAction:
+      "পরবর্তী পদক্ষেপ",
+
+    aiOpportunitiesDiscovered:
+      "{count}টি AI সুযোগ পাওয়া গেছে",
+
+    unlockCompleteSmartCFO:
+      "সম্পূর্ণ Smart CFO বিশ্লেষণ দেখুন",
+
+    hiddenMoneyPatterns:
+      "টাকার লুকানো ধরণগুলো খুঁজে দেখুন।",
+
+    unlockAIInsights:
+      "AI ইনসাইট আনলক করুন",
+
+    allSmartCFOInsightsUnlocked:
+      "সব Smart CFO ইনসাইট আনলক হয়েছে",
+      
   },
 
 };
