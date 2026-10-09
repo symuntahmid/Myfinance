@@ -24,7 +24,7 @@ import {
   formatCurrency,
 } from "@/app/utils/currency";
 
-
+import { t } from "@/app/data/i18n";
 
 
 function CustomTooltip({
@@ -32,82 +32,77 @@ function CustomTooltip({
   payload,
 }: any) {
 
-
-  if(
+  if (
     !active ||
     !payload?.length
   ) {
     return null;
   }
 
-
   const item = payload[0];
-
 
   return (
 
     <div
       className="
-      rounded-2xl
-      border
-      border-[var(--border)]
-      bg-[var(--card)]
-      px-5
-      py-4
-      shadow-xl
+        rounded-2xl
+        border
+        border-[var(--border)]
+        bg-[var(--card)]
+        px-5
+        py-4
+        shadow-xl
       "
     >
 
-      <p className="
-      text-sm
-      text-[var(--muted)]
-      ">
+      <p
+        className="
+          text-sm
+          text-[var(--muted)]
+        "
+      >
         {item.payload.name}
       </p>
 
 
- <p
-className="
-mt-2
-font-display
-text-2xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
+      <p
+        className="
+          mt-2
+          font-display
+          text-2xl
+          font-medium
+          tracking-[-0.04em]
+          text-[var(--foreground)]
+        "
+      >
         {formatCurrency(
           Number(item.value)
         )}
       </p>
 
-
     </div>
 
   );
-
 }
-
-
-
 
 
 export default function IncomeExpenseChart() {
 
-
-  const [summary,setSummary] =
+  const [summary, setSummary] =
     useState(
       () => getSummary()
     );
 
 
-  const [,forceCurrencyUpdate] =
+  const [, forceCurrencyUpdate] =
     useState(0);
 
 
+  const [, refreshLanguage] =
+    useState(0);
 
-  useEffect(()=>{
 
+  useEffect(() => {
 
     const refresh = () => {
 
@@ -116,7 +111,6 @@ export default function IncomeExpenseChart() {
       );
 
     };
-
 
 
     const currencyListener = () => {
@@ -128,9 +122,16 @@ export default function IncomeExpenseChart() {
     };
 
 
+    const languageListener = () => {
+
+      refreshLanguage(
+        value => value + 1
+      );
+
+    };
+
 
     refresh();
-
 
 
     window.addEventListener(
@@ -151,9 +152,13 @@ export default function IncomeExpenseChart() {
     );
 
 
+    window.addEventListener(
+      "languageUpdated",
+      languageListener
+    );
 
-    return()=>{
 
+    return () => {
 
       window.removeEventListener(
         "transactionsUpdated",
@@ -173,217 +178,199 @@ export default function IncomeExpenseChart() {
       );
 
 
+      window.removeEventListener(
+        "languageUpdated",
+        languageListener
+      );
+
     };
 
-
-  },[]);
-
-
-
+  }, []);
 
 
   const data = [
 
     {
-      name:"Income",
-      amount:summary.income,
-      color:"#22c55e",
+      name: t("income"),
+      amount: summary.income,
+      color: "#22c55e",
     },
 
     {
-      name:"Expense",
-      amount:summary.expense,
-      color:"#ef4444",
+      name: t("expense"),
+      amount: summary.expense,
+      color: "#ef4444",
     },
 
     {
-      name:"Investment",
-      amount:summary.investment,
-      color:"#14b8a6",
+      name: t("investment"),
+      amount: summary.investment,
+      color: "#14b8a6",
     },
 
   ];
-
-
-
 
 
   return (
 
     <div
       className="
-      rounded-3xl
-      border border-[var(--border)]
-      bg-[var(--card)]
-      p-8
-      shadow-sm
+        rounded-3xl
+        border
+        border-[var(--border)]
+        bg-[var(--card)]
+        p-8
+        shadow-sm
       "
     >
 
-
-      <div className="
-      mb-8
-      flex
-      items-start
-      justify-between
-      ">
-
+      <div
+        className="
+          mb-8
+          flex
+          items-start
+          justify-between
+        "
+      >
 
         <div>
 
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Cash Flow Overview
-</p>
-
+          <p
+            className="
+              font-body
+              text-xs
+              font-medium
+              uppercase
+              tracking-[0.12em]
+              text-[var(--muted)]
+            "
+          >
+            {t("cashFlowOverview")}
+          </p>
 
 
-<h2
-className="
-mt-2
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-Income vs Expenses
-</h2>
+          <h2
+            className="
+              mt-2
+              font-display
+              text-3xl
+              font-medium
+              tracking-[-0.04em]
+              text-[var(--foreground)]
+            "
+          >
+            {t("incomeVsExpenses")}
+          </h2>
 
 
-
-<p
-className="
-mt-2
-font-body
-text-sm
-font-normal
-tracking-tight
-text-[var(--primary)]
-"
->
-Compare your monthly money flow
-</p>
-
+          <p
+            className="
+              mt-2
+              font-body
+              text-sm
+              font-normal
+              tracking-tight
+              text-[var(--primary)]
+            "
+          >
+            {t("compareMonthlyMoneyFlow")}
+          </p>
 
         </div>
 
 
-
-
-
-        <div className="
-        flex
-        gap-3
-        ">
-
+        <div
+          className="
+            flex
+            gap-3
+          "
+        >
 
           <div
             className="
-            rounded-xl
-            bg-green-500/10
-            px-4
-            py-3
+              rounded-xl
+              bg-green-500/10
+              px-4
+              py-3
             "
           >
 
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Income
-</p>
+            <p
+              className="
+                font-body
+                text-xs
+                font-medium
+                uppercase
+                tracking-[0.12em]
+                text-[var(--muted)]
+              "
+            >
+              {t("income")}
+            </p>
 
 
-<p
-className="
-font-display
-text-xl
-font-medium
-tracking-[-0.04em]
-text-green-600
-"
->
+            <p
+              className="
+                font-display
+                text-xl
+                font-medium
+                tracking-[-0.04em]
+                text-green-600
+              "
+            >
               {formatCurrency(
                 summary.income
               )}
             </p>
 
-
           </div>
-
-
-
 
 
           <div
             className="
-            rounded-xl
-            bg-red-500/10
-            px-4
-            py-3
+              rounded-xl
+              bg-red-500/10
+              px-4
+              py-3
             "
           >
 
             <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-              Expense
+              className="
+                font-body
+                text-xs
+                font-medium
+                uppercase
+                tracking-[0.12em]
+                text-[var(--muted)]
+              "
+            >
+              {t("expense")}
             </p>
 
 
-           <p
-className="
-font-display
-text-xl
-font-medium
-tracking-[-0.04em]
-text-green-600
-"
->
+            <p
+              className="
+                font-display
+                text-xl
+                font-medium
+                tracking-[-0.04em]
+                text-red-600
+              "
+            >
               {formatCurrency(
                 summary.expense
               )}
             </p>
 
-
           </div>
 
-
         </div>
-
 
       </div>
 
 
-
-
-
       <div className="h-80">
-
 
         <ResponsiveContainer
           width="100%"
@@ -391,7 +378,6 @@ text-green-600
         >
 
           <BarChart data={data}>
-
 
             <CartesianGrid
               strokeDasharray="3 3"
@@ -401,31 +387,28 @@ text-green-600
             />
 
 
-
             <XAxis
               dataKey="name"
               tickLine={false}
               axisLine={false}
               tick={{
-                fill:"var(--muted)"
+                fill: "var(--muted)",
               }}
             />
-
 
 
             <YAxis
               tickLine={false}
               axisLine={false}
               tick={{
-                fill:"var(--muted)"
+                fill: "var(--muted)",
               }}
             />
 
 
-
             <Tooltip
               cursor={{
-                fill:"rgba(148,163,184,0.15)",
+                fill: "rgba(148,163,184,0.15)",
               }}
               content={
                 <CustomTooltip />
@@ -433,39 +416,32 @@ text-green-600
             />
 
 
-
             <Bar
               dataKey="amount"
-              radius={[12,12,0,0]}
+              radius={[12, 12, 0, 0]}
               animationDuration={900}
             >
 
-              {
-                data.map(
-                  (entry,index)=>(
-                    <Cell
-                      key={index}
-                      fill={entry.color}
-                    />
-                  )
-                )
-              }
+              {data.map(
+                (entry, index) => (
 
+                  <Cell
+                    key={index}
+                    fill={entry.color}
+                  />
+
+                )
+              )}
 
             </Bar>
 
-
           </BarChart>
-
 
         </ResponsiveContainer>
 
-
       </div>
-
 
     </div>
 
   );
-
 }

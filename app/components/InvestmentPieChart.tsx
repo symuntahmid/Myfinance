@@ -23,6 +23,8 @@ import {
   formatCurrency,
 } from "@/app/utils/currency";
 
+import { t } from "@/app/data/i18n";
+
 
 const COLORS = [
   "#14b8a6",
@@ -37,161 +39,143 @@ const COLORS = [
 ];
 
 
-
 function CustomTooltip({
   active,
   payload,
 }: any) {
 
-
-  if(
+  if (
     !active ||
     !payload?.length
-  ){
+  ) {
     return null;
   }
 
-
   const item = payload[0];
-
 
   return (
 
     <div
       className="
-      rounded-2xl
-      border
-      border-[var(--border)]
-      bg-[var(--card)]
-      px-5
-      py-4
-      shadow-xl
+        rounded-2xl
+        border
+        border-[var(--border)]
+        bg-[var(--card)]
+        px-5
+        py-4
+        shadow-xl
       "
     >
 
-      <p className="
-      text-sm
-      text-[var(--muted)]
-      ">
+      <p
+        className="
+          text-sm
+          text-[var(--muted)]
+        "
+      >
         {item.name}
       </p>
 
 
-<p
-className="
-mt-2
-font-display
-text-2xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
+      <p
+        className="
+          mt-2
+          font-display
+          text-2xl
+          font-medium
+          tracking-[-0.04em]
+          text-[var(--foreground)]
+        "
+      >
         {formatCurrency(
           Number(item.value)
         )}
       </p>
 
 
-     <p
-className="
-mt-1
-font-body
-text-sm
-font-medium
-tracking-tight
-text-[var(--primary)]
-"
->
+      <p
+        className="
+          mt-1
+          font-body
+          text-sm
+          font-medium
+          tracking-tight
+          text-[var(--primary)]
+        "
+      >
         {item.payload.percent.toFixed(1)}%
       </p>
-
 
     </div>
 
   );
-
 }
-
-
 
 
 export default function InvestmentPieChart() {
 
-
-  const [data,setData] =
+  const [data, setData] =
     useState<any[]>([]);
 
 
-
-  const [portfolio,setPortfolio] =
+  const [portfolio, setPortfolio] =
     useState(
       () => getPortfolioSummary()
     );
 
 
-
-  const [,forceCurrencyUpdate] =
+  const [, forceCurrencyUpdate] =
     useState(0);
 
 
+  const [, refreshLanguage] =
+    useState(0);
 
 
-  useEffect(()=>{
+  useEffect(() => {
 
-
-    function refreshChart(){
-
+    function refreshChart() {
 
       const allocation =
         getAllocation();
-
 
 
       const summary =
         getPortfolioSummary();
 
 
-
       const total =
         Object.values(allocation)
-        .reduce(
-          (sum,value)=>
-            sum + value,
-          0
-        );
-
+          .reduce(
+            (sum, value) =>
+              sum + value,
+            0
+          );
 
 
       const chartData =
         Object.entries(allocation)
-        .map(
-          ([name,value])=>({
+          .map(
+            ([name, value]) => ({
 
-            name,
+              name,
 
-            value,
+              value,
 
-            percent:
-              total === 0
-              ?
-              0
-              :
-              (value / total) * 100,
+              percent:
+                total === 0
+                  ? 0
+                  : (value / total) * 100,
 
-          })
-        );
-
+            })
+          );
 
 
       setPortfolio(summary);
 
       setData(chartData);
 
-
     }
-
-
 
 
     const currencyListener = () => {
@@ -203,9 +187,16 @@ export default function InvestmentPieChart() {
     };
 
 
+    const languageListener = () => {
+
+      refreshLanguage(
+        value => value + 1
+      );
+
+    };
+
 
     refreshChart();
-
 
 
     window.addEventListener(
@@ -220,9 +211,13 @@ export default function InvestmentPieChart() {
     );
 
 
+    window.addEventListener(
+      "languageUpdated",
+      languageListener
+    );
 
-    return ()=>{
 
+    return () => {
 
       window.removeEventListener(
         "investmentsUpdated",
@@ -236,293 +231,246 @@ export default function InvestmentPieChart() {
       );
 
 
+      window.removeEventListener(
+        "languageUpdated",
+        languageListener
+      );
+
     };
 
-
-  },[]);
-
-
-
-
-
+  }, []);
 
 
   const largestHolding =
     data.length > 0
-    ?
-    [...data].sort(
-      (a,b)=>
-        b.value-a.value
-    )[0]
-    :
-    null;
-
-
-
+      ? [...data].sort(
+          (a, b) =>
+            b.value - a.value
+        )[0]
+      : null;
 
 
   return (
 
     <div
       className="
-      rounded-3xl
-      border
-      border-[var(--border)]
-      bg-[var(--card)]
-      p-8
-      shadow-sm
+        rounded-3xl
+        border
+        border-[var(--border)]
+        bg-[var(--card)]
+        p-8
+        shadow-sm
       "
     >
 
-
-      <div className="
-      mb-8
-      flex
-      items-start
-      justify-between
-      ">
-
+      <div
+        className="
+          mb-8
+          flex
+          items-start
+          justify-between
+        "
+      >
 
         <div>
 
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-            Investment Allocation
+          <p
+            className="
+              font-body
+              text-xs
+              font-medium
+              uppercase
+              tracking-[0.12em]
+              text-[var(--muted)]
+            "
+          >
+            {t("investmentAllocation")}
           </p>
 
 
-
-<h2
-className="
-mt-2
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-            Portfolio Diversification
+          <h2
+            className="
+              mt-2
+              font-display
+              text-3xl
+              font-medium
+              tracking-[-0.04em]
+              text-[var(--foreground)]
+            "
+          >
+            {t("portfolioDiversification")}
           </h2>
 
 
-
-<p
-className="
-mt-2
-font-body
-text-sm
-font-normal
-tracking-tight
-text-[var(--primary)]
-"
->
-            {portfolio.totalAssets} Assets • {data.length} Categories
+          <p
+            className="
+              mt-2
+              font-body
+              text-sm
+              font-normal
+              tracking-tight
+              text-[var(--primary)]
+            "
+          >
+            {t("assetsCategories")
+              .replace(
+                "{assets}",
+                String(portfolio.totalAssets)
+              )
+              .replace(
+                "{categories}",
+                String(data.length)
+              )}
           </p>
-
 
         </div>
 
 
-
-
-
-        {
-          largestHolding && (
+        {largestHolding && (
 
           <div
             className="
-            rounded-2xl
-            border
-            border-[var(--primary)]/20
-            bg-[var(--primary)]/10
-            px-5
-            py-4
+              rounded-2xl
+              border
+              border-[var(--primary)]/20
+              bg-[var(--primary)]/10
+              px-5
+              py-4
             "
           >
 
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-              Largest Holding
+            <p
+              className="
+                font-body
+                text-xs
+                font-medium
+                uppercase
+                tracking-[0.12em]
+                text-[var(--muted)]
+              "
+            >
+              {t("largestHolding")}
             </p>
 
 
-<h3
-className="
-mt-1
-font-display
-text-xl
-font-medium
-tracking-[-0.03em]
-text-[var(--foreground)]
-"
->
+            <h3
+              className="
+                mt-1
+                font-display
+                text-xl
+                font-medium
+                tracking-[-0.03em]
+                text-[var(--foreground)]
+              "
+            >
               {largestHolding.name}
             </h3>
 
 
-           <p
-className="
-mt-1
-font-body
-text-sm
-font-medium
-tracking-tight
-text-[var(--primary)]
-"
->
+            <p
+              className="
+                mt-1
+                font-body
+                text-sm
+                font-medium
+                tracking-tight
+                text-[var(--primary)]
+              "
+            >
               {largestHolding.percent.toFixed(1)}%
             </p>
 
-
           </div>
 
-          )
-        }
-
+        )}
 
       </div>
 
 
-
-
-
       <div className="h-80">
 
+        {data.length === 0 ? (
 
-      {
-        data.length === 0
+          <div
+            className="
+              flex
+              h-full
+              items-center
+              justify-center
+              font-body
+              text-sm
+              text-[var(--muted)]
+            "
+          >
+            {t("noInvestmentsYet")}
+          </div>
 
-        ?
+        ) : (
 
-<div
-className="
-flex
-h-full
-items-center
-justify-center
-font-body
-text-sm
-text-[var(--muted)]
-"
->
-No investments yet
-</div>
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+          >
 
+            <PieChart>
 
-        :
+              <Pie
+                data={data}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={105}
+                innerRadius={65}
+                paddingAngle={3}
+                animationDuration={900}
+              >
 
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-        >
-
-          <PieChart>
-
-
-            <Pie
-
-              data={data}
-
-              dataKey="value"
-
-              nameKey="name"
-
-              cx="50%"
-
-              cy="50%"
-
-              outerRadius={105}
-
-              innerRadius={65}
-
-              paddingAngle={3}
-
-              animationDuration={900}
-
-            >
-
-              {
-                data.map(
-                  (_,index)=>(
+                {data.map(
+                  (_, index) => (
 
                     <Cell
-
                       key={index}
-
                       fill={
                         COLORS[
                           index %
                           COLORS.length
                         ]
                       }
-
                       stroke="var(--card)"
-
                       strokeWidth={3}
-
                     />
 
                   )
-                )
-              }
+                )}
+
+              </Pie>
 
 
-            </Pie>
+              <Tooltip
+                content={
+                  <CustomTooltip />
+                }
+              />
 
 
+              <Legend
+                verticalAlign="bottom"
+                iconType="circle"
+                wrapperStyle={{
+                  paddingTop: 20,
+                }}
+              />
 
-            <Tooltip
-              content={
-                <CustomTooltip/>
-              }
-            />
+            </PieChart>
 
+          </ResponsiveContainer>
 
-
-            <Legend
-
-              verticalAlign="bottom"
-
-              iconType="circle"
-
-              wrapperStyle={{
-                paddingTop:20,
-              }}
-
-            />
-
-
-          </PieChart>
-
-
-        </ResponsiveContainer>
-
-      }
-
+        )}
 
       </div>
-
 
     </div>
 
   );
-
 }

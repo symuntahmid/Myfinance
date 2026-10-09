@@ -1,70 +1,51 @@
 export type AppSettings = {
-
   country: string;
 
   // language code
-  // Example:
   // en = English
   // bn = Bangla
-  // hi = Hindi
-  language: string;
+  language: "en" | "bn";
 
   currency: string;
 
-
   remindersEnabled: boolean;
 
-
   darkMode: boolean;
-
 
   passcodeEnabled: boolean;
 
   passcodeHash: string | null;
-
 };
-
 
 
 const STORAGE_KEY =
   "myfinance-settings";
 
 
-
 const DEFAULT_SETTINGS: AppSettings = {
-
 
   country:
     "Bangladesh",
 
-
   language:
     "en",
-
 
   currency:
     "USD",
 
-
   remindersEnabled:
     true,
-
 
   darkMode:
     false,
 
-
   passcodeEnabled:
     false,
-
 
   passcodeHash:
     null,
 
 };
-
-
-
 
 
 /* ==========================================
@@ -73,15 +54,11 @@ const DEFAULT_SETTINGS: AppSettings = {
 
 export function getSettings(): AppSettings {
 
-
   if (
     typeof window === "undefined"
   ) {
-
     return DEFAULT_SETTINGS;
-
   }
-
 
 
   const saved =
@@ -90,21 +67,15 @@ export function getSettings(): AppSettings {
     );
 
 
-
   if (!saved) {
-
     return DEFAULT_SETTINGS;
-
   }
-
 
 
   try {
 
-
     const parsed =
       JSON.parse(saved);
-
 
 
     return {
@@ -113,28 +84,22 @@ export function getSettings(): AppSettings {
 
       ...parsed,
 
+      language:
+        parsed.language === "bn"
+          ? "bn"
+          : "en",
+
     };
 
-
-
   } catch {
-
 
     console.error(
       "Failed to load MyFinance settings."
     );
 
-
     return DEFAULT_SETTINGS;
-
-
   }
-
-
 }
-
-
-
 
 
 /* ==========================================
@@ -145,41 +110,48 @@ export function saveSettings(
   settings: AppSettings
 ) {
 
-
   if (
     typeof window === "undefined"
   ) {
-
     return;
-
   }
 
 
+  const previousSettings =
+    getSettings();
+
 
   localStorage.setItem(
-
     STORAGE_KEY,
-
     JSON.stringify(settings)
-
   );
-
-
 
 
   window.dispatchEvent(
-
     new Event(
       "settingsUpdated"
     )
-
   );
 
 
+  /*
+   * Notify the application when
+   * the language changes.
+   */
+
+  if (
+    previousSettings.language !==
+    settings.language
+  ) {
+
+    window.dispatchEvent(
+      new Event(
+        "languageUpdated"
+      )
+    );
+
+  }
 }
-
-
-
 
 
 /* ==========================================
@@ -190,10 +162,8 @@ export function updateSettings(
   updates: Partial<AppSettings>
 ) {
 
-
   const current =
     getSettings();
-
 
 
   saveSettings({
@@ -203,12 +173,7 @@ export function updateSettings(
     ...updates,
 
   });
-
-
 }
-
-
-
 
 
 /* ==========================================
@@ -217,18 +182,10 @@ export function updateSettings(
 
 export function resetSettings() {
 
-
   saveSettings(
-
     DEFAULT_SETTINGS
-
   );
-
-
 }
-
-
-
 
 
 /* ==========================================
@@ -236,7 +193,5 @@ export function resetSettings() {
 ========================================== */
 
 export {
-
   STORAGE_KEY as SETTINGS_STORAGE_KEY
-
 };

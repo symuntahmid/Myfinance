@@ -15,10 +15,10 @@ import { getSummary } from "../data/transactions";
 import { getPortfolioSummary } from "../data/investments";
 
 import { formatCurrency } from "@/app/utils/currency";
+import { t } from "@/app/data/i18n";
 
 
 export default function SummaryCards() {
-
 
   const [summary, setSummary] =
     useState(
@@ -32,14 +32,15 @@ export default function SummaryCards() {
     );
 
 
-
   const [, forceCurrencyUpdate] =
     useState(0);
 
 
+  const [, refreshLanguage] =
+    useState(0);
+
 
   useEffect(() => {
-
 
     function refresh() {
 
@@ -54,7 +55,6 @@ export default function SummaryCards() {
     }
 
 
-
     const currencyListener = () => {
 
       forceCurrencyUpdate(
@@ -64,9 +64,16 @@ export default function SummaryCards() {
     };
 
 
+    const languageListener = () => {
+
+      refreshLanguage(
+        value => value + 1
+      );
+
+    };
+
 
     refresh();
-
 
 
     window.addEventListener(
@@ -87,9 +94,13 @@ export default function SummaryCards() {
     );
 
 
+    window.addEventListener(
+      "languageUpdated",
+      languageListener
+    );
+
 
     return () => {
-
 
       window.removeEventListener(
         "transactionsUpdated",
@@ -109,31 +120,31 @@ export default function SummaryCards() {
       );
 
 
+      window.removeEventListener(
+        "languageUpdated",
+        languageListener
+      );
+
     };
 
-
   }, []);
-
-
-
 
 
   return (
 
     <div
-  className="
-  mt-8
-  grid
-  grid-cols-2
-  gap-4
-  md:gap-6
-  "
->
-
+      className="
+        mt-8
+        grid
+        grid-cols-2
+        gap-4
+        md:gap-6
+      "
+    >
 
       <StatCard
 
-        title="Net Worth"
+        title={t("netWorth")}
 
         value={
           formatCurrency(
@@ -150,11 +161,9 @@ export default function SummaryCards() {
       />
 
 
-
-
       <StatCard
 
-        title="Monthly Income"
+        title={t("monthlyIncome")}
 
         value={
           formatCurrency(
@@ -171,11 +180,9 @@ export default function SummaryCards() {
       />
 
 
-
-
       <StatCard
 
-        title="Expenses"
+        title={t("expenses")}
 
         value={
           formatCurrency(
@@ -192,11 +199,9 @@ export default function SummaryCards() {
       />
 
 
-
-
       <StatCard
 
-        title="Investments"
+        title={t("investments")}
 
         value={
           formatCurrency(
@@ -211,7 +216,6 @@ export default function SummaryCards() {
         }
 
       />
-
 
     </div>
 
