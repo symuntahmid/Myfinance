@@ -93,23 +93,41 @@ export type TranslationKey =
   | "unlockCompleteSmartCFO"
   | "hiddenMoneyPatterns"
   | "unlockAIInsights"
-  | "allSmartCFOInsightsUnlocked";
-   
-type LanguageTranslation =
-  Record<TranslationKey, string>;
+  | "allSmartCFOInsightsUnlocked"
+  | "globalBenchmark"
+  | "spendingPositionWorldwide"
+  | "compareGlobalSpendingPatterns"
+  | "globalSpendingComparison"
+  | "shopping"
+  | "food"
+  | "monthlySpending"
+  | "overallSpendingHealth"
+  | "betterThanPercent"
+  | "good"
+  | "healthierThanBenchmarkUsers"
+  | "savingMoreThanLastMonth"
+  | "keepBuildingStrongHabits"
+  | "currentBalance"
+  | "thisMonth"
+  | "availableCash"
+  | "incomeMinusExpenses"
+  | "analytics"
+  | "exploreMoneyAnalytics"
+  | "moneyAnalyticsDescription"
+  | "recentActivity"
+  | "addFirstTransaction";
 
+type LanguageTranslation = Record<TranslationKey, string>;
 
 export const translations: Record<
   "en" | "bn",
   LanguageTranslation
 > = {
-
-  /* ==========================================
+  /* =====================================================
      ENGLISH
-  ========================================== */
+  ===================================================== */
 
   en: {
-
     wealthHub:
       "Your Personal Wealth Hub",
 
@@ -213,36 +231,34 @@ export const translations: Record<
       "Progress",
 
     done:
-  "Done",
+      "Done",
 
-complete:
-  "Complete",
+    complete:
+      "Complete",
 
-xpEarnedMessage:
-  "XP earned. Your money habits are improving.",
+    xpEarnedMessage:
+      "XP earned. Your money habits are improving.",
 
-trackExpense:
-  "Track one expense",
+    trackExpense:
+      "Track one expense",
 
-reviewSpending:
-  "Review your spending",
+    reviewSpending:
+      "Review your spending",
 
-betterMoneyDecision:
-  "Make one better money decision",
+    betterMoneyDecision:
+      "Make one better money decision",
 
-level:
-  "Level",
+    level:
+      "Level",
 
+    netWorth:
+      "Net Worth",
 
-  netWorth:
-  "Net Worth",
+    monthlyIncome:
+      "Monthly Income",
 
-monthlyIncome:
-  "Monthly Income",
-
-expenses:
-  "Expenses",
-
+    expenses:
+      "Expenses",
 
     myFutureGoals:
       "My Future Goals",
@@ -266,51 +282,49 @@ expenses:
       "🎉 Goal completed! Amazing work.",
 
     keepGoingFuture:
-      "🚀 Keep going, your future is getting closer.",  
+      "🚀 Keep going, your future is getting closer.",
 
+    monthlyBudget:
+      "Monthly Budget",
 
-   monthlyBudget:
-  "Monthly Budget",
+    used:
+      "Used",
 
-used:
-  "Used",
+    budget:
+      "Budget",
 
-budget:
-  "Budget",
+    spent:
+      "Spent",
 
-spent:
-  "Spent",
+    remaining:
+      "Remaining",
 
-remaining:
-  "Remaining",
+    financialInsights:
+      "Financial Insights",
 
-financialInsights:
-  "Financial Insights",
+    personalizedObservations:
+      "Personalized observations based on your finances.",
 
-personalizedObservations:
-  "Personalized observations based on your finances.",
+    addFirstIncome:
+      "Add your first income to begin tracking.",
 
-addFirstIncome:
-  "Add your first income to begin tracking.",
+    excellentSavings:
+      "Excellent! You're saving over 50% of your income.",
 
-excellentSavings:
-  "Excellent! You're saving over 50% of your income.",
+    healthySavings:
+      "Great job! Your savings rate is healthy.",
 
-healthySavings:
-  "Great job! Your savings rate is healthy.",
+    consistentSavings:
+      "You're saving consistently. Keep building momentum.",
 
-consistentSavings:
-  "You're saving consistently. Keep building momentum.",
+    reduceExpenses:
+      "Try reducing unnecessary expenses to improve savings.",
 
-reduceExpenses:
-  "Try reducing unnecessary expenses to improve savings.",
+    investmentsMajorWealth:
+      "Your investments are becoming a major part of your wealth.",
 
-investmentsMajorWealth:
-  "Your investments are becoming a major part of your wealth.",
-
-expensesHigherIncome:
-  "Warning: Expenses are higher than your income.",
-
+    expensesHigherIncome:
+      "Warning: Expenses are higher than your income.",
 
     netWorthTrend:
       "Net Worth Trend",
@@ -318,8 +332,7 @@ expensesHigherIncome:
     growingSteadily:
       "Growing steadily",
 
-
-      cashFlowOverview:
+    cashFlowOverview:
       "Cash Flow Overview",
 
     incomeVsExpenses:
@@ -337,7 +350,7 @@ expensesHigherIncome:
     investment:
       "Investment",
 
-      investmentAllocation:
+    investmentAllocation:
       "Investment Allocation",
 
     portfolioDiversification:
@@ -352,7 +365,7 @@ expensesHigherIncome:
     noInvestmentsYet:
       "No investments yet",
 
-      recentTransactions:
+    recentTransactions:
       "Recent Transactions",
 
     viewAll:
@@ -376,7 +389,7 @@ expensesHigherIncome:
     amount:
       "Amount",
 
-      yourSmartCFO:
+    yourSmartCFO:
       "Your Smart CFO",
 
     personalAIFinancialCoach:
@@ -398,18 +411,80 @@ expensesHigherIncome:
       "Unlock AI Insights",
 
     allSmartCFOInsightsUnlocked:
-      "All Smart CFO insights unlocked",  
+      "All Smart CFO insights unlocked",
 
-  
+    globalBenchmark:
+      "Global Benchmark",
+
+    spendingPositionWorldwide:
+      "Your spending position worldwide",
+
+    compareGlobalSpendingPatterns:
+      "Compare your habits with global spending patterns.",
+
+    globalSpendingComparison:
+      "Global spending comparison",
+
+    shopping:
+      "Shopping",
+
+    food:
+      "Food",
+
+    monthlySpending:
+      "Monthly spending",
+
+    overallSpendingHealth:
+      "Overall spending health",
+
+    betterThanPercent:
+      "Better than {percent}%",
+
+    good:
+      "GOOD",
+
+    healthierThanBenchmarkUsers:
+      "Your spending habits are healthier than most benchmark users.",
+
+    savingMoreThanLastMonth:
+      "You're saving 18% more than last month.",
+
+    keepBuildingStrongHabits:
+      "Keep it up. You're building strong financial habits.",
+
+    currentBalance:
+      "Current Balance",
+
+    thisMonth:
+      "This Month",
+
+    availableCash:
+      "Available Cash",
+
+    incomeMinusExpenses:
+      "Income − Expenses",
+
+    analytics:
+      "Analytics",
+
+    exploreMoneyAnalytics:
+      "Explore Money Analytics",
+
+    moneyAnalyticsDescription:
+      "View detailed expense breakdown, income sources, category trends, financial health and AI insights.",
+
+    recentActivity:
+      "Recent Activity",
+
+    addFirstTransaction:
+      "Add your first income, expense or investment.",
   },
 
-
-  /* ==========================================
+  /* =====================================================
      BANGLA
-  ========================================== */
+  ===================================================== */
 
   bn: {
-
     wealthHub:
       "আপনার ব্যক্তিগত সম্পদ ব্যবস্থাপনা কেন্দ্র",
 
@@ -513,35 +588,34 @@ expensesHigherIncome:
       "অগ্রগতি",
 
     done:
-  "সম্পন্ন",
+      "সম্পন্ন",
 
-complete:
-  "শেষ করুন",
+    complete:
+      "শেষ করুন",
 
-xpEarnedMessage:
-  "XP অর্জন করেছেন। আপনার টাকার অভ্যাস আরও ভালো হচ্ছে।",
+    xpEarnedMessage:
+      "XP অর্জন করেছেন। আপনার টাকার অভ্যাস আরও ভালো হচ্ছে।",
 
-trackExpense:
-  "একটি খরচ লিখুন",
+    trackExpense:
+      "একটি খরচ লিখুন",
 
-reviewSpending:
-  "আপনার খরচ দেখুন",
+    reviewSpending:
+      "আপনার খরচ দেখুন",
 
-betterMoneyDecision:
-  "টাকা নিয়ে একটি ভালো সিদ্ধান্ত নিন",
+    betterMoneyDecision:
+      "টাকা নিয়ে একটি ভালো সিদ্ধান্ত নিন",
 
-level:
-  "লেভেল",
+    level:
+      "লেভেল",
 
-netWorth:
-  "মোট সম্পদ",
+    netWorth:
+      "মোট সম্পদ",
 
-monthlyIncome:
-  "মাসিক আয়",
+    monthlyIncome:
+      "মাসিক আয়",
 
-expenses:
-  "খরচ",
-
+    expenses:
+      "খরচ",
 
     myFutureGoals:
       "আমার ভবিষ্যৎ লক্ষ্য",
@@ -568,55 +642,54 @@ expenses:
       "🚀 চালিয়ে যান, আপনার ভবিষ্যৎ আরও কাছে আসছে।",
 
     monthlyBudget:
-  "মাসিক বাজেট",
+      "মাসিক বাজেট",
 
-used:
-  "ব্যবহৃত",
+    used:
+      "ব্যবহৃত",
 
-budget:
-  "বাজেট",
+    budget:
+      "বাজেট",
 
-spent:
-  "খরচ",
+    spent:
+      "খরচ",
 
-remaining:
-  "বাকি",
+    remaining:
+      "বাকি",
 
-financialInsights:
-  "আর্থিক বিশ্লেষণ",
+    financialInsights:
+      "আর্থিক বিশ্লেষণ",
 
-personalizedObservations:
-  "আপনার আর্থিক তথ্যের ভিত্তিতে কিছু পরামর্শ।",
+    personalizedObservations:
+      "আপনার আর্থিক তথ্যের ভিত্তিতে কিছু পরামর্শ।",
 
-addFirstIncome:
-  "ট্র্যাকিং শুরু করতে প্রথম আয় যোগ করুন।",
+    addFirstIncome:
+      "ট্র্যাকিং শুরু করতে প্রথম আয় যোগ করুন।",
 
-excellentSavings:
-  "দারুণ! আপনি আয়ের ৫০%-এর বেশি সঞ্চয় করছেন।",
+    excellentSavings:
+      "দারুণ! আপনি আয়ের ৫০%-এর বেশি সঞ্চয় করছেন।",
 
-healthySavings:
-  "চমৎকার! আপনার সঞ্চয়ের হার ভালো।",
+    healthySavings:
+      "চমৎকার! আপনার সঞ্চয়ের হার ভালো।",
 
-consistentSavings:
-  "আপনি নিয়মিত সঞ্চয় করছেন। চালিয়ে যান।",
+    consistentSavings:
+      "আপনি নিয়মিত সঞ্চয় করছেন। চালিয়ে যান।",
 
-reduceExpenses:
-  "সঞ্চয় বাড়াতে অপ্রয়োজনীয় খরচ কমানোর চেষ্টা করুন।",
+    reduceExpenses:
+      "সঞ্চয় বাড়াতে অপ্রয়োজনীয় খরচ কমানোর চেষ্টা করুন।",
 
-investmentsMajorWealth:
-  "আপনার বিনিয়োগ এখন সম্পদের বড় অংশ হয়ে উঠছে।",
+    investmentsMajorWealth:
+      "আপনার বিনিয়োগ এখন সম্পদের বড় অংশ হয়ে উঠছে।",
 
-expensesHigherIncome:
-  "সতর্কতা: আপনার খরচ আয়ের চেয়ে বেশি।",
-  
+    expensesHigherIncome:
+      "সতর্কতা: আপনার খরচ আয়ের চেয়ে বেশি।",
 
     netWorthTrend:
       "সম্পদের অগ্রগতি",
 
     growingSteadily:
-      "ধীরে ধীরে বাড়ছে",  
+      "ধীরে ধীরে বাড়ছে",
 
-      cashFlowOverview:
+    cashFlowOverview:
       "টাকার হিসাব",
 
     incomeVsExpenses:
@@ -634,7 +707,7 @@ expensesHigherIncome:
     investment:
       "বিনিয়োগ",
 
-      investmentAllocation:
+    investmentAllocation:
       "বিনিয়োগের ভাগ",
 
     portfolioDiversification:
@@ -673,8 +746,7 @@ expensesHigherIncome:
     amount:
       "পরিমাণ",
 
-
-      yourSmartCFO:
+    yourSmartCFO:
       "আপনার স্মার্ট CFO",
 
     personalAIFinancialCoach:
@@ -697,7 +769,71 @@ expensesHigherIncome:
 
     allSmartCFOInsightsUnlocked:
       "সব Smart CFO ইনসাইট আনলক হয়েছে",
-      
-  },
 
+    globalBenchmark:
+      "বিশ্বের তুলনা",
+
+    spendingPositionWorldwide:
+      "বিশ্বে আপনার খরচের অবস্থান",
+
+    compareGlobalSpendingPatterns:
+      "বিশ্বের খরচের ধরণের সাথে আপনার অভ্যাস তুলনা করুন।",
+
+    globalSpendingComparison:
+      "বিশ্বব্যাপী খরচের তুলনা",
+
+    shopping:
+      "কেনাকাটা",
+
+    food:
+      "খাবার",
+
+    monthlySpending:
+      "মাসিক খরচ",
+
+    overallSpendingHealth:
+      "সামগ্রিক খরচের অবস্থা",
+
+    betterThanPercent:
+      "{percent}% মানুষের চেয়ে ভালো",
+
+    good:
+      "ভালো",
+
+    healthierThanBenchmarkUsers:
+      "আপনার খরচের অভ্যাস বেশিরভাগ ব্যবহারকারীর তুলনায় ভালো।",
+
+    savingMoreThanLastMonth:
+      "গত মাসের তুলনায় আপনি ১৮% বেশি সঞ্চয় করছেন।",
+
+    keepBuildingStrongHabits:
+      "এভাবেই চালিয়ে যান। আপনি ভালো আর্থিক অভ্যাস গড়ে তুলছেন।",
+
+    currentBalance:
+      "বর্তমান ব্যালেন্স",
+
+    thisMonth:
+      "এই মাসে",
+
+    availableCash:
+      "হাতে থাকা টাকা",
+
+    incomeMinusExpenses:
+      "আয় − খরচ",
+
+    analytics:
+      "অ্যানালিটিক্স",
+
+    exploreMoneyAnalytics:
+      "মানি অ্যানালিটিক্স দেখুন",
+
+    moneyAnalyticsDescription:
+      "বিস্তারিত খরচের হিসাব, আয়ের উৎস, ক্যাটাগরির প্রবণতা, আর্থিক অবস্থা এবং AI ইনসাইট দেখুন।",
+
+    recentActivity:
+      "সাম্প্রতিক কার্যক্রম",
+
+    addFirstTransaction:
+      "আপনার প্রথম আয়, খরচ বা বিনিয়োগ যোগ করুন।",
+  },
 };
