@@ -18,8 +18,10 @@ import FinancialHealthCard from "../../components/reports/FinancialHealthCard";
 import MonthlyTrendChart from "../../components/reports/MonthlyTrendChart";
 
 import { formatCurrency } from "@/app/utils/currency";
+import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function ReportsPage() {
+const { t } = useLanguage();
 
   const [report, setReport] = useState(() =>
     getMonthlyReport()
@@ -162,7 +164,7 @@ tracking-[-0.05em]
 text-[var(--foreground)]
 "
 >
-  Monthly Report
+  {t("monthlyReport")}
 </h1>
 
 
@@ -175,7 +177,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-          A clear picture of your financial performance this month.
+          {t("monthlyReportDescription")}
         </p>
 
       </div>
@@ -205,7 +207,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-            Monthly Overview
+            {t("monthlyOverview")}
           </h2>
 
 
@@ -219,7 +221,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-            How your money moved this month.
+            {t("monthlyOverviewDescription")}
           </p>
 
         </div>
@@ -241,7 +243,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-Income
+{t("income")}
 </p>
 
 <h3
@@ -267,7 +269,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-  Money received this month
+  {t("moneyReceivedThisMonth")}
 </p>
 
           </div>
@@ -287,7 +289,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Expenses
+              {t("expenses")}
             </p>
 
 <h3
@@ -313,7 +315,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-              Money spent this month
+              {t("moneySpentThisMonth")}
             </p>
 
           </div>
@@ -333,7 +335,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Invested This Month
+              {t("investedThisMonth")}
             </p>
 
 <h3
@@ -359,7 +361,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-              Money allocated to investments
+              {t("moneyAllocatedToInvestments")}
             </p>
 
           </div>
@@ -379,7 +381,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Net Cash Flow
+              {t("netCashFlow")}
             </p>
 
 
@@ -411,7 +413,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-              Cash remaining after this month's activity
+              {t("cashRemainingAfterActivity")}
             </p>
 
           </div>
@@ -444,7 +446,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-            Cash Flow
+            {t("cashFlow")}
           </h2>
 
 
@@ -458,7 +460,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-            Your income, spending, investments, and transfers.
+            {t("cashFlowDescription")}
           </p>
 
         </div>
@@ -483,7 +485,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-                  Available Cash
+                  {t("availableCash")}
                 </p>
 
 
@@ -518,7 +520,7 @@ text-[var(--foreground)]
               <div className="flex justify-between text-sm">
 
                 <span className="text-[var(--muted)]">
-                  Income
+                  {t("income")}
                 </span>
 
                 <span className="font-semibold text-green-600">
@@ -532,7 +534,7 @@ text-[var(--foreground)]
               <div className="flex justify-between text-sm">
 
                 <span className="text-[var(--muted)]">
-                  Expenses
+                  {t("expenses")}
                 </span>
 
                 <span className="font-semibold text-red-600">
@@ -574,7 +576,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Savings Rate
+              {t("savingRate")}
             </p>
 
 
@@ -602,7 +604,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-              Percentage of income remaining after this month's activity.
+              {t("savingsRateDescription")}
             </p>
 
 
@@ -646,7 +648,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-            Investment Performance
+            {t("investmentPerformance")}
           </h2>
 
 
@@ -660,7 +662,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-            Current value and performance of your portfolio.
+            {t("investmentPerformanceDescription")}
           </p>
 
         </div>
@@ -683,7 +685,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Portfolio Value
+              {t("portfolioValue")}
             </p>
 
 <h3
@@ -716,7 +718,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Total Invested
+              {t("totalInvested")}
             </p>
 
 
@@ -751,7 +753,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Profit / Loss
+              {t("profitLoss")}
             </p>
 
 
@@ -791,7 +793,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-              Return
+              {t("return")}
             </p>
 
 
@@ -844,7 +846,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-              Expense Breakdown
+              {t("expenseBreakdown")}
             </h2>
 
 
@@ -858,7 +860,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-              Where your money went this month.
+              {t("expenseBreakdownDescription")}
             </p>
 
 
@@ -919,7 +921,7 @@ text-[var(--muted)]
 
 
                       <p className="mt-1 text-xs text-[var(--muted)]">
-                        {percentage.toFixed(1)}% of expenses
+                        {percentage.toFixed(1)}{t("percentOfExpenses")}
                       </p>
 
 
@@ -964,7 +966,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-            Recent Activity
+            {t("recentActivity")}
           </h2>
 
 
@@ -978,7 +980,7 @@ tracking-tight
 text-[var(--muted)]
 "
 >
-            Latest financial activity this month.
+            {t("latestFinancialActivity")}
           </p>
 
 
@@ -1069,7 +1071,7 @@ text-[var(--muted)]
 
             <div className="mt-6 rounded-xl bg-slate-50 p-6 text-center text-sm text-[var(--muted)]">
 
-              No financial activity recorded this month.
+              {t("noFinancialActivity")}
 
             </div>
 
@@ -1097,7 +1099,7 @@ tracking-[0.12em]
 text-white/60
 "
 >
-NET WORTH
+{t("netWorth")}
 </p>
 
 
@@ -1116,7 +1118,7 @@ text-white
 
 
           <p className="mt-3 text-sm text-white/60">
-            Available cash + investment portfolio value.
+            {t("netWorthDescription")}
           </p>
 
 
@@ -1127,7 +1129,7 @@ text-white
             <div className="flex justify-between">
 
               <span className="text-white/60">
-                Available Cash
+                {t("availableCash")}
               </span>
 
 
@@ -1185,7 +1187,7 @@ tracking-[-0.04em]
 text-[var(--foreground)]
 "
 >
-            Your report is waiting for real data.
+            {t("reportWaitingForData")}
           </h3>
 
 
@@ -1201,7 +1203,7 @@ text-[var(--muted)]
 "
 >
 
-            Add income, expenses, or investments to start building your financial report.
+            {t("addDataToBuildReport")}
 
           </p>
 

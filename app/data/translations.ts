@@ -125,10 +125,14 @@ export type TranslationKey =
   | "noExpense"
   | "noIncome"
   | "financialTrend"
+
+  // Portfolio Growth
   | "portfolioGrowth"
   | "trackPortfolioGrowth"
   | "noPortfolioHistory"
   | "portfolioValue"
+
+  // AI Portfolio Insights
   | "aiPortfolioInsights"
   | "personalizedPortfolioRecommendations"
   | "portfolioHealth"
@@ -140,7 +144,34 @@ export type TranslationKey =
   | "portfolioRepresents"
   | "aiRecommendation"
   | "highlyConcentratedPortfolio"
-  | "reasonablyDiversifiedPortfolio";
+  | "reasonablyDiversifiedPortfolio"
+
+  // Reports
+  | "monthlyReport"
+  | "monthlyReportDescription"
+  | "monthlyOverview"
+  | "monthlyOverviewDescription"
+  | "moneyReceivedThisMonth"
+  | "moneySpentThisMonth"
+  | "investedThisMonth"
+  | "moneyAllocatedToInvestments"
+  | "netCashFlow"
+  | "cashRemainingAfterActivity"
+  | "cashFlow"
+  | "cashFlowDescription"
+  | "savingsRateDescription"
+  | "investmentPerformance"
+  | "investmentPerformanceDescription"
+  | "totalInvested"
+  | "profitLoss"
+  | "expenseBreakdown"
+  | "expenseBreakdownDescription"
+  | "percentOfExpenses"
+  | "latestFinancialActivity"
+  | "noFinancialActivity"
+  | "netWorthDescription"
+  | "reportWaitingForData"
+  | "addDataToBuildReport";
 
 
 type LanguageTranslation = Record<TranslationKey, string>;
@@ -579,6 +610,78 @@ highlyConcentratedPortfolio:
 reasonablyDiversifiedPortfolio:
   "Your portfolio is reasonably diversified. Continue investing consistently and review allocations monthly.",
 
+monthlyReport: "Monthly Report",
+monthlyReportDescription:
+  "A clear picture of your financial performance this month.",
+
+monthlyOverview: "Monthly Overview",
+monthlyOverviewDescription:
+  "How your money moved this month.",
+
+moneyReceivedThisMonth:
+  "Money received this month",
+
+moneySpentThisMonth:
+  "Money spent this month",
+
+investedThisMonth:
+  "Invested This Month",
+
+moneyAllocatedToInvestments:
+  "Money allocated to investments",
+
+netCashFlow:
+  "Net Cash Flow",
+
+cashRemainingAfterActivity:
+  "Cash remaining after this month's activity",
+
+cashFlow:
+  "Cash Flow",
+
+cashFlowDescription:
+  "Your income, spending, investments, and transfers.",
+
+savingsRateDescription:
+  "Percentage of income remaining after this month's activity.",
+
+investmentPerformance:
+  "Investment Performance",
+
+investmentPerformanceDescription:
+  "Current value and performance of your portfolio.",
+
+totalInvested:
+  "Total Invested",
+
+profitLoss:
+  "Profit / Loss",
+
+expenseBreakdown:
+  "Expense Breakdown",
+
+expenseBreakdownDescription:
+  "Where your money went this month.",
+
+percentOfExpenses:
+  "% of expenses",
+
+latestFinancialActivity:
+  "Latest financial activity this month.",
+
+noFinancialActivity:
+  "No financial activity recorded this month.",
+
+netWorthDescription:
+  "Available cash + investment portfolio value.",
+
+reportWaitingForData:
+  "Your report is waiting for real data.",
+
+addDataToBuildReport:
+  "Add income, expenses, or investments to start building your financial report.",
+
+
   },
 
   /* =====================================================
@@ -1011,5 +1114,77 @@ highlyConcentratedPortfolio:
 
 reasonablyDiversifiedPortfolio:
   "আপনার পোর্টফোলিও মোটামুটি বৈচিত্র্যপূর্ণ। নিয়মিত বিনিয়োগ চালিয়ে যান এবং প্রতি মাসে বিনিয়োগের ভাগ পর্যালোচনা করুন।",
+
+monthlyReport: "মাসিক প্রতিবেদন",
+monthlyReportDescription:
+  "এই মাসে আপনার আর্থিক কার্যক্রমের একটি পরিষ্কার চিত্র।",
+
+monthlyOverview: "মাসিক সারসংক্ষেপ",
+monthlyOverviewDescription:
+  "এই মাসে আপনার অর্থ কীভাবে ব্যবহৃত হয়েছে।",
+
+moneyReceivedThisMonth:
+  "এই মাসে প্রাপ্ত অর্থ",
+
+moneySpentThisMonth:
+  "এই মাসে ব্যয় করা অর্থ",
+
+investedThisMonth:
+  "এই মাসে বিনিয়োগ",
+
+moneyAllocatedToInvestments:
+  "বিনিয়োগে বরাদ্দ করা অর্থ",
+
+netCashFlow:
+  "নিট নগদ প্রবাহ",
+
+cashRemainingAfterActivity:
+  "এই মাসের কার্যক্রমের পর অবশিষ্ট নগদ",
+
+cashFlow:
+  "নগদ প্রবাহ",
+
+cashFlowDescription:
+  "আপনার আয়, ব্যয়, বিনিয়োগ এবং অর্থ স্থানান্তর।",
+
+savingsRateDescription:
+  "এই মাসের কার্যক্রমের পর আয়ের যে অংশ অবশিষ্ট থাকে তার শতাংশ।",
+
+investmentPerformance:
+  "বিনিয়োগের কার্যকারিতা",
+
+investmentPerformanceDescription:
+  "আপনার পোর্টফোলিওর বর্তমান মূল্য এবং কার্যকারিতা।",
+
+totalInvested:
+  "মোট বিনিয়োগ",
+
+profitLoss:
+  "লাভ / ক্ষতি",
+
+expenseBreakdown:
+  "ব্যয়ের বিবরণ",
+
+expenseBreakdownDescription:
+  "এই মাসে আপনার অর্থ কোথায় ব্যয় হয়েছে।",
+
+percentOfExpenses:
+  "মোট ব্যয়ের %",
+
+latestFinancialActivity:
+  "এই মাসের সর্বশেষ আর্থিক কার্যক্রম।",
+
+noFinancialActivity:
+  "এই মাসে কোনো আর্থিক কার্যক্রম রেকর্ড করা হয়নি।",
+
+netWorthDescription:
+  "উপলব্ধ নগদ + বিনিয়োগ পোর্টফোলিওর মূল্য।",
+
+reportWaitingForData:
+  "আপনার রিপোর্ট বাস্তব ডেটার জন্য অপেক্ষা করছে।",
+
+addDataToBuildReport:
+  "আপনার আর্থিক রিপোর্ট তৈরি করতে আয়, ব্যয় বা বিনিয়োগ যোগ করুন।",  
+
   },
 };
