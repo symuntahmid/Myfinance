@@ -115,7 +115,33 @@ export type TranslationKey =
   | "exploreMoneyAnalytics"
   | "moneyAnalyticsDescription"
   | "recentActivity"
-  | "addFirstTransaction";
+  | "addFirstTransaction"
+  | "aiFinancialInsights"
+  | "todaysSummary"
+  | "largestExpense"
+  | "mainIncome"
+  | "savingRate"
+  | "highestSpending"
+  | "noExpense"
+  | "noIncome"
+  | "financialTrend"
+  | "portfolioGrowth"
+  | "trackPortfolioGrowth"
+  | "noPortfolioHistory"
+  | "portfolioValue"
+  | "aiPortfolioInsights"
+  | "personalizedPortfolioRecommendations"
+  | "portfolioHealth"
+  | "currentPortfolioHealth"
+  | "excellent"
+  | "noData"
+  | "needsAttention"
+  | "average"
+  | "portfolioRepresents"
+  | "aiRecommendation"
+  | "highlyConcentratedPortfolio"
+  | "reasonablyDiversifiedPortfolio";
+
 
 type LanguageTranslation = Record<TranslationKey, string>;
 
@@ -478,6 +504,81 @@ export const translations: Record<
 
     addFirstTransaction:
       "Add your first income, expense or investment.",
+
+    aiFinancialInsights:
+  "AI Financial Insights",
+
+todaysSummary:
+  "Today's Summary",
+
+largestExpense:
+  "Largest Expense",
+
+mainIncome:
+  "Main Income",
+
+savingRate:
+  "Saving Rate",
+
+highestSpending:
+  "Highest Spending",
+
+noExpense:
+  "No expense",
+
+noIncome:
+  "No income",
+
+financialTrend:
+  "Financial Trend",
+portfolioGrowth:
+  "Portfolio Growth",
+
+trackPortfolioGrowth:
+  "Track the growth of your investment portfolio.",
+
+noPortfolioHistory:
+  "No portfolio history yet.",
+
+portfolioValue:
+  "Portfolio Value",
+
+aiPortfolioInsights:
+  "AI Portfolio Insights",
+
+personalizedPortfolioRecommendations:
+  "Personalized recommendations based on your portfolio.",
+
+portfolioHealth:
+  "Portfolio Health",
+
+currentPortfolioHealth:
+  "Your current portfolio health is",
+
+excellent:
+  "Excellent",
+
+noData:
+  "No Data",
+
+needsAttention:
+  "Needs Attention",
+
+average:
+  "Average",
+
+portfolioRepresents:
+  "represents",
+
+aiRecommendation:
+  "AI Recommendation",
+
+highlyConcentratedPortfolio:
+  "Your portfolio is highly concentrated in one asset. Consider diversifying into ETFs, Gold, or Bonds to reduce risk.",
+
+reasonablyDiversifiedPortfolio:
+  "Your portfolio is reasonably diversified. Continue investing consistently and review allocations monthly.",
+
   },
 
   /* =====================================================
@@ -835,5 +936,80 @@ export const translations: Record<
 
     addFirstTransaction:
       "আপনার প্রথম আয়, খরচ বা বিনিয়োগ যোগ করুন।",
+
+    aiFinancialInsights:
+  "AI আর্থিক বিশ্লেষণ",
+
+todaysSummary:
+  "আজকের সারাংশ",
+
+largestExpense:
+  "সবচেয়ে বড় খরচ",
+
+mainIncome:
+  "প্রধান আয়ের উৎস",
+
+savingRate:
+  "সঞ্চয়ের হার",
+
+highestSpending:
+  "সর্বোচ্চ খরচ",
+
+noExpense:
+  "কোনো খরচ নেই",
+
+noIncome:
+  "কোনো আয় নেই",
+
+  financialTrend:
+  "আর্থিক প্রবণতা",
+
+portfolioGrowth:
+  "বিনিয়োগ পোর্টফোলিওর অগ্রগতি",
+
+trackPortfolioGrowth:
+  "আপনার বিনিয়োগ পোর্টফোলিওর বৃদ্ধি দেখুন।",
+
+noPortfolioHistory:
+  "এখনও কোনো পোর্টফোলিও ইতিহাস নেই।",
+
+portfolioValue:
+  "পোর্টফোলিওর মূল্য",
+
+aiPortfolioInsights:
+  "AI পোর্টফোলিও বিশ্লেষণ",
+
+personalizedPortfolioRecommendations:
+  "আপনার পোর্টফোলিওর ভিত্তিতে ব্যক্তিগত পরামর্শ।",
+
+portfolioHealth:
+  "পোর্টফোলিওর অবস্থা",
+
+currentPortfolioHealth:
+  "আপনার বর্তমান পোর্টফোলিওর অবস্থা হলো",
+
+excellent:
+  "চমৎকার",
+
+noData:
+  "তথ্য নেই",
+
+needsAttention:
+  "মনোযোগ প্রয়োজন",
+
+average:
+  "গড়",
+
+portfolioRepresents:
+  "আপনার পোর্টফোলিওর",
+
+aiRecommendation:
+  "AI পরামর্শ",
+
+highlyConcentratedPortfolio:
+  "আপনার পোর্টফোলিও একটি সম্পদের ওপর বেশি নির্ভরশীল। ঝুঁকি কমাতে ETF, গোল্ড বা বন্ডে বৈচিত্র্য আনার কথা বিবেচনা করুন।",
+
+reasonablyDiversifiedPortfolio:
+  "আপনার পোর্টফোলিও মোটামুটি বৈচিত্র্যপূর্ণ। নিয়মিত বিনিয়োগ চালিয়ে যান এবং প্রতি মাসে বিনিয়োগের ভাগ পর্যালোচনা করুন।",
   },
 };

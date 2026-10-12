@@ -5,9 +5,17 @@ import {
   useState,
 } from "react";
 
-import { getTransactions } from "../data/transactions";
+import {
+  getTransactions,
+} from "../data/transactions";
 
-import { formatCurrency } from "@/app/utils/currency";
+import {
+  formatCurrency,
+} from "@/app/utils/currency";
+
+import {
+  t,
+} from "@/app/data/i18n";
 
 
 
@@ -19,7 +27,11 @@ export default function SpendingInsights() {
 
 
 
-  useEffect(()=>{
+  /*
+    Refresh when currency changes
+  */
+
+  useEffect(() => {
 
 
     const currencyListener = () => {
@@ -37,7 +49,7 @@ export default function SpendingInsights() {
     );
 
 
-    return()=>{
+    return () => {
 
       window.removeEventListener(
         "currencyUpdated",
@@ -47,7 +59,8 @@ export default function SpendingInsights() {
     };
 
 
-  },[]);
+  }, []);
+
 
 
 
@@ -58,32 +71,51 @@ export default function SpendingInsights() {
 
 
 
+
+  /*
+    Separate transactions
+  */
+
   const expenses =
     transactions.filter(
-      t=>t.type==="Expense"
+      transaction =>
+        transaction.type === "Expense"
     );
-
 
 
   const income =
     transactions.filter(
-      t=>t.type==="Income"
+      transaction =>
+        transaction.type === "Income"
     );
 
 
 
+
+
+  /*
+    Total income
+  */
 
   const totalIncome =
     income.reduce(
-      (sum,t)=>sum+t.amount,
+      (sum, transaction) =>
+        sum + transaction.amount,
       0
     );
 
 
+
+
+
+  /*
+    Total expenses
+  */
 
   const totalExpense =
     expenses.reduce(
-      (sum,t)=>sum+t.amount,
+      (sum, transaction) =>
+        sum + transaction.amount,
       0
     );
 
@@ -91,255 +123,256 @@ export default function SpendingInsights() {
 
 
 
+  /*
+    Saving rate
+  */
+
   const savingRate =
-    totalIncome===0
-    ?
-    0
-    :
-    (
-      (
-        totalIncome-totalExpense
-      )
-      /
-      totalIncome
-    )
-    *
-    100;
+    totalIncome === 0
+      ? 0
+      : (
+          (
+            totalIncome -
+            totalExpense
+          ) /
+          totalIncome
+        ) * 100;
 
 
 
 
 
-  // Expense Category
+  /*
+    Expense categories
+  */
 
   const expenseCategory:
-    Record<string,number> = {};
+    Record<string, number> = {};
 
 
 
-  expenses.forEach(t=>{
+  expenses.forEach(
+    transaction => {
+
+      const category =
+        transaction.category ||
+        "Other";
 
 
-    const category =
-      t.category || "Other";
+      expenseCategory[category] =
+        (
+          expenseCategory[category] ||
+          0
+        ) +
+        transaction.amount;
 
-
-    expenseCategory[category] =
-      (
-        expenseCategory[category] || 0
-      )
-      +
-      t.amount;
-
-
-  });
+    }
+  );
 
 
 
+
+
+  /*
+    Largest expense category
+  */
 
   const topExpense =
-    Object.entries(expenseCategory)
-    .sort(
-      (a,b)=>b[1]-a[1]
-    )[0];
+    Object.entries(
+      expenseCategory
+    )
+      .sort(
+        (a, b) =>
+          b[1] - a[1]
+      )[0];
 
 
 
 
 
-  // Income Source
-
+  /*
+    Income sources
+  */
 
   const incomeSource:
-    Record<string,number> = {};
+    Record<string, number> = {};
 
 
 
-  income.forEach(t=>{
+  income.forEach(
+    transaction => {
+
+      const source =
+        transaction.source ||
+        "Other";
 
 
-    const source =
-      t.source || "Other";
+      incomeSource[source] =
+        (
+          incomeSource[source] ||
+          0
+        ) +
+        transaction.amount;
 
-
-    incomeSource[source] =
-      (
-        incomeSource[source] || 0
-      )
-      +
-      t.amount;
-
-
-  });
+    }
+  );
 
 
 
+
+
+  /*
+    Main income source
+  */
 
   const topIncome =
-    Object.entries(incomeSource)
-    .sort(
-      (a,b)=>b[1]-a[1]
-    )[0];
+    Object.entries(
+      incomeSource
+    )
+      .sort(
+        (a, b) =>
+          b[1] - a[1]
+      )[0];
 
 
 
 
 
-
-  // Highest Expense
-
+  /*
+    Highest individual expense
+  */
 
   const highestExpense =
     [...expenses]
-    .sort(
-      (a,b)=>b.amount-a.amount
-    )[0];
+      .sort(
+        (a, b) =>
+          b.amount - a.amount
+      )[0];
 
 
 
 
 
+  return (
 
-return (
+    <div
+      className="
+      rounded-3xl
+      border
+      border-[var(--border)]
+      bg-[var(--card)]
+      p-5
+      shadow-xl
+      sm:p-8
+      "
+    >
 
-<div
-className="
-rounded-3xl
-bg-[var(--card)]
-border border-[var(--border)]
-p-5
-sm:p-8
-shadow-xl
-"
->
 
+      {/* Header */}
 
+      <div
+        className="
+        mb-8
+        "
+      >
 
-<div className="mb-8">
+        <p
+          className="
+          font-body
+          text-xs
+          font-medium
+          uppercase
+          tracking-[0.12em]
+          text-[var(--muted)]
+          "
+        >
+          {t("aiFinancialInsights")}
+        </p>
 
 
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-AI Financial Insights
-</p>
+        <h2
+          className="
+          mt-3
+          font-display
+          text-4xl
+          font-medium
+          tracking-[-0.04em]
+          text-[var(--foreground)]
+          "
+        >
+          {t("todaysSummary")}
+        </h2>
 
+      </div>
 
 
-<h2
-className="
-mt-3
-font-display
-text-4xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-Today's Summary
-</h2>
 
 
 
-</div>
+      {/* Insights */}
 
+      <div
+        className="
+        space-y-5
+        "
+      >
 
 
+        <InsightCard
+          icon="💸"
+          title={t("largestExpense")}
+          value={
+            topExpense
+              ? `${topExpense[0]} • ${formatCurrency(
+                  topExpense[1]
+                )}`
+              : t("noExpense")
+          }
+        />
 
 
-<div className="space-y-5">
 
+        <InsightCard
+          icon="💰"
+          title={t("mainIncome")}
+          value={
+            topIncome
+              ? `${topIncome[0]} • ${formatCurrency(
+                  topIncome[1]
+                )}`
+              : t("noIncome")
+          }
+        />
 
 
 
+        <InsightCard
+          icon="🎯"
+          title={t("savingRate")}
+          value={`${savingRate.toFixed(1)}%`}
+        />
 
-<InsightCard
 
-icon="💸"
 
-title="Largest Expense"
+        <InsightCard
+          icon="⚠️"
+          title={t("highestSpending")}
+          value={
+            highestExpense
+              ? formatCurrency(
+                  highestExpense.amount
+                )
+              : "-"
+          }
+        />
 
-value={
-topExpense
-?
-`${topExpense[0]} • ${formatCurrency(topExpense[1])}`
-:
-"No expense"
-}
 
-/>
+      </div>
 
 
+    </div>
 
-
-
-<InsightCard
-
-icon="💰"
-
-title="Main Income"
-
-value={
-topIncome
-?
-`${topIncome[0]} • ${formatCurrency(topIncome[1])}`
-:
-"No income"
-}
-
-/>
-
-
-
-
-
-<InsightCard
-
-icon="🎯"
-
-title="Saving Rate"
-
-value={`${savingRate.toFixed(1)}%`}
-
-/>
-
-
-
-
-
-<InsightCard
-
-icon="⚠️"
-
-title="Highest Spending"
-
-value={
-highestExpense
-?
-formatCurrency(highestExpense.amount)
-:
-"-"
-}
-
-/>
-
-
-
-
-</div>
-
-
-
-</div>
-
-);
+  );
 
 }
 
@@ -347,122 +380,125 @@ formatCurrency(highestExpense.amount)
 
 
 
+/* =====================================================
+   INSIGHT CARD
+===================================================== */
 
 function InsightCard({
 
-icon,
+  icon,
 
-title,
+  title,
 
-value,
+  value,
 
-}:{
+}: {
 
-icon:string;
+  icon: string;
 
-title:string;
+  title: string;
 
-value:string;
+  value: string;
 
-}){
-
-
-return (
-
-<div
-className="
-flex
-items-center
-justify-between
-rounded-2xl
-border
-border-[var(--border)]
-p-4
-sm:p-5
-transition
-hover:border-[var(--primary)]
-hover:shadow-md
-"
->
+}) {
 
 
+  return (
 
-<div
-className="
-flex
-items-center
-gap-4
-"
->
-
-
-
-<div
-className="
-flex
-h-12
-w-12
-sm:h-14
-sm:w-14
-items-center
-justify-center
-rounded-2xl
-bg-[var(--background)]
-text-xl
-sm:text-2xl
-"
->
-
-{icon}
-
-</div>
+    <div
+      className="
+      flex
+      items-center
+      justify-between
+      rounded-2xl
+      border
+      border-[var(--border)]
+      p-4
+      transition
+      hover:border-[var(--primary)]
+      hover:shadow-md
+      sm:p-5
+      "
+    >
 
 
+      <div
+        className="
+        flex
+        min-w-0
+        items-center
+        gap-4
+        "
+      >
 
 
-<div>
+        {/* Icon */}
 
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.08em]
-text-[var(--muted)]
-"
->
-{title}
-</p>
+        <div
+          className="
+          flex
+          h-12
+          w-12
+          shrink-0
+          items-center
+          justify-center
+          rounded-2xl
+          bg-[var(--background)]
+          text-xl
+          sm:h-14
+          sm:w-14
+          sm:text-2xl
+          "
+        >
+          {icon}
+        </div>
 
 
 
-<h3
-className="
-mt-2
-font-display
-text-lg
-font-medium
-tracking-[-0.02em]
-text-[var(--foreground)]
-break-words
-"
->
-{value}
-</h3>
+        {/* Content */}
+
+        <div
+          className="
+          min-w-0
+          "
+        >
+
+          <p
+            className="
+            font-body
+            text-xs
+            font-medium
+            uppercase
+            tracking-[0.08em]
+            text-[var(--muted)]
+            "
+          >
+            {title}
+          </p>
 
 
+          <h3
+            className="
+            mt-2
+            break-words
+            font-display
+            text-lg
+            font-medium
+            tracking-[-0.02em]
+            text-[var(--foreground)]
+            "
+          >
+            {value}
+          </h3>
 
-</div>
+        </div>
 
 
-</div>
+      </div>
 
 
+    </div>
 
-</div>
-
-);
+  );
 
 }

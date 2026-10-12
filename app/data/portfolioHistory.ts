@@ -1,96 +1,385 @@
+/* =====================================================
+   PORTFOLIO HISTORY
+   Stores only real portfolio snapshots.
+
+   IMPORTANT:
+   - No fake/demo values
+   - No generated historical data
+   - One snapshot per calendar day
+   - Existing day's value is updated
+   - History is kept in chronological order
+===================================================== */
+
 export type PortfolioSnapshot = {
   id: string;
   date: string;
   value: number;
 };
 
-const STORAGE_KEY = "myfinance-portfolio-history";
+
+const STORAGE_KEY =
+  "myfinance-portfolio-history";
+
+
+/* =====================================================
+   ID HELPER
+===================================================== */
+
+function generateId(): string {
+
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+
+    return crypto.randomUUID();
+
+  }
+
+
+  return `portfolio-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
+
+}
+
+
+/* =====================================================
+   DATE HELPER
+===================================================== */
+
+function getTodayKey(): string {
+
+  const now =
+    new Date();
+
+
+  return [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+
+}
+
+
+/* =====================================================
+   READ HISTORY
+===================================================== */
 
 export function getPortfolioHistory(): PortfolioSnapshot[] {
-  if (typeof window === "undefined") return [];
 
-  const saved = localStorage.getItem(STORAGE_KEY);
+  if (
+    typeof window === "undefined"
+  ) {
 
-  if (saved) {
-  return JSON.parse(saved);
+    return [];
+
+  }
+
+
+  const saved =
+    localStorage.getItem(
+      STORAGE_KEY
+    );
+
+
+  if (!saved) {
+
+    return [];
+
+  }
+
+
+  try {
+
+    const parsed =
+      JSON.parse(saved);
+
+
+    if (
+      !Array.isArray(parsed)
+    ) {
+
+      return [];
+
+    }
+
+
+    return parsed
+      .filter((item): item is PortfolioSnapshot => {
+
+        if (!item) {
+          return false;
+        }
+
+
+        const date =
+          new Date(item.date);
+
+
+        const value =
+          Number(item.value);
+
+
+        return (
+          typeof item.date === "string" &&
+          !Number.isNaN(date.getTime()) &&
+          Number.isFinite(value) &&
+          value >= 0
+        );
+
+      })
+      .map((item) => ({
+
+        id:
+          String(item.id),
+
+        date:
+          item.date,
+
+        value:
+          Number(item.value),
+
+      }))
+      .sort(
+        (a, b) =>
+          new Date(a.date).getTime() -
+          new Date(b.date).getTime()
+      );
+
+  } catch (error) {
+
+    console.error(
+      "Failed to read portfolio history:",
+      error
+    );
+
+
+    return [];
+
+  }
+
 }
 
-return [
-  {
-    id: crypto.randomUUID(),
-    date: "2026-07-28",
-    value: 45,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-07-29",
-    value: 72,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-07-30",
-    value: 95,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-07-31",
-    value: 118,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-08-01",
-    value: 140,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-08-02",
-    value: 165,
-  },
-  {
-    id: crypto.randomUUID(),
-    date: "2026-08-03",
-    value: 185,
-  },
-];
-}
+
+/* =====================================================
+   SAVE HISTORY
+===================================================== */
 
 export function savePortfolioHistory(
   history: PortfolioSnapshot[]
-) {
+): void {
+
+  if (
+    typeof window === "undefined"
+  ) {
+
+    return;
+
+  }
+
+
+  const cleanedHistory =
+    history
+      .filter((item) => {
+
+        if (!item) {
+          return false;
+        }
+
+
+        const date =
+          new Date(item.date);
+
+
+        const value =
+          Number(item.value);
+
+
+        return (
+          !Number.isNaN(date.getTime()) &&
+          Number.isFinite(value) &&
+          value >= 0
+        );
+
+      })
+      .map((item) => ({
+
+        id:
+          String(item.id),
+
+        date:
+          item.date,
+
+        value:
+          Number(item.value),
+
+      }))
+      .sort(
+        (a, b) =>
+          new Date(a.date).getTime() -
+          new Date(b.date).getTime()
+      );
+
+
   localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify(history)
+    JSON.stringify(cleanedHistory)
   );
 
+
   window.dispatchEvent(
-    new Event("portfolioHistoryUpdated")
+    new Event(
+      "portfolioHistoryUpdated"
+    )
   );
+
 }
+
+
+/* =====================================================
+   ADD / UPDATE TODAY'S SNAPSHOT
+
+   This should be called whenever the real portfolio
+   value changes.
+
+   Example:
+   addPortfolioSnapshot(7000);
+===================================================== */
 
 export function addPortfolioSnapshot(
   value: number
-) {
-  const history = getPortfolioHistory();
+): void {
 
-  const today = new Date()
-    .toISOString()
-    .split("T")[0];
+  if (
+    typeof window === "undefined"
+  ) {
 
-  const last = history[history.length - 1];
+    return;
 
-  if (last && last.date.startsWith(today)) {
-    last.value = value;
-  } else {
-    history.push({
-      id: crypto.randomUUID(),
-      date: new Date().toISOString(),
-      value,
-    });
   }
 
-  savePortfolioHistory(history);
+
+  const numericValue =
+    Number(value);
+
+
+  if (
+    !Number.isFinite(numericValue) ||
+    numericValue < 0
+  ) {
+
+    return;
+
+  }
+
+
+  const history =
+    getPortfolioHistory();
+
+
+  const today =
+    getTodayKey();
+
+
+  const existingIndex =
+    history.findIndex(
+      (snapshot) =>
+        snapshot.date.startsWith(
+          today
+        )
+    );
+
+
+  if (
+    existingIndex !== -1
+  ) {
+
+    history[existingIndex] = {
+
+      ...history[existingIndex],
+
+      value:
+        numericValue,
+
+    };
+
+  } else {
+
+    history.push({
+
+      id:
+        generateId(),
+
+      date:
+        new Date().toISOString(),
+
+      value:
+        numericValue,
+
+    });
+
+  }
+
+
+  savePortfolioHistory(
+    history
+  );
+
 }
 
-export function clearPortfolioHistory() {
-  savePortfolioHistory([]);
+
+/* =====================================================
+   REMOVE ONE SNAPSHOT
+===================================================== */
+
+export function deletePortfolioSnapshot(
+  id: string
+): void {
+
+  const history =
+    getPortfolioHistory();
+
+
+  const updated =
+    history.filter(
+      (snapshot) =>
+        snapshot.id !== id
+    );
+
+
+  savePortfolioHistory(
+    updated
+  );
+
+}
+
+
+/* =====================================================
+   CLEAR ALL HISTORY
+===================================================== */
+
+export function clearPortfolioHistory(): void {
+
+  if (
+    typeof window === "undefined"
+  ) {
+
+    return;
+
+  }
+
+
+  localStorage.removeItem(
+    STORAGE_KEY
+  );
+
+
+  window.dispatchEvent(
+    new Event(
+      "portfolioHistoryUpdated"
+    )
+  );
+
 }

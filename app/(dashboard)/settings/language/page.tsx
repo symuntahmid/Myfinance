@@ -18,65 +18,47 @@ import {
 } from "@/app/data/languages";
 
 import {
-  getSettings,
   updateSettings,
 } from "@/app/data/settings";
+
+import {
+  useLanguage,
+  type Language,
+} from "@/app/context/LanguageContext";
 
 
 export default function LanguagePage() {
 
+  const {
+    language: selected,
+    setLanguage,
+  } = useLanguage();
 
-  const [search,setSearch] =
+
+  const [search, setSearch] =
     useState("");
 
 
-
-  const [selected,setSelected] =
-    useState(()=>{
-
-      const settings =
-        getSettings();
-
-
-      const currentLanguage =
-        settings.language || "en";
-
-
-      const matched =
-        languages.find(
-          (language)=>
-            language.code === currentLanguage
-        );
-
-
-      return (
-        matched?.code ||
-        languages[0]?.code ||
-        "en"
-      );
-
-    });
-
-
-
-
+  /* =====================================================
+     FILTER LANGUAGES
+  ===================================================== */
 
   const filteredLanguages =
-    useMemo(()=>{
-
+    useMemo(() => {
 
       const query =
-        search.trim().toLowerCase();
+        search
+          .trim()
+          .toLowerCase();
 
 
-
-      if(!query)
+      if (!query) {
         return languages;
-
+      }
 
 
       return languages.filter(
-        (language)=>
+        (language) =>
           language.name
             .toLowerCase()
             .includes(query) ||
@@ -85,68 +67,99 @@ export default function LanguagePage() {
             .includes(query)
       );
 
-
-    },[search]);
-
+    }, [search]);
 
 
+  /* =====================================================
+     SELECT LANGUAGE
+  ===================================================== */
 
-
-
-  const handleSelect =
-    (
-      language:
+  const handleSelect = (
+    selectedLanguage:
       (typeof languages)[number]
-    )=>{
+  ) => {
+
+    /*
+     * The current translation system
+     * supports only English and Bangla.
+     */
+
+    if (
+      selectedLanguage.code !== "en" &&
+      selectedLanguage.code !== "bn"
+    ) {
+      return;
+    }
 
 
-      setSelected(
-        language.code
-      );
+    const nextLanguage =
+      selectedLanguage.code as Language;
 
 
-      updateSettings({
+    /*
+     * IMPORTANT:
+     *
+     * Update LanguageContext first.
+     * This makes every component using
+     * useLanguage() / t() re-render.
+     */
 
-        language:
-          language.code,
-
-      });
-
-
-
-      window.dispatchEvent(
-        new Event("languageUpdated")
-      );
-
-    };
+    setLanguage(nextLanguage);
 
 
+    /*
+     * Keep settings storage synchronized.
+     */
+
+    updateSettings({
+      language: nextLanguage,
+    });
 
 
+    /*
+     * Notify components that still
+     * listen for languageUpdated.
+     */
+
+    window.dispatchEvent(
+      new Event("languageUpdated")
+    );
+
+  };
 
 
   return (
 
     <div className="
-      mx-auto max-w-3xl pb-10
+      mx-auto
+      max-w-3xl
+      pb-10
     ">
 
 
-
-      {/* HEADER */}
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <div className="
-        mb-7 flex items-center gap-3
+        mb-7
+        flex
+        items-center
+        gap-3
       ">
 
 
         <Link
           href="/settings"
           className="
-            flex h-10 w-10
-            items-center justify-center
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
             rounded-xl
-            border border-[var(--border)]
+            border
+            border-[var(--border)]
             bg-[var(--card)]
             text-[var(--muted)]
             shadow-sm
@@ -155,16 +168,17 @@ export default function LanguagePage() {
             dark:hover:bg-white/5
           "
         >
-          <ArrowLeft size={18}/>
+
+          <ArrowLeft size={18} />
+
         </Link>
-
-
 
 
         <div>
 
           <h1 className="
-            text-3xl font-bold
+            text-3xl
+            font-bold
             tracking-tight
             text-[var(--foreground)]
           ">
@@ -173,28 +187,23 @@ export default function LanguagePage() {
 
 
           <p className="
-            mt-1 text-sm
+            mt-1
+            text-sm
             text-[var(--muted)]
           ">
             Choose your preferred language for MyFinance.
           </p>
 
-
         </div>
-
 
       </div>
 
 
-
-
-
-
-
-      {/* SEARCH */}
+      {/* =================================================
+          SEARCH
+      ================================================= */}
 
       <div className="mb-5">
-
 
         <div className="relative">
 
@@ -202,75 +211,79 @@ export default function LanguagePage() {
           <Search
             size={18}
             className="
-              absolute left-4 top-1/2
+              absolute
+              left-4
+              top-1/2
               -translate-y-1/2
               text-[var(--muted)]
             "
           />
 
 
-
           <input
             type="text"
             value={search}
-            onChange={(event)=>
+            onChange={(event) =>
               setSearch(event.target.value)
             }
             placeholder="Search language..."
             className="
-              w-full rounded-2xl
-              border border-[var(--border)]
+              w-full
+              rounded-2xl
+              border
+              border-[var(--border)]
               bg-[var(--card)]
-              py-3.5 pl-11 pr-4
+              py-3.5
+              pl-11
+              pr-4
               text-sm
               text-[var(--foreground)]
               outline-none
               transition
               placeholder:text-[var(--muted)]
               focus:border-cyan-400
-              focus:ring-4 focus:ring-cyan-50
+              focus:ring-4
+              focus:ring-cyan-50
             "
           />
 
 
         </div>
 
-
       </div>
 
 
-
-
-
-
-
-      {/* COUNT */}
+      {/* =================================================
+          COUNT
+      ================================================= */}
 
       <div className="
-        mb-3 px-2 text-xs
+        mb-3
+        px-2
+        text-xs
         text-[var(--muted)]
       ">
+
         {filteredLanguages.length}{" "}
+
         {
           filteredLanguages.length === 1
-          ? "language"
-          : "languages"
+            ? "language"
+            : "languages"
         }
+
       </div>
 
 
-
-
-
-
-
-
-      {/* LIST */}
+      {/* =================================================
+          LANGUAGE LIST
+      ================================================= */}
 
       <div className="
         overflow-hidden
         rounded-3xl
-        border border-[var(--border)]
+        border
+        border-[var(--border)]
         bg-[var(--card)]
         shadow-sm
       ">
@@ -278,12 +291,10 @@ export default function LanguagePage() {
 
         {
           filteredLanguages.map(
-            (language,index)=>{
-
+            (language, index) => {
 
               const isSelected =
                 selected === language.code;
-
 
 
               return (
@@ -293,38 +304,43 @@ export default function LanguagePage() {
                 >
 
 
-
                   <button
                     type="button"
-                    onClick={()=>
+                    onClick={() =>
                       handleSelect(language)
                     }
                     className={`
-                      flex w-full items-center
-                      gap-4 px-5 py-4
-                      text-left transition
+                      flex
+                      w-full
+                      items-center
+                      gap-4
+                      px-5
+                      py-4
+                      text-left
+                      transition
+
                       ${
                         isSelected
-                        ? "bg-cyan-500/10"
-                        : "hover:bg-black/5 dark:hover:bg-white/5"
+                          ? "bg-cyan-500/10"
+                          : "hover:bg-black/5 dark:hover:bg-white/5"
                       }
                     `}
                   >
 
 
-
                     {/* FLAG */}
 
                     <span className="
-                      flex h-9 w-9 shrink-0
-                      items-center justify-center
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
                       text-2xl
                     ">
                       {language.flag}
                     </span>
-
-
-
 
 
                     {/* NAME */}
@@ -335,16 +351,17 @@ export default function LanguagePage() {
 
 
                       <p className="
-                        text-sm font-semibold
+                        text-sm
+                        font-semibold
                         text-[var(--foreground)]
                       ">
                         {language.name}
                       </p>
 
 
-
                       <p className="
-                        mt-0.5 text-xs
+                        mt-0.5
+                        text-xs
                         text-[var(--muted)]
                       ">
                         {language.nativeName}
@@ -354,82 +371,74 @@ export default function LanguagePage() {
                     </div>
 
 
-
-
-
-
                     {/* CHECK */}
 
                     {
                       isSelected && (
 
                         <span className="
-                          flex h-7 w-7 shrink-0
-                          items-center justify-center
+                          flex
+                          h-7
+                          w-7
+                          shrink-0
+                          items-center
+                          justify-center
                           rounded-full
                           bg-cyan-500
                           text-white
                         ">
-                          <Check size={16}/>
+
+                          <Check size={16} />
+
                         </span>
 
                       )
                     }
 
 
-
                   </button>
-
-
-
-
 
 
                   {
                     index <
-                    filteredLanguages.length - 1 && (
+                      filteredLanguages.length - 1 && (
 
                       <div className="
                         ml-[68px]
                         border-t
                         border-[var(--border)]
-                      "/>
+                      " />
 
                     )
                   }
-
-
-
 
 
                 </div>
 
               );
 
-
             }
           )
         }
 
 
-
-
-
-
-
-
-        {/* EMPTY */}
+        {/* =================================================
+            EMPTY STATE
+        ================================================= */}
 
         {
           filteredLanguages.length === 0 && (
 
             <div className="
-              px-6 py-12 text-center
+              px-6
+              py-12
+              text-center
             ">
 
 
               <p className="
-                text-sm font-semibold
+                text-sm
+                font-semibold
                 text-[var(--foreground)]
               ">
                 No languages found
@@ -437,7 +446,8 @@ export default function LanguagePage() {
 
 
               <p className="
-                mt-1 text-xs
+                mt-1
+                text-xs
                 text-[var(--muted)]
               ">
                 Try searching for another language.
@@ -450,9 +460,7 @@ export default function LanguagePage() {
         }
 
 
-
       </div>
-
 
 
     </div>

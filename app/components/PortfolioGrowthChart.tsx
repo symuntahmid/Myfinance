@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -19,24 +20,129 @@ import {
 
 import { getPortfolioHistory } from "@/app/data/portfolioHistory";
 import { formatCurrency } from "@/app/utils/currency";
+import { useLanguage } from "@/app/context/LanguageContext";
+
+
+type PortfolioHistoryItem = {
+  id?: string;
+  date: string;
+  value: number;
+};
+
+
+type ChartItem = {
+  date: string;
+  label: string;
+  value: number;
+};
 
 
 export default function PortfolioGrowthChart() {
 
+  const { t } = useLanguage();
+
+  const [history, setHistory] =
+    useState<PortfolioHistoryItem[]>([]);
 
   const [, forceCurrencyUpdate] =
     useState(0);
 
 
+  /* =====================================================
+     LOAD REAL PORTFOLIO HISTORY
+  ===================================================== */
+
+  const refreshHistory = useCallback(() => {
+
+    try {
+
+      const result =
+        getPortfolioHistory();
+
+      if (!Array.isArray(result)) {
+        setHistory([]);
+        return;
+      }
+
+
+      const cleaned =
+        result
+          .filter((item) => {
+
+            if (!item) {
+              return false;
+            }
+
+            const date =
+              new Date(item.date);
+
+            const value =
+              Number(item.value);
+
+            return (
+              typeof item.date === "string" &&
+              !Number.isNaN(date.getTime()) &&
+              Number.isFinite(value) &&
+              value >= 0
+            );
+
+          })
+          .map((item) => ({
+            id: item.id,
+            date: item.date,
+            value: Number(item.value),
+          }))
+          .sort(
+            (a, b) =>
+              new Date(a.date).getTime() -
+              new Date(b.date).getTime()
+          );
+
+
+      setHistory(cleaned);
+
+    } catch (error) {
+
+      console.error(
+        "Failed to load portfolio history:",
+        error
+      );
+
+      setHistory([]);
+
+    }
+
+  }, []);
+
+
+  /* =====================================================
+     EVENTS
+  ===================================================== */
 
   useEffect(() => {
+
+    refreshHistory();
 
 
     const currencyListener = () => {
 
       forceCurrencyUpdate(
-        value => value + 1
+        (value) => value + 1
       );
+
+    };
+
+
+    const portfolioHistoryListener = () => {
+
+      refreshHistory();
+
+    };
+
+
+    const investmentListener = () => {
+
+      refreshHistory();
 
     };
 
@@ -44,6 +150,16 @@ export default function PortfolioGrowthChart() {
     window.addEventListener(
       "currencyUpdated",
       currencyListener
+    );
+
+    window.addEventListener(
+      "portfolioHistoryUpdated",
+      portfolioHistoryListener
+    );
+
+    window.addEventListener(
+      "investmentsUpdated",
+      investmentListener
     );
 
 
@@ -54,127 +170,133 @@ export default function PortfolioGrowthChart() {
         currencyListener
       );
 
+      window.removeEventListener(
+        "portfolioHistoryUpdated",
+        portfolioHistoryListener
+      );
+
+      window.removeEventListener(
+        "investmentsUpdated",
+        investmentListener
+      );
+
     };
 
-
-  }, []);
-
+  }, [refreshHistory]);
 
 
+  /* =====================================================
+     REAL CHART DATA
+
+     IMPORTANT:
+     - No fake values
+     - No generated dates
+     - No interpolation
+     - No artificial curve
+     - Every point comes from portfolioHistory
+  ===================================================== */
+
+  const data =
+    useMemo<ChartItem[]>(() => {
+
+      return history.map((item) => {
+
+        const date =
+          new Date(item.date);
 
 
-  const history = useMemo(() => {
+        return {
 
-    try {
+          date: item.date,
 
-      const data =
-        getPortfolioHistory();
+          label:
+            date.toLocaleDateString(
+              "en-US",
+              {
+                month: "short",
+                day: "numeric",
+              }
+            ),
 
+          value:
+            Number(item.value),
 
-      return Array.isArray(data)
-        ? data
-        : [];
+        };
 
+      });
 
-    } catch {
-
-      return [];
-
-    }
-
-  }, []);
-
-
-
+    }, [history]);
 
 
-  const data = useMemo(() => {
-
-
-    return history.map((item) => ({
-
-
-      day:
-        new Date(item.date)
-          .toLocaleDateString(
-            "en-US",
-            {
-              month: "short",
-              day: "numeric",
-            }
-          ),
-
-
-      value:
-        Number(item.value) || 0,
-
-
-    }));
-
-
-  }, [history]);
-
-
-
-
-
+  /* =====================================================
+     EMPTY STATE
+  ===================================================== */
 
   if (data.length === 0) {
 
     return (
 
-      <div className="
+      <div
+        className="
         rounded-3xl
-        border border-[var(--border)]
+        border
+        border-[var(--border)]
         bg-[var(--card)]
-        p-8
+        p-6
         shadow-sm
-      ">
+        sm:p-8
+        "
+      >
+
+        <h2
+          className="
+          mb-3
+          font-display
+          text-3xl
+          font-medium
+          tracking-[-0.04em]
+          text-[var(--foreground)]
+          "
+        >
+          {t("portfolioGrowth")}
+        </h2>
 
 
-<h2
-className="
-mb-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-  Portfolio Growth
-</h2>
+        <p
+          className="
+          mb-6
+          font-body
+          text-sm
+          leading-relaxed
+          tracking-tight
+          text-[var(--muted)]
+          "
+        >
+          {t("trackPortfolioGrowth")}
+        </p>
 
 
-<p
-className="
-mb-6
-font-body
-text-sm
-leading-relaxed
-tracking-tight
-text-[var(--muted)]
-"
->
-  Track the growth of your investment portfolio.
-</p>
-
-
-<div
-className="
-flex
-h-64
-items-center
-justify-center
-font-body
-text-sm
-tracking-tight
-text-[var(--muted)]
-"
->
-          No portfolio history yet.
+        <div
+          className="
+          flex
+          h-64
+          items-center
+          justify-center
+          rounded-2xl
+          border
+          border-dashed
+          border-[var(--border)]
+          bg-[var(--background)]
+          px-4
+          text-center
+          font-body
+          text-sm
+          tracking-tight
+          text-[var(--muted)]
+          "
+        >
+          {t("noPortfolioHistory")}
         </div>
-
 
       </div>
 
@@ -183,289 +305,255 @@ text-[var(--muted)]
   }
 
 
-
-
-
-
+  /* =====================================================
+     MAIN CHART
+  ===================================================== */
 
   return (
 
-    <div className="
+    <div
+      className="
       rounded-3xl
-      border border-[var(--border)]
+      border
+      border-[var(--border)]
       bg-[var(--card)]
-      p-8
+      p-5
       shadow-sm
-    ">
+      sm:p-8
+      "
+    >
+
+      {/* Header */}
+
+      <div className="mb-6">
+
+        <h2
+          className="
+          font-display
+          text-3xl
+          font-medium
+          tracking-[-0.04em]
+          text-[var(--foreground)]
+          "
+        >
+          {t("portfolioGrowth")}
+        </h2>
 
 
-<h2
-className="
-mb-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-  Portfolio Growth
-</h2>
+        <p
+          className="
+          mt-2
+          font-body
+          text-sm
+          leading-relaxed
+          tracking-tight
+          text-[var(--muted)]
+          "
+        >
+          {t("trackPortfolioGrowth")}
+        </p>
+
+      </div>
 
 
-<p
-className="
-mb-6
-font-body
-text-sm
-leading-relaxed
-tracking-tight
-text-[var(--muted)]
-"
->
-  Track the growth of your investment portfolio.
-</p>
+      {/* Chart */}
 
-
-
-
-
-      <div className="h-80">
-
+      <div
+        className="
+        h-72
+        sm:h-80
+        "
+      >
 
         <ResponsiveContainer
           width="100%"
           height="100%"
         >
 
-
           <LineChart
-
             data={data}
-
             margin={{
-              top:20,
-              right:20,
-              left:10,
-              bottom:10,
+              top: 20,
+              right: 20,
+              left: 10,
+              bottom: 10,
             }}
-
           >
 
-
+            {/* =================================================
+                SUBTLE AREA
+                Visual only — uses exact recorded values.
+            ================================================= */}
 
             <defs>
 
               <linearGradient
-
-                id="portfolioGradient"
-
+                id="portfolioGrowthGradient"
                 x1="0"
-
                 y1="0"
-
                 x2="0"
-
                 y2="1"
-
               >
 
                 <stop
-                  offset="5%"
+                  offset="0%"
                   stopColor="#06b6d4"
-                  stopOpacity={0.35}
+                  stopOpacity={0.14}
                 />
 
-
                 <stop
-                  offset="95%"
+                  offset="100%"
                   stopColor="#06b6d4"
                   stopOpacity={0}
                 />
 
-
               </linearGradient>
-
 
             </defs>
 
 
-
-
+            {/* Grid */}
 
             <CartesianGrid
-
               stroke="var(--border)"
-
               strokeDasharray="4 4"
-
               vertical={false}
-
             />
 
 
-
-
+            {/* X Axis */}
 
             <XAxis
-
-              dataKey="day"
-
+              dataKey="label"
               tick={{
-                fill:"var(--muted)",
-                fontSize:12,
+                fill: "var(--muted)",
+                fontSize: 12,
               }}
-
               tickLine={false}
-
               axisLine={false}
-
+              minTickGap={24}
             />
 
 
-
-
+            {/* Y Axis */}
 
             <YAxis
-
               tick={{
-                fill:"var(--muted)",
-                fontSize:12,
+                fill: "var(--muted)",
+                fontSize: 12,
               }}
-
               tickFormatter={(value) =>
                 formatCurrency(
                   Number(value)
                 )
               }
-
               tickLine={false}
-
               axisLine={false}
-
               width={80}
-
+              domain={[
+                0,
+                "auto",
+              ]}
             />
 
 
-
-
-
-
+            {/* Tooltip */}
 
             <Tooltip
-
-
-              contentStyle={{
-
-                borderRadius:"16px",
-
-                border:
-                  "1px solid var(--border)",
-
-                backgroundColor:
-                  "var(--card)",
-
-                color:
-                  "var(--foreground)",
-
-                boxShadow:
-                  "0 12px 35px rgba(0,0,0,.15)",
-
+              cursor={{
+                stroke:
+                  "var(--border)",
+                strokeWidth: 1,
+                strokeDasharray: "4 4",
               }}
 
+              contentStyle={{
+                borderRadius: "16px",
+                border:
+                  "1px solid var(--border)",
+                backgroundColor:
+                  "var(--card)",
+                color:
+                  "var(--foreground)",
+                boxShadow:
+                  "0 12px 35px rgba(0,0,0,.15)",
+              }}
+
+              labelStyle={{
+                color:
+                  "var(--foreground)",
+                fontWeight: 600,
+                marginBottom: "4px",
+              }}
 
               formatter={(value) => [
-
                 formatCurrency(
                   Number(value)
                 ),
-
-                "Portfolio Value"
-
+                t("portfolioValue"),
               ]}
-
-
             />
 
 
-
-
-
-
+            {/* =================================================
+                AREA
+                Uses exact portfolio values.
+            ================================================= */}
 
             <Area
-
-              type="natural"
-
+              type="linear"
               dataKey="value"
-
               stroke="none"
-
-              fill="url(#portfolioGradient)"
-
+              fill="url(#portfolioGrowthGradient)"
+              isAnimationActive={false}
             />
 
 
+            {/* =================================================
+                REAL PORTFOLIO LINE
 
+                type="linear" is intentional.
 
+                This means:
+                Point A → straight line → Point B
 
-
+                No:
+                - artificial curve
+                - overshooting
+                - smoothing
+                - invented values
+            ================================================= */}
 
             <Line
-
-              type="natural"
-
+              type="linear"
               dataKey="value"
-
               stroke="#06b6d4"
+              strokeWidth={3}
 
-              strokeWidth={4}
-
-              dot={false}
-
-              style={{
-
-                filter:
-                  "drop-shadow(0 0 7px rgba(6,182,212,0.55))",
-
+              dot={{
+                r: 4,
+                fill: "#06b6d4",
+                stroke: "var(--card)",
+                strokeWidth: 2,
               }}
-
 
               activeDot={{
-
-                r:8,
-
-                fill:"#06b6d4",
-
-                stroke:"#ffffff",
-
-                strokeWidth:3,
-
+                r: 7,
+                fill: "#06b6d4",
+                stroke: "var(--card)",
+                strokeWidth: 3,
               }}
 
-
               isAnimationActive
-
-              animationDuration={1500}
-
+              animationDuration={600}
               animationEasing="ease-out"
-
             />
-
-
-
-
 
           </LineChart>
 
-
         </ResponsiveContainer>
 
-
       </div>
-
-
 
     </div>
 
