@@ -46,6 +46,10 @@ import {
   deleteAllAccountData,
 } from "@/app/data/accountData";
 
+import {
+  useLanguage,
+} from "@/app/context/LanguageContext";
+
 /* ==========================================
    TYPES
 ========================================== */
@@ -185,7 +189,7 @@ function Modal({
 
 export default function Settings() {
 
-
+const { t } = useLanguage();
   const {
   theme,
   toggleTheme,
@@ -246,7 +250,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       refresh
     );
 
-    
+
     return () => {
       window.removeEventListener(
         "settingsUpdated",
@@ -255,7 +259,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
     };
   }, []);
 
- 
+
 
   /* ========================================
      UPDATE
@@ -301,7 +305,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
      DELETE
   ======================================== */
 
-  
+
 
   function handleDelete() {
   deleteAllAccountData();
@@ -338,13 +342,13 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* HEADER */}
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
-          Settings
-        </h1>
+<h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
+  {t("settings")}
+</h1>
 
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Manage your account and MyFinance preferences.
-        </p>
+<p className="mt-1 text-sm text-[var(--muted)]">
+  {t("settingsDescription")}
+</p>
       </div>
 
 
@@ -365,21 +369,20 @@ const [passcodeConfirm, setPasscodeConfirm] =
             />
 
             <span className="text-xs font-bold uppercase tracking-wider text-white/80">
-              MyFinance Premium
+              {t("myFinancePremium")}
             </span>
           </div>
 
           <h2 className="text-xl font-bold text-white">
-            Access Premium Features
+            {t("accessPremiumFeatures")}
           </h2>
 
           <p className="mt-1 text-xs leading-relaxed text-white/80">
-            Unlock smarter CFO insights, advanced reports,
-            and personalized financial guidance.
+            {t("unlockSmarterCFO")}
           </p>
 
           <span className="mt-4 inline-flex rounded-full bg-[var(--card)] px-5 py-2 text-xs font-bold text-[var(--foreground)] shadow-sm transition group-hover:px-6">
-            Upgrade
+            {t("upgrade")}
           </span>
 
         </div>
@@ -389,16 +392,16 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {/* ACCOUNT */}
 
       <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Account
-        </p>
+<p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
+  {t("account")}
+</p>
 
         <SettingGroup>
 
           <SettingRow
             icon={<User size={19} />}
-            title="Profile"
-            subtitle="Your financial identity"
+            title={t("profile")}
+subtitle={t("financialIdentity")}
             onClick={() => {
               window.location.href =
                 "/profile";
@@ -409,8 +412,8 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<Sparkles size={19} />}
-            title="Upgrade"
-            subtitle="Unlock premium CFO features"
+title={t("upgrade")}
+subtitle={t("unlockSmarterCFO")}
             onClick={() => {
               alert(
                 "Premium upgrade will be available soon."
@@ -428,14 +431,14 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       <section className="mb-6">
         <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Regional Preferences
+          {t("regionalPreferences")}
         </p>
 
         <SettingGroup>
 
           <SettingRow
   icon={<Globe2 size={19} />}
-  title="Country"
+  title={t("country")}
   subtitle={settings.country}
   onClick={() => {
     window.location.href = "/settings/country";
@@ -446,7 +449,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
   icon={<Languages size={19} />}
-  title="Language"
+  title={t("language")}
   subtitle={settings.language}
   onClick={() => {
     window.location.href =
@@ -458,7 +461,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<Coins size={19} />}
-            title="Currency"
+            title={t("currency")}
             subtitle={settings.currency}
             onClick={() =>
               setRegionalOpen(true)
@@ -473,18 +476,18 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       <section className="mb-6">
         <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Preferences
+          {t("preferences")}
         </p>
 
         <SettingGroup>
 
           <SettingRow
             icon={<Bell size={19} />}
-            title="Reminders"
+            title={t("reminders")}
             subtitle={
               settings.remindersEnabled
-                ? "Enabled"
-                : "Disabled"
+                ? t("enabled")
+                : t("disabled")
             }
             onClick={() =>
               setRemindersOpen(true)
@@ -495,11 +498,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
   icon={<Moon size={19} />}
-  title="Dark Mode"
+  title={t("darkMode")}
   subtitle={
     theme === "dark"
-      ? "Enabled"
-      : "Disabled"
+      ? t("enabled")
+      : t("disabled")
   }
   right={
     <span
@@ -529,15 +532,15 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       <section className="mb-6">
         <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Your Data
+          {t("yourData")}
         </p>
 
         <SettingGroup>
 
           <SettingRow
   icon={<Download size={19} />}
-  title="Export Data"
-  subtitle="Download a backup of your MyFinance data"
+  title={t("exportData")}
+subtitle={t("downloadBackup")}
   onClick={() => {
     exportMyFinanceData();
   }}
@@ -547,8 +550,8 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<Upload size={19} />}
-            title="Import Data"
-            subtitle="Restore a previous backup"
+            title={t("importData")}
+            subtitle={t("restoreBackup")}
             onClick={() =>
               fileInputRef.current?.click()
             }
@@ -566,11 +569,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<Lock size={19} />}
-            title="Passcode Lock"
+            title={t("passcodeLock")}
             subtitle={
               settings.passcodeEnabled
-                ? "Enabled"
-                : "Not enabled"
+                ? t("enabled")
+                : t("notEnabled")
             }
             onClick={() =>
               setPasscodeOpen(true)
@@ -581,8 +584,8 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<Trash2 size={19} />}
-            title="Delete Account Data"
-            subtitle="Permanently remove your MyFinance data"
+            title={t("deleteAccountData")}
+            subtitle={t("permanentlyRemoveData")}
             danger
             onClick={() =>
               setDeleteOpen(true)
@@ -597,15 +600,15 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       <section className="mb-6">
         <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Support
+          {t("support")}
         </p>
 
         <SettingGroup>
 
           <SettingRow
             icon={<Star size={19} />}
-            title="Rate MyFinance"
-            subtitle="Tell us what you think"
+            title={t("rateMyFinance")}
+            subtitle={t("tellUsWhatYouThink")}
             onClick={() =>
               alert(
                 "Thanks for supporting MyFinance!"
@@ -617,8 +620,8 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<MessageSquare size={19} />}
-            title="Send Feedback"
-            subtitle="Help us improve MyFinance"
+            title={t("sendFeedback")}
+            subtitle={t("helpUsImprove")}
             onClick={() =>
               setFeedbackOpen(true)
             }
@@ -632,14 +635,14 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
       <section className="mb-6">
         <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          Terms & Privacy
+          {t("termsPrivacy")}
         </p>
 
         <SettingGroup>
 
           <SettingRow
             icon={<ShieldCheck size={19} />}
-            title="Privacy Policy"
+            title={t("privacyPolicy")}
             onClick={() =>
               alert(
                 "Privacy Policy page coming soon."
@@ -651,7 +654,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<FileText size={19} />}
-            title="Terms of Use"
+            title={t("termsOfUse")}
             onClick={() =>
               alert(
                 "Terms of Use page coming soon."
@@ -670,11 +673,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <SettingRow
             icon={<LogOut size={19} />}
-            title="Log Out"
-            subtitle="Sign out of MyFinance"
+            title={t("logOut")}
+            subtitle={t("signOutOfMyFinance")}
             onClick={() => {
               alert(
-                "You have been logged out."
+                t("youHaveBeenLoggedOut")
               );
             }}
           />
@@ -702,14 +705,14 @@ const [passcodeConfirm, setPasscodeConfirm] =
         }
       >
         <h2 className="text-xl font-bold text-[var(--foreground)]">
-          Regional Preferences
+          {t("regionalPreferences")}
         </h2>
 
         <div className="mt-6 space-y-4">
 
           <SettingRow
   icon={<Coins size={19} />}
-  title="Currency"
+  title={t("currency")}
   subtitle={settings.currency}
   onClick={() => {
     window.location.href =
@@ -730,7 +733,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
           }}
           className="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
         >
-          Save Preferences
+          {t("savePreferences")}
         </button>
       </Modal>
 
@@ -746,11 +749,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
         }
       >
         <h2 className="text-xl font-bold text-[var(--foreground)]">
-          Reminders
+          {t("reminders")}
         </h2>
 
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Keep your financial habits on track.
+          {t("keepFinancialHabits")}
         </p>
 
         <button
@@ -764,7 +767,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
           className="mt-6 flex w-full items-center justify-between rounded-2xl bg-black/5 dark:bg-[var(--card)]/5 p-4"
         >
           <span className="text-sm font-semibold text-[var(--foreground)]">
-            Financial reminders
+            {t("financialReminders")}
           </span>
 
           <span
@@ -799,11 +802,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
   }}
 >
   <h2 className="text-xl font-bold text-[var(--foreground)]">
-    Passcode Lock
+    {t("passcodeLock")}
   </h2>
 
   <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
-    Protect your MyFinance account with a passcode.
+    {t("protectAccountWithPasscode")}
   </p>
 
   {!settings.passcodeEnabled ? (
@@ -817,11 +820,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <div>
             <p className="text-sm font-semibold text-[var(--foreground)]">
-              Set up your passcode
+              {t("setupPasscode")}
             </p>
 
             <p className="mt-0.5 text-xs text-[var(--muted)]">
-              Use a 4–6 digit passcode.
+              {t("useFourToSixDigitPasscode")}
             </p>
           </div>
         </div>
@@ -830,7 +833,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
       {passcodeStep === "create" ? (
         <>
           <label className="mt-6 block text-sm font-semibold text-slate-700">
-            Create passcode
+            {t("createPasscode")}
           </label>
 
           <input
@@ -847,7 +850,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
               setPasscodeInput(value);
             }}
-            placeholder="Enter 4–6 digits"
+            placeholder={t("enterFourToSixDigits")}
             className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
           />
 
@@ -861,13 +864,13 @@ const [passcodeConfirm, setPasscodeConfirm] =
             }}
             className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            Continue
+            {t("continue")}
           </button>
         </>
       ) : (
         <>
           <label className="mt-6 block text-sm font-semibold text-slate-700">
-            Confirm passcode
+            {t("confirmPasscode")}
           </label>
 
           <input
@@ -884,14 +887,14 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
               setPasscodeConfirm(value);
             }}
-            placeholder="Enter passcode again"
+            placeholder={t("enterPasscodeAgain")}
             className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
           />
 
           {passcodeConfirm.length > 0 &&
             passcodeConfirm !== passcodeInput && (
               <p className="mt-2 text-xs font-medium text-red-500">
-                Passcodes do not match.
+                {t("passcodesDoNotMatch")}
               </p>
             )}
 
@@ -921,7 +924,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             }}
             className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            Enable Passcode Lock
+            {t("enablePasscodeLock")}
           </button>
         </>
       )}
@@ -937,11 +940,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
 
           <div>
             <p className="text-sm font-semibold text-emerald-700">
-              Passcode Lock is enabled
+              {t("passcodeLockEnabled")}
             </p>
 
             <p className="mt-0.5 text-xs text-emerald-600">
-              Your MyFinance account is protected.
+              {t("accountProtected")}
             </p>
           </div>
         </div>
@@ -961,7 +964,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
         }}
         className="mt-6 w-full rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-600 transition hover:bg-red-100"
       >
-        Disable Passcode Lock
+        {t("disablePasscodeLock")}
       </button>
     </>
   )}
@@ -978,16 +981,16 @@ const [passcodeConfirm, setPasscodeConfirm] =
         }
       >
         <h2 className="text-xl font-bold text-[var(--foreground)]">
-          Send Feedback
+          {t("sendFeedback")}
         </h2>
 
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Tell us how we can make MyFinance better.
+          {t("tellUsHowToImprove")}
         </p>
 
         <textarea
           rows={5}
-          placeholder="Write your feedback..."
+          placeholder={t("writeFeedback")}
           className="mt-5 w-full resize-none rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-cyan-500"
         />
 
@@ -997,12 +1000,12 @@ const [passcodeConfirm, setPasscodeConfirm] =
             setFeedbackOpen(false);
 
             alert(
-              "Thank you for your feedback!"
+              t("thankYouForFeedback")
             );
           }}
           className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
         >
-          Send Feedback
+          {t("sendFeedback")}
         </button>
       </Modal>
 
@@ -1022,13 +1025,11 @@ const [passcodeConfirm, setPasscodeConfirm] =
         </div>
 
         <h2 className="mt-5 text-xl font-bold text-[var(--foreground)]">
-          Delete Account Data?
+          {t("deleteAccountDataQuestion")}
         </h2>
 
         <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-          This will permanently delete your transactions,
-          investments, budgets, player progress, and settings.
-          This action cannot be undone.
+          {t("deleteAccountWarning")}
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
@@ -1040,7 +1041,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             }
             className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-slate-700"
           >
-            Cancel
+            {t("cancel")}
           </button>
 
           <button
@@ -1048,7 +1049,7 @@ const [passcodeConfirm, setPasscodeConfirm] =
             onClick={handleDelete}
             className="rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white hover:bg-red-700"
           >
-            Delete Data
+            {t("deleteData")}
           </button>
 
         </div>

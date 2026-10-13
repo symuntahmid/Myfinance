@@ -6,6 +6,7 @@ export type TranslationKey =
   | "investments"
   | "reports"
   | "settings"
+  | "settingsDescription"
   | "myProfile"
   | "profileDescription"
   | "editProfile"
@@ -126,6 +127,11 @@ export type TranslationKey =
   | "noIncome"
   | "financialTrend"
 
+  // Financial Trend
+  | "financialTrendDescription"
+  | "notEnoughDataYet"
+  | "addDataToSeeFinancialTrend"
+
   // Portfolio Growth
   | "portfolioGrowth"
   | "trackPortfolioGrowth"
@@ -171,9 +177,73 @@ export type TranslationKey =
   | "noFinancialActivity"
   | "netWorthDescription"
   | "reportWaitingForData"
-  | "addDataToBuildReport";
+  | "addDataToBuildReport"
 
+  // Financial Health
+  | "financialHealth"
+  | "critical"
+  | "fair"
+  | "financialHealthDescription"
 
+  // Settings
+  | "myFinancePremium"
+  | "accessPremiumFeatures"
+  | "unlockSmarterCFO"
+  | "upgrade"
+  | "account"
+  | "financialIdentity"
+  | "regionalPreferences"
+  | "country"
+  | "language"
+  | "currency"
+  | "preferences"
+  | "reminders"
+  | "enabled"
+  | "disabled"
+  | "darkMode"
+  | "yourData"
+  | "exportData"
+  | "downloadBackup"
+  | "importData"
+  | "restoreBackup"
+  | "passcodeLock"
+  | "notEnabled"
+  | "deleteAccountData"
+  | "permanentlyRemoveData"
+  | "support"
+  | "rateMyFinance"
+  | "tellUsWhatYouThink"
+  | "sendFeedback"
+  | "helpUsImprove"
+  | "termsPrivacy"
+  | "privacyPolicy"
+  | "termsOfUse"
+  | "logOut"
+  | "signOutOfMyFinance"
+  | "savePreferences"
+  | "keepFinancialHabits"
+  | "financialReminders"
+  | "protectAccountWithPasscode"
+  | "setupPasscode"
+  | "useFourToSixDigitPasscode"
+  | "createPasscode"
+  | "enterFourToSixDigits"
+  | "continue"
+  | "confirmPasscode"
+  | "enterPasscodeAgain"
+  | "passcodesDoNotMatch"
+  | "enablePasscodeLock"
+  | "passcodeLockEnabled"
+  | "accountProtected"
+  | "disablePasscodeLock"
+  | "tellUsHowToImprove"
+  | "writeFeedback"
+  | "thankYouForFeedback"
+  | "deleteAccountDataQuestion"
+  | "deleteAccountWarning"
+  | "cancel"
+  | "deleteData"
+  | "youHaveBeenLoggedOut";
 type LanguageTranslation = Record<TranslationKey, string>;
 
 export const translations: Record<
@@ -184,1007 +254,764 @@ export const translations: Record<
      ENGLISH
   ===================================================== */
 
-  en: {
-    wealthHub:
-      "Your Personal Wealth Hub",
-
-    dashboard:
-      "Dashboard",
-
-    profile:
-      "Profile",
-
-    myMoney:
-      "My Money",
-
-    investments:
-      "My Investments",
-
-    reports:
-      "Reports",
-
-    settings:
-      "Settings",
-
-    myProfile:
-      "My Profile",
-
-    profileDescription:
-      "Your financial identity, progress, and money habits.",
-
-    editProfile:
-      "Edit Profile",
-
-    developerMode:
-      "Developer Mode",
-
-    financialLevel:
-      "Financial Level",
-
-    buildingFinancialConfidence:
-      "Building financial confidence",
-
-    moneySystemMessage:
-      "You are building a stronger money system. Small actions create long-term wealth.",
-
-    more:
-      "More",
-
-    moneyStreak:
-      "Money Streak",
-
-    keepGoing:
-      "Keep Going",
-
-    dailyJourneyMessage:
-      "Complete your Daily Journey every day to build your streak.",
-
-    days:
-      "Days",
-
-    dayStreak:
-      "Day Streak",
-
-    dailyJourney:
-      "Daily Journey",
-
-    today:
-      "Today",
-
-    investmentPortfolio:
-      "Investment Portfolio",
-
-    assets:
-      "Assets",
-
-    invested:
-      "Invested",
-
-    currentValue:
-      "Current Value",
-
-    profit:
-      "Profit",
-
-    return:
-      "Return",
-
-    welcomeBack:
-      "Welcome back",
-
-    dailyJourneyComplete:
-      "Congratulations! You completed today's Daily Journey. Come back tomorrow for a new challenge.",
-
-    dailyJourneyChallenge:
-      "Complete today's Daily Journey and earn +45 XP.",
-
-    xpUntilLevel:
-      "Only {xp} XP until Level {level}!",
-
-    buildBetterMoneyHabits:
-      "Build Better Money Habits",
-
-    progress:
-      "Progress",
-
-    done:
-      "Done",
-
-    complete:
-      "Complete",
-
-    xpEarnedMessage:
-      "XP earned. Your money habits are improving.",
-
-    trackExpense:
-      "Track one expense",
-
-    reviewSpending:
-      "Review your spending",
-
-    betterMoneyDecision:
-      "Make one better money decision",
-
-    level:
-      "Level",
-
-    netWorth:
-      "Net Worth",
-
-    monthlyIncome:
-      "Monthly Income",
-
-    expenses:
-      "Expenses",
-
-    myFutureGoals:
-      "My Future Goals",
-
-    startYourJourney:
-      "Start your journey",
-
-    milestonesInProgress:
-      "{count} milestone{plural} in progress",
-
-    savedOf:
-      "{saved} saved of {target}",
-
-    createFirstSavingsGoal:
-      "Create your first savings goal and build your future.",
-
-    yourProgress:
-      "Your progress",
-
-    goalCompleted:
-      "🎉 Goal completed! Amazing work.",
-
-    keepGoingFuture:
-      "🚀 Keep going, your future is getting closer.",
-
-    monthlyBudget:
-      "Monthly Budget",
-
-    used:
-      "Used",
-
-    budget:
-      "Budget",
-
-    spent:
-      "Spent",
-
-    remaining:
-      "Remaining",
-
-    financialInsights:
-      "Financial Insights",
-
-    personalizedObservations:
-      "Personalized observations based on your finances.",
-
-    addFirstIncome:
-      "Add your first income to begin tracking.",
-
-    excellentSavings:
-      "Excellent! You're saving over 50% of your income.",
-
-    healthySavings:
-      "Great job! Your savings rate is healthy.",
-
-    consistentSavings:
-      "You're saving consistently. Keep building momentum.",
-
-    reduceExpenses:
-      "Try reducing unnecessary expenses to improve savings.",
-
-    investmentsMajorWealth:
-      "Your investments are becoming a major part of your wealth.",
-
-    expensesHigherIncome:
-      "Warning: Expenses are higher than your income.",
-
-    netWorthTrend:
-      "Net Worth Trend",
-
-    growingSteadily:
-      "Growing steadily",
-
-    cashFlowOverview:
-      "Cash Flow Overview",
-
-    incomeVsExpenses:
-      "Income vs Expenses",
-
-    compareMonthlyMoneyFlow:
-      "Compare your monthly money flow",
-
-    income:
-      "Income",
-
-    expense:
-      "Expense",
-
-    investment:
-      "Investment",
-
-    investmentAllocation:
-      "Investment Allocation",
-
-    portfolioDiversification:
-      "Portfolio Diversification",
-
-    assetsCategories:
-      "{assets} Assets • {categories} Categories",
-
-    largestHolding:
-      "Largest Holding",
-
-    noInvestmentsYet:
-      "No investments yet",
-
-    recentTransactions:
-      "Recent Transactions",
-
-    viewAll:
-      "View All",
-
-    noTransactionsYet:
-      "No transactions yet",
-
-    latestTransactionsMessage:
-      "Your latest transactions will appear here.",
-
-    type:
-      "Type",
-
-    source:
-      "Source",
-
-    category:
-      "Category",
-
-    amount:
-      "Amount",
-
-    yourSmartCFO:
-      "Your Smart CFO",
-
-    personalAIFinancialCoach:
-      "Your personal AI financial coach",
-
-    nextAction:
-      "Next Action",
-
-    aiOpportunitiesDiscovered:
-      "{count} AI opportunities discovered",
-
-    unlockCompleteSmartCFO:
-      "Unlock your complete Smart CFO analysis",
-
-    hiddenMoneyPatterns:
-      "Discover hidden money patterns.",
-
-    unlockAIInsights:
-      "Unlock AI Insights",
-
-    allSmartCFOInsightsUnlocked:
-      "All Smart CFO insights unlocked",
-
-    globalBenchmark:
-      "Global Benchmark",
-
-    spendingPositionWorldwide:
-      "Your spending position worldwide",
-
-    compareGlobalSpendingPatterns:
-      "Compare your habits with global spending patterns.",
-
-    globalSpendingComparison:
-      "Global spending comparison",
-
-    shopping:
-      "Shopping",
-
-    food:
-      "Food",
-
-    monthlySpending:
-      "Monthly spending",
-
-    overallSpendingHealth:
-      "Overall spending health",
-
-    betterThanPercent:
-      "Better than {percent}%",
-
-    good:
-      "GOOD",
-
-    healthierThanBenchmarkUsers:
-      "Your spending habits are healthier than most benchmark users.",
-
-    savingMoreThanLastMonth:
-      "You're saving 18% more than last month.",
-
-    keepBuildingStrongHabits:
-      "Keep it up. You're building strong financial habits.",
-
-    currentBalance:
-      "Current Balance",
-
-    thisMonth:
-      "This Month",
-
-    availableCash:
-      "Available Cash",
-
-    incomeMinusExpenses:
-      "Income − Expenses",
-
-    analytics:
-      "Analytics",
-
-    exploreMoneyAnalytics:
-      "Explore Money Analytics",
-
-    moneyAnalyticsDescription:
-      "View detailed expense breakdown, income sources, category trends, financial health and AI insights.",
-
-    recentActivity:
-      "Recent Activity",
-
-    addFirstTransaction:
-      "Add your first income, expense or investment.",
-
-    aiFinancialInsights:
-  "AI Financial Insights",
-
-todaysSummary:
-  "Today's Summary",
-
-largestExpense:
-  "Largest Expense",
-
-mainIncome:
-  "Main Income",
-
-savingRate:
-  "Saving Rate",
-
-highestSpending:
-  "Highest Spending",
-
-noExpense:
-  "No expense",
-
-noIncome:
-  "No income",
-
-financialTrend:
-  "Financial Trend",
-portfolioGrowth:
-  "Portfolio Growth",
-
-trackPortfolioGrowth:
-  "Track the growth of your investment portfolio.",
-
-noPortfolioHistory:
-  "No portfolio history yet.",
-
-portfolioValue:
-  "Portfolio Value",
-
-aiPortfolioInsights:
-  "AI Portfolio Insights",
-
-personalizedPortfolioRecommendations:
-  "Personalized recommendations based on your portfolio.",
-
-portfolioHealth:
-  "Portfolio Health",
-
-currentPortfolioHealth:
-  "Your current portfolio health is",
-
-excellent:
-  "Excellent",
-
-noData:
-  "No Data",
-
-needsAttention:
-  "Needs Attention",
-
-average:
-  "Average",
-
-portfolioRepresents:
-  "represents",
-
-aiRecommendation:
-  "AI Recommendation",
-
-highlyConcentratedPortfolio:
-  "Your portfolio is highly concentrated in one asset. Consider diversifying into ETFs, Gold, or Bonds to reduce risk.",
-
-reasonablyDiversifiedPortfolio:
-  "Your portfolio is reasonably diversified. Continue investing consistently and review allocations monthly.",
-
-monthlyReport: "Monthly Report",
-monthlyReportDescription:
-  "A clear picture of your financial performance this month.",
-
-monthlyOverview: "Monthly Overview",
-monthlyOverviewDescription:
-  "How your money moved this month.",
-
-moneyReceivedThisMonth:
-  "Money received this month",
-
-moneySpentThisMonth:
-  "Money spent this month",
-
-investedThisMonth:
-  "Invested This Month",
-
-moneyAllocatedToInvestments:
-  "Money allocated to investments",
-
-netCashFlow:
-  "Net Cash Flow",
-
-cashRemainingAfterActivity:
-  "Cash remaining after this month's activity",
-
-cashFlow:
-  "Cash Flow",
-
-cashFlowDescription:
-  "Your income, spending, investments, and transfers.",
-
-savingsRateDescription:
-  "Percentage of income remaining after this month's activity.",
-
-investmentPerformance:
-  "Investment Performance",
-
-investmentPerformanceDescription:
-  "Current value and performance of your portfolio.",
-
-totalInvested:
-  "Total Invested",
-
-profitLoss:
-  "Profit / Loss",
-
-expenseBreakdown:
-  "Expense Breakdown",
-
-expenseBreakdownDescription:
-  "Where your money went this month.",
-
-percentOfExpenses:
-  "% of expenses",
-
-latestFinancialActivity:
-  "Latest financial activity this month.",
-
-noFinancialActivity:
-  "No financial activity recorded this month.",
-
-netWorthDescription:
-  "Available cash + investment portfolio value.",
-
-reportWaitingForData:
-  "Your report is waiting for real data.",
-
-addDataToBuildReport:
-  "Add income, expenses, or investments to start building your financial report.",
-
-
-  },
+en: {
+  wealthHub: "Your Personal Wealth Hub",
+  dashboard: "Dashboard",
+  profile: "Profile",
+  myMoney: "My Money",
+  investments: "My Investments",
+  reports: "Reports",
+  settings: "Settings",
+  settingsDescription:
+    "Manage your account and MyFinance preferences.",
+
+  myProfile: "My Profile",
+  profileDescription:
+    "Your financial identity, progress, and money habits.",
+  editProfile: "Edit Profile",
+  developerMode: "Developer Mode",
+  financialLevel: "Financial Level",
+  buildingFinancialConfidence:
+    "Building financial confidence",
+  moneySystemMessage:
+    "You are building a stronger money system. Small actions create long-term wealth.",
+
+  more: "More",
+  moneyStreak: "Money Streak",
+  keepGoing: "Keep Going",
+  dailyJourneyMessage:
+    "Complete your Daily Journey every day to build your streak.",
+  days: "Days",
+  dayStreak: "Day Streak",
+  dailyJourney: "Daily Journey",
+  today: "Today",
+
+  investmentPortfolio: "Investment Portfolio",
+  assets: "Assets",
+  invested: "Invested",
+  currentValue: "Current Value",
+  profit: "Profit",
+  return: "Return",
+
+  welcomeBack: "Welcome back",
+  dailyJourneyComplete:
+    "Congratulations! You completed today's Daily Journey. Come back tomorrow for a new challenge.",
+  dailyJourneyChallenge:
+    "Complete today's Daily Journey and earn +45 XP.",
+  xpUntilLevel:
+    "Only {xp} XP until Level {level}!",
+  buildBetterMoneyHabits:
+    "Build Better Money Habits",
+  progress: "Progress",
+  done: "Done",
+  complete: "Complete",
+  xpEarnedMessage:
+    "XP earned. Your money habits are improving.",
+
+  trackExpense: "Track one expense",
+  reviewSpending: "Review your spending",
+  betterMoneyDecision:
+    "Make one better money decision",
+
+  level: "Level",
+  netWorth: "Net Worth",
+  monthlyIncome: "Monthly Income",
+  expenses: "Expenses",
+
+  myFutureGoals: "My Future Goals",
+  startYourJourney: "Start your journey",
+  milestonesInProgress:
+    "{count} milestone{plural} in progress",
+  savedOf: "{saved} saved of {target}",
+  createFirstSavingsGoal:
+    "Create your first savings goal and build your future.",
+  yourProgress: "Your progress",
+  goalCompleted:
+    "🎉 Goal completed! Amazing work.",
+  keepGoingFuture:
+    "🚀 Keep going, your future is getting closer.",
+
+  monthlyBudget: "Monthly Budget",
+  used: "Used",
+  budget: "Budget",
+  spent: "Spent",
+  remaining: "Remaining",
+
+  financialInsights: "Financial Insights",
+  personalizedObservations:
+    "Personalized observations based on your finances.",
+  addFirstIncome:
+    "Add your first income to begin tracking.",
+  excellentSavings:
+    "Excellent! You're saving over 50% of your income.",
+  healthySavings:
+    "Great job! Your savings rate is healthy.",
+  consistentSavings:
+    "You're saving consistently. Keep building momentum.",
+  reduceExpenses:
+    "Try reducing unnecessary expenses to improve savings.",
+  investmentsMajorWealth:
+    "Your investments are becoming a major part of your wealth.",
+  expensesHigherIncome:
+    "Warning: Expenses are higher than your income.",
+
+  netWorthTrend: "Net Worth Trend",
+  growingSteadily: "Growing steadily",
+  cashFlowOverview: "Cash Flow Overview",
+  incomeVsExpenses: "Income vs Expenses",
+  compareMonthlyMoneyFlow:
+    "Compare your monthly money flow",
+
+  income: "Income",
+  expense: "Expense",
+  investment: "Investment",
+  investmentAllocation: "Investment Allocation",
+  portfolioDiversification:
+    "Portfolio Diversification",
+  assetsCategories:
+    "{assets} Assets • {categories} Categories",
+  largestHolding: "Largest Holding",
+  noInvestmentsYet: "No investments yet",
+
+  recentTransactions: "Recent Transactions",
+  viewAll: "View All",
+  noTransactionsYet: "No transactions yet",
+  latestTransactionsMessage:
+    "Your latest transactions will appear here.",
+
+  type: "Type",
+  source: "Source",
+  category: "Category",
+  amount: "Amount",
+
+  yourSmartCFO: "Your Smart CFO",
+  personalAIFinancialCoach:
+    "Your personal AI financial coach",
+  nextAction: "Next Action",
+  aiOpportunitiesDiscovered:
+    "{count} AI opportunities discovered",
+  unlockCompleteSmartCFO:
+    "Unlock your complete Smart CFO analysis",
+  hiddenMoneyPatterns:
+    "Discover hidden money patterns.",
+  unlockAIInsights: "Unlock AI Insights",
+  allSmartCFOInsightsUnlocked:
+    "All Smart CFO insights unlocked",
+
+  globalBenchmark: "Global Benchmark",
+  spendingPositionWorldwide:
+    "Your spending position worldwide",
+  compareGlobalSpendingPatterns:
+    "Compare your habits with global spending patterns.",
+  globalSpendingComparison:
+    "Global spending comparison",
+
+  shopping: "Shopping",
+  food: "Food",
+  monthlySpending: "Monthly spending",
+  overallSpendingHealth:
+    "Overall spending health",
+  betterThanPercent:
+    "Better than {percent}%",
+  good: "GOOD",
+  healthierThanBenchmarkUsers:
+    "Your spending habits are healthier than most benchmark users.",
+  savingMoreThanLastMonth:
+    "You're saving 18% more than last month.",
+  keepBuildingStrongHabits:
+    "Keep it up. You're building strong financial habits.",
+
+  currentBalance: "Current Balance",
+  thisMonth: "This Month",
+  availableCash: "Available Cash",
+  incomeMinusExpenses:
+    "Income − Expenses",
+
+  analytics: "Analytics",
+  exploreMoneyAnalytics:
+    "Explore Money Analytics",
+  moneyAnalyticsDescription:
+    "View detailed expense breakdown, income sources, category trends, financial health and AI insights.",
+
+  recentActivity: "Recent Activity",
+  addFirstTransaction:
+    "Add your first income, expense or investment.",
+
+  aiFinancialInsights:
+    "AI Financial Insights",
+  todaysSummary: "Today's Summary",
+  largestExpense: "Largest Expense",
+  mainIncome: "Main Income",
+  savingRate: "Saving Rate",
+  highestSpending: "Highest Spending",
+  noExpense: "No expense",
+  noIncome: "No income",
+
+  financialTrend: "Financial Trend",
+  financialTrendDescription:
+    "Your financial activity over the last six months.",
+  notEnoughDataYet: "Not enough data yet",
+  addDataToSeeFinancialTrend:
+    "Add income, expenses, or investments to see your financial trend.",
+
+  // Portfolio Growth
+  portfolioGrowth: "Portfolio Growth",
+  trackPortfolioGrowth:
+    "Track the growth of your investment portfolio.",
+  noPortfolioHistory:
+    "No portfolio history yet.",
+  portfolioValue: "Portfolio Value",
+
+  // AI Portfolio Insights
+  aiPortfolioInsights:
+    "AI Portfolio Insights",
+  personalizedPortfolioRecommendations:
+    "Personalized recommendations based on your portfolio.",
+  portfolioHealth: "Portfolio Health",
+  currentPortfolioHealth:
+    "Your current portfolio health is",
+  excellent: "Excellent",
+  noData: "No Data",
+  needsAttention: "Needs Attention",
+  average: "Average",
+  portfolioRepresents: "represents",
+  aiRecommendation: "AI Recommendation",
+  highlyConcentratedPortfolio:
+    "Your portfolio is highly concentrated in one asset. Consider diversifying into ETFs, Gold, or Bonds to reduce risk.",
+  reasonablyDiversifiedPortfolio:
+    "Your portfolio is reasonably diversified. Continue investing consistently and review allocations monthly.",
+
+  // Reports
+  monthlyReport: "Monthly Report",
+  monthlyReportDescription:
+    "A clear picture of your financial performance this month.",
+  monthlyOverview: "Monthly Overview",
+  monthlyOverviewDescription:
+    "How your money moved this month.",
+  moneyReceivedThisMonth:
+    "Money received this month",
+  moneySpentThisMonth:
+    "Money spent this month",
+  investedThisMonth:
+    "Invested This Month",
+  moneyAllocatedToInvestments:
+    "Money allocated to investments",
+  netCashFlow: "Net Cash Flow",
+  cashRemainingAfterActivity:
+    "Cash remaining after this month's activity",
+  cashFlow: "Cash Flow",
+  cashFlowDescription:
+    "Your income, spending, investments, and transfers.",
+  savingsRateDescription:
+    "Percentage of income remaining after this month's activity.",
+  investmentPerformance:
+    "Investment Performance",
+  investmentPerformanceDescription:
+    "Current value and performance of your portfolio.",
+  totalInvested: "Total Invested",
+  profitLoss: "Profit / Loss",
+  expenseBreakdown: "Expense Breakdown",
+  expenseBreakdownDescription:
+    "Where your money went this month.",
+  percentOfExpenses: "% of expenses",
+  latestFinancialActivity:
+    "Latest financial activity this month.",
+  noFinancialActivity:
+    "No financial activity recorded this month.",
+  netWorthDescription:
+    "Available cash + investment portfolio value.",
+  reportWaitingForData:
+    "Your report is waiting for real data.",
+  addDataToBuildReport:
+    "Add income, expenses, or investments to start building your financial report.",
+
+  // Financial Health
+  financialHealth: "Financial Health",
+  critical: "Critical",
+  fair: "Fair",
+  financialHealthDescription:
+    "Based on your actual income, expenses, savings, investments and financial activity this month.",
+
+  // Settings
+  myFinancePremium: "MYFINANCE PREMIUM",
+  accessPremiumFeatures:
+    "Access Premium Features",
+  unlockSmarterCFO:
+    "Unlock smarter CFO insights, advanced reports, and personalized financial guidance.",
+  upgrade: "Upgrade",
+
+  account: "Account",
+  financialIdentity:
+    "Your financial identity",
+
+  regionalPreferences:
+    "Regional Preferences",
+  country: "Country",
+  language: "Language",
+  currency: "Currency",
+
+  preferences: "Preferences",
+  reminders: "Reminders",
+  enabled: "Enabled",
+  disabled: "Disabled",
+  darkMode: "Dark Mode",
+
+  yourData: "Your Data",
+  exportData: "Export Data",
+  downloadBackup:
+    "Download a backup of your MyFinance data",
+  importData: "Import Data",
+  restoreBackup:
+    "Restore a previous backup",
+  passcodeLock: "Passcode Lock",
+  notEnabled: "Not enabled",
+  deleteAccountData:
+    "Delete Account Data",
+  permanentlyRemoveData:
+    "Permanently remove your MyFinance data",
+
+  support: "Support",
+  rateMyFinance: "Rate MyFinance",
+  tellUsWhatYouThink:
+    "Tell us what you think",
+  sendFeedback: "Send Feedback",
+  helpUsImprove:
+    "Help us improve MyFinance",
+
+  termsPrivacy: "Terms & Privacy",
+  privacyPolicy: "Privacy Policy",
+  termsOfUse: "Terms of Use",
+
+  logOut: "Log Out",
+  signOutOfMyFinance:
+    "Sign out of MyFinance",
+
+  savePreferences:
+    "Save Preferences",
+  keepFinancialHabits:
+    "Keep building strong financial habits",
+  financialReminders:
+    "Financial reminders",
+  protectAccountWithPasscode:
+    "Protect your account with a passcode",
+  setupPasscode:
+    "Set up a passcode",
+  useFourToSixDigitPasscode:
+    "Use a 4–6 digit passcode to protect your account",
+
+  createPasscode: "Create Passcode",
+  enterFourToSixDigits:
+    "Enter a 4–6 digit passcode",
+  continue: "Continue",
+  confirmPasscode:
+    "Confirm Passcode",
+  enterPasscodeAgain:
+    "Enter your passcode again",
+  passcodesDoNotMatch:
+    "Passcodes do not match",
+
+  enablePasscodeLock:
+    "Enable Passcode Lock",
+  passcodeLockEnabled:
+    "Passcode Lock Enabled",
+  accountProtected:
+    "Your account is protected",
+  disablePasscodeLock:
+    "Disable Passcode Lock",
+
+  tellUsHowToImprove:
+    "Tell us how we can improve MyFinance",
+  writeFeedback:
+    "Write your feedback",
+  thankYouForFeedback:
+    "Thank you for your feedback!",
+
+  deleteAccountDataQuestion:
+    "Delete all account data?",
+  deleteAccountWarning:
+    "This will permanently delete your MyFinance data and cannot be undone.",
+  cancel: "Cancel",
+  deleteData: "Delete Data",
+
+  youHaveBeenLoggedOut:
+  "You have been logged out.",
+  
+},
 
   /* =====================================================
      BANGLA
   ===================================================== */
 
-  bn: {
-    wealthHub:
-      "আপনার ব্যক্তিগত সম্পদ ব্যবস্থাপনা কেন্দ্র",
-
-    dashboard:
-      "ড্যাশবোর্ড",
-
-    profile:
-      "প্রোফাইল",
-
-    myMoney:
-      "আমার টাকা",
-
-    investments:
-      "আমার বিনিয়োগ",
-
-    reports:
-      "রিপোর্ট",
-
-    settings:
-      "সেটিংস",
-
-    myProfile:
-      "আমার প্রোফাইল",
-
-    profileDescription:
-      "আপনার আর্থিক পরিচয়, অগ্রগতি এবং অর্থ ব্যবস্থাপনার অভ্যাস।",
-
-    editProfile:
-      "প্রোফাইল সম্পাদনা করুন",
-
-    developerMode:
-      "ডেভেলপার মোড",
-
-    financialLevel:
-      "আর্থিক স্তর",
-
-    buildingFinancialConfidence:
-      "আর্থিক আত্মবিশ্বাস তৈরি হচ্ছে",
-
-    moneySystemMessage:
-      "আপনি একটি শক্তিশালী অর্থ ব্যবস্থা তৈরি করছেন। ছোট ছোট পদক্ষেপ দীর্ঘমেয়াদী সম্পদ তৈরি করে।",
-
-    more:
-      "আরও",
-
-    moneyStreak:
-      "টাকার অভ্যাসের ধারাবাহিকতা",
-
-    keepGoing:
-      "চালিয়ে যান",
-
-    dailyJourneyMessage:
-      "ধারাবাহিকতা গড়তে প্রতিদিনের যাত্রা সম্পন্ন করুন।",
-
-    days:
-      "দিন",
-
-    dayStreak:
-      "দিনের ধারাবাহিকতা",
-
-    dailyJourney:
-      "দৈনিক যাত্রা",
-
-    today:
-      "আজ",
-
-    investmentPortfolio:
-      "বিনিয়োগ পোর্টফোলিও",
-
-    assets:
-      "সম্পদ",
-
-    invested:
-      "বিনিয়োগকৃত",
-
-    currentValue:
-      "বর্তমান মূল্য",
-
-    profit:
-      "লাভ",
-
-    return:
-      "রিটার্ন",
-
-    welcomeBack:
-      "স্বাগতম",
-
-    dailyJourneyComplete:
-      "🎉 দারুণ! আজকের যাত্রা শেষ। আগামীকাল নতুন চ্যালেঞ্জ অপেক্ষায়!",
-
-    dailyJourneyChallenge:
-      "আজকের যাত্রা শেষ করুন এবং +৪৫ XP পান।",
-
-    xpUntilLevel:
-      "পরবর্তী Level {level}-এ যেতে আর মাত্র {xp} XP বাকি!",
-
-    buildBetterMoneyHabits:
-      "টাকার অভ্যাস হোক আরও ভালো",
-
-    progress:
-      "অগ্রগতি",
-
-    done:
-      "সম্পন্ন",
-
-    complete:
-      "শেষ করুন",
-
-    xpEarnedMessage:
-      "XP অর্জন করেছেন। আপনার টাকার অভ্যাস আরও ভালো হচ্ছে।",
-
-    trackExpense:
-      "একটি খরচ লিখুন",
-
-    reviewSpending:
-      "আপনার খরচ দেখুন",
-
-    betterMoneyDecision:
-      "টাকা নিয়ে একটি ভালো সিদ্ধান্ত নিন",
-
-    level:
-      "লেভেল",
-
-    netWorth:
-      "মোট সম্পদ",
-
-    monthlyIncome:
-      "মাসিক আয়",
-
-    expenses:
-      "খরচ",
-
-    myFutureGoals:
-      "আমার ভবিষ্যৎ লক্ষ্য",
-
-    startYourJourney:
-      "আপনার যাত্রা শুরু করুন",
-
-    milestonesInProgress:
-      "{count}টি লক্ষ্য চলছে",
-
-    savedOf:
-      "{target}-এর মধ্যে {saved} সঞ্চয় হয়েছে",
-
-    createFirstSavingsGoal:
-      "প্রথম সঞ্চয়ের লক্ষ্য তৈরি করুন এবং ভবিষ্যৎ গড়ুন।",
-
-    yourProgress:
-      "আপনার অগ্রগতি",
-
-    goalCompleted:
-      "🎉 লক্ষ্য পূরণ হয়েছে! দারুণ কাজ!",
-
-    keepGoingFuture:
-      "🚀 চালিয়ে যান, আপনার ভবিষ্যৎ আরও কাছে আসছে।",
-
-    monthlyBudget:
-      "মাসিক বাজেট",
-
-    used:
-      "ব্যবহৃত",
-
-    budget:
-      "বাজেট",
-
-    spent:
-      "খরচ",
-
-    remaining:
-      "বাকি",
-
-    financialInsights:
-      "আর্থিক বিশ্লেষণ",
-
-    personalizedObservations:
-      "আপনার আর্থিক তথ্যের ভিত্তিতে কিছু পরামর্শ।",
-
-    addFirstIncome:
-      "ট্র্যাকিং শুরু করতে প্রথম আয় যোগ করুন।",
-
-    excellentSavings:
-      "দারুণ! আপনি আয়ের ৫০%-এর বেশি সঞ্চয় করছেন।",
-
-    healthySavings:
-      "চমৎকার! আপনার সঞ্চয়ের হার ভালো।",
-
-    consistentSavings:
-      "আপনি নিয়মিত সঞ্চয় করছেন। চালিয়ে যান।",
-
-    reduceExpenses:
-      "সঞ্চয় বাড়াতে অপ্রয়োজনীয় খরচ কমানোর চেষ্টা করুন।",
-
-    investmentsMajorWealth:
-      "আপনার বিনিয়োগ এখন সম্পদের বড় অংশ হয়ে উঠছে।",
-
-    expensesHigherIncome:
-      "সতর্কতা: আপনার খরচ আয়ের চেয়ে বেশি।",
-
-    netWorthTrend:
-      "সম্পদের অগ্রগতি",
-
-    growingSteadily:
-      "ধীরে ধীরে বাড়ছে",
-
-    cashFlowOverview:
-      "টাকার হিসাব",
-
-    incomeVsExpenses:
-      "আয় বনাম খরচ",
-
-    compareMonthlyMoneyFlow:
-      "মাসের আয়-খরচ দেখুন",
-
-    income:
-      "আয়",
-
-    expense:
-      "খরচ",
-
-    investment:
-      "বিনিয়োগ",
-
-    investmentAllocation:
-      "বিনিয়োগের ভাগ",
-
-    portfolioDiversification:
-      "বিনিয়োগের বৈচিত্র্য",
-
-    assetsCategories:
-      "{assets}টি সম্পদ • {categories}টি ধরন",
-
-    largestHolding:
-      "সবচেয়ে বড় বিনিয়োগ",
-
-    noInvestmentsYet:
-      "এখনও কোনো বিনিয়োগ নেই",
-
-    recentTransactions:
-      "সাম্প্রতিক লেনদেন",
-
-    viewAll:
-      "সব দেখুন",
-
-    noTransactionsYet:
-      "এখনও কোনো লেনদেন নেই",
-
-    latestTransactionsMessage:
-      "আপনার সাম্প্রতিক লেনদেন এখানে দেখা যাবে।",
-
-    type:
-      "ধরন",
-
-    source:
-      "উৎস",
-
-    category:
-      "ক্যাটাগরি",
-
-    amount:
-      "পরিমাণ",
-
-    yourSmartCFO:
-      "আপনার স্মার্ট CFO",
-
-    personalAIFinancialCoach:
-      "আপনার ব্যক্তিগত AI অর্থ কোচ",
-
-    nextAction:
-      "পরবর্তী পদক্ষেপ",
-
-    aiOpportunitiesDiscovered:
-      "{count}টি AI সুযোগ পাওয়া গেছে",
-
-    unlockCompleteSmartCFO:
-      "সম্পূর্ণ Smart CFO বিশ্লেষণ দেখুন",
-
-    hiddenMoneyPatterns:
-      "টাকার লুকানো ধরণগুলো খুঁজে দেখুন।",
-
-    unlockAIInsights:
-      "AI ইনসাইট আনলক করুন",
-
-    allSmartCFOInsightsUnlocked:
-      "সব Smart CFO ইনসাইট আনলক হয়েছে",
-
-    globalBenchmark:
-      "বিশ্বের তুলনা",
-
-    spendingPositionWorldwide:
-      "বিশ্বে আপনার খরচের অবস্থান",
-
-    compareGlobalSpendingPatterns:
-      "বিশ্বের খরচের ধরণের সাথে আপনার অভ্যাস তুলনা করুন।",
-
-    globalSpendingComparison:
-      "বিশ্বব্যাপী খরচের তুলনা",
-
-    shopping:
-      "কেনাকাটা",
-
-    food:
-      "খাবার",
-
-    monthlySpending:
-      "মাসিক খরচ",
-
-    overallSpendingHealth:
-      "সামগ্রিক খরচের অবস্থা",
-
-    betterThanPercent:
-      "{percent}% মানুষের চেয়ে ভালো",
-
-    good:
-      "ভালো",
-
-    healthierThanBenchmarkUsers:
-      "আপনার খরচের অভ্যাস বেশিরভাগ ব্যবহারকারীর তুলনায় ভালো।",
-
-    savingMoreThanLastMonth:
-      "গত মাসের তুলনায় আপনি ১৮% বেশি সঞ্চয় করছেন।",
-
-    keepBuildingStrongHabits:
-      "এভাবেই চালিয়ে যান। আপনি ভালো আর্থিক অভ্যাস গড়ে তুলছেন।",
-
-    currentBalance:
-      "বর্তমান ব্যালেন্স",
-
-    thisMonth:
-      "এই মাসে",
-
-    availableCash:
-      "হাতে থাকা টাকা",
-
-    incomeMinusExpenses:
-      "আয় − খরচ",
-
-    analytics:
-      "অ্যানালিটিক্স",
-
-    exploreMoneyAnalytics:
-      "মানি অ্যানালিটিক্স দেখুন",
-
-    moneyAnalyticsDescription:
-      "বিস্তারিত খরচের হিসাব, আয়ের উৎস, ক্যাটাগরির প্রবণতা, আর্থিক অবস্থা এবং AI ইনসাইট দেখুন।",
-
-    recentActivity:
-      "সাম্প্রতিক কার্যক্রম",
-
-    addFirstTransaction:
-      "আপনার প্রথম আয়, খরচ বা বিনিয়োগ যোগ করুন।",
-
-    aiFinancialInsights:
-  "AI আর্থিক বিশ্লেষণ",
-
-todaysSummary:
-  "আজকের সারাংশ",
-
-largestExpense:
-  "সবচেয়ে বড় খরচ",
-
-mainIncome:
-  "প্রধান আয়ের উৎস",
-
-savingRate:
-  "সঞ্চয়ের হার",
-
-highestSpending:
-  "সর্বোচ্চ খরচ",
-
-noExpense:
-  "কোনো খরচ নেই",
-
-noIncome:
-  "কোনো আয় নেই",
-
-  financialTrend:
-  "আর্থিক প্রবণতা",
-
-portfolioGrowth:
-  "বিনিয়োগ পোর্টফোলিওর অগ্রগতি",
-
-trackPortfolioGrowth:
-  "আপনার বিনিয়োগ পোর্টফোলিওর বৃদ্ধি দেখুন।",
-
-noPortfolioHistory:
-  "এখনও কোনো পোর্টফোলিও ইতিহাস নেই।",
-
-portfolioValue:
-  "পোর্টফোলিওর মূল্য",
-
-aiPortfolioInsights:
-  "AI পোর্টফোলিও বিশ্লেষণ",
-
-personalizedPortfolioRecommendations:
-  "আপনার পোর্টফোলিওর ভিত্তিতে ব্যক্তিগত পরামর্শ।",
-
-portfolioHealth:
-  "পোর্টফোলিওর অবস্থা",
-
-currentPortfolioHealth:
-  "আপনার বর্তমান পোর্টফোলিওর অবস্থা হলো",
-
-excellent:
-  "চমৎকার",
-
-noData:
-  "তথ্য নেই",
-
-needsAttention:
-  "মনোযোগ প্রয়োজন",
-
-average:
-  "গড়",
-
-portfolioRepresents:
-  "আপনার পোর্টফোলিওর",
-
-aiRecommendation:
-  "AI পরামর্শ",
-
-highlyConcentratedPortfolio:
-  "আপনার পোর্টফোলিও একটি সম্পদের ওপর বেশি নির্ভরশীল। ঝুঁকি কমাতে ETF, গোল্ড বা বন্ডে বৈচিত্র্য আনার কথা বিবেচনা করুন।",
-
-reasonablyDiversifiedPortfolio:
-  "আপনার পোর্টফোলিও মোটামুটি বৈচিত্র্যপূর্ণ। নিয়মিত বিনিয়োগ চালিয়ে যান এবং প্রতি মাসে বিনিয়োগের ভাগ পর্যালোচনা করুন।",
-
-monthlyReport: "মাসিক প্রতিবেদন",
-monthlyReportDescription:
-  "এই মাসে আপনার আর্থিক কার্যক্রমের একটি পরিষ্কার চিত্র।",
-
-monthlyOverview: "মাসিক সারসংক্ষেপ",
-monthlyOverviewDescription:
-  "এই মাসে আপনার অর্থ কীভাবে ব্যবহৃত হয়েছে।",
-
-moneyReceivedThisMonth:
-  "এই মাসে প্রাপ্ত অর্থ",
-
-moneySpentThisMonth:
-  "এই মাসে ব্যয় করা অর্থ",
-
-investedThisMonth:
-  "এই মাসে বিনিয়োগ",
-
-moneyAllocatedToInvestments:
-  "বিনিয়োগে বরাদ্দ করা অর্থ",
-
-netCashFlow:
-  "নিট নগদ প্রবাহ",
-
-cashRemainingAfterActivity:
-  "এই মাসের কার্যক্রমের পর অবশিষ্ট নগদ",
-
-cashFlow:
-  "নগদ প্রবাহ",
-
-cashFlowDescription:
-  "আপনার আয়, ব্যয়, বিনিয়োগ এবং অর্থ স্থানান্তর।",
-
-savingsRateDescription:
-  "এই মাসের কার্যক্রমের পর আয়ের যে অংশ অবশিষ্ট থাকে তার শতাংশ।",
-
-investmentPerformance:
-  "বিনিয়োগের কার্যকারিতা",
-
-investmentPerformanceDescription:
-  "আপনার পোর্টফোলিওর বর্তমান মূল্য এবং কার্যকারিতা।",
-
-totalInvested:
-  "মোট বিনিয়োগ",
-
-profitLoss:
-  "লাভ / ক্ষতি",
-
-expenseBreakdown:
-  "ব্যয়ের বিবরণ",
-
-expenseBreakdownDescription:
-  "এই মাসে আপনার অর্থ কোথায় ব্যয় হয়েছে।",
-
-percentOfExpenses:
-  "মোট ব্যয়ের %",
-
-latestFinancialActivity:
-  "এই মাসের সর্বশেষ আর্থিক কার্যক্রম।",
-
-noFinancialActivity:
-  "এই মাসে কোনো আর্থিক কার্যক্রম রেকর্ড করা হয়নি।",
-
-netWorthDescription:
-  "উপলব্ধ নগদ + বিনিয়োগ পোর্টফোলিওর মূল্য।",
-
-reportWaitingForData:
-  "আপনার রিপোর্ট বাস্তব ডেটার জন্য অপেক্ষা করছে।",
-
-addDataToBuildReport:
-  "আপনার আর্থিক রিপোর্ট তৈরি করতে আয়, ব্যয় বা বিনিয়োগ যোগ করুন।",  
-
-  },
+bn: {
+  wealthHub: "আপনার ব্যক্তিগত সম্পদ কেন্দ্র",
+  dashboard: "ড্যাশবোর্ড",
+  profile: "প্রোফাইল",
+  myMoney: "আমার টাকা",
+  investments: "আমার বিনিয়োগ",
+  reports: "রিপোর্ট",
+  settings: "সেটিংস",
+  settingsDescription:
+    "আপনার অ্যাকাউন্ট এবং MyFinance-এর পছন্দসমূহ পরিচালনা করুন।",
+
+  myProfile: "আমার প্রোফাইল",
+  profileDescription:
+    "আপনার আর্থিক পরিচয়, অগ্রগতি এবং অর্থ ব্যবস্থাপনার অভ্যাস।",
+  editProfile: "প্রোফাইল সম্পাদনা করুন",
+  developerMode: "ডেভেলপার মোড",
+  financialLevel: "আর্থিক স্তর",
+  buildingFinancialConfidence:
+    "আর্থিক আত্মবিশ্বাস তৈরি হচ্ছে",
+  moneySystemMessage:
+    "আপনি একটি শক্তিশালী অর্থ ব্যবস্থাপনা ব্যবস্থা তৈরি করছেন। ছোট ছোট পদক্ষেপ দীর্ঘমেয়াদে সম্পদ তৈরি করে।",
+
+  more: "আরও",
+  moneyStreak: "অর্থ ব্যবস্থাপনার ধারাবাহিকতা",
+  keepGoing: "চালিয়ে যান",
+  dailyJourneyMessage:
+    "আপনার ধারাবাহিকতা বজায় রাখতে প্রতিদিনের ডেইলি জার্নি সম্পন্ন করুন।",
+  days: "দিন",
+  dayStreak: "দিনের ধারাবাহিকতা",
+  dailyJourney: "ডেইলি জার্নি",
+  today: "আজ",
+
+  investmentPortfolio: "বিনিয়োগ পোর্টফোলিও",
+  assets: "সম্পদ",
+  invested: "বিনিয়োগ করা হয়েছে",
+  currentValue: "বর্তমান মূল্য",
+  profit: "লাভ",
+  return: "রিটার্ন",
+
+  welcomeBack: "আবারও স্বাগতম",
+  dailyJourneyComplete:
+    "অভিনন্দন! আপনি আজকের ডেইলি জার্নি সম্পন্ন করেছেন। নতুন চ্যালেঞ্জের জন্য আগামীকাল আবার আসুন।",
+  dailyJourneyChallenge:
+    "আজকের ডেইলি জার্নি সম্পন্ন করুন এবং +45 XP অর্জন করুন।",
+  xpUntilLevel:
+    "লেভেল {level} পেতে আর মাত্র {xp} XP!",
+  buildBetterMoneyHabits:
+    "আরও ভালো অর্থ ব্যবস্থাপনার অভ্যাস তৈরি করুন",
+  progress: "অগ্রগতি",
+  done: "সম্পন্ন",
+  complete: "সম্পূর্ণ করুন",
+  xpEarnedMessage:
+    "XP অর্জিত হয়েছে। আপনার অর্থ ব্যবস্থাপনার অভ্যাস উন্নত হচ্ছে।",
+
+  trackExpense: "একটি খরচ হিসাব করুন",
+  reviewSpending: "আপনার খরচ পর্যালোচনা করুন",
+  betterMoneyDecision:
+    "আরও ভালো একটি আর্থিক সিদ্ধান্ত নিন",
+
+  level: "লেভেল",
+  netWorth: "নিট সম্পদ",
+  monthlyIncome: "মাসিক আয়",
+  expenses: "খরচ",
+
+  myFutureGoals: "আমার ভবিষ্যৎ লক্ষ্য",
+  startYourJourney: "আপনার যাত্রা শুরু করুন",
+  milestonesInProgress:
+    "{count}টি মাইলস্টোন চলমান",
+  savedOf: "{target}-এর মধ্যে {saved} সঞ্চয় হয়েছে",
+  createFirstSavingsGoal:
+    "আপনার প্রথম সঞ্চয় লক্ষ্য তৈরি করুন এবং ভবিষ্যৎ গড়ে তুলুন।",
+  yourProgress: "আপনার অগ্রগতি",
+  goalCompleted:
+    "🎉 লক্ষ্য সম্পন্ন! অসাধারণ কাজ।",
+  keepGoingFuture:
+    "🚀 চালিয়ে যান, আপনার ভবিষ্যৎ আরও কাছে চলে আসছে।",
+
+  monthlyBudget: "মাসিক বাজেট",
+  used: "ব্যবহৃত",
+  budget: "বাজেট",
+  spent: "খরচ হয়েছে",
+  remaining: "অবশিষ্ট",
+
+  financialInsights: "আর্থিক ইনসাইট",
+  personalizedObservations:
+    "আপনার আর্থিক তথ্যের ভিত্তিতে ব্যক্তিগত পর্যবেক্ষণ।",
+  addFirstIncome:
+    "হিসাব শুরু করতে আপনার প্রথম আয় যোগ করুন।",
+  excellentSavings:
+    "চমৎকার! আপনি আপনার আয়ের ৫০%-এর বেশি সঞ্চয় করছেন।",
+  healthySavings:
+    "দারুণ! আপনার সঞ্চয়ের হার ভালো।",
+  consistentSavings:
+    "আপনি নিয়মিত সঞ্চয় করছেন। এই ধারাবাহিকতা বজায় রাখুন।",
+  reduceExpenses:
+    "সঞ্চয় বাড়াতে অপ্রয়োজনীয় খরচ কমানোর চেষ্টা করুন।",
+  investmentsMajorWealth:
+    "আপনার বিনিয়োগ আপনার মোট সম্পদের একটি গুরুত্বপূর্ণ অংশ হয়ে উঠছে।",
+  expensesHigherIncome:
+    "সতর্কতা: আপনার খরচ আপনার আয়ের চেয়ে বেশি।",
+
+  netWorthTrend: "নিট সম্পদের প্রবণতা",
+  growingSteadily: "ধীরে ধীরে বাড়ছে",
+  cashFlowOverview: "ক্যাশ ফ্লো সারসংক্ষেপ",
+  incomeVsExpenses: "আয় বনাম খরচ",
+  compareMonthlyMoneyFlow:
+    "আপনার মাসিক অর্থ প্রবাহ তুলনা করুন",
+
+  income: "আয়",
+  expense: "খরচ",
+  investment: "বিনিয়োগ",
+  investmentAllocation: "বিনিয়োগের বণ্টন",
+  portfolioDiversification: "পোর্টফোলিও বৈচিত্র্য",
+  assetsCategories:
+    "{assets}টি সম্পদ • {categories}টি ক্যাটাগরি",
+  largestHolding: "সবচেয়ে বড় বিনিয়োগ",
+  noInvestmentsYet: "এখনও কোনো বিনিয়োগ নেই",
+
+  recentTransactions: "সাম্প্রতিক লেনদেন",
+  viewAll: "সব দেখুন",
+  noTransactionsYet: "এখনও কোনো লেনদেন নেই",
+  latestTransactionsMessage:
+    "আপনার সর্বশেষ লেনদেন এখানে দেখা যাবে।",
+
+  type: "ধরন",
+  source: "উৎস",
+  category: "ক্যাটাগরি",
+  amount: "পরিমাণ",
+
+  yourSmartCFO: "আপনার স্মার্ট CFO",
+  personalAIFinancialCoach:
+    "আপনার ব্যক্তিগত AI আর্থিক কোচ",
+  nextAction: "পরবর্তী পদক্ষেপ",
+  aiOpportunitiesDiscovered:
+    "{count}টি AI সুযোগ পাওয়া গেছে",
+  unlockCompleteSmartCFO:
+    "সম্পূর্ণ Smart CFO বিশ্লেষণ আনলক করুন",
+  hiddenMoneyPatterns:
+    "আপনার অর্থ ব্যবস্থাপনার লুকানো ধরণ আবিষ্কার করুন।",
+  unlockAIInsights: "AI ইনসাইট আনলক করুন",
+  allSmartCFOInsightsUnlocked:
+    "সমস্ত Smart CFO ইনসাইট আনলক করা হয়েছে",
+
+  globalBenchmark: "বৈশ্বিক তুলনা",
+  spendingPositionWorldwide:
+    "বিশ্বব্যাপী আপনার খরচের অবস্থান",
+  compareGlobalSpendingPatterns:
+    "বিশ্বব্যাপী খরচের ধরণের সঙ্গে আপনার অভ্যাস তুলনা করুন।",
+  globalSpendingComparison:
+    "বৈশ্বিক খরচের তুলনা",
+
+  shopping: "শপিং",
+  food: "খাবার",
+  monthlySpending: "মাসিক খরচ",
+  overallSpendingHealth: "সামগ্রিক খরচের স্বাস্থ্য",
+  betterThanPercent: "{percent}%-এর চেয়ে ভালো",
+  good: "ভালো",
+  healthierThanBenchmarkUsers:
+    "আপনার খরচের অভ্যাস বেশিরভাগ তুলনামূলক ব্যবহারকারীর চেয়ে ভালো।",
+  savingMoreThanLastMonth:
+    "আপনি গত মাসের তুলনায় ১৮% বেশি সঞ্চয় করছেন।",
+  keepBuildingStrongHabits:
+    "চালিয়ে যান। আপনি শক্তিশালী আর্থিক অভ্যাস তৈরি করছেন।",
+
+  currentBalance: "বর্তমান ব্যালেন্স",
+  thisMonth: "এই মাস",
+  availableCash: "উপলব্ধ নগদ",
+  incomeMinusExpenses: "আয় − খরচ",
+
+  analytics: "অ্যানালিটিক্স",
+  exploreMoneyAnalytics: "মানি অ্যানালিটিক্স দেখুন",
+  moneyAnalyticsDescription:
+    "বিস্তারিত খরচের বিভাজন, আয়ের উৎস, ক্যাটাগরির প্রবণতা, আর্থিক স্বাস্থ্য এবং AI ইনসাইট দেখুন।",
+
+  recentActivity: "সাম্প্রতিক কার্যক্রম",
+  addFirstTransaction:
+    "আপনার প্রথম আয়, খরচ বা বিনিয়োগ যোগ করুন।",
+
+  aiFinancialInsights: "AI আর্থিক ইনসাইট",
+  todaysSummary: "আজকের সারসংক্ষেপ",
+  largestExpense: "সবচেয়ে বড় খরচ",
+  mainIncome: "প্রধান আয়",
+  savingRate: "সঞ্চয়ের হার",
+  highestSpending: "সর্বোচ্চ খরচ",
+  noExpense: "কোনো খরচ নেই",
+  noIncome: "কোনো আয় নেই",
+
+  financialTrend: "আর্থিক প্রবণতা",
+  financialTrendDescription:
+    "গত ছয় মাসের আপনার আর্থিক কার্যক্রম।",
+  notEnoughDataYet: "এখনও পর্যাপ্ত তথ্য নেই",
+  addDataToSeeFinancialTrend:
+    "আপনার আর্থিক প্রবণতা দেখতে আয়, খরচ বা বিনিয়োগ যোগ করুন।",
+
+  portfolioGrowth: "পোর্টফোলিও বৃদ্ধি",
+  trackPortfolioGrowth:
+    "আপনার বিনিয়োগ পোর্টফোলিওর বৃদ্ধি পর্যবেক্ষণ করুন।",
+  noPortfolioHistory:
+    "এখনও কোনো পোর্টফোলিও ইতিহাস নেই।",
+  portfolioValue: "পোর্টফোলিও মূল্য",
+
+  aiPortfolioInsights: "AI পোর্টফোলিও ইনসাইট",
+  personalizedPortfolioRecommendations:
+    "আপনার পোর্টফোলিওর ভিত্তিতে ব্যক্তিগতকৃত সুপারিশ।",
+  portfolioHealth: "পোর্টফোলিও স্বাস্থ্য",
+  currentPortfolioHealth:
+    "আপনার বর্তমান পোর্টফোলিও স্বাস্থ্য হলো",
+  excellent: "চমৎকার",
+  noData: "কোনো তথ্য নেই",
+  needsAttention: "মনোযোগ প্রয়োজন",
+  average: "গড়",
+  portfolioRepresents: "প্রতিনিধিত্ব করে",
+  aiRecommendation: "AI সুপারিশ",
+  highlyConcentratedPortfolio:
+    "আপনার পোর্টফোলিও একটি সম্পদে অতিরিক্ত কেন্দ্রীভূত। ঝুঁকি কমাতে ETF, গোল্ড বা বন্ডে বৈচিত্র্য আনার কথা বিবেচনা করুন।",
+  reasonablyDiversifiedPortfolio:
+    "আপনার পোর্টফোলিও যথেষ্ট বৈচিত্র্যময়। নিয়মিত বিনিয়োগ চালিয়ে যান এবং প্রতি মাসে আপনার সম্পদ বণ্টন পর্যালোচনা করুন।",
+
+  monthlyReport: "মাসিক রিপোর্ট",
+  monthlyReportDescription:
+    "এই মাসে আপনার আর্থিক কার্যক্রমের একটি পরিষ্কার চিত্র।",
+  monthlyOverview: "মাসিক সারসংক্ষেপ",
+  monthlyOverviewDescription:
+    "এই মাসে আপনার অর্থ কীভাবে প্রবাহিত হয়েছে।",
+
+  moneyReceivedThisMonth:
+    "এই মাসে প্রাপ্ত অর্থ",
+  moneySpentThisMonth:
+    "এই মাসে খরচ করা অর্থ",
+  investedThisMonth:
+    "এই মাসে বিনিয়োগ",
+  moneyAllocatedToInvestments:
+    "বিনিয়োগে বরাদ্দ করা অর্থ",
+  netCashFlow: "নিট ক্যাশ ফ্লো",
+  cashRemainingAfterActivity:
+    "এই মাসের কার্যক্রমের পর অবশিষ্ট নগদ",
+  cashFlow: "ক্যাশ ফ্লো",
+  cashFlowDescription:
+    "আপনার আয়, খরচ, বিনিয়োগ এবং স্থানান্তর।",
+  savingsRateDescription:
+    "এই মাসের কার্যক্রমের পর অবশিষ্ট আয়ের শতাংশ।",
+
+  investmentPerformance: "বিনিয়োগের পারফরম্যান্স",
+  investmentPerformanceDescription:
+    "আপনার পোর্টফোলিওর বর্তমান মূল্য এবং পারফরম্যান্স।",
+  totalInvested: "মোট বিনিয়োগ",
+  profitLoss: "লাভ / ক্ষতি",
+
+  expenseBreakdown: "খরচের বিভাজন",
+  expenseBreakdownDescription:
+    "এই মাসে আপনার অর্থ কোথায় খরচ হয়েছে।",
+  percentOfExpenses: "খরচের শতাংশ",
+
+  latestFinancialActivity:
+    "এই মাসের সর্বশেষ আর্থিক কার্যক্রম।",
+  noFinancialActivity:
+    "এই মাসে কোনো আর্থিক কার্যক্রম রেকর্ড করা হয়নি।",
+  netWorthDescription:
+    "উপলব্ধ নগদ + বিনিয়োগ পোর্টফোলিওর মূল্য।",
+  reportWaitingForData:
+    "আপনার রিপোর্ট বাস্তব তথ্যের জন্য অপেক্ষা করছে।",
+  addDataToBuildReport:
+    "আপনার আর্থিক রিপোর্ট তৈরি করতে আয়, খরচ বা বিনিয়োগ যোগ করুন।",
+
+  financialHealth: "আর্থিক স্বাস্থ্য",
+  critical: "সংকটপূর্ণ",
+  fair: "মোটামুটি",
+  financialHealthDescription:
+    "এই মাসের আপনার প্রকৃত আয়, খরচ, সঞ্চয়, বিনিয়োগ এবং আর্থিক কার্যক্রমের ভিত্তিতে।",
+
+  // Settings
+  myFinancePremium: "MYFINANCE প্রিমিয়াম",
+  accessPremiumFeatures:
+    "প্রিমিয়াম ফিচার ব্যবহার করুন",
+  unlockSmarterCFO:
+    "আরও স্মার্ট CFO ইনসাইট, উন্নত রিপোর্ট এবং ব্যক্তিগতকৃত আর্থিক নির্দেশনা পান।",
+  upgrade: "আপগ্রেড করুন",
+
+  account: "অ্যাকাউন্ট",
+  financialIdentity: "আপনার আর্থিক পরিচয়",
+
+  regionalPreferences: "আঞ্চলিক পছন্দসমূহ",
+  country: "দেশ",
+  language: "ভাষা",
+  currency: "মুদ্রা",
+
+  preferences: "পছন্দসমূহ",
+  reminders: "রিমাইন্ডার",
+  enabled: "চালু",
+  disabled: "বন্ধ",
+  darkMode: "ডার্ক মোড",
+
+  yourData: "আপনার ডেটা",
+  exportData: "ডেটা এক্সপোর্ট করুন",
+  downloadBackup:
+    "আপনার MyFinance ডেটার ব্যাকআপ ডাউনলোড করুন",
+  importData: "ডেটা ইমপোর্ট করুন",
+  restoreBackup:
+    "আগের ব্যাকআপ পুনরুদ্ধার করুন",
+  passcodeLock: "পাসকোড লক",
+  notEnabled: "চালু করা হয়নি",
+  deleteAccountData:
+    "অ্যাকাউন্টের ডেটা মুছুন",
+  permanentlyRemoveData:
+    "আপনার MyFinance ডেটা স্থায়ীভাবে মুছে ফেলুন",
+
+  support: "সহায়তা",
+  rateMyFinance: "MyFinance-কে রেটিং দিন",
+  tellUsWhatYouThink:
+    "আপনার মতামত জানান",
+  sendFeedback: "ফিডব্যাক পাঠান",
+  helpUsImprove:
+    "MyFinance আরও উন্নত করতে আমাদের সাহায্য করুন",
+
+  termsPrivacy: "শর্তাবলি ও গোপনীয়তা",
+  privacyPolicy: "গোপনীয়তা নীতি",
+  termsOfUse: "ব্যবহারের শর্তাবলি",
+
+  logOut: "লগ আউট",
+  signOutOfMyFinance:
+    "MyFinance থেকে সাইন আউট করুন",
+
+  savePreferences:
+    "পছন্দসমূহ সংরক্ষণ করুন",
+  keepFinancialHabits:
+    "ভালো আর্থিক অভ্যাস গড়ে তুলতে থাকুন",
+  financialReminders:
+    "আর্থিক রিমাইন্ডার",
+  protectAccountWithPasscode:
+    "পাসকোড দিয়ে আপনার অ্যাকাউন্ট সুরক্ষিত করুন",
+  setupPasscode:
+    "পাসকোড সেট আপ করুন",
+  useFourToSixDigitPasscode:
+    "আপনার অ্যাকাউন্ট সুরক্ষিত করতে ৪–৬ সংখ্যার পাসকোড ব্যবহার করুন",
+
+  createPasscode: "পাসকোড তৈরি করুন",
+  enterFourToSixDigits:
+    "৪–৬ সংখ্যার পাসকোড লিখুন",
+  continue: "চালিয়ে যান",
+  confirmPasscode:
+    "পাসকোড নিশ্চিত করুন",
+  enterPasscodeAgain:
+    "আবার আপনার পাসকোড লিখুন",
+  passcodesDoNotMatch:
+    "পাসকোড মিলছে না",
+
+  enablePasscodeLock:
+    "পাসকোড লক চালু করুন",
+  passcodeLockEnabled:
+    "পাসকোড লক চালু হয়েছে",
+  accountProtected:
+    "আপনার অ্যাকাউন্ট সুরক্ষিত",
+  disablePasscodeLock:
+    "পাসকোড লক বন্ধ করুন",
+
+  tellUsHowToImprove:
+    "কীভাবে MyFinance আরও উন্নত করা যায় তা জানান",
+  writeFeedback:
+    "আপনার ফিডব্যাক লিখুন",
+  thankYouForFeedback:
+    "আপনার ফিডব্যাকের জন্য ধন্যবাদ!",
+
+  deleteAccountDataQuestion:
+    "সব অ্যাকাউন্টের ডেটা মুছে ফেলবেন?",
+  deleteAccountWarning:
+    "এই কাজটি আপনার MyFinance-এর ডেটা স্থায়ীভাবে মুছে ফেলবে এবং এটি আর ফিরিয়ে আনা যাবে না।",
+  cancel: "বাতিল",
+  deleteData: "ডেটা মুছে ফেলুন",
+
+youHaveBeenLoggedOut:
+  "আপনাকে লগ আউট করা হয়েছে।",
+},
 };

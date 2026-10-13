@@ -39,13 +39,22 @@ type ChartItem = {
 
 export default function PortfolioGrowthChart() {
 
-  const { t } = useLanguage();
+  const {
+    language,
+    t,
+  } = useLanguage();
 
-  const [history, setHistory] =
-    useState<PortfolioHistoryItem[]>([]);
 
-  const [, forceCurrencyUpdate] =
-    useState(0);
+  const [
+    history,
+    setHistory,
+  ] = useState<PortfolioHistoryItem[]>([]);
+
+
+  const [
+    ,
+    forceCurrencyUpdate,
+  ] = useState(0);
 
 
   /* =====================================================
@@ -59,9 +68,13 @@ export default function PortfolioGrowthChart() {
       const result =
         getPortfolioHistory();
 
+
       if (!Array.isArray(result)) {
+
         setHistory([]);
+
         return;
+
       }
 
 
@@ -73,11 +86,14 @@ export default function PortfolioGrowthChart() {
               return false;
             }
 
+
             const date =
               new Date(item.date);
 
+
             const value =
               Number(item.value);
+
 
             return (
               typeof item.date === "string" &&
@@ -88,9 +104,14 @@ export default function PortfolioGrowthChart() {
 
           })
           .map((item) => ({
+
             id: item.id,
+
             date: item.date,
-            value: Number(item.value),
+
+            value:
+              Number(item.value),
+
           }))
           .sort(
             (a, b) =>
@@ -152,10 +173,12 @@ export default function PortfolioGrowthChart() {
       currencyListener
     );
 
+
     window.addEventListener(
       "portfolioHistoryUpdated",
       portfolioHistoryListener
     );
+
 
     window.addEventListener(
       "investmentsUpdated",
@@ -170,10 +193,12 @@ export default function PortfolioGrowthChart() {
         currencyListener
       );
 
+
       window.removeEventListener(
         "portfolioHistoryUpdated",
         portfolioHistoryListener
       );
+
 
       window.removeEventListener(
         "investmentsUpdated",
@@ -205,13 +230,27 @@ export default function PortfolioGrowthChart() {
           new Date(item.date);
 
 
+        /*
+         * Use the currently selected language
+         * for chart dates.
+         *
+         * English → Jul 28
+         * Bangla  → ২৮ জুলাই
+         */
+
+        const locale =
+          language === "bn"
+            ? "bn-BD"
+            : "en-US";
+
+
         return {
 
           date: item.date,
 
           label:
             date.toLocaleDateString(
-              "en-US",
+              locale,
               {
                 month: "short",
                 day: "numeric",
@@ -225,7 +264,7 @@ export default function PortfolioGrowthChart() {
 
       });
 
-    }, [history]);
+    }, [history, language]);
 
 
   /* =====================================================
@@ -380,10 +419,7 @@ export default function PortfolioGrowthChart() {
             }}
           >
 
-            {/* =================================================
-                SUBTLE AREA
-                Visual only — uses exact recorded values.
-            ================================================= */}
+            {/* Area gradient */}
 
             <defs>
 
@@ -487,18 +523,18 @@ export default function PortfolioGrowthChart() {
               }}
 
               formatter={(value) => [
+
                 formatCurrency(
                   Number(value)
                 ),
+
                 t("portfolioValue"),
+
               ]}
             />
 
 
-            {/* =================================================
-                AREA
-                Uses exact portfolio values.
-            ================================================= */}
+            {/* Area */}
 
             <Area
               type="linear"
@@ -509,20 +545,7 @@ export default function PortfolioGrowthChart() {
             />
 
 
-            {/* =================================================
-                REAL PORTFOLIO LINE
-
-                type="linear" is intentional.
-
-                This means:
-                Point A → straight line → Point B
-
-                No:
-                - artificial curve
-                - overshooting
-                - smoothing
-                - invented values
-            ================================================= */}
+            {/* Real Portfolio Line */}
 
             <Line
               type="linear"

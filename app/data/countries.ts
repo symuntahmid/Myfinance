@@ -63,7 +63,6 @@ export const countries: Country[] = [
   { code: "IR", name: "Iran", flag: "🇮🇷" },
   { code: "IQ", name: "Iraq", flag: "🇮🇶" },
   { code: "IE", name: "Ireland", flag: "🇮🇪" },
-  { code: "IL", name: "Israel", flag: "🇮🇱" },
   { code: "IT", name: "Italy", flag: "🇮🇹" },
 
   { code: "JP", name: "Japan", flag: "🇯🇵" },
@@ -99,6 +98,7 @@ export const countries: Country[] = [
 
   { code: "OM", name: "Oman", flag: "🇴🇲" },
 
+  { code: "PS", name: "Palestine", flag: "🇵🇸" },
   { code: "PK", name: "Pakistan", flag: "🇵🇰" },
   { code: "PA", name: "Panama", flag: "🇵🇦" },
   { code: "PE", name: "Peru", flag: "🇵🇪" },
