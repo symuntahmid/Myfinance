@@ -8,7 +8,6 @@ import {
 import {
   Play,
   Zap,
-  Crown,
   Sparkles,
 } from "lucide-react";
 
@@ -428,98 +427,6 @@ text-slate-400
 
 
 </div>
-
-
-
-
-
-
-
-
-
-{/* PREMIUM */}
-
-<div className="
-border-t border-slate-100
-bg-gradient-to-r
-from-amber-50/70
-to-violet-50/70
-px-4 py-3
-">
-
-
-<div className="
-flex items-center gap-3
-">
-
-
-<div className="
-flex h-9 w-9 items-center justify-center
-rounded-lg bg-white
-text-amber-500 shadow-sm
-">
-
-
-<Crown size={17}/>
-
-
-</div>
-
-
-
-
-<div className="flex-1">
-
-
-<p className="
-text-xs font-bold text-slate-800
-">
-
-Want unlimited Smart CFO insights?
-
-</p>
-
-
-
-<p className="
-text-[10px]
-text-slate-500
-">
-
-Upgrade to remove Energy limits and ads.
-
-</p>
-
-
-</div>
-
-
-
-
-<button
-type="button"
-className="
-rounded-lg bg-white
-px-3 py-2
-text-[10px]
-font-bold text-violet-600
-shadow-sm
-"
->
-
-Upgrade
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-
 
 
 </div>

@@ -16,7 +16,6 @@ import {
 
 import {
   User,
-  Sparkles,
   Globe2,
   Languages,
   Coins,
@@ -348,44 +347,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
       </div>
 
 
-      {/* PREMIUM */}
-
-      <button
-        type="button"
-        className="group relative mb-7 w-full overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-pink-500 to-orange-400 p-5 text-left shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
-      >
-        <div className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-[var(--card)]/15 blur-2xl" />
-
-        <div className="relative max-w-[75%]">
-
-          <div className="mb-2 flex items-center gap-2">
-            <Sparkles
-              size={18}
-              className="text-yellow-200"
-            />
-
-            <span className="text-xs font-bold uppercase tracking-wider text-white/80">
-              MyFinance Premium
-            </span>
-          </div>
-
-          <h2 className="text-xl font-bold text-white">
-            Access Premium Features
-          </h2>
-
-          <p className="mt-1 text-xs leading-relaxed text-white/80">
-            Unlock smarter CFO insights, advanced reports,
-            and personalized financial guidance.
-          </p>
-
-          <span className="mt-4 inline-flex rounded-full bg-[var(--card)] px-5 py-2 text-xs font-bold text-[var(--foreground)] shadow-sm transition group-hover:px-6">
-            Upgrade
-          </span>
-
-        </div>
-      </button>
-
-
       {/* ACCOUNT */}
 
       <section className="mb-6">
@@ -404,21 +365,6 @@ const [passcodeConfirm, setPasscodeConfirm] =
                 "/profile";
             }}
           />
-
-          <Divider />
-
-          <SettingRow
-            icon={<Sparkles size={19} />}
-            title="Upgrade"
-            subtitle="Unlock premium CFO features"
-            onClick={() => {
-              alert(
-                "Premium upgrade will be available soon."
-              );
-            }}
-          />
-
-          <Divider />
 
         </SettingGroup>
       </section>
