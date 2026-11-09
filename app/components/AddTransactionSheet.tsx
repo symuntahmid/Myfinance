@@ -7,7 +7,11 @@ import {
   Wallet,
   Receipt,
   TrendingUp,
+  Zap,
 } from "lucide-react";
+
+import { useLanguage } from "@/app/context/LanguageContext";
+import { quickText } from "@/app/data/quickAdd";
 
 interface Props {
   open: boolean;
@@ -16,6 +20,9 @@ interface Props {
   onIncome: () => void;
   onExpense: () => void;
   onInvestment: () => void;
+
+  // Optional: shows a "Quick Add" button at the top.
+  onQuick?: () => void;
 }
 
 export default function AddTransactionSheet({
@@ -24,7 +31,11 @@ export default function AddTransactionSheet({
   onIncome,
   onExpense,
   onInvestment,
+  onQuick,
 }: Props) {
+  const { language } = useLanguage();
+  const quick = quickText[language];
+
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -88,6 +99,27 @@ export default function AddTransactionSheet({
         {/* Actions */}
 
         <div className="mt-8 space-y-4 px-6">
+
+          {onQuick && (
+            <button
+              onClick={onQuick}
+              className="flex w-full items-center gap-4 rounded-3xl bg-gradient-to-r from-violet-600 to-cyan-600 p-5 text-white shadow-lg transition hover:scale-[1.02]"
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
+                <Zap size={26} />
+              </div>
+
+              <div className="text-left">
+                <h3 className="text-lg font-bold">
+                  {quick.menuTitle}
+                </h3>
+
+                <p className="text-sm text-white/80">
+                  {quick.menuSubtitle}
+                </p>
+              </div>
+            </button>
+          )}
 
           <button
             onClick={onIncome}

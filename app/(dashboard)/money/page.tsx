@@ -8,6 +8,7 @@ import TransactionForm from "@/app/components/TransactionForm";
 import SpendingInsights from "@/app/components/SpendingInsights";
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
+import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 import { formatCurrency } from "@/app/utils/currency";
 import { t } from "@/app/data/i18n";
@@ -20,6 +21,8 @@ import {
 
 export default function MoneyPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const [quickOpen, setQuickOpen] = useState(false);
 
   const [formOpen, setFormOpen] = useState(false);
 
@@ -398,6 +401,13 @@ export default function MoneyPage() {
       <AddTransactionSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
+        onQuick={() => {
+          setSheetOpen(false);
+
+          setTimeout(() => {
+            setQuickOpen(true);
+          }, 250);
+        }}
         onIncome={() => {
           setTransactionType("Income");
           setSheetOpen(false);
@@ -422,6 +432,11 @@ export default function MoneyPage() {
             setFormOpen(true);
           }, 250);
         }}
+      />
+
+      <QuickAddSheet
+        open={quickOpen}
+        onClose={() => setQuickOpen(false)}
       />
 
       {/* Transaction Form */}

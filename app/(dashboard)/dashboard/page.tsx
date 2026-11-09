@@ -8,6 +8,7 @@ import FloatingActionButton from "../../components/FloatingActionButton";
 import AddTransactionSheet from "../../components/AddTransactionSheet";
 import TransactionForm from "../../components/TransactionForm";
 import AddInvestmentModal from "../../components/AddInvestmentModal";
+import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
 import NetWorthChart from "../../components/NetWorthChart";
@@ -33,6 +34,8 @@ import { formatCurrency } from "@/app/utils/currency";
 
 export default function Dashboard() {
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const [quickOpen, setQuickOpen] = useState(false);
 
   const [formOpen, setFormOpen] = useState(false);
 
@@ -378,6 +381,13 @@ portfolio.returnPercentage >= 0
       <AddTransactionSheet
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
+        onQuick={() => {
+          setSheetOpen(false);
+
+          setTimeout(() => {
+            setQuickOpen(true);
+          }, 250);
+        }}
         onIncome={() => {
           setTransactionType("Income");
           setSheetOpen(false);
@@ -401,6 +411,11 @@ portfolio.returnPercentage >= 0
             setInvestmentModalOpen(true);
           }, 250);
         }}
+      />
+
+      <QuickAddSheet
+        open={quickOpen}
+        onClose={() => setQuickOpen(false)}
       />
 
       <TransactionForm
