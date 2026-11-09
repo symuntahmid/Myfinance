@@ -90,11 +90,6 @@ export type TranslationKey =
   | "yourSmartCFO"
   | "personalAIFinancialCoach"
   | "nextAction"
-  | "aiOpportunitiesDiscovered"
-  | "unlockCompleteSmartCFO"
-  | "hiddenMoneyPatterns"
-  | "unlockAIInsights"
-  | "allSmartCFOInsightsUnlocked"
   | "globalBenchmark"
   | "spendingPositionWorldwide"
   | "compareGlobalSpendingPatterns"
@@ -186,10 +181,6 @@ export type TranslationKey =
   | "financialHealthDescription"
 
   // Settings
-  | "myFinancePremium"
-  | "accessPremiumFeatures"
-  | "unlockSmarterCFO"
-  | "upgrade"
   | "account"
   | "financialIdentity"
   | "regionalPreferences"
@@ -388,15 +379,6 @@ en: {
   personalAIFinancialCoach:
     "Your personal AI financial coach",
   nextAction: "Next Action",
-  aiOpportunitiesDiscovered:
-    "{count} AI opportunities discovered",
-  unlockCompleteSmartCFO:
-    "Unlock your complete Smart CFO analysis",
-  hiddenMoneyPatterns:
-    "Discover hidden money patterns.",
-  unlockAIInsights: "Unlock AI Insights",
-  allSmartCFOInsightsUnlocked:
-    "All Smart CFO insights unlocked",
 
   globalBenchmark: "Global Benchmark",
   spendingPositionWorldwide:
@@ -533,12 +515,6 @@ en: {
     "Based on your actual income, expenses, savings, investments and financial activity this month.",
 
   // Settings
-  myFinancePremium: "MYFINANCE PREMIUM",
-  accessPremiumFeatures:
-    "Access Premium Features",
-  unlockSmarterCFO:
-    "Unlock smarter CFO insights, advanced reports, and personalized financial guidance.",
-  upgrade: "Upgrade",
 
   account: "Account",
   financialIdentity:
@@ -775,15 +751,6 @@ bn: {
   personalAIFinancialCoach:
     "আপনার ব্যক্তিগত AI আর্থিক কোচ",
   nextAction: "পরবর্তী পদক্ষেপ",
-  aiOpportunitiesDiscovered:
-    "{count}টি AI সুযোগ পাওয়া গেছে",
-  unlockCompleteSmartCFO:
-    "সম্পূর্ণ Smart CFO বিশ্লেষণ আনলক করুন",
-  hiddenMoneyPatterns:
-    "আপনার অর্থ ব্যবস্থাপনার লুকানো ধরণ আবিষ্কার করুন।",
-  unlockAIInsights: "AI ইনসাইট আনলক করুন",
-  allSmartCFOInsightsUnlocked:
-    "সমস্ত Smart CFO ইনসাইট আনলক করা হয়েছে",
 
   globalBenchmark: "বৈশ্বিক তুলনা",
   spendingPositionWorldwide:
@@ -913,12 +880,6 @@ bn: {
     "এই মাসের আপনার প্রকৃত আয়, খরচ, সঞ্চয়, বিনিয়োগ এবং আর্থিক কার্যক্রমের ভিত্তিতে।",
 
   // Settings
-  myFinancePremium: "MYFINANCE প্রিমিয়াম",
-  accessPremiumFeatures:
-    "প্রিমিয়াম ফিচার ব্যবহার করুন",
-  unlockSmarterCFO:
-    "আরও স্মার্ট CFO ইনসাইট, উন্নত রিপোর্ট এবং ব্যক্তিগতকৃত আর্থিক নির্দেশনা পান।",
-  upgrade: "আপগ্রেড করুন",
 
   account: "অ্যাকাউন্ট",
   financialIdentity: "আপনার আর্থিক পরিচয়",

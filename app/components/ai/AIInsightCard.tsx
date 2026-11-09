@@ -7,17 +7,8 @@ import {
 
 import {
   Brain,
-  Lock,
   Sparkles,
-  Zap,
-  ChevronRight,
 } from "lucide-react";
-
-import {
-  getAIWallet,
-  unlockAIInsights,
-  hasUnlockedInsights,
-} from "@/app/data/aiWallet";
 
 import {
   getAIInsights,
@@ -26,8 +17,6 @@ import {
 import type {
   AIInsight,
 } from "@/app/data/types/AIInsight";
-
-import AIInsightEnergy from "./AIInsightEnergy";
 
 import {
   t,
@@ -78,37 +67,17 @@ export default function AIInsightCard({
   const [mounted, setMounted] =
     useState(false);
 
-  const [credits, setCredits] =
-    useState(0);
-
   const [insights, setInsights] =
     useState<AIInsight[]>([]);
 
-  const [unlocked, setUnlocked] =
-    useState(false);
-
-  const [showEnergy, setShowEnergy] =
-    useState(false);
-
 
   const refresh = () => {
-
-    const wallet =
-      getAIWallet();
-
-    setCredits(
-      wallet.credits
-    );
 
     const allInsights =
       getAIInsights();
 
     setInsights(
       allInsights.slice(0, 4)
-    );
-
-    setUnlocked(
-      hasUnlockedInsights()
     );
 
   };
@@ -120,11 +89,6 @@ export default function AIInsightCard({
 
     refresh();
 
-
-    window.addEventListener(
-      "aiWalletUpdated",
-      refresh
-    );
 
     window.addEventListener(
       "transactionsUpdated",
@@ -143,11 +107,6 @@ export default function AIInsightCard({
 
 
     return () => {
-
-      window.removeEventListener(
-        "aiWalletUpdated",
-        refresh
-      );
 
       window.removeEventListener(
         "transactionsUpdated",
@@ -169,39 +128,12 @@ export default function AIInsightCard({
   }, []);
 
 
-  const handleUnlock = () => {
-
-    const success =
-      unlockAIInsights();
-
-    if (!success) {
-
-      setShowEnergy(true);
-
-      return;
-
-    }
-
-    refresh();
-
-  };
-
-
   if (!mounted) {
     return null;
   }
 
 
-  const visibleInsights =
-    unlocked
-      ? insights.slice(0, 4)
-      : insights.slice(0, 1);
-
-
-  const lockedCount =
-    unlocked
-      ? 0
-      : 3;
+  const visibleInsights = insights;
 
 
   return (
@@ -343,48 +275,6 @@ export default function AIInsightCard({
           </div>
 
 
-          {/* AI Credits */}
-
-          <div
-            className="
-            flex
-            items-center
-            gap-2
-            rounded-full
-            border
-            border-[var(--border)]
-            bg-[var(--background)]
-            px-3
-            py-2
-            "
-          >
-
-            <Zap
-              size={14}
-              className="
-              fill-yellow-400
-              text-yellow-500
-              "
-            />
-
-            <div>
-
-              <p
-                className="
-                font-display
-                text-lg
-                font-medium
-                tracking-[-0.04em]
-                text-[var(--foreground)]
-                "
-              >
-                {credits}
-              </p>
-
-            </div>
-
-          </div>
-
         </div>
 
 
@@ -517,177 +407,6 @@ export default function AIInsightCard({
           ))}
 
         </div>
-
-
-        {/* LOCKED INSIGHTS */}
-
-        {!unlocked && (
-
-          <div
-            className="
-            mt-4
-            rounded-3xl
-            border
-            border-violet-500/20
-            bg-gradient-to-br
-            from-violet-500/10
-            to-cyan-500/10
-            p-5
-            "
-          >
-
-            <div
-              className="
-              flex
-              items-start
-              gap-3
-              "
-            >
-
-              <div
-                className="
-                rounded-2xl
-                bg-violet-500/10
-                p-3
-                "
-              >
-                <Lock
-                  size={20}
-                  className="text-violet-500"
-                />
-              </div>
-
-
-              <div>
-
-                <h3
-                  className="
-                  font-display
-                  text-lg
-                  font-medium
-                  tracking-[-0.04em]
-                  leading-tight
-                  text-[var(--foreground)]
-                  "
-                >
-                  {t("aiOpportunitiesDiscovered").replace(
-                    "{count}",
-                    String(lockedCount)
-                  )}
-                </h3>
-
-
-                <p
-                  className="
-                  mt-1
-                  text-xs
-                  leading-5
-                  text-[var(--muted)]
-                  "
-                >
-                  {t("unlockCompleteSmartCFO")}
-                  {" "}
-                  {t("hiddenMoneyPatterns")}
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        )}
-
-
-        {/* ACTION BUTTON */}
-
-        {!unlocked && (
-
-          <div className="mt-5">
-
-            {showEnergy ? (
-
-              <AIInsightEnergy />
-
-            ) : (
-
-              <button
-                type="button"
-                onClick={handleUnlock}
-                className="
-                group
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-2xl
-                bg-gradient-to-r
-                from-violet-600
-                to-cyan-600
-                px-5
-                py-4
-                text-sm
-                font-medium
-                tracking-[-0.01em]
-                text-white
-                shadow-lg
-                shadow-violet-500/20
-                transition
-                hover:scale-[1.01]
-                "
-              >
-
-                <Sparkles size={16} />
-
-                {t("unlockAIInsights")}
-
-                <ChevronRight
-                  size={16}
-                  className="
-                  transition
-                  group-hover:translate-x-1
-                  "
-                />
-
-              </button>
-
-            )}
-
-          </div>
-
-        )}
-
-
-        {/* UNLOCKED STATE */}
-
-        {unlocked && (
-
-          <div
-            className="
-            mt-5
-            flex
-            items-center
-            justify-center
-            gap-2
-            rounded-2xl
-            bg-emerald-500/10
-            px-4
-            py-3
-            text-sm
-            font-bold
-            text-emerald-600
-            dark:text-emerald-400
-            "
-          >
-
-            <Sparkles size={16} />
-
-            {t("allSmartCFOInsightsUnlocked")}
-
-          </div>
-
-        )}
 
       </div>
 
