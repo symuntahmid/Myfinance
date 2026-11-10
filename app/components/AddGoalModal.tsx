@@ -4,6 +4,12 @@ import { useState } from "react";
 import { X, Target } from "lucide-react";
 
 import { addGoal } from "@/app/data/goals";
+import { useLanguage } from "@/app/context/LanguageContext";
+import {
+  goalTemplates,
+  goalTemplateText,
+  type GoalTemplateId,
+} from "@/app/data/goalTemplates";
 
 type Props = {
   open: boolean;
@@ -19,6 +25,11 @@ export default function AddGoalModal({
   const [emoji, setEmoji] = useState("🎯");
   const [targetAmount, setTargetAmount] = useState("");
   const [targetDate, setTargetDate] = useState("");
+
+  const { language } = useLanguage();
+
+  const [templateId, setTemplateId] =
+    useState<GoalTemplateId | null>(null);
 
 
   if (!open) return null;
@@ -59,6 +70,8 @@ export default function AddGoalModal({
     setTargetAmount("");
 
     setTargetDate("");
+
+    setTemplateId(null);
 
 
     onClose();
@@ -103,6 +116,8 @@ onClick={(e)=>e.stopPropagation()}
 className="
 w-full
 max-w-xl
+max-h-[90vh]
+overflow-y-auto
 rounded-[32px]
 bg-[var(--card)]
 border
@@ -217,6 +232,56 @@ space-y-6
 p-8
 "
 >
+
+<div>
+
+<p
+className="
+mb-2
+text-sm
+font-semibold
+text-[var(--foreground)]
+"
+>
+{goalTemplateText[language].heading}
+<span className="ml-2 font-normal text-[var(--muted)]">
+· {goalTemplateText[language].optional}
+</span>
+</p>
+
+<div className="flex flex-wrap gap-2">
+
+{goalTemplates.map((template) => (
+
+<button
+key={template.id}
+type="button"
+onClick={() => {
+setTitle(template.title[language]);
+setEmoji(template.emoji);
+setTemplateId(template.id);
+}}
+className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+templateId === template.id
+? "border-cyan-500 bg-cyan-500 text-white"
+: "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:border-cyan-400"
+}`}
+>
+{template.emoji} {template.title[language]}
+</button>
+
+))}
+
+</div>
+
+{templateId && (
+<p className="mt-3 rounded-2xl bg-cyan-500/10 px-4 py-3 text-sm text-[var(--foreground)]">
+💡 {goalTemplates.find((t) => t.id === templateId)?.tip[language]}
+</p>
+)}
+
+</div>
+
 
 
 
