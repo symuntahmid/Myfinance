@@ -1,4 +1,6 @@
 "use client";
+
+import { useLanguage } from "@/app/context/LanguageContext";
 import AddMoneyModal from "@/app/components/AddMoneyModal";
 import EditGoalModal from "@/app/components/EditGoalModal";
 import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
@@ -27,7 +29,22 @@ function getProgressPercent(saved: number, target: number) {
   return Math.min(100, (saved / target) * 100);
 }
 
+// Shows "{saved} saved of {target}" with the two amounts in bold,
+// in whichever word order the current language uses.
+function renderSavedOf(template: string, saved: string, target: string) {
+  return template.split(/(\{saved\}|\{target\})/).map((part, i) =>
+    part === "{saved}" || part === "{target}" ? (
+      <span key={i} className="font-semibold">
+        {part === "{saved}" ? saved : target}
+      </span>
+    ) : (
+      part
+    )
+  );
+}
+
 export default function GoalsPage() {
+  const { t } = useLanguage();
   const [goals, setGoals] = useState<Goal[]>([]);
   const [goalModalOpen, setGoalModalOpen] = useState(false);
 
@@ -124,7 +141,7 @@ tracking-[-0.05em]
 md:text-6xl
 "
 >
-Financial Goals
+{t("goalsTitle")}
 </h1>
 
 <p
@@ -138,8 +155,7 @@ tracking-tight
 text-cyan-100
 "
 >
-                Every dollar you save today brings you one step closer to
-                the life you truly want.
+                {t("goalsSubtitle")}
               </p>
             </div>
 
@@ -148,7 +164,7 @@ text-cyan-100
               onClick={() => setGoalModalOpen(true)}
               className="relative z-10 rounded-2xl bg-white px-5 py-4 text-sm font-bold text-cyan-700 shadow-lg transition hover:scale-105"
             >
-              Add Goal
+              {t("addGoal")}
             </button>
           </div>
         </div>
@@ -166,7 +182,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-Active Goals
+{t("activeGoals")}
 </p>
 
             <div className="mt-3 flex items-center justify-between">
@@ -198,7 +214,7 @@ tracking-[0.12em]
 text-[var(--muted)]
 "
 >
-Completed</p>
+{t("goalsCompleted")}</p>
 
             <div className="mt-3 flex items-center justify-between">
               <h2
@@ -230,7 +246,7 @@ shadow-sm
   text-sm
   text-[var(--muted)]
   ">
-    Saved
+    {t("savedLabel")}
   </p>
 
   <div className="
@@ -261,7 +277,7 @@ shadow-sm
 </div>
 
           <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-            <p className="text-sm text-[var(--muted)]">Goal Completion</p>
+            <p className="text-sm text-[var(--muted)]">{t("goalCompletion")}</p>
 
             <h2 className="mt-3 text-3xl font-bold text-cyan-600">
               {averageCompletion}%
@@ -281,10 +297,10 @@ shadow-sm
           <div className="rounded-3xl bg-white p-16 text-center shadow-sm">
             <Target size={48} className="mx-auto text-cyan-500" />
 
-            <h2 className="mt-6 text-3xl font-bold">No goals yet</h2>
+            <h2 className="mt-6 text-3xl font-bold">{t("noGoalsYet")}</h2>
 
             <p className="mt-3 text-slate-500">
-              Create your first financial goal.
+              {t("createFirstGoal")}
             </p>
 
             <button
@@ -292,7 +308,7 @@ shadow-sm
               onClick={() => setGoalModalOpen(true)}
               className="mt-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-semibold text-white"
             >
-              Create Goal
+              {t("createGoal")}
             </button>
           </div>
         ) : (
@@ -336,7 +352,7 @@ sm:p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
                               openMenuId === goal.id ? null : goal.id
                             )
                           }
-                          aria-label="Goal options"
+                          aria-label={t("goalOptions")}
                           className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white backdrop-blur-md transition hover:bg-white/30"
                         >
                           <MoreVertical size={18} />
@@ -371,20 +387,20 @@ sm:w-44
                                 className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50"
                               >
                                 <Pencil size={18} />
-                                Edit Goal
+                                {t("editGoal")}
                               </button>
 
                               <button
                                 type="button"
                                 onClick={() => {
-                                  if (!confirm("Delete this goal?")) return;
+                                  if (!confirm(t("deleteGoalConfirm"))) return;
                                   deleteGoal(goal.id);
                                   setOpenMenuId(null);
                                 }}
                                 className="flex w-full items-center gap-3 px-4 py-3 text-left text-red-600 hover:bg-red-50"
                               >
                                 <Trash2 size={18} />
-                                Delete Goal
+                                {t("deleteGoal")}
                               </button>
                             </div>
                           </>
@@ -402,7 +418,7 @@ tracking-[0.12em]
 text-cyan-100/80
 "
 >
-Progress
+{t("progress")}
 </p>
 <h2
 className="
@@ -432,20 +448,12 @@ tracking-[-0.04em]
                   {/* Saved */}
                   <div className="mt-3 text-cyan-100">
                     <p className="mt-3 text-base text-cyan-100">
-                      <span className="font-semibold">
-                        {formatCurrency(goal.savedAmount)}
-                      </span>
-
-                      {" "}saved of{" "}
-
-                      <span className="font-semibold">
-                        {formatCurrency(goal.targetAmount)}
-                      </span>
+                      {renderSavedOf(t("savedOf"), formatCurrency(goal.savedAmount), formatCurrency(goal.targetAmount))}
                     </p>
 
                     {isCompleted && (
                       <div className="mt-5 inline-flex items-center rounded-full bg-green-400/20 px-5 py-2 text-sm font-semibold text-green-100 border border-green-300/20">
-                        ✨ Goal Completed
+                        ✨ {t("goalReached")}
                       </div>
                     )}
                   </div>
@@ -462,7 +470,7 @@ tracking-[-0.04em]
                     <div className="mt-8 grid grid-cols-3 gap-4 rounded-3xl bg-white/14 border border-white/15 p-4 backdrop-blur">
                       <div>
   <p className="text-xs text-cyan-100">
-    Saved
+    {t("savedLabel")}
   </p>
 
   <h3 className="mt-1 font-bold text-green-300">
@@ -472,7 +480,7 @@ tracking-[-0.04em]
 
 <div>
   <p className="text-xs text-cyan-100">
-    Goal
+    {t("goalLabel")}
   </p>
 
   <h3 className="mt-1 font-bold">
@@ -481,7 +489,7 @@ tracking-[-0.04em]
 </div>
 
                       <div>
-                        <p className="text-xs text-cyan-100">Remaining</p>
+                        <p className="text-xs text-cyan-100">{t("remaining")}</p>
                         <h3 className="mt-1 font-bold text-orange-300">
                           {formatCurrency(
   Math.max(
@@ -507,7 +515,7 @@ tracking-[-0.04em]
                           : "bg-white text-blue-700 hover:scale-[1.02]"
                       }`}
                     >
-                      {isCompleted ? "✅ Completed" : "💰 Add Money"}
+                      {isCompleted ? `✅ ${t("goalsCompleted")}` : `💰 ${t("addMoney")}`}
                     </button>
 
                     <button
@@ -523,7 +531,7 @@ tracking-[-0.04em]
                           : "border-white/30 bg-white/10 text-white hover:bg-white/20"
                       }`}
                     >
-                      Withdraw Money
+                      {t("withdrawMoney")}
                     </button>
                   </div>
                 </div>

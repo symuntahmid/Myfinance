@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/app/context/LanguageContext";
+
 import {
   useState,
   useEffect,
@@ -42,6 +44,8 @@ export default function WithdrawMoneyModal({
 
 const [, forceCurrencyUpdate] = useState(0);
 
+  const { t } = useLanguage();
+
   if(!open || !goal)
     return null;
 
@@ -61,9 +65,7 @@ const [, forceCurrencyUpdate] = useState(0);
 
     if(!value || value <= 0){
 
-      alert(
-        "Please enter a valid amount."
-      );
+      alert(t("enterValidAmount"));
 
       return;
 
@@ -73,9 +75,7 @@ const [, forceCurrencyUpdate] = useState(0);
 
     if(value > currentGoal.savedAmount){
 
-      alert(
-        "Not enough money in this goal."
-      );
+      alert(t("notEnoughInGoal"));
 
       return;
 
@@ -196,7 +196,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 text-[var(--foreground)]
                 "
               >
-                Withdraw Money
+                {t("withdrawMoney")}
               </h2>
 
 
@@ -207,7 +207,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 text-[var(--muted)]
                 "
               >
-                Move money back to Available Cash.
+                {t("withdrawDescription")}
               </p>
 
 
@@ -260,7 +260,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 text-[var(--muted)]
                 "
               >
-                Selected Goal
+                {t("selectedGoal")}
               </p>
 
 
@@ -284,7 +284,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 text-[var(--muted)]
                 "
               >
-                Available:{" "}
+                {t("availableShort")}:{" "}
                 {formatCurrency(
                   currentGoal.savedAmount
                 )}
@@ -308,7 +308,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 setAmount(e.target.value)
               }
 
-              placeholder="Enter amount"
+              placeholder={t("enterAmount")}
 
               className="
               mt-6
@@ -356,7 +356,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 "
 
               >
-                Cancel
+                {t("cancel")}
 
               </button>
 
@@ -378,7 +378,7 @@ const [, forceCurrencyUpdate] = useState(0);
                 "
 
               >
-                Withdraw
+                {t("withdrawShort")}
 
               </button>
 

@@ -4,6 +4,12 @@ import { useState } from "react";
 import { X, Target } from "lucide-react";
 
 import { addGoal } from "@/app/data/goals";
+import { useLanguage } from "@/app/context/LanguageContext";
+import {
+  goalTemplates,
+  goalTemplateText,
+  type GoalTemplateId,
+} from "@/app/data/goalTemplates";
 
 type Props = {
   open: boolean;
@@ -19,6 +25,11 @@ export default function AddGoalModal({
   const [emoji, setEmoji] = useState("🎯");
   const [targetAmount, setTargetAmount] = useState("");
   const [targetDate, setTargetDate] = useState("");
+
+  const { language, t } = useLanguage();
+
+  const [templateId, setTemplateId] =
+    useState<GoalTemplateId | null>(null);
 
 
   if (!open) return null;
@@ -59,6 +70,8 @@ export default function AddGoalModal({
     setTargetAmount("");
 
     setTargetDate("");
+
+    setTemplateId(null);
 
 
     onClose();
@@ -103,6 +116,8 @@ onClick={(e)=>e.stopPropagation()}
 className="
 w-full
 max-w-xl
+max-h-[90vh]
+overflow-y-auto
 rounded-[32px]
 bg-[var(--card)]
 border
@@ -161,7 +176,7 @@ font-bold
 text-[var(--foreground)]
 "
 >
-Create Goal
+{t("createGoal")}
 </h2>
 
 
@@ -171,7 +186,7 @@ mt-1
 text-[var(--muted)]
 "
 >
-Start saving toward something meaningful.
+{t("createGoalDescription")}
 </p>
 
 
@@ -218,6 +233,56 @@ p-8
 "
 >
 
+<div>
+
+<p
+className="
+mb-2
+text-sm
+font-semibold
+text-[var(--foreground)]
+"
+>
+{goalTemplateText[language].heading}
+<span className="ml-2 font-normal text-[var(--muted)]">
+· {goalTemplateText[language].optional}
+</span>
+</p>
+
+<div className="flex flex-wrap gap-2">
+
+{goalTemplates.map((template) => (
+
+<button
+key={template.id}
+type="button"
+onClick={() => {
+setTitle(template.title[language]);
+setEmoji(template.emoji);
+setTemplateId(template.id);
+}}
+className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+templateId === template.id
+? "border-cyan-500 bg-cyan-500 text-white"
+: "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:border-cyan-400"
+}`}
+>
+{template.emoji} {template.title[language]}
+</button>
+
+))}
+
+</div>
+
+{templateId && (
+<p className="mt-3 rounded-2xl bg-cyan-500/10 px-4 py-3 text-sm text-[var(--foreground)]">
+💡 {goalTemplates.find((t) => t.id === templateId)?.tip[language]}
+</p>
+)}
+
+</div>
+
+
 
 
 <div>
@@ -231,7 +296,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Goal Name
+{t("goalName")}
 </label>
 
 
@@ -241,7 +306,7 @@ value={title}
 
 onChange={(e)=>setTitle(e.target.value)}
 
-placeholder="Japan Trip"
+placeholder={t("goalNamePlaceholder")}
 
 className="
 w-full
@@ -277,7 +342,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Emoji
+{t("emojiLabel")}
 </label>
 
 
@@ -324,7 +389,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Target Amount
+{t("targetAmount")}
 </label>
 
 
@@ -373,7 +438,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Target Date
+{t("targetDate")}
 </label>
 
 
@@ -444,7 +509,7 @@ hover:bg-[var(--background)]
 
 >
 
-Cancel
+{t("cancel")}
 
 </button>
 
@@ -470,7 +535,7 @@ hover:scale-[1.02]
 
 >
 
-Create Goal
+{t("createGoal")}
 
 </button>
 
