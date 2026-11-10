@@ -180,6 +180,11 @@ export type TranslationKey =
   | "fair"
   | "financialHealthDescription"
 
+  // Streak freeze
+  | "streakFreezes"
+  | "streakFreezeHint"
+  | "streakFreezeUsed"
+
   // Settings
   | "account"
   | "financialIdentity"
@@ -513,6 +518,13 @@ en: {
   fair: "Fair",
   financialHealthDescription:
     "Based on your actual income, expenses, savings, investments and financial activity this month.",
+
+  // Streak freeze
+  streakFreezes: "Streak freezes",
+  streakFreezeHint:
+    "A freeze saves your streak if you miss a day. Earn one every 7 days.",
+  streakFreezeUsed:
+    "A freeze saved your {streak}-day streak!",
 
   // Settings
 
@@ -878,6 +890,13 @@ bn: {
   fair: "মোটামুটি",
   financialHealthDescription:
     "এই মাসের আপনার প্রকৃত আয়, খরচ, সঞ্চয়, বিনিয়োগ এবং আর্থিক কার্যক্রমের ভিত্তিতে।",
+
+  // Streak freeze
+  streakFreezes: "স্ট্রিক ফ্রিজ",
+  streakFreezeHint:
+    "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
+  streakFreezeUsed:
+    "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
 
   // Settings
 
