@@ -26,7 +26,7 @@ export default function AddGoalModal({
   const [targetAmount, setTargetAmount] = useState("");
   const [targetDate, setTargetDate] = useState("");
 
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [templateId, setTemplateId] =
     useState<GoalTemplateId | null>(null);
@@ -176,7 +176,7 @@ font-bold
 text-[var(--foreground)]
 "
 >
-Create Goal
+{t("createGoal")}
 </h2>
 
 
@@ -186,7 +186,7 @@ mt-1
 text-[var(--muted)]
 "
 >
-Start saving toward something meaningful.
+{t("createGoalDescription")}
 </p>
 
 
@@ -296,7 +296,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Goal Name
+{t("goalName")}
 </label>
 
 
@@ -306,7 +306,7 @@ value={title}
 
 onChange={(e)=>setTitle(e.target.value)}
 
-placeholder="Japan Trip"
+placeholder={t("goalNamePlaceholder")}
 
 className="
 w-full
@@ -342,7 +342,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Emoji
+{t("emojiLabel")}
 </label>
 
 
@@ -389,7 +389,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Target Amount
+{t("targetAmount")}
 </label>
 
 
@@ -438,7 +438,7 @@ font-semibold
 text-[var(--foreground)]
 "
 >
-Target Date
+{t("targetDate")}
 </label>
 
 
@@ -509,7 +509,7 @@ hover:bg-[var(--background)]
 
 >
 
-Cancel
+{t("cancel")}
 
 </button>
 
@@ -535,7 +535,7 @@ hover:scale-[1.02]
 
 >
 
-Create Goal
+{t("createGoal")}
 
 </button>
 

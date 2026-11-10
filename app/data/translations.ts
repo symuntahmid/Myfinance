@@ -185,6 +185,45 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Goals page
+  | "goalsTitle"
+  | "goalsSubtitle"
+  | "addGoal"
+  | "activeGoals"
+  | "goalsCompleted"
+  | "savedLabel"
+  | "goalCompletion"
+  | "noGoalsYet"
+  | "createFirstGoal"
+  | "createGoal"
+  | "goalOptions"
+  | "editGoal"
+  | "deleteGoal"
+  | "deleteGoalConfirm"
+  | "goalReached"
+  | "goalLabel"
+  | "addMoney"
+  | "withdrawMoney"
+  | "withdrawShort"
+  | "addMoneyDescription"
+  | "withdrawDescription"
+  | "selectedGoal"
+  | "enterAmount"
+  | "amountOfTarget"
+  | "availableShort"
+  | "enterValidAmount"
+  | "notEnoughCash"
+  | "notEnoughInGoal"
+  | "createGoalDescription"
+  | "goalName"
+  | "goalNamePlaceholder"
+  | "emojiLabel"
+  | "targetAmount"
+  | "targetDate"
+  | "saveChanges"
+  | "enterGoalName"
+  | "enterValidTarget"
+
   // Settings
   | "account"
   | "financialIdentity"
@@ -525,6 +564,82 @@ en: {
     "A freeze saves your streak if you miss a day. Earn one every 7 days.",
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
+
+  // Goals page
+  goalsTitle:
+    "Financial Goals",
+  goalsSubtitle:
+    "Every bit you save today brings you one step closer to the life you truly want.",
+  addGoal:
+    "Add Goal",
+  activeGoals:
+    "Active Goals",
+  goalsCompleted:
+    "Completed",
+  savedLabel:
+    "Saved",
+  goalCompletion:
+    "Goal Completion",
+  noGoalsYet:
+    "No goals yet",
+  createFirstGoal:
+    "Create your first financial goal.",
+  createGoal:
+    "Create Goal",
+  goalOptions:
+    "Goal options",
+  editGoal:
+    "Edit Goal",
+  deleteGoal:
+    "Delete Goal",
+  deleteGoalConfirm:
+    "Delete this goal?",
+  goalReached:
+    "Goal Completed",
+  goalLabel:
+    "Goal",
+  addMoney:
+    "Add Money",
+  withdrawMoney:
+    "Withdraw Money",
+  withdrawShort:
+    "Withdraw",
+  addMoneyDescription:
+    "Transfer money into this goal.",
+  withdrawDescription:
+    "Move money back to Available Cash.",
+  selectedGoal:
+    "Selected Goal",
+  enterAmount:
+    "Enter amount",
+  amountOfTarget:
+    "{saved} of {target}",
+  availableShort:
+    "Available",
+  enterValidAmount:
+    "Please enter a valid amount.",
+  notEnoughCash:
+    "Not enough available cash.",
+  notEnoughInGoal:
+    "Not enough money in this goal.",
+  createGoalDescription:
+    "Start saving toward something meaningful.",
+  goalName:
+    "Goal Name",
+  goalNamePlaceholder:
+    "Japan Trip",
+  emojiLabel:
+    "Emoji",
+  targetAmount:
+    "Target Amount",
+  targetDate:
+    "Target Date",
+  saveChanges:
+    "Save Changes",
+  enterGoalName:
+    "Please enter a goal name.",
+  enterValidTarget:
+    "Please enter a valid target amount.",
 
   // Settings
 
@@ -897,6 +1012,82 @@ bn: {
     "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
+
+  // Goals page
+  goalsTitle:
+    "আর্থিক লক্ষ্য",
+  goalsSubtitle:
+    "আজ আপনি যা সঞ্চয় করছেন, তা আপনাকে কাঙ্ক্ষিত জীবনের এক ধাপ কাছে নিয়ে যাচ্ছে।",
+  addGoal:
+    "লক্ষ্য যোগ করুন",
+  activeGoals:
+    "চলমান লক্ষ্য",
+  goalsCompleted:
+    "সম্পন্ন",
+  savedLabel:
+    "সঞ্চিত",
+  goalCompletion:
+    "লক্ষ্য পূরণ",
+  noGoalsYet:
+    "এখনও কোনো লক্ষ্য নেই",
+  createFirstGoal:
+    "আপনার প্রথম আর্থিক লক্ষ্য তৈরি করুন।",
+  createGoal:
+    "লক্ষ্য তৈরি করুন",
+  goalOptions:
+    "লক্ষ্যের অপশন",
+  editGoal:
+    "লক্ষ্য সম্পাদনা করুন",
+  deleteGoal:
+    "লক্ষ্য মুছুন",
+  deleteGoalConfirm:
+    "এই লক্ষ্যটি মুছে ফেলবেন?",
+  goalReached:
+    "লক্ষ্য পূরণ হয়েছে",
+  goalLabel:
+    "লক্ষ্য",
+  addMoney:
+    "টাকা যোগ করুন",
+  withdrawMoney:
+    "টাকা তুলুন",
+  withdrawShort:
+    "তুলুন",
+  addMoneyDescription:
+    "এই লক্ষ্যে টাকা জমা করুন।",
+  withdrawDescription:
+    "টাকা আবার উপলব্ধ নগদে ফিরিয়ে আনুন।",
+  selectedGoal:
+    "নির্বাচিত লক্ষ্য",
+  enterAmount:
+    "পরিমাণ লিখুন",
+  amountOfTarget:
+    "{target}-এর মধ্যে {saved}",
+  availableShort:
+    "উপলব্ধ",
+  enterValidAmount:
+    "সঠিক পরিমাণ লিখুন।",
+  notEnoughCash:
+    "পর্যাপ্ত উপলব্ধ নগদ নেই।",
+  notEnoughInGoal:
+    "এই লক্ষ্যে পর্যাপ্ত টাকা নেই।",
+  createGoalDescription:
+    "অর্থপূর্ণ কিছুর জন্য সঞ্চয় শুরু করুন।",
+  goalName:
+    "লক্ষ্যের নাম",
+  goalNamePlaceholder:
+    "যেমন: ঈদের কেনাকাটা",
+  emojiLabel:
+    "ইমোজি",
+  targetAmount:
+    "লক্ষ্যমাত্রা",
+  targetDate:
+    "লক্ষ্যের তারিখ",
+  saveChanges:
+    "পরিবর্তন সংরক্ষণ করুন",
+  enterGoalName:
+    "লক্ষ্যের নাম লিখুন।",
+  enterValidTarget:
+    "সঠিক লক্ষ্যমাত্রা লিখুন।",
 
   // Settings
 

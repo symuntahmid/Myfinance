@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/app/context/LanguageContext";
+
 import { useState } from "react";
 import { X } from "lucide-react";
 
@@ -23,6 +25,7 @@ export default function AddMoneyModal({
   onClose,
 }: Props) {
   const [amount, setAmount] = useState("");
+  const { t } = useLanguage();
 
   if (!open || !goal) return null;
 
@@ -55,11 +58,11 @@ shadow-2xl
           <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
             <div>
               <h2 className="text-3xl font-bold">
-                Add Money
+                {t("addMoney")}
               </h2>
 
               <p className="mt-1 text-slate-500">
-                Transfer money into this goal.
+                {t("addMoneyDescription")}
               </p>
             </div>
 
@@ -76,7 +79,7 @@ shadow-2xl
 
             <div className="rounded-2xl bg-slate-100 p-5">
               <p className="text-sm text-slate-500">
-                Selected Goal
+                {t("selectedGoal")}
               </p>
 
               <h3 className="mt-2 text-2xl font-bold">
@@ -84,8 +87,7 @@ shadow-2xl
               </h3>
 
               <p className="mt-2 text-[var(--muted)]">
-  {formatCurrency(goal.savedAmount)} of{" "}
-  {formatCurrency(goal.targetAmount)}
+  {t("amountOfTarget", { saved: formatCurrency(goal.savedAmount), target: formatCurrency(goal.targetAmount) })}
 </p>
             </div>
 
@@ -94,13 +96,13 @@ shadow-2xl
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter amount"
+              placeholder={t("enterAmount")}
               className="mt-6 w-full rounded-xl border border-slate-300 p-4"
             />
 
             {/* Available Cash */}
             <p className="mt-3 text-sm text-[var(--muted)]">
-  Available Cash:
+  {t("availableCash")}:
   <span className="ml-2 font-semibold text-cyan-600">
     {formatCurrency(availableCash)}
   </span>
@@ -113,7 +115,7 @@ shadow-2xl
                 onClick={onClose}
                 className="flex-1 rounded-2xl border border-slate-300 py-4 font-semibold"
               >
-                Cancel
+                {t("cancel")}
               </button>
 
               <button
@@ -121,12 +123,12 @@ shadow-2xl
                   const value = Number(amount);
 
                   if (value <= 0) {
-                    alert("Enter a valid amount.");
+                    alert(t("enterValidAmount"));
                     return;
                   }
 
                   if (value > availableCash) {
-                    alert("Not enough available cash.");
+                    alert(t("notEnoughCash"));
                     return;
                   }
 
@@ -154,7 +156,7 @@ onClose();
                 }}
                 className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-4 font-semibold text-white"
               >
-                Add Money
+                {t("addMoney")}
               </button>
 
             </div>

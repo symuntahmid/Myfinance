@@ -127,7 +127,7 @@ export default function BottomNavigation() {
 
     {
       key: "more",
-      name: "More",
+      name: t("more"),
       href: "/profile",
       icon: Ellipsis,
     },

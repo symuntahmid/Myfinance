@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/app/context/LanguageContext";
+
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
@@ -38,6 +40,8 @@ export default function EditGoalModal({
   const [targetDate, setTargetDate] =
     useState("");
 
+  const { t } = useLanguage();
+
   useEffect(() => {
     if (!goal) return;
 
@@ -53,7 +57,7 @@ export default function EditGoalModal({
 
   function handleSave() {
     if (!title.trim()) {
-      alert("Please enter a goal name.");
+      alert(t("enterGoalName"));
       return;
     }
 
@@ -61,7 +65,7 @@ export default function EditGoalModal({
       !targetAmount ||
       Number(targetAmount) <= 0
     ) {
-      alert("Please enter a valid target amount.");
+      alert(t("enterValidTarget"));
       return;
     }
 
@@ -98,7 +102,7 @@ export default function EditGoalModal({
         >
           <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
             <h2 className="text-3xl font-bold">
-              Edit Goal
+              {t("editGoal")}
             </h2>
 
             <button
@@ -112,7 +116,7 @@ export default function EditGoalModal({
           <div className="space-y-6 p-8">
             <div>
               <label className="mb-2 block text-sm font-semibold">
-                Goal Name
+                {t("goalName")}
               </label>
 
               <input
@@ -126,7 +130,7 @@ export default function EditGoalModal({
 
             <div>
               <label className="mb-3 block text-sm font-semibold">
-                Emoji
+                {t("emojiLabel")}
               </label>
 
               <div className="grid grid-cols-6 gap-3">
@@ -151,7 +155,7 @@ export default function EditGoalModal({
 
             <div>
               <label className="mb-2 block text-sm font-semibold">
-                Target Amount
+                {t("targetAmount")}
               </label>
 
               <input
@@ -168,7 +172,7 @@ export default function EditGoalModal({
 
             <div>
               <label className="mb-2 block text-sm font-semibold">
-                Target Date
+                {t("targetDate")}
               </label>
 
               <input
@@ -189,14 +193,14 @@ export default function EditGoalModal({
               onClick={onClose}
               className="flex-1 rounded-2xl border border-slate-300 py-4 font-semibold hover:bg-slate-50"
             >
-              Cancel
+              {t("cancel")}
             </button>
 
             <button
               onClick={handleSave}
               className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-4 font-semibold text-white transition hover:scale-[1.02]"
             >
-              Save Changes
+              {t("saveChanges")}
             </button>
           </div>
         </div>
