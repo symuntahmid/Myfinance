@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Circle,
   Flame,
+  Snowflake,
   Trophy,
 } from "lucide-react";
 
@@ -14,12 +15,22 @@ import {
 } from "../data/dailyJourney";
 
 import { unlockAchievement } from "../data/achievements";
+import {
+  DEFAULT_FREEZE_DATA,
+  MAX_FREEZES,
+  getFreezeData,
+  todayKey,
+  type FreezeData,
+} from "../data/streakFreeze";
 import { t } from "@/app/data/i18n";
 
 export default function DailyJourneyCard() {
   const [, forceUpdate] = useState(0);
 
   const [, refreshLanguage] = useState(0);
+
+  const [freeze, setFreeze] =
+    useState<FreezeData>(DEFAULT_FREEZE_DATA);
 
   useEffect(() => {
     const updateJourney = () => {
@@ -31,6 +42,8 @@ export default function DailyJourneyCard() {
       ) {
         unlockAchievement(3);
       }
+
+      setFreeze(getFreezeData());
 
       forceUpdate((n) => n + 1);
     };
@@ -171,6 +184,42 @@ export default function DailyJourneyCard() {
             >
               {t("buildBetterMoneyHabits")}
             </h2>
+          </div>
+        </div>
+
+        {/* Streak freeze */}
+
+        <div
+          className="
+            mt-5
+            flex
+            items-start
+            gap-3
+            rounded-2xl
+            bg-black/10
+            p-3
+            backdrop-blur-sm
+          "
+        >
+          <Snowflake
+            size={18}
+            className="mt-0.5 shrink-0"
+          />
+
+          <div className="min-w-0">
+            <p className="font-body text-sm font-semibold">
+              {t("streakFreezes")}: {freeze.freezes}/{MAX_FREEZES}
+            </p>
+
+            <p className="font-body text-xs text-white/80">
+              {freeze.lastUsed &&
+              freeze.lastUsed.date === todayKey()
+                ? t("streakFreezeUsed").replace(
+                    "{streak}",
+                    String(freeze.lastUsed.streak)
+                  )
+                : t("streakFreezeHint")}
+            </p>
           </div>
         </div>
 

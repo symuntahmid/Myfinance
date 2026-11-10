@@ -6,9 +6,16 @@ import {
   Flame,
   Trophy,
   Check,
+  Snowflake,
 } from "lucide-react";
 
 import { getPlayer } from "@/app/data/player";
+import {
+  DEFAULT_FREEZE_DATA,
+  MAX_FREEZES,
+  getFreezeData,
+  type FreezeData,
+} from "@/app/data/streakFreeze";
 import { t } from "@/app/data/i18n";
 import { getSettings } from "@/app/data/settings";
 
@@ -152,6 +159,12 @@ export default function ProfileMoneyProgressCard() {
 
 
   const [
+    freeze,
+    setFreeze,
+  ] = useState<FreezeData>(DEFAULT_FREEZE_DATA);
+
+
+  const [
     languageVersion,
     setLanguageVersion,
   ] = useState(0);
@@ -170,6 +183,10 @@ export default function ProfileMoneyProgressCard() {
 
       setHistory(
         getStreakHistory()
+      );
+
+      setFreeze(
+        getFreezeData()
       );
 
     };
@@ -383,6 +400,28 @@ export default function ProfileMoneyProgressCard() {
         </p>
 
 
+        <div
+          className="
+            mt-4
+            inline-flex
+            items-center
+            gap-2
+            rounded-xl
+            bg-sky-500/10
+            px-3
+            py-2
+            font-body
+            text-xs
+            font-medium
+            text-sky-600
+          "
+        >
+          <Snowflake size={14} />
+
+          {t("streakFreezes")}: {freeze.freezes}/{MAX_FREEZES}
+        </div>
+
+
         {/* WEEKLY TRACKER */}
 
         <div
@@ -398,6 +437,12 @@ export default function ProfileMoneyProgressCard() {
 
             const completed =
               history.includes(
+                day.key
+              );
+
+            const frozen =
+              !completed &&
+              freeze.frozenDays.includes(
                 day.key
               );
 
@@ -428,13 +473,19 @@ export default function ProfileMoneyProgressCard() {
                     ${
                       completed
                         ? "border-orange-500 bg-orange-500 text-white"
-                        : "border-[var(--border)] bg-[var(--background)] text-[var(--muted)]"
+                        : frozen
+                          ? "border-sky-400 bg-sky-500/15 text-sky-500"
+                          : "border-[var(--border)] bg-[var(--background)] text-[var(--muted)]"
                     }
                   `}
                 >
 
                   {completed && (
                     <Check size={20} />
+                  )}
+
+                  {frozen && (
+                    <Snowflake size={18} />
                   )}
 
                 </div>

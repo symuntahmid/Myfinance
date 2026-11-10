@@ -12,6 +12,9 @@ const STORAGE_KEYS = {
   goals: "myfinance-goals",
   achievements: "myfinance-achievements",
   dailyJourney: "myfinance-daily-journey",
+  dailyStreak: "myfinance-daily-streak",
+  streakHistory: "myfinance-streak-history",
+  streakFreeze: "myfinance-streak-freeze",
 };
 
 /* ==========================================

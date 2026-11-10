@@ -1,4 +1,9 @@
 import { updateStreak } from "./player";
+import {
+  getFreezeData,
+  resolveStreak,
+  saveFreezeData,
+} from "./streakFreeze";
 import { unlockAchievement } from "./achievements";
 import { t } from "./i18n";
 
@@ -492,6 +497,24 @@ function updateDailyStreak() {
   }
 
 
+  /*
+   * Work out the streak. If days were missed,
+   * streak freezes are used automatically.
+   */
+
+  const resolved =
+    resolveStreak({
+      completedBefore: [...history],
+      today,
+      data: getFreezeData(),
+    });
+
+
+  saveFreezeData(
+    resolved.data
+  );
+
+
   history.push(today);
 
 
@@ -501,65 +524,8 @@ function updateDailyStreak() {
   );
 
 
-  let streak =
-    1;
-
-
-  const sortedHistory =
-    history.sort(
-      (
-        a: string,
-        b: string
-      ) =>
-        new Date(b).getTime() -
-        new Date(a).getTime()
-    );
-
-
-  for (
-    let i = 0;
-    i <
-      sortedHistory.length - 1;
-    i++
-  ) {
-
-    const current =
-      new Date(
-        sortedHistory[i]
-      );
-
-
-    const previous =
-      new Date(
-        sortedHistory[i + 1]
-      );
-
-
-    const difference =
-      (
-        current.getTime() -
-        previous.getTime()
-      ) /
-      (
-        1000 *
-        60 *
-        60 *
-        24
-      );
-
-
-    if (
-      difference === 1
-    ) {
-
-      streak++;
-
-    } else {
-
-      break;
-
-    }
-  }
+  const streak =
+    resolved.streak;
 
 
   saveStreakData({
