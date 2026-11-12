@@ -733,6 +733,44 @@ subtitle={t("downloadBackup")}
             />
           </span>
         </button>
+
+        {(
+          [
+            ["salaryDay", "salaryDayLabel"],
+            ["rentDay", "rentDayLabel"],
+          ] as const
+        ).map(([field, label]) => (
+          <label
+            key={field}
+            className="mt-4 block"
+          >
+            <span className="text-sm font-semibold text-[var(--foreground)]">
+              {t(label)}
+            </span>
+
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={31}
+              placeholder={t("dayOfMonthHint")}
+              value={settings[field] ?? ""}
+              onChange={(event) => {
+                const value = Number(event.target.value);
+
+                changeSetting({
+                  [field]:
+                    event.target.value !== "" &&
+                    value >= 1 &&
+                    value <= 31
+                      ? Math.floor(value)
+                      : null,
+                });
+              }}
+              className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]"
+            />
+          </label>
+        ))}
       </Modal>
 
 {/* ======================================

@@ -17,6 +17,7 @@ import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import ProfileCard from "../../components/ProfileCard";
+import TodayCoachCard from "@/app/components/TodayCoachCard";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
 
@@ -117,6 +118,8 @@ text-[var(--foreground)]
       {/* Main */}
 
 <div className="space-y-6">
+
+  <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
 
   {/* Top Cards */}
 

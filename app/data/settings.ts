@@ -10,6 +10,11 @@ export type AppSettings = {
 
   remindersEnabled: boolean;
 
+  // Day of the month (1-31), or null when not set
+  salaryDay: number | null;
+
+  rentDay: number | null;
+
   darkMode: boolean;
 
   passcodeEnabled: boolean;
@@ -35,6 +40,12 @@ const DEFAULT_SETTINGS: AppSettings = {
 
   remindersEnabled:
     true,
+
+  salaryDay:
+    null,
+
+  rentDay:
+    null,
 
   darkMode:
     false,

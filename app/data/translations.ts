@@ -185,6 +185,35 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Today coach
+  | "coachTitle"
+  | "coachOpenQuickAdd"
+  | "coachOpenGoals"
+  | "coachOpenReports"
+  | "salaryDayLabel"
+  | "rentDayLabel"
+  | "dayOfMonthHint"
+  | "dayNotSet"
+  | "reminderSalaryToday"
+  | "reminderSalaryTomorrow"
+  | "reminderRentToday"
+  | "reminderRentSoon"
+  | "reminderEidFitr"
+  | "reminderEidAdha"
+  | "reminderRamadan"
+  | "nudgeFirstEntry"
+  | "nudgeLogToday"
+  | "nudgeSpendingUp"
+  | "nudgeSpendingDown"
+  | "nudgeTopCategory"
+  | "nudgeLowSavings"
+  | "nudgeGoodSavings"
+  | "nudgeTip1"
+  | "nudgeTip2"
+  | "nudgeTip3"
+  | "nudgeTip4"
+  | "nudgeTip5"
+
   // Goals page
   | "goalsTitle"
   | "goalsSubtitle"
@@ -564,6 +593,62 @@ en: {
     "A freeze saves your streak if you miss a day. Earn one every 7 days.",
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
+
+  // Today coach
+  coachTitle:
+    "Today's coach",
+  coachOpenQuickAdd:
+    "Add now",
+  coachOpenGoals:
+    "Open goals",
+  coachOpenReports:
+    "See details",
+  salaryDayLabel:
+    "Salary day",
+  rentDayLabel:
+    "Rent day",
+  dayOfMonthHint:
+    "Day of the month (1-31)",
+  dayNotSet:
+    "Not set",
+  reminderSalaryToday:
+    "Salary day! Move part of it into a goal first, before spending.",
+  reminderSalaryTomorrow:
+    "Salary is expected tomorrow. Decide now how much you will save.",
+  reminderRentToday:
+    "Rent is due today.",
+  reminderRentSoon:
+    "Rent is due in {days} day(s). Keep the money aside.",
+  reminderEidFitr:
+    "Eid is close. A small amount in your Eid goal today will help.",
+  reminderEidAdha:
+    "Eid-ul-Adha is close. Plan your Qurbani costs now.",
+  reminderRamadan:
+    "Ramadan: plan iftar and Sehri costs for the week.",
+  nudgeFirstEntry:
+    "Start with your first entry. It takes 10 seconds.",
+  nudgeLogToday:
+    "Nothing logged today. Add what you spent so your streak stays strong.",
+  nudgeSpendingUp:
+    "You spent {percent}% more this week than last week.",
+  nudgeSpendingDown:
+    "Well done! You spent {percent}% less than last week.",
+  nudgeTopCategory:
+    "{category} is {percent}% of your spending this week.",
+  nudgeLowSavings:
+    "You are saving very little this month. Try putting a small amount into a goal.",
+  nudgeGoodSavings:
+    "You are saving over 20% of your income this month. Keep going!",
+  nudgeTip1:
+    "Write down every expense today, even small ones.",
+  nudgeTip2:
+    "Save first, spend what is left.",
+  nudgeTip3:
+    "Wait one day before any non-essential purchase.",
+  nudgeTip4:
+    "Check your goals. Even a small deposit counts.",
+  nudgeTip5:
+    "Look at your biggest category this month. Can you trim it a little?",
 
   // Goals page
   goalsTitle:
@@ -1012,6 +1097,62 @@ bn: {
     "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
+
+  // Today coach
+  coachTitle:
+    "আজকের কোচ",
+  coachOpenQuickAdd:
+    "এখনই যোগ করুন",
+  coachOpenGoals:
+    "লক্ষ্য দেখুন",
+  coachOpenReports:
+    "বিস্তারিত দেখুন",
+  salaryDayLabel:
+    "বেতনের দিন",
+  rentDayLabel:
+    "বাসা ভাড়ার দিন",
+  dayOfMonthHint:
+    "মাসের তারিখ (১-৩১)",
+  dayNotSet:
+    "ঠিক করা নেই",
+  reminderSalaryToday:
+    "আজ বেতনের দিন! খরচের আগে কিছু অংশ লক্ষ্যে সরিয়ে রাখুন।",
+  reminderSalaryTomorrow:
+    "কাল বেতন আসার কথা। এখনই ঠিক করুন কত জমাবেন।",
+  reminderRentToday:
+    "আজ বাসা ভাড়া দেওয়ার দিন।",
+  reminderRentSoon:
+    "{days} দিনের মধ্যে বাসা ভাড়া। টাকা আলাদা করে রাখুন।",
+  reminderEidFitr:
+    "ঈদ কাছে। আজ ঈদ ফান্ডে অল্প কিছু জমালে কাজে দেবে।",
+  reminderEidAdha:
+    "কোরবানির ঈদ কাছে। এখনই কোরবানির খরচের পরিকল্পনা করুন।",
+  reminderRamadan:
+    "রমজান: এই সপ্তাহের ইফতার ও সেহরির খরচের হিসাব করুন।",
+  nudgeFirstEntry:
+    "আপনার প্রথম এন্ট্রি দিয়ে শুরু করুন। মাত্র ১০ সেকেন্ড লাগে।",
+  nudgeLogToday:
+    "আজ কিছু লেখা হয়নি। কী খরচ করেছেন যোগ করুন, স্ট্রিক ঠিক থাকবে।",
+  nudgeSpendingUp:
+    "গত সপ্তাহের চেয়ে এ সপ্তাহে {percent}% বেশি খরচ করেছেন।",
+  nudgeSpendingDown:
+    "চমৎকার! গত সপ্তাহের চেয়ে {percent}% কম খরচ করেছেন।",
+  nudgeTopCategory:
+    "এ সপ্তাহের খরচের {percent}% গেছে {category}-এ।",
+  nudgeLowSavings:
+    "এ মাসে খুব কম জমাচ্ছেন। একটি লক্ষ্যে অল্প কিছু জমানোর চেষ্টা করুন।",
+  nudgeGoodSavings:
+    "এ মাসে আয়ের ২০% এর বেশি জমাচ্ছেন। চালিয়ে যান!",
+  nudgeTip1:
+    "আজ প্রতিটি খরচ লিখে রাখুন, ছোটগুলোও।",
+  nudgeTip2:
+    "আগে জমান, তারপর বাকিটা খরচ করুন।",
+  nudgeTip3:
+    "অপ্রয়োজনীয় কেনাকাটার আগে একদিন অপেক্ষা করুন।",
+  nudgeTip4:
+    "লক্ষ্যগুলো দেখুন। অল্প জমাও গুরুত্বপূর্ণ।",
+  nudgeTip5:
+    "এ মাসের সবচেয়ে বড় খরচের খাত দেখুন। একটু কমানো যায় কি?",
 
   // Goals page
   goalsTitle:
