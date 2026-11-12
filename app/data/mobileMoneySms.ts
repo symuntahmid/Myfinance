@@ -106,7 +106,7 @@ function findProvider(text: string): string {
   if (/nagad|নগদ/i.test(text)) return "Nagad";
   if (/rocket|dbbl/i.test(text)) return "Rocket";
   if (/upay/i.test(text)) return "Upay";
-  if (/a\/c|\bcard\b|visa|mastercard|debited|credited/i.test(text)) {
+  if (/\bcard\b|visa|mastercard|debited|credited/i.test(text)) {
     return "Bank";
   }
 
@@ -305,15 +305,19 @@ export function parseMobileMoneySms(
     };
   }
 
+  // The fee is real money spent, so add it to the expense.
+  let total = amount;
+
   if (fee > 0 && type === "Expense") {
-    noteParts.push(`fee ${fee} not included`);
+    total = Math.round((amount + fee) * 100) / 100;
+    noteParts.push(`${amount} + fee ${fee}`);
   }
 
   return {
     ok: true,
     data: {
       type,
-      amount,
+      amount: total,
       category:
         type === "Expense"
           ? guessExpenseCategory(text)
