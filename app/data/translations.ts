@@ -185,6 +185,21 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Custom reminders
+  | "myRemindersTitle"
+  | "reminderTitlePlaceholder"
+  | "reminderDateLabel"
+  | "repeatLabel"
+  | "repeatOnce"
+  | "repeatMonthly"
+  | "repeatYearly"
+  | "addReminderButton"
+  | "noCustomReminders"
+  | "reminderDueToday"
+  | "reminderDueTomorrow"
+  | "reminderDueInDays"
+  | "deleteLabel"
+
   // Today coach
   | "coachTitle"
   | "coachOpenQuickAdd"
@@ -593,6 +608,34 @@ en: {
     "A freeze saves your streak if you miss a day. Earn one every 7 days.",
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
+
+  // Custom reminders
+  myRemindersTitle:
+    "Your reminders",
+  reminderTitlePlaceholder:
+    "e.g. Electricity bill",
+  reminderDateLabel:
+    "Date",
+  repeatLabel:
+    "Repeat",
+  repeatOnce:
+    "Once",
+  repeatMonthly:
+    "Every month",
+  repeatYearly:
+    "Every year",
+  addReminderButton:
+    "Add reminder",
+  noCustomReminders:
+    "No reminders yet. Add your first one above.",
+  reminderDueToday:
+    "Today: {title}",
+  reminderDueTomorrow:
+    "Tomorrow: {title}",
+  reminderDueInDays:
+    "In {days} days: {title}",
+  deleteLabel:
+    "Delete",
 
   // Today coach
   coachTitle:
@@ -1097,6 +1140,34 @@ bn: {
     "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
+
+  // Custom reminders
+  myRemindersTitle:
+    "আপনার রিমাইন্ডার",
+  reminderTitlePlaceholder:
+    "যেমন: বিদ্যুৎ বিল",
+  reminderDateLabel:
+    "তারিখ",
+  repeatLabel:
+    "পুনরাবৃত্তি",
+  repeatOnce:
+    "একবার",
+  repeatMonthly:
+    "প্রতি মাসে",
+  repeatYearly:
+    "প্রতি বছর",
+  addReminderButton:
+    "রিমাইন্ডার যোগ করুন",
+  noCustomReminders:
+    "এখনও কোনো রিমাইন্ডার নেই। উপরে প্রথমটি যোগ করুন।",
+  reminderDueToday:
+    "আজ: {title}",
+  reminderDueTomorrow:
+    "কাল: {title}",
+  reminderDueInDays:
+    "{days} দিন পরে: {title}",
+  deleteLabel:
+    "মুছুন",
 
   // Today coach
   coachTitle:

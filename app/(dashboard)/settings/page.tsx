@@ -1,5 +1,6 @@
 "use client";
 
+import CustomRemindersEditor from "@/app/components/CustomRemindersEditor";
 import {
   useEffect,
   useRef,
@@ -167,7 +168,7 @@ function Modal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-md rounded-3xl bg-[var(--card)] p-6 shadow-2xl">
+      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-[var(--card)] p-6 shadow-2xl">
         <button
           type="button"
           onClick={onClose}
@@ -771,6 +772,8 @@ subtitle={t("downloadBackup")}
             />
           </label>
         ))}
+
+        <CustomRemindersEditor />
       </Modal>
 
 {/* ======================================

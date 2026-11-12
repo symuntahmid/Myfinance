@@ -15,6 +15,7 @@ const STORAGE_KEYS = {
   dailyStreak: "myfinance-daily-streak",
   streakHistory: "myfinance-streak-history",
   streakFreeze: "myfinance-streak-freeze",
+  customReminders: "myfinance-custom-reminders",
 };
 
 /* ==========================================

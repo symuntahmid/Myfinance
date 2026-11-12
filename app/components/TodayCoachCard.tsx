@@ -7,6 +7,12 @@ import { Bell, Sparkles } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { getSettings } from "@/app/data/settings";
 import { getTransactions } from "@/app/data/transactions";
+import {
+  getCustomReminders,
+  getDueReminders,
+  type DueReminder,
+} from "@/app/data/customReminders";
+import { todayKey } from "@/app/data/streakFreeze";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
   getDayReminders,
@@ -26,6 +32,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
   const [state, setState] = useState<{
     nudge: CoachNudge;
     reminders: CoachReminder[];
+    custom: DueReminder[];
   } | null>(null);
 
   useEffect(() => {
@@ -55,7 +62,11 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
           })
         : [];
 
-      setState({ nudge, reminders });
+      const custom = settings.remindersEnabled
+        ? getDueReminders(getCustomReminders(), todayKey())
+        : [];
+
+      setState({ nudge, reminders, custom });
     };
 
     refresh();
@@ -64,6 +75,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
       "transactionsUpdated",
       "settingsUpdated",
       "languageUpdated",
+      "remindersUpdated",
     ];
 
     events.forEach((name) =>
@@ -132,6 +144,26 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
             </p>
             {renderCta(reminder.cta)}
           </div>
+        </div>
+      ))}
+
+      {state.custom.map((item) => (
+        <div
+          key={item.id}
+          className="mt-3 flex items-start gap-3 rounded-2xl bg-amber-500/10 p-3"
+        >
+          <Bell size={18} className="mt-0.5 shrink-0 text-amber-500" />
+
+          <p className="text-sm">
+            {item.daysLeft === 0
+              ? t("reminderDueToday", { title: item.title })
+              : item.daysLeft === 1
+              ? t("reminderDueTomorrow", { title: item.title })
+              : t("reminderDueInDays", {
+                  days: item.daysLeft,
+                  title: item.title,
+                })}
+          </p>
         </div>
       ))}
 
