@@ -12,6 +12,8 @@ import {
   type SmsParseResult,
 } from "@/app/data/mobileMoneySms";
 
+import { getCustomCategories } from "@/app/data/plan";
+
 import {
   accountForProvider,
   accountName,
@@ -68,6 +70,17 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [accounts] = useState(() => getAccounts());
+
+  // The built-in categories plus the ones the user made in Plan.
+  const [categoryList] = useState(() => [
+    ...quickExpenseCategories,
+    ...getCustomCategories().map((item) => ({
+      value: item.value,
+      emoji: item.emoji,
+      en: item.name,
+      bn: item.name,
+    })),
+  ]);
   const [source, setSource] = useState(
     () => getAccounts()[0]?.source ?? CASH_SOURCE
   );
@@ -341,7 +354,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">
-              {quickExpenseCategories.map((item) => (
+              {categoryList.map((item) => (
                 <button
                   key={item.value}
                   type="button"
@@ -486,7 +499,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
 
                 {parsedOk.type === "Expense" && (
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {quickExpenseCategories.map((item) => (
+                    {categoryList.map((item) => (
                       <button
                         key={item.value}
                         type="button"

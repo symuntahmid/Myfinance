@@ -18,6 +18,7 @@ const STORAGE_KEYS = {
   customReminders: "myfinance-custom-reminders",
   accounts: "myfinance-accounts",
   plan: "myfinance-plan",
+  planCategories: "myfinance-plan-categories",
 };
 
 /* ==========================================

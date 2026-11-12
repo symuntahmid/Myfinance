@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -9,8 +9,11 @@ import { getTransactions } from "@/app/data/transactions";
 import { getAccounts, getBalances } from "@/app/data/accounts";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
+  addCustomCategory,
   computePlan,
   copyFromPreviousMonth,
+  deleteCustomCategory,
+  getCustomCategories,
   getPlan,
   setAssigned,
   shiftMonth,
@@ -42,6 +45,12 @@ export default function PlanPage() {
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
 
+  const [customList, setCustomList] = useState<string[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newEmoji, setNewEmoji] = useState("🎯");
+  const [addError, setAddError] = useState("");
+
   useEffect(() => {
     const refresh = () => {
       const balances = getBalances();
@@ -53,12 +62,17 @@ export default function PlanPage() {
 
       setTotalBalance(total);
 
+      const custom = getCustomCategories().map((item) => item.value);
+
+      setCustomList(custom);
+
       setResult(
         computePlan({
           month,
           plan: getPlan(),
           transactions: getTransactions(),
           totalBalance: total,
+          customCategories: custom,
         })
       );
     };
@@ -109,6 +123,7 @@ export default function PlanPage() {
       row.assigned > 0 ||
       row.spent > 0 ||
       row.available !== 0 ||
+      customList.includes(row.category) ||
       quickExpenseCategories.some(
         (item) => item.value === row.category
       )
@@ -190,6 +205,72 @@ export default function PlanPage() {
         {t("planCopyLast")}
       </button>
 
+      {adding ? (
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
+          <div className="grid grid-cols-[4rem_1fr] gap-3">
+            <input
+              value={newEmoji}
+              maxLength={2}
+              onChange={(e) => setNewEmoji(e.target.value)}
+              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-center text-[var(--foreground)]"
+            />
+
+            <input
+              value={newName}
+              maxLength={30}
+              placeholder={t("planCategoryPlaceholder")}
+              onChange={(e) => setNewName(e.target.value)}
+              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]"
+            />
+          </div>
+
+          {addError && (
+            <p className="mt-2 text-sm text-red-500">{addError}</p>
+          )}
+
+          <div className="mt-3 flex gap-3">
+            <button
+              type="button"
+              disabled={!newName.trim()}
+              onClick={() => {
+                if (
+                  addCustomCategory({
+                    name: newName,
+                    emoji: newEmoji,
+                  })
+                ) {
+                  setNewName("");
+                  setAddError("");
+                  setAdding(false);
+                } else {
+                  setAddError(t("planCategoryExists"));
+                }
+              }}
+              className="rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+            >
+              {t("saveLabel")}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAdding(false)}
+              className="text-sm text-[var(--muted)]"
+            >
+              {t("cancelLabel")}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setAdding(true)}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-[var(--border)] py-3 text-sm font-semibold text-[var(--foreground)]"
+        >
+          <Plus size={16} />
+          {t("planNewCategory")}
+        </button>
+      )}
+
       <div className="space-y-3">
         {visibleRows.map((row) => {
           // How much of what this category had has been used up.
@@ -202,8 +283,23 @@ export default function PlanPage() {
               className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="truncate font-semibold text-[var(--foreground)]">
+                <p className="flex min-w-0 items-center gap-2 truncate font-semibold text-[var(--foreground)]">
                   {label(row.category)}
+
+                  {customList.includes(row.category) && (
+                    <button
+                      type="button"
+                      aria-label="remove category"
+                      onClick={() => {
+                        if (window.confirm(t("planDeleteCategory"))) {
+                          deleteCustomCategory(row.category);
+                        }
+                      }}
+                      className="text-[var(--muted)]"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
                 </p>
 
                 <p

@@ -186,6 +186,10 @@ export type TranslationKey =
   | "streakFreezeUsed"
 
   // Monthly plan
+  | "planNewCategory"
+  | "planCategoryPlaceholder"
+  | "planCategoryExists"
+  | "planDeleteCategory"
   | "planCardTitle"
   | "planCardEmpty"
   | "planOpen"
@@ -660,6 +664,14 @@ en: {
     "Open plan",
   planOverspentCount:
     "{count} category overspent",
+  planNewCategory:
+    "New category",
+  planCategoryPlaceholder:
+    "e.g. Eid shopping, Mom's medicine",
+  planCategoryExists:
+    "This category already exists.",
+  planDeleteCategory:
+    "Remove this category? Your past spending stays.",
   // Monthly plan
   planTitle:
     "Monthly plan",
@@ -1274,6 +1286,14 @@ bn: {
     "পরিকল্পনা খুলুন",
   planOverspentCount:
     "{count}টি খাতে বেশি খরচ",
+  planNewCategory:
+    "নতুন খাত",
+  planCategoryPlaceholder:
+    "যেমন: ঈদের কেনাকাটা, মায়ের ওষুধ",
+  planCategoryExists:
+    "এই খাত আগেই আছে।",
+  planDeleteCategory:
+    "এই খাত সরাবেন? আপনার আগের খরচ থেকে যাবে।",
   // Monthly plan
   planTitle:
     "মাসিক পরিকল্পনা",

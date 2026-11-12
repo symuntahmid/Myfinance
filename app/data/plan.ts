@@ -17,6 +17,14 @@
 import { quickExpenseCategories } from "./quickAdd";
 
 export const PLAN_KEY = "myfinance-plan";
+export const PLAN_CATEGORIES_KEY = "myfinance-plan-categories";
+
+// A category the user made themselves, like "🎁 Eid shopping".
+export type CustomCategory = {
+  value: string; // exactly what is stored on transactions
+  emoji: string;
+  name: string;
+};
 
 // { "2026-11": { "🍔 Food": 3000 } }
 export type PlanData = Record<string, Record<string, number>>;
@@ -72,6 +80,7 @@ export function computePlan(input: {
   plan: PlanData;
   transactions: PlanTransaction[];
   totalBalance: number;
+  customCategories?: string[];
 }): PlanResult {
   const { month, plan, transactions, totalBalance } = input;
 
@@ -83,6 +92,10 @@ export function computePlan(input: {
   // the user planned, and anything they actually spent on.
   const categories = new Set<string>(
     quickExpenseCategories.map((item) => item.value)
+  );
+
+  (input.customCategories ?? []).forEach((value) =>
+    categories.add(value)
   );
 
   Object.values(plan).forEach((month_) =>
@@ -208,4 +221,60 @@ export function copyFromPreviousMonth(month: string) {
     ...plan,
     [month]: { ...previous, ...(plan[month] ?? {}) },
   });
+}
+
+
+/* ==========================================
+   CUSTOM CATEGORIES
+========================================== */
+
+export function getCustomCategories(): CustomCategory[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(
+      localStorage.getItem(PLAN_CATEGORIES_KEY) || "[]"
+    );
+
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomCategories(list: CustomCategory[]) {
+  localStorage.setItem(PLAN_CATEGORIES_KEY, JSON.stringify(list));
+  window.dispatchEvent(new Event("planUpdated"));
+}
+
+// Returns false when the name is empty or already used.
+export function addCustomCategory(input: {
+  name: string;
+  emoji: string;
+}): boolean {
+  const name = input.name.trim();
+  const emoji = input.emoji.trim() || "🎯";
+
+  if (!name) return false;
+
+  const value = `${emoji} ${name}`;
+
+  const exists =
+    quickExpenseCategories.some((item) => item.value === value) ||
+    getCustomCategories().some((item) => item.value === value);
+
+  if (exists) return false;
+
+  saveCustomCategories([
+    ...getCustomCategories(),
+    { value, emoji, name },
+  ]);
+
+  return true;
+}
+
+export function deleteCustomCategory(value: string) {
+  saveCustomCategories(
+    getCustomCategories().filter((item) => item.value !== value)
+  );
 }
