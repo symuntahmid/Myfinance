@@ -26,10 +26,8 @@ import RecentTransactions from "../../components/RecentTransactions";
 import GoalProgressCard from "../../components/GoalProgressCard";
 
 import { getPortfolioSummary } from "@/app/data/investments";
-import BudgetProgressCard from "@/app/components/BudgetProgressCard";
-import { getBudgets } from "@/app/data/budgets";
+import PlanSummaryCard from "@/app/components/PlanSummaryCard";
 
-import { getSummary } from "@/app/data/transactions";
 import AIInsightCard from "@/app/components/ai/AIInsightCard";
 import { formatCurrency } from "@/app/utils/currency";
 
@@ -50,16 +48,6 @@ export default function Dashboard() {
   const [portfolio, setPortfolio] = useState(
     getPortfolioSummary()
   );
-
-  const budgets = getBudgets();
-
-const totalBudget = budgets.reduce(
-  (sum, budget) => sum + budget.amount,
-  0
-);
-
-// Temporary spent value
-const totalSpent = getSummary().expense;
 
   useEffect(() => {
     function refreshPortfolio() {
@@ -147,13 +135,10 @@ text-[var(--foreground)]
     <GoalProgressCard />
   </FadeIn>
 
-{/* Budget Progress */}
+{/* Monthly plan */}
 
   <FadeIn delay={0.6}>
-  <BudgetProgressCard
-    budget={totalBudget}
-    spent={totalSpent}
-  />
+  <PlanSummaryCard />
 </FadeIn>
 
         {portfolio.totalAssets > 0 && (

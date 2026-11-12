@@ -186,6 +186,10 @@ export type TranslationKey =
   | "streakFreezeUsed"
 
   // Monthly plan
+  | "planCardTitle"
+  | "planCardEmpty"
+  | "planOpen"
+  | "planOverspentCount"
   | "planTitle"
   | "planSubtitle"
   | "planReadyToAssign"
@@ -648,6 +652,14 @@ en: {
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
 
+  planCardTitle:
+    "This month's plan",
+  planCardEmpty:
+    "Give your money a job. Start your monthly plan.",
+  planOpen:
+    "Open plan",
+  planOverspentCount:
+    "{count} category overspent",
   // Monthly plan
   planTitle:
     "Monthly plan",
@@ -1254,6 +1266,14 @@ bn: {
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
 
+  planCardTitle:
+    "এ মাসের পরিকল্পনা",
+  planCardEmpty:
+    "আপনার টাকাকে কাজ দিন। মাসিক পরিকল্পনা শুরু করুন।",
+  planOpen:
+    "পরিকল্পনা খুলুন",
+  planOverspentCount:
+    "{count}টি খাতে বেশি খরচ",
   // Monthly plan
   planTitle:
     "মাসিক পরিকল্পনা",
