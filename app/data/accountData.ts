@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
   streakHistory: "myfinance-streak-history",
   streakFreeze: "myfinance-streak-freeze",
   customReminders: "myfinance-custom-reminders",
+  accounts: "myfinance-accounts",
 };
 
 /* ==========================================

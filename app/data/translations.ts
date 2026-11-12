@@ -185,6 +185,30 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Accounts
+  | "accountsTitle"
+  | "accountsSubtitle"
+  | "totalBalance"
+  | "addAccount"
+  | "accountNameLabel"
+  | "accountNamePlaceholder"
+  | "currentBalanceLabel"
+  | "transferMoney"
+  | "transferFromLabel"
+  | "transferToLabel"
+  | "transferAmountLabel"
+  | "transferFeeLabel"
+  | "transferDifferent"
+  | "transferNotEnough"
+  | "fixBalance"
+  | "saveLabel"
+  | "cancelLabel"
+  | "accountsHint"
+  | "deleteAccountConfirm"
+  | "accountsLink"
+  | "cashMoveToCash"
+  | "cashMoveHint"
+
   // Custom reminders
   | "myRemindersTitle"
   | "reminderTitlePlaceholder"
@@ -608,6 +632,52 @@ en: {
     "A freeze saves your streak if you miss a day. Earn one every 7 days.",
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
+
+  // Accounts
+  accountsTitle:
+    "Accounts",
+  accountsSubtitle:
+    "Where your money sits",
+  totalBalance:
+    "Total balance",
+  addAccount:
+    "Add account",
+  accountNameLabel:
+    "Account name",
+  accountNamePlaceholder:
+    "e.g. bKash, Nagad, DBBL",
+  currentBalanceLabel:
+    "Balance today",
+  transferMoney:
+    "Move money",
+  transferFromLabel:
+    "From",
+  transferToLabel:
+    "To",
+  transferAmountLabel:
+    "Amount",
+  transferFeeLabel:
+    "Fee (optional)",
+  transferDifferent:
+    "Choose two different accounts.",
+  transferNotEnough:
+    "Enter an amount.",
+  fixBalance:
+    "Fix balance",
+  saveLabel:
+    "Save",
+  cancelLabel:
+    "Cancel",
+  accountsHint:
+    "Set each account to the real balance you have today. Moving money between accounts is not spending. Only the fee counts.",
+  deleteAccountConfirm:
+    "Delete this account? Your transactions stay.",
+  accountsLink:
+    "Accounts",
+  cashMoveToCash:
+    "Move to Cash",
+  cashMoveHint:
+    "Cash out is a transfer. Your cash goes up, bKash goes down. Only the fee is spending.",
 
   // Custom reminders
   myRemindersTitle:
@@ -1140,6 +1210,52 @@ bn: {
     "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
+
+  // Accounts
+  accountsTitle:
+    "অ্যাকাউন্ট",
+  accountsSubtitle:
+    "আপনার টাকা কোথায় আছে",
+  totalBalance:
+    "মোট ব্যালেন্স",
+  addAccount:
+    "অ্যাকাউন্ট যোগ করুন",
+  accountNameLabel:
+    "অ্যাকাউন্টের নাম",
+  accountNamePlaceholder:
+    "যেমন: বিকাশ, নগদ, ডাচ-বাংলা",
+  currentBalanceLabel:
+    "আজকের ব্যালেন্স",
+  transferMoney:
+    "টাকা সরান",
+  transferFromLabel:
+    "কোথা থেকে",
+  transferToLabel:
+    "কোথায়",
+  transferAmountLabel:
+    "টাকার পরিমাণ",
+  transferFeeLabel:
+    "ফি (ঐচ্ছিক)",
+  transferDifferent:
+    "দুটি আলাদা অ্যাকাউন্ট বেছে নিন।",
+  transferNotEnough:
+    "টাকার পরিমাণ লিখুন।",
+  fixBalance:
+    "ব্যালেন্স ঠিক করুন",
+  saveLabel:
+    "সংরক্ষণ",
+  cancelLabel:
+    "বাতিল",
+  accountsHint:
+    "প্রতিটি অ্যাকাউন্টে আজ আসলে যত টাকা আছে সেটি বসান। এক অ্যাকাউন্ট থেকে আরেকটিতে টাকা সরানো খরচ নয়। শুধু ফি খরচ হিসেবে ধরা হয়।",
+  deleteAccountConfirm:
+    "এই অ্যাকাউন্ট মুছবেন? আপনার লেনদেন থেকে যাবে।",
+  accountsLink:
+    "অ্যাকাউন্ট",
+  cashMoveToCash:
+    "ক্যাশে সরান",
+  cashMoveHint:
+    "ক্যাশ আউট মানে টাকা সরানো। আপনার নগদ বাড়ে, বিকাশ কমে। শুধু ফি খরচ।",
 
   // Custom reminders
   myRemindersTitle:

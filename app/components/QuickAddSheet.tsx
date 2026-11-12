@@ -13,8 +13,15 @@ import {
 } from "@/app/data/mobileMoneySms";
 
 import {
+  accountForProvider,
+  accountName,
+  CASH_SOURCE,
+  getAccounts,
+  transferBetween,
+} from "@/app/data/accounts";
+
+import {
   quickExpenseCategories,
-  quickSources,
   quickText,
   saveQuickTransaction,
   hasTransactionWithTrxId,
@@ -53,20 +60,24 @@ export default function QuickAddSheet({ open, onClose }: Props) {
 }
 
 function QuickAddPanel({ onClose }: { onClose: () => void }) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const text = quickText[language];
 
   const [tab, setTab] = useState<"quick" | "sms">("quick");
 
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [source, setSource] = useState(quickSources[0].value);
+  const [accounts] = useState(() => getAccounts());
+  const [source, setSource] = useState(
+    () => getAccounts()[0]?.source ?? CASH_SOURCE
+  );
 
   const [smsText, setSmsText] = useState("");
   const [parsed, setParsed] = useState<SmsParseResult | null>(null);
   const [smsCategory, setSmsCategory] = useState("");
   const [duplicate, setDuplicate] = useState(false);
-  const [cashFeeOnly, setCashFeeOnly] = useState(false);
+  const [cashMode, setCashMode] =
+    useState<"move" | "full" | "fee">("move");
   const [clipboardFailed, setClipboardFailed] = useState(false);
 
   const [savedAmount, setSavedAmount] = useState<string | null>(null);
@@ -115,7 +126,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     const result = parseMobileMoneySms(message);
 
     setParsed(result);
-    setCashFeeOnly(false);
+    setCashMode("move");
 
     if (result.ok) {
       setSmsCategory(result.data.category);
@@ -142,13 +153,44 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     if (!parsed || !parsed.ok || duplicate) return;
 
     const data = parsed.data;
-    const feeOnly = !!data.cashOut && cashFeeOnly;
+
+    // Which of the user's accounts this message belongs to.
+    const account =
+      data.source === "💳 Card"
+        ? undefined
+        : accountForProvider(accounts, data.provider);
+
+    const source = account?.source ?? data.source;
+
+    /* Cash out: move the money to the Cash account. */
+
+    if (data.cashOut && cashMode === "move") {
+      const cash = accounts.find(
+        (item) => item.source === CASH_SOURCE
+      );
+
+      if (account && cash && account.id !== cash.id) {
+        transferBetween({
+          from: account,
+          to: cash,
+          amount: data.cashOut.withdrawn,
+          fee: data.cashOut.fee,
+          date: data.date,
+          note: data.note,
+        });
+
+        finish(data.cashOut.withdrawn);
+        return;
+      }
+    }
+
+    const feeOnly = !!data.cashOut && cashMode === "fee";
 
     const transaction = saveQuickTransaction({
       type: data.type,
       amount: feeOnly ? data.cashOut!.fee : data.amount,
       category: smsCategory || data.category,
-      source: data.source,
+      source,
       date: data.date,
       note: feeOnly
         ? `${data.note} (fee only)`
@@ -183,8 +225,10 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
   const parsedOk = parsed && parsed.ok ? parsed.data : null;
 
   const shownAmount =
-    parsedOk?.cashOut && cashFeeOnly
+    parsedOk?.cashOut && cashMode === "fee"
       ? parsedOk.cashOut.fee
+      : parsedOk?.cashOut && cashMode === "move"
+      ? parsedOk.cashOut.withdrawn
       : parsedOk?.amount ?? 0;
 
   return createPortal(
@@ -314,14 +358,14 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">
-              {quickSources.map((item) => (
+              {accounts.map((item) => (
                 <button
-                  key={item.value}
+                  key={item.id}
                   type="button"
-                  onClick={() => setSource(item.value)}
-                  className={chip(source === item.value)}
+                  onClick={() => setSource(item.source)}
+                  className={chip(source === item.source)}
                 >
-                  {item[language]}
+                  {item.emoji} {accountName(item, language)}
                 </button>
               ))}
             </div>
@@ -415,26 +459,27 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
 
                 {parsedOk.cashOut && parsedOk.cashOut.fee > 0 && (
                   <div className="mt-3">
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setCashFeeOnly(false)}
-                        className={chip(!cashFeeOnly)}
-                      >
-                        {text.cashFull}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setCashFeeOnly(true)}
-                        className={chip(cashFeeOnly)}
-                      >
-                        {text.cashFeeOnly}
-                      </button>
+                    <div className="flex flex-wrap gap-2">
+                      {(
+                        [
+                          ["move", t("cashMoveToCash")],
+                          ["full", text.cashFull],
+                          ["fee", text.cashFeeOnly],
+                        ] as const
+                      ).map(([mode, label]) => (
+                        <button
+                          key={mode}
+                          type="button"
+                          onClick={() => setCashMode(mode)}
+                          className={chip(cashMode === mode)}
+                        >
+                          {label}
+                        </button>
+                      ))}
                     </div>
 
                     <p className="mt-2 text-xs text-[var(--muted)]">
-                      {text.cashHint}
+                      {cashMode === "move" ? t("cashMoveHint") : text.cashHint}
                     </p>
                   </div>
                 )}
