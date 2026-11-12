@@ -128,7 +128,14 @@ export default function MoneyPage() {
       md:px-0
       "
     >
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end gap-2 pt-4">
+        <Link
+          href="/plan"
+          className="rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white"
+        >
+          📋 {t("planLink")}
+        </Link>
+
         <Link
           href="/accounts"
           className="rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white"

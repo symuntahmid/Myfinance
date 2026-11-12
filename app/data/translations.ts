@@ -185,6 +185,21 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Monthly plan
+  | "planTitle"
+  | "planSubtitle"
+  | "planReadyToAssign"
+  | "planAllAssigned"
+  | "planOverAssigned"
+  | "planAssigned"
+  | "planSpent"
+  | "planAvailable"
+  | "planCopyLast"
+  | "planSetBalances"
+  | "planHint"
+  | "planOverspent"
+  | "planLink"
+
   // Accounts
   | "accountsTitle"
   | "accountsSubtitle"
@@ -632,6 +647,34 @@ en: {
     "A freeze saves your streak if you miss a day. Earn one every 7 days.",
   streakFreezeUsed:
     "A freeze saved your {streak}-day streak!",
+
+  // Monthly plan
+  planTitle:
+    "Monthly plan",
+  planSubtitle:
+    "Give every taka a job",
+  planReadyToAssign:
+    "Ready to assign",
+  planAllAssigned:
+    "Every taka has a job ✓",
+  planOverAssigned:
+    "You gave jobs to more money than you have. Lower some amounts.",
+  planAssigned:
+    "Assigned",
+  planSpent:
+    "Spent",
+  planAvailable:
+    "Left",
+  planCopyLast:
+    "Copy last month's plan",
+  planSetBalances:
+    "First set your real balances in Accounts. Your money there is what you can plan.",
+  planHint:
+    "Tap an amount in Assigned and type how much of your money each category gets this month. What you don't spend stays in the category for next month.",
+  planOverspent:
+    "Overspent",
+  planLink:
+    "Plan",
 
   // Accounts
   accountsTitle:
@@ -1210,6 +1253,34 @@ bn: {
     "একদিন মিস করলে ফ্রিজ আপনার স্ট্রিক বাঁচায়। প্রতি ৭ দিনে একটি পাবেন।",
   streakFreezeUsed:
     "একটি ফ্রিজ আপনার {streak} দিনের স্ট্রিক বাঁচিয়েছে!",
+
+  // Monthly plan
+  planTitle:
+    "মাসিক পরিকল্পনা",
+  planSubtitle:
+    "প্রতিটি টাকাকে একটি কাজ দিন",
+  planReadyToAssign:
+    "বণ্টনের জন্য প্রস্তুত",
+  planAllAssigned:
+    "প্রতিটি টাকার কাজ ঠিক করা আছে ✓",
+  planOverAssigned:
+    "আপনার কাছে যা আছে তার চেয়ে বেশি টাকা বণ্টন করেছেন। কিছু অঙ্ক কমান।",
+  planAssigned:
+    "বণ্টন",
+  planSpent:
+    "খরচ",
+  planAvailable:
+    "বাকি",
+  planCopyLast:
+    "গত মাসের পরিকল্পনা কপি করুন",
+  planSetBalances:
+    "আগে অ্যাকাউন্টে আপনার আসল ব্যালেন্স বসান। সেখানকার টাকাই আপনি পরিকল্পনা করতে পারবেন।",
+  planHint:
+    "বণ্টন কলামের অঙ্কে ট্যাপ করে লিখুন এ মাসে প্রতিটি খাতে কত টাকা থাকবে। যা খরচ হবে না তা পরের মাসে ওই খাতেই থাকবে।",
+  planOverspent:
+    "বেশি খরচ",
+  planLink:
+    "পরিকল্পনা",
 
   // Accounts
   accountsTitle:
