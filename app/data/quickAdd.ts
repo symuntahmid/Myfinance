@@ -57,6 +57,9 @@ export const quickText = {
     save: "Save",
     saved: "Saved",
     smsHint: "Paste the bKash, Nagad, Rocket or bank message here.",
+    cashFull: "Full amount",
+    cashFeeOnly: "Only the fee",
+    cashHint: "Cash out. Choose \"Only the fee\" if you add your cash spending yourself.",
     smsPlaceholder:
       "You have sent Tk 500.00 to 01XXXXXXXXX. Fee Tk 0.00. Balance Tk 1,000.00. TrxID ...",
     pasteButton: "Paste from clipboard",
@@ -89,6 +92,9 @@ export const quickText = {
     save: "সংরক্ষণ",
     saved: "সংরক্ষিত",
     smsHint: "বিকাশ, নগদ, রকেট বা ব্যাংকের মেসেজ এখানে পেস্ট করুন।",
+    cashFull: "পুরো টাকা",
+    cashFeeOnly: "শুধু ফি",
+    cashHint: "ক্যাশ আউট। নিজে নগদ খরচ যোগ করলে \"শুধু ফি\" বেছে নিন।",
     smsPlaceholder:
       "You have sent Tk 500.00 to 01XXXXXXXXX. Fee Tk 0.00. Balance Tk 1,000.00. TrxID ...",
     pasteButton: "ক্লিপবোর্ড থেকে পেস্ট",

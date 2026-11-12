@@ -66,6 +66,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
   const [parsed, setParsed] = useState<SmsParseResult | null>(null);
   const [smsCategory, setSmsCategory] = useState("");
   const [duplicate, setDuplicate] = useState(false);
+  const [cashFeeOnly, setCashFeeOnly] = useState(false);
   const [clipboardFailed, setClipboardFailed] = useState(false);
 
   const [savedAmount, setSavedAmount] = useState<string | null>(null);
@@ -114,6 +115,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     const result = parseMobileMoneySms(message);
 
     setParsed(result);
+    setCashFeeOnly(false);
 
     if (result.ok) {
       setSmsCategory(result.data.category);
@@ -140,14 +142,17 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     if (!parsed || !parsed.ok || duplicate) return;
 
     const data = parsed.data;
+    const feeOnly = !!data.cashOut && cashFeeOnly;
 
     const transaction = saveQuickTransaction({
       type: data.type,
-      amount: data.amount,
+      amount: feeOnly ? data.cashOut!.fee : data.amount,
       category: smsCategory || data.category,
       source: data.source,
       date: data.date,
-      note: data.note,
+      note: feeOnly
+        ? `${data.note} (fee only)`
+        : data.note,
     });
 
     finish(transaction.amount);
@@ -176,6 +181,11 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     }`;
 
   const parsedOk = parsed && parsed.ok ? parsed.data : null;
+
+  const shownAmount =
+    parsedOk?.cashOut && cashFeeOnly
+      ? parsedOk.cashOut.fee
+      : parsedOk?.amount ?? 0;
 
   return createPortal(
     <>
@@ -394,7 +404,7 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
                   </span>
 
                   <span className="text-2xl font-bold">
-                    {formatCurrency(parsedOk.amount)}
+                    {formatCurrency(shownAmount)}
                   </span>
                 </div>
 
@@ -402,6 +412,32 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
                   {text.dateLabel}: {parsedOk.date} ·{" "}
                   {text.sourceShort}: {parsedOk.source}
                 </p>
+
+                {parsedOk.cashOut && parsedOk.cashOut.fee > 0 && (
+                  <div className="mt-3">
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setCashFeeOnly(false)}
+                        className={chip(!cashFeeOnly)}
+                      >
+                        {text.cashFull}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setCashFeeOnly(true)}
+                        className={chip(cashFeeOnly)}
+                      >
+                        {text.cashFeeOnly}
+                      </button>
+                    </div>
+
+                    <p className="mt-2 text-xs text-[var(--muted)]">
+                      {text.cashHint}
+                    </p>
+                  </div>
+                )}
 
                 {parsedOk.type === "Expense" && (
                   <div className="mt-3 flex flex-wrap gap-2">

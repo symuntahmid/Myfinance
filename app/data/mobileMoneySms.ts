@@ -22,6 +22,8 @@ export type ParsedSms = {
   note: string;
   trxId?: string;
   provider: string;
+  // Set for Cash Out SMS. The user picks: full amount or fee only.
+  cashOut?: { withdrawn: number; fee: number };
 };
 
 export type SmsParseFailure =
@@ -286,21 +288,24 @@ export function parseMobileMoneySms(
   /* ---- cash out: only the fee is a real cost ---- */
 
   if (CASH_OUT_WORDS.test(text)) {
-    if (!(fee > 0)) {
-      return { ok: false, reason: "own_money_move" };
-    }
+    // Default: the whole amount plus fee. If the user already
+    // tracks their cash spending they can switch to "fee only".
+    const full = Math.round((amount + fee) * 100) / 100;
 
     return {
       ok: true,
       data: {
         type: "Expense",
-        amount: fee,
+        amount: full,
         category: "📦 Others",
         source,
         date,
-        note: `${noteParts.join(" · ")} · Cash out fee (withdrew ${amount})`,
+        note: `${noteParts.join(" · ")} · Cash out ${amount}${
+          fee > 0 ? ` + fee ${fee}` : ""
+        }`,
         trxId,
         provider,
+        cashOut: { withdrawn: amount, fee },
       },
     };
   }
