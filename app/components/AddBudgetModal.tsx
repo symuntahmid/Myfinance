@@ -25,7 +25,7 @@ const categories: BudgetCategory[] = [
   "Health",
   "Education",
   "Travel",
-  "Others",
+  "Other",
 ];
 
 export default function AddBudgetModal({

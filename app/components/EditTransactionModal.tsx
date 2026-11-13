@@ -14,7 +14,7 @@ export default function EditTransactionModal({
   transaction,
   onClose,
 }: EditTransactionModalProps) {
-  if (!transaction) return null;
+  if (!transaction || transaction.type === "Transfer") return null;
 
   return (
     <TransactionForm

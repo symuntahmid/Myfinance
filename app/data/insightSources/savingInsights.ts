@@ -1,4 +1,4 @@
-import type { AIInsight } from "../aiInsights";
+import type { AIInsight } from "../insightTypes";
 
 /* =====================================================
    SAVING INSIGHTS

@@ -2,10 +2,6 @@ import { badges, Badge } from "./badges";
 import { getTransactions } from "./transactions";
 import { getPlayer, addXP } from "./player";
 import { getPortfolioSummary } from "./investments";
-import {
-  hasClaimedBadgeReward,
-  claimBadgeReward,
-} from "./badgeRewards";
 
 export type BadgeProgress = {
   badge: Badge;

@@ -379,6 +379,12 @@ export type SpendingAnalysis = {
   weekdayExpense: number;
 
   weekendPercentage: number;
+
+  income: number;
+  spendingRate: number;
+  totalSpending: number;
+  netCashFlow: number;
+  categoryCount: number;
 };
 
 /* ==========================================

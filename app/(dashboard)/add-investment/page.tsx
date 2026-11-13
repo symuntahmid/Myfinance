@@ -1,6 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import TransactionForm from "../../components/TransactionForm";
 
 export default function AddInvestmentPage() {
+  const [open, setOpen] = useState(true);
+
   return (
     <>
       <h1 className="text-4xl font-bold">Add Investment</h1>
@@ -10,10 +15,10 @@ export default function AddInvestmentPage() {
       </p>
 
       <TransactionForm
-  open={true}
-  onClose={() => {}}
-  type="Investment"
-/>
+        open={open}
+        onClose={() => setOpen(false)}
+        type="Investment"
+      />
     </>
   );
 }

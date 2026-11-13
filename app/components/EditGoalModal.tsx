@@ -56,6 +56,8 @@ export default function EditGoalModal({
   if (!open || !goal) return null;
 
   function handleSave() {
+    if (!goal) return;
+
     if (!title.trim()) {
       alert(t("enterGoalName"));
       return;
