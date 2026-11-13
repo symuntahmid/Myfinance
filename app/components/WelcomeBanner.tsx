@@ -183,35 +183,21 @@ export default function WelcomeBanner() {
 
   return (
 
-    <div>
+    <div className="min-w-0">
 
       <h2
         className="
           font-display
-          max-w-full
           truncate
-          text-[28px]
-          leading-[1.2]
+          text-[22px]
+          leading-tight
           text-[var(--foreground)]
-          sm:text-4xl
         "
       >
         {greeting}, {displayName}
       </h2>
 
-      <p
-        className={`
-          mt-1.5
-          max-w-xl
-          text-sm
-          leading-6
-          ${
-            journeyCompleted
-              ? "font-medium text-[var(--primary)]"
-              : "text-[var(--muted)]"
-          }
-        `}
-      >
+      <p className="mt-0.5 truncate text-[13px] text-[var(--muted)]">
         {journeyCompleted && "🎉 "}
         {message}
       </p>

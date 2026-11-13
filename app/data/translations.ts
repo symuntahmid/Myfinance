@@ -186,6 +186,13 @@ export type TranslationKey =
   | "streakFreezeUsed"
 
   // Bills and net worth
+  | "heroAdd"
+  | "heroMove"
+  | "heroThisMonth"
+  | "heroSinceLast"
+  | "noBillsShort"
+  | "accountsCount"
+  | "moneyMapTitle"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -746,6 +753,20 @@ en: {
     "Money going out",
   statInvest:
     "Future wealth",
+  heroAdd:
+    "Add",
+  heroMove:
+    "Move",
+  heroThisMonth:
+    "This month",
+  heroSinceLast:
+    "{amount} since last month",
+  noBillsShort:
+    "No bills added",
+  accountsCount:
+    "{count} accounts",
+  moneyMapTitle:
+    "Your money",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1462,6 +1483,20 @@ bn: {
     "খরচের টাকা",
   statInvest:
     "ভবিষ্যতের সম্পদ",
+  heroAdd:
+    "যোগ করুন",
+  heroMove:
+    "সরান",
+  heroThisMonth:
+    "এ মাসে",
+  heroSinceLast:
+    "গত মাসের চেয়ে {amount}",
+  noBillsShort:
+    "কোনো বিল নেই",
+  accountsCount:
+    "{count}টি অ্যাকাউন্ট",
+  moneyMapTitle:
+    "আপনার টাকা",
   // Bills and net worth
   billsTitle:
     "বিল",

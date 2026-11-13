@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 
 import NotificationBell from "@/app/components/NotificationBell";
-import SummaryCards from "../../components/SummaryCards";
+import HomeHero from "@/app/components/HomeHero";
+import MonthStats from "@/app/components/MonthStats";
+import MoneyMap from "@/app/components/MoneyMap";
 import FloatingActionButton from "../../components/FloatingActionButton";
 import AddTransactionSheet from "../../components/AddTransactionSheet";
 import TransactionForm from "../../components/TransactionForm";
@@ -25,8 +27,6 @@ import RecentTransactions from "../../components/RecentTransactions";
 import GoalProgressCard from "../../components/GoalProgressCard";
 
 import { getPortfolioSummary } from "@/app/data/investments";
-import PlanSummaryCard from "@/app/components/PlanSummaryCard";
-import BillsNetWorthCards from "@/app/components/BillsNetWorthCards";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import AIInsightCard from "@/app/components/ai/AIInsightCard";
@@ -76,7 +76,7 @@ export default function Dashboard() {
     <>
       {/* Header */}
 
-      <div className="mb-6 flex items-start justify-between gap-4">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <WelcomeBanner />
 
         <div className="flex shrink-0 items-center gap-3">
@@ -97,21 +97,15 @@ export default function Dashboard() {
 
       {/* Main */}
 
-<div className="space-y-6">
+<div className="space-y-4">
+
+  <HomeHero onQuickAdd={() => setQuickOpen(true)} />
 
   <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
 
-  {/* Money Summary */}
+  <MonthStats />
 
-  <SummaryCards />
-
-  {/* Net worth, next bill and monthly plan */}
-
-  <div className="space-y-4">
-    <BillsNetWorthCards />
-
-    <PlanSummaryCard />
-  </div>
+  <MoneyMap />
 
   {/* Daily journey and level */}
 
@@ -321,24 +315,22 @@ portfolio.returnPercentage >= 0
           </div>
         )}
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          <div>
-            <div className="lg:col-span-2">
-              <NetWorthChart />
-            </div>
+        <div className="mt-4 grid gap-6 lg:grid-cols-3">
+          <div className="min-w-0 lg:col-span-2">
+            <NetWorthChart />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <FinancialInsights />
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <div>
+        <div className="mt-4 grid gap-6 lg:grid-cols-2">
+          <div className="min-w-0">
             <IncomeExpenseChart />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <InvestmentPieChart />
           </div>
         </div>

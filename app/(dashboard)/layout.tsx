@@ -37,7 +37,7 @@ export default function DashboardLayout({
     <div className="flex min-h-screen bg-[var(--background)]">
       <Sidebar />
 
-      <main className="flex-1 p-8 pb-24 lg:pb-8">
+      <main className="min-w-0 flex-1 px-4 pb-28 pt-5 sm:px-6 lg:p-8 lg:pb-8">
         {children}
       </main>
 

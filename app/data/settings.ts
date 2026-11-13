@@ -36,7 +36,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     "en",
 
   currency:
-    "USD",
+    "BDT",
 
   remindersEnabled:
     true,

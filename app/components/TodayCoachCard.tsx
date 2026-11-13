@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bell, Flame, Snowflake } from "lucide-react";
+import { Bell, ChevronRight, Sparkles } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { getSettings } from "@/app/data/settings";
@@ -18,13 +18,7 @@ import {
   type BillStatus,
 } from "@/app/data/bills";
 import { formatCurrency } from "@/app/utils/currency";
-import { getPlayer } from "@/app/data/player";
-import { getJourneyProgress } from "@/app/data/dailyJourney";
-import {
-  getFreezeData,
-  MAX_FREEZES,
-  todayKey,
-} from "@/app/data/streakFreeze";
+import { todayKey } from "@/app/data/streakFreeze";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
   getDayReminders,
@@ -46,10 +40,6 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     reminders: CoachReminder[];
     custom: DueReminder[];
     bills: BillStatus[];
-    streak: number;
-    freezes: number;
-    done: number;
-    total: number;
   } | null>(null);
 
   useEffect(() => {
@@ -94,18 +84,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
             .slice(0, 2)
         : [];
 
-      const journey = getJourneyProgress();
-
-      setState({
-        nudge,
-        reminders,
-        custom,
-        bills,
-        streak: getPlayer().streak,
-        freezes: getFreezeData().freezes,
-        done: journey.completed,
-        total: journey.total,
-      });
+      setState({ nudge, reminders, custom, bills });
     };
 
     refresh();
@@ -116,8 +95,6 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
       "languageUpdated",
       "remindersUpdated",
       "billsUpdated",
-      "dailyJourneyUpdated",
-      "player-updated",
     ];
 
     events.forEach((name) =>
@@ -140,34 +117,6 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
 
   const number = (value: number) =>
     value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
-
-  const goldButton =
-    "mt-5 inline-flex items-center rounded-full bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-[#1F1500] transition active:scale-[0.97]";
-
-  const renderCta = (cta?: CoachCta) => {
-    if (!cta) return null;
-
-    if (cta === "quickAdd") {
-      return (
-        <button
-          type="button"
-          onClick={onQuickAdd}
-          className={goldButton}
-        >
-          {ctaLabel[cta]}
-        </button>
-      );
-    }
-
-    return (
-      <Link
-        href={cta === "goals" ? "/goals" : "/reports"}
-        className={goldButton}
-      >
-        {ctaLabel[cta]}
-      </Link>
-    );
-  };
 
   // Everything that needs attention today, as short rows.
   const rows: { id: string; href?: string; text: string }[] = [
@@ -203,119 +152,74 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     })),
   ];
 
-  const percent =
-    state.total > 0
-      ? Math.round((state.done / state.total) * 100)
-      : 0;
+  const cta = state.nudge.cta;
+
+  const action =
+    cta === "quickAdd" ? (
+      <button
+        type="button"
+        onClick={onQuickAdd}
+        className="shrink-0 rounded-full bg-[var(--gold)] px-3.5 py-1.5 text-xs font-semibold text-[#1F1500] active:scale-95"
+      >
+        {ctaLabel.quickAdd}
+      </button>
+    ) : cta ? (
+      <Link
+        href={cta === "goals" ? "/goals" : "/reports"}
+        className="flex shrink-0 items-center text-xs font-semibold text-[var(--primary)]"
+      >
+        {ctaLabel[cta]}
+        <ChevronRight size={14} />
+      </Link>
+    ) : null;
 
   return (
-    <section className="hero-rise alpona relative overflow-hidden rounded-[28px] bg-[var(--forest)] p-6 text-[var(--on-forest)] shadow-[0_18px_40px_rgba(11,59,46,0.28)]">
-      {/* The sonali sun */}
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+      <div className="flex items-center gap-3 p-3.5">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--gold-soft)] text-[var(--gold)]">
+          <Sparkles size={18} />
+        </span>
 
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(226,182,79,0.55) 0%, rgba(226,182,79,0.12) 45%, transparent 70%)",
-        }}
-      />
+        <div className="min-w-0 flex-1">
+          <p className="text-[11.5px] text-[var(--muted)]">
+            {t("coachTitle")}
+          </p>
 
-      <div className="relative">
-        <p className="text-sm font-medium text-[var(--gold)]">
-          {t("coachTitle")}
-        </p>
-
-        <p className="font-display mt-3 text-[26px] leading-[1.35] sm:text-[30px]">
-          {t(state.nudge.key, state.nudge.params)}
-        </p>
-
-        {renderCta(state.nudge.cta)}
-
-        {rows.length > 0 && (
-          <div className="mt-6 space-y-2">
-            {rows.map((row) => {
-              const inner = (
-                <>
-                  <Bell
-                    size={16}
-                    className="mt-0.5 shrink-0 text-[var(--gold)]"
-                  />
-
-                  <span className="text-sm leading-6">
-                    {row.text}
-                  </span>
-                </>
-              );
-
-              const className =
-                "flex items-start gap-3 rounded-xl border-l-2 border-[var(--gold)] bg-black/20 px-3 py-2.5";
-
-              return row.href ? (
-                <Link
-                  key={row.id}
-                  href={row.href}
-                  className={className}
-                >
-                  {inner}
-                </Link>
-              ) : (
-                <div key={row.id} className={className}>
-                  {inner}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Streak and today's progress */}
-
-        <div className="mt-6 grid grid-cols-[auto_auto_1fr] items-end gap-x-6 gap-y-1 border-t border-[var(--gold)]/20 pt-5">
-          <div>
-            <p className="font-display flex items-center gap-1.5 text-3xl leading-none">
-              <Flame
-                size={22}
-                className="text-[var(--gold)]"
-              />
-
-              {number(state.streak)}
-            </p>
-
-            <p className="mt-1.5 text-xs text-[var(--on-forest)]/70">
-              {t("heroStreak")}
-            </p>
-          </div>
-
-          <div>
-            <p className="font-display flex items-center gap-1.5 text-3xl leading-none">
-              <Snowflake
-                size={20}
-                className="text-[var(--gold)]"
-              />
-
-              {number(state.freezes)}/{number(MAX_FREEZES)}
-            </p>
-
-            <p className="mt-1.5 text-xs text-[var(--on-forest)]/70">
-              {t("heroFreezes")}
-            </p>
-          </div>
-
-          <div className="min-w-0">
-            <p className="text-right text-xs text-[var(--on-forest)]/70">
-              {t("heroTasks")} {number(state.done)}/
-              {number(state.total)}
-            </p>
-
-            <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/25">
-              <div
-                className="h-full rounded-full bg-[var(--gold)] transition-all duration-700"
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-          </div>
+          <p className="text-[14px] font-medium leading-5 text-[var(--foreground)]">
+            {t(state.nudge.key, state.nudge.params)}
+          </p>
         </div>
+
+        {action}
       </div>
+
+      {rows.map((row) => {
+        const inner = (
+          <>
+            <Bell
+              size={14}
+              className="mt-0.5 shrink-0 text-[var(--gold)]"
+            />
+
+            <span className="text-[13px] leading-5 text-[var(--foreground)]">
+              {row.text}
+            </span>
+          </>
+        );
+
+        const className =
+          "flex items-start gap-2.5 border-t border-[var(--border)] px-3.5 py-2.5";
+
+        return row.href ? (
+          <Link key={row.id} href={row.href} className={className}>
+            {inner}
+          </Link>
+        ) : (
+          <div key={row.id} className={className}>
+            {inner}
+          </div>
+        );
+      })}
     </section>
   );
 }
