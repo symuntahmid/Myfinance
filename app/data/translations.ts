@@ -193,6 +193,14 @@ export type TranslationKey =
   | "noBillsShort"
   | "accountsCount"
   | "moneyMapTitle"
+  | "pfSavedMonth"
+  | "pfSavingRate"
+  | "pfBadges"
+  | "pfNoBadges"
+  | "pfNextBadge"
+  | "pfThisWeek"
+  | "pfMaxLevel"
+  | "pfXpTotal"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -767,6 +775,22 @@ en: {
     "{count} accounts",
   moneyMapTitle:
     "Your money",
+  pfSavedMonth:
+    "Saved this month",
+  pfSavingRate:
+    "Saving rate",
+  pfBadges:
+    "Badges",
+  pfNoBadges:
+    "Keep tracking and learning to unlock your first badge.",
+  pfNextBadge:
+    "Next badge",
+  pfThisWeek:
+    "This week",
+  pfMaxLevel:
+    "Top level reached",
+  pfXpTotal:
+    "{xp} XP",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1497,6 +1521,22 @@ bn: {
     "{count}টি অ্যাকাউন্ট",
   moneyMapTitle:
     "আপনার টাকা",
+  pfSavedMonth:
+    "এই মাসে সঞ্চয়",
+  pfSavingRate:
+    "সঞ্চয়ের হার",
+  pfBadges:
+    "ব্যাজ",
+  pfNoBadges:
+    "খরচ ট্র্যাক করুন ও শিখুন, প্রথম ব্যাজ পাবেন।",
+  pfNextBadge:
+    "পরের ব্যাজ",
+  pfThisWeek:
+    "এই সপ্তাহ",
+  pfMaxLevel:
+    "সর্বোচ্চ স্তরে পৌঁছেছেন",
+  pfXpTotal:
+    "{xp} XP",
   // Bills and net worth
   billsTitle:
     "বিল",
