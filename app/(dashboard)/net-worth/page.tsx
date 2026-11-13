@@ -118,8 +118,8 @@ export default function NetWorthPage() {
       <div
         className={`rounded-3xl p-6 text-white ${
           worth.netWorth < 0
-            ? "bg-gradient-to-r from-red-500 to-rose-500"
-            : "bg-gradient-to-r from-violet-600 to-cyan-600"
+            ? "bg-gradient-to-br from-[#8F1D18] to-[var(--sun)]"
+            : "bg-gradient-to-br from-[var(--forest)] to-[var(--primary)]"
         }`}
       >
         <p className="text-sm opacity-90">{t("netWorthTitle")}</p>
@@ -247,7 +247,7 @@ export default function NetWorthPage() {
                   setAmount("");
                   setAdding(false);
                 }}
-                className="rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
+                className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
               >
                 {t("saveLabel")}
               </button>
@@ -265,7 +265,7 @@ export default function NetWorthPage() {
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="mt-4 flex items-center gap-2 text-sm font-semibold text-purple-600"
+            className="mt-4 flex items-center gap-2 text-sm font-semibold text-[var(--primary)]"
           >
             <Plus size={16} />
             {t("addDebt")}

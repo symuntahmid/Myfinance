@@ -168,7 +168,7 @@ export default function GoalProgressCard() {
           bg-gradient-to-br
           from-[var(--card)]
           via-[var(--card)]
-          to-cyan-500/10
+          to-emerald-500/10
           p-6
           shadow-sm
           transition-all
@@ -189,7 +189,7 @@ export default function GoalProgressCard() {
             h-40
             w-40
             rounded-full
-            bg-cyan-400/20
+            bg-emerald-400/20
             blur-3xl
           "
         />
@@ -273,7 +273,7 @@ export default function GoalProgressCard() {
             <div
               className="
                 rounded-2xl
-                bg-cyan-500/10
+                bg-emerald-500/10
                 p-4
                 transition
                 group-hover:scale-110
@@ -284,7 +284,7 @@ export default function GoalProgressCard() {
                 className="
                   h-8
                   w-8
-                  text-cyan-500
+                  text-emerald-500
                 "
               />
 
@@ -329,15 +329,15 @@ export default function GoalProgressCard() {
               <span
                 className="
                   rounded-full
-                  bg-cyan-500/10
+                  bg-emerald-500/10
                   px-3
                   py-1
                   font-body
                   text-xs
                   font-medium
                   tracking-tight
-                  text-cyan-600
-                  dark:text-cyan-400
+                  text-emerald-600
+                  dark:text-emerald-400
                 "
               >
                 {progress.toFixed(0)}%
@@ -360,8 +360,8 @@ export default function GoalProgressCard() {
                   h-full
                   rounded-full
                   bg-gradient-to-r
-                  from-cyan-500
-                  to-blue-600
+                  from-emerald-500
+                  to-[var(--gold)]
                   transition-all
                   duration-700
                 "

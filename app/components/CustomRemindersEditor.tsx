@@ -87,7 +87,7 @@ export default function CustomRemindersEditor() {
           setTitle("");
           setRepeat("once");
         }}
-        className="mt-3 w-full rounded-2xl bg-purple-600 py-3 text-sm font-semibold text-white disabled:opacity-40"
+        className="mt-3 w-full rounded-2xl bg-[var(--primary)] py-3 text-sm font-semibold text-white disabled:opacity-40"
       >
         {t("addReminderButton")}
       </button>

@@ -31,9 +31,9 @@ export default function FloatingActionButton({
         rounded-full
 
         bg-gradient-to-br
-        from-indigo-600
-        via-violet-600
-        to-purple-600
+        from-[var(--primary)]
+        via-[var(--primary)]
+        to-[var(--forest)]
 
         text-white
 

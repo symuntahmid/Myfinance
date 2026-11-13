@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 
 import {
-  Geist,
-  Geist_Mono,
-  Source_Serif_4,
+  Hind_Siliguri,
+  Tiro_Bangla,
 } from "next/font/google";
 
 import "./globals.css";
@@ -12,25 +11,25 @@ import { ThemeProvider } from "@/app/context/ThemeContext";
 import { LanguageProvider } from "@/app/context/LanguageContext";
 
 /* ==========================================
-   PREMIUM FONT SYSTEM
+   FONTS
+
+   Hind Siliguri: clean text for Bangla and English.
+   Tiro Bangla:   a Bangla book serif for greetings
+                  and big numbers.
 ========================================== */
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const anthropicSerif = Source_Serif_4({
-  variable: "--font-anthropic-serif",
-  subsets: ["latin"],
+const hind = Hind_Siliguri({
+  variable: "--font-hind",
+  subsets: ["bengali", "latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const tiro = Tiro_Bangla({
+  variable: "--font-tiro",
+  subsets: ["bengali", "latin"],
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -51,9 +50,8 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={`
-        ${geistSans.variable}
-        ${geistMono.variable}
-        ${anthropicSerif.variable}
+        ${hind.variable}
+        ${tiro.variable}
         h-full
         antialiased
       `}

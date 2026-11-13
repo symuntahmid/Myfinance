@@ -106,7 +106,7 @@ export default function PlanSummaryCard() {
               ? "text-red-500"
               : rta === 0
               ? "text-emerald-600"
-              : "text-violet-600"
+              : "text-[var(--primary)]"
           }`}
         >
           {formatCurrency(rta)}
@@ -161,7 +161,7 @@ export default function PlanSummaryCard() {
         </p>
       )}
 
-      <p className="mt-4 text-sm font-semibold text-violet-600">
+      <p className="mt-4 text-sm font-semibold text-[var(--primary)]">
         {t("planOpen")} →
       </p>
     </Link>

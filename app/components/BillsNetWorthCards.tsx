@@ -6,10 +6,7 @@ import Link from "next/link";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getAccounts, getBalances } from "@/app/data/accounts";
-import { getGoals } from "@/app/data/goals";
-import { getPortfolioSummary } from "@/app/data/investments";
 import { getBills, sortedStatuses, type BillStatus } from "@/app/data/bills";
-import { computeNetWorth, getDebts } from "@/app/data/netWorth";
 
 export default function BillsNetWorthCards() {
   const { t } = useLanguage();
@@ -26,19 +23,7 @@ export default function BillsNetWorthCards() {
         0
       );
 
-      const goals = getGoals().reduce(
-        (sum, item) => sum + (Number(item.savedAmount) || 0),
-        0
-      );
-
-      setNetWorth(
-        computeNetWorth({
-          accounts,
-          goals,
-          investments: getPortfolioSummary().current,
-          debts: getDebts(),
-        }).netWorth
-      );
+      setNetWorth(accounts);
 
       setNext(
         sortedStatuses(getBills(), new Date()).find(
@@ -74,9 +59,9 @@ export default function BillsNetWorthCards() {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Link href="/net-worth" className={card}>
+      <Link href="/accounts" className={card}>
         <p className="text-xs font-semibold text-[var(--muted)]">
-          {t("netWorthCardTitle")}
+          {t("accountsTitle")}
         </p>
 
         <p

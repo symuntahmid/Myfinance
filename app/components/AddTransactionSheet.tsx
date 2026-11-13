@@ -103,7 +103,7 @@ export default function AddTransactionSheet({
           {onQuick && (
             <button
               onClick={onQuick}
-              className="flex w-full items-center gap-4 rounded-3xl bg-gradient-to-r from-violet-600 to-cyan-600 p-5 text-white shadow-lg transition hover:scale-[1.02]"
+              className="flex w-full items-center gap-4 rounded-3xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] p-5 text-white shadow-lg transition hover:scale-[1.02]"
             >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
                 <Zap size={26} />

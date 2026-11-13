@@ -20,7 +20,7 @@ const field =
   "mt-1 w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]";
 
 const button =
-  "rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-40";
+  "rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-40";
 
 function cleanNumber(value: string): string {
   return value.replace(/[^\d.]/g, "");
@@ -119,7 +119,7 @@ export default function AccountsPage() {
         </p>
       </div>
 
-      <div className="rounded-3xl bg-gradient-to-r from-violet-600 to-cyan-600 p-6 text-white">
+      <div className="rounded-3xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] p-6 text-white">
         <p className="text-sm opacity-90">{t("totalBalance")}</p>
 
         <p className="mt-1 text-4xl font-bold">
@@ -356,7 +356,7 @@ export default function AccountsPage() {
                     setFixId(item.id);
                     setFixValue(String(balances[item.id] ?? 0));
                   }}
-                  className="text-xs font-semibold text-purple-600"
+                  className="text-xs font-semibold text-[var(--primary)]"
                 >
                   {t("fixBalance")}
                 </button>

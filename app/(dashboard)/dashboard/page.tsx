@@ -21,7 +21,6 @@ import TodayCoachCard from "@/app/components/TodayCoachCard";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
 
-import FadeIn from "../../components/FadeIn";
 import RecentTransactions from "../../components/RecentTransactions";
 import GoalProgressCard from "../../components/GoalProgressCard";
 
@@ -29,10 +28,13 @@ import { getPortfolioSummary } from "@/app/data/investments";
 import PlanSummaryCard from "@/app/components/PlanSummaryCard";
 import BillsNetWorthCards from "@/app/components/BillsNetWorthCards";
 
+import { useLanguage } from "@/app/context/LanguageContext";
 import AIInsightCard from "@/app/components/ai/AIInsightCard";
 import { formatCurrency } from "@/app/utils/currency";
 
 export default function Dashboard() {
+  const { language } = useLanguage();
+
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const [quickOpen, setQuickOpen] = useState(false);
@@ -74,33 +76,22 @@ export default function Dashboard() {
     <>
       {/* Header */}
 
-      <div className="mb-8 flex items-center justify-between">
-        <div>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <WelcomeBanner />
 
-
-          <WelcomeBanner />
-        </div>
-
-        <div className="flex items-center gap-5">
+        <div className="flex shrink-0 items-center gap-3">
           <NotificationBell />
 
-          <div className="text-right">
-            <p className="text-sm text-[var(--muted)]">
-  Today
-</p>
-
-            <p
-className="
-font-body
-text-sm
-font-medium
-tracking-tight
-text-[var(--foreground)]
-"
->
-{new Date().toLocaleDateString()}
-</p>
-          </div>
+          <p className="hidden text-right text-sm leading-5 text-[var(--muted)] sm:block">
+            {new Date().toLocaleDateString(
+              language === "bn" ? "bn-BD" : "en-GB",
+              {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+              }
+            )}
+          </p>
         </div>
       </div>
 
@@ -110,44 +101,34 @@ text-[var(--foreground)]
 
   <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
 
-  {/* Top Cards */}
-
-  <div className="grid gap-6 lg:grid-cols-2">
-  <FadeIn delay={0}>
-    <DailyJourneyCard />
-  </FadeIn>
-
-  <FadeIn delay={0.1}>
-    <ProfileCard compact />
-  </FadeIn>
-</div>
-
-<AIInsightCard />
-
   {/* Money Summary */}
 
-  <FadeIn delay={0.4}>
-    <SummaryCards />
-  </FadeIn>
+  <SummaryCards />
+
+  {/* Net worth, next bill and monthly plan */}
+
+  <div className="space-y-4">
+    <BillsNetWorthCards />
+
+    <PlanSummaryCard />
+  </div>
+
+  {/* Daily journey and level */}
+
+  <div className="grid gap-6 lg:grid-cols-2">
+    <DailyJourneyCard />
+
+    <ProfileCard compact />
+  </div>
 
   {/* Goal Progress */}
 
-  <FadeIn delay={0.5}>
-    <GoalProgressCard />
-  </FadeIn>
+  <GoalProgressCard />
 
-{/* Monthly plan */}
-
-  <FadeIn delay={0.6}>
-  <BillsNetWorthCards />
-
-  <div className="mt-6">
-    <PlanSummaryCard />
-  </div>
-</FadeIn>
+  <AIInsightCard />
 
         {portfolio.totalAssets > 0 && (
-          <FadeIn delay={0.45}>
+          <div>
             <div
 className="
 rounded-3xl
@@ -337,34 +318,34 @@ portfolio.returnPercentage >= 0
                 </div>
               </div>
             </div>
-          </FadeIn>
+          </div>
         )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          <FadeIn delay={0.5}>
+          <div>
             <div className="lg:col-span-2">
               <NetWorthChart />
             </div>
-          </FadeIn>
+          </div>
 
-          <FadeIn delay={0.6}>
+          <div>
             <FinancialInsights />
-          </FadeIn>
+          </div>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <FadeIn delay={0.7}>
+          <div>
             <IncomeExpenseChart />
-          </FadeIn>
+          </div>
 
-          <FadeIn delay={0.8}>
+          <div>
             <InvestmentPieChart />
-          </FadeIn>
+          </div>
         </div>
 
-        <FadeIn delay={0.9}>
+        <div>
           <RecentTransactions />
-        </FadeIn>
+        </div>
       </div>
 
       <FloatingActionButton

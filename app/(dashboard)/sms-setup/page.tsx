@@ -121,7 +121,7 @@ export default function SmsSetupPage() {
               // The link is on screen, so it can be copied by hand.
             }
           }}
-          className="mt-3 rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white"
+          className="mt-3 rounded-2xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white"
         >
           {copied ? text.copied : text.copy}
         </button>

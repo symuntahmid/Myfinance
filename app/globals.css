@@ -5,45 +5,72 @@
    PREMIUM LIGHT THEME
 ========================================== */
 
+/* ==========================================
+   SONALI THEME (green and gold)
+
+   forest  - the deep green of the hero
+   primary - flag green
+   gold    - "sonali", used for accents only
+   sun     - flag red, only for danger and overdue
+========================================== */
+
 :root {
 
-  --background: #F8F8F6;
+  --font-geist-sans:
+    var(--font-hind), system-ui, sans-serif;
 
-  --foreground: #1F2937;
+  --font-anthropic-serif:
+    var(--font-tiro), Georgia, serif;
+
+  --font-geist-mono:
+    ui-monospace, monospace;
 
 
-  --primary: #0F9D8A;
+  --background: #EEF3EC;
 
-  --primary-dark: #0B7C6E;
+  --foreground: #10231C;
+
+
+  --primary: #006A4E;
+
+  --primary-dark: #004D39;
 
 
   --card: #FFFFFF;
 
-  --border: #E8E8E5;
+  --border: #DAE5D8;
 
 
-  --muted: #6B7280;
+  --muted: #5A6D62;
 
 
-  --success: #22C55E;
+  --success: #1F9D55;
 
-  --warning: #F59E0B;
+  --warning: #C8962E;
 
-  --danger: #EF4444;
-
-
-
-  /* AI BRAND COLORS */
-
-  --ai-purple: #8B5CF6;
-
-  --ai-blue: #06B6D4;
+  --danger: #D6322B;
 
 
-  /* PREMIUM SHADOW */
+  --forest: #0B3B2E;
+
+  --gold: #C8962E;
+
+  --gold-soft: #F4E7C5;
+
+  --sun: #D6322B;
+
+  --on-forest: #F6F0DC;
+
+
+  /* kept so older components still resolve */
+
+  --ai-purple: #B8861F;
+
+  --ai-blue: #1B8F6A;
+
 
   --shadow-soft:
-    0 10px 30px rgba(15,23,42,0.06);
+    0 10px 30px rgba(11,59,46,0.08);
 
 }
 
@@ -58,42 +85,51 @@
 
 .dark {
 
-  --background: #0B0F14;
+  --background: #07130E;
 
 
-  --foreground: #E5E7EB;
+  --foreground: #E8EFE9;
 
 
-  --primary: #14B8A6;
+  --primary: #2BB586;
 
-  --primary-dark: #0F766E;
-
-
-  --card: #121820;
+  --primary-dark: #1E8F69;
 
 
-  --border: #202938;
+  --card: #0D1D16;
 
 
-  --muted: #9CA3AF;
+  --border: #1B3228;
 
 
-  --success: #34D399;
-
-  --warning: #FBBF24;
-
-  --danger: #F87171;
+  --muted: #92A89B;
 
 
+  --success: #3DD68C;
 
-  --ai-purple: #A78BFA;
+  --warning: #E2B64F;
 
-  --ai-blue: #22D3EE;
+  --danger: #F26B63;
 
+
+  --forest: #0A2F24;
+
+  --gold: #E2B64F;
+
+  --gold-soft: #3A2F12;
+
+  --sun: #F26B63;
+
+  --on-forest: #F6F0DC;
+
+
+  --ai-purple: #E2B64F;
+
+  --ai-blue: #2BB586;
 
 
   --shadow-soft:
-    0 10px 30px rgba(0,0,0,0.35);
+    0 10px 30px rgba(0,0,0,0.4);
 
 }
 
@@ -293,5 +329,56 @@ h3 {
 
   letter-spacing:
     -0.015em;
+
+}
+
+
+/* ==========================================
+   ALPONA PATTERN
+
+   A fine jamdani-style lattice of diamonds and
+   small lotus dots, drawn in gold at low opacity.
+   Used on the hero card.
+========================================== */
+
+.alpona {
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23E2B64F' stroke-opacity='.16' stroke-width='1'%3E%3Cpath d='M32 4 60 32 32 60 4 32Z'/%3E%3Cpath d='M32 18 46 32 32 46 18 32Z'/%3E%3C/g%3E%3Cg fill='%23E2B64F' fill-opacity='.22'%3E%3Ccircle cx='32' cy='32' r='2.2'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3Ccircle cx='64' cy='0' r='1.6'/%3E%3Ccircle cx='0' cy='64' r='1.6'/%3E%3Ccircle cx='64' cy='64' r='1.6'/%3E%3C/g%3E%3C/svg%3E");
+
+  background-size:
+    64px 64px;
+
+}
+
+
+/* The one entrance: the hero rises into place. */
+
+@keyframes hero-rise {
+
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
+
+.hero-rise {
+
+  animation:
+    hero-rise .5s ease-out both;
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .hero-rise {
+    animation: none;
+  }
 
 }

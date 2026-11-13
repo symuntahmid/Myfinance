@@ -107,13 +107,13 @@ export default function DailyJourneyCard() {
         overflow-hidden
         rounded-[32px]
         bg-gradient-to-br
-        from-orange-500
-        via-orange-400
-        to-amber-400
+        from-[#C8962E]
+        via-[#D8AA45]
+        to-[#E6C268]
         p-5
-        text-white
+        text-[#2B1F00]
         shadow-xl
-        shadow-orange-500/20
+        shadow-[#C8962E]/25
         sm:p-7
       "
     >
@@ -127,7 +127,7 @@ export default function DailyJourneyCard() {
           h-48
           w-48
           rounded-full
-          bg-white/20
+          bg-white/30
           blur-3xl
         "
       />
@@ -151,7 +151,7 @@ export default function DailyJourneyCard() {
               items-center
               justify-center
               rounded-2xl
-              bg-white/20
+              bg-white/30
               backdrop-blur
             "
           >
@@ -164,9 +164,8 @@ export default function DailyJourneyCard() {
                 font-body
                 text-xs
                 font-medium
-                uppercase
                 tracking-[0.14em]
-                text-white/80
+                text-[#2B1F00]/75
               "
             >
               {t("dailyJourney")}
@@ -196,7 +195,7 @@ export default function DailyJourneyCard() {
             items-start
             gap-3
             rounded-2xl
-            bg-black/10
+            bg-[#2B1F00]/10
             p-3
             backdrop-blur-sm
           "
@@ -211,7 +210,7 @@ export default function DailyJourneyCard() {
               {t("streakFreezes")}: {freeze.freezes}/{MAX_FREEZES}
             </p>
 
-            <p className="font-body text-xs text-white/80">
+            <p className="font-body text-xs text-[#2B1F00]/75">
               {freeze.lastUsed &&
               freeze.lastUsed.date === todayKey()
                 ? t("streakFreezeUsed").replace(
@@ -252,14 +251,14 @@ export default function DailyJourneyCard() {
               h-3
               overflow-hidden
               rounded-full
-              bg-white/30
+              bg-[#2B1F00]/15
             "
           >
             <div
               className="
                 h-full
                 rounded-full
-                bg-white
+                bg-[#2B1F00]
                 transition-all
                 duration-700
               "
@@ -289,11 +288,11 @@ export default function DailyJourneyCard() {
                 justify-between
                 gap-3
                 rounded-2xl
-                bg-black/10
+                bg-[#2B1F00]/10
                 p-4
                 backdrop-blur-sm
                 transition
-                hover:bg-black/20
+                hover:bg-[#2B1F00]/15
               "
             >
 
@@ -309,12 +308,12 @@ export default function DailyJourneyCard() {
                 {task.completed ? (
                   <CheckCircle2
                     size={22}
-                    className="text-emerald-300"
+                    className="text-emerald-800"
                   />
                 ) : (
                   <Circle
                     size={22}
-                    className="text-white/60"
+                    className="text-[#2B1F00]/50"
                   />
                 )}
 
@@ -337,7 +336,7 @@ export default function DailyJourneyCard() {
                       font-body
                       text-xs
                       tracking-[-0.01em]
-                      text-white/80
+                      text-[#2B1F00]/75
                     "
                   >
                     +{task.reward} XP
@@ -353,12 +352,12 @@ export default function DailyJourneyCard() {
                   className="
                     shrink-0
                     rounded-xl
-                    bg-emerald-400/20
+                    bg-emerald-700/15
                     px-3
                     py-2
                     text-xs
                     font-bold
-                    text-emerald-100
+                    text-emerald-900
                   "
                 >
                   ✓ {t("done")}
@@ -370,11 +369,11 @@ export default function DailyJourneyCard() {
                   className="
                     hidden
                     rounded-xl
-                    bg-white/10
+                    bg-[#2B1F00]/10
                     px-3
                     py-2
                     text-xs
-                    text-white/70
+                    text-[#2B1F00]/70
                     sm:block
                   "
                 >
@@ -397,7 +396,7 @@ export default function DailyJourneyCard() {
               className="
                 mt-6
                 rounded-2xl
-                bg-white/20
+                bg-white/30
                 p-5
                 backdrop-blur
               "
@@ -414,7 +413,7 @@ export default function DailyJourneyCard() {
                 <div
                   className="
                     rounded-full
-                    bg-white/20
+                    bg-white/30
                     p-3
                   "
                 >
@@ -441,7 +440,7 @@ export default function DailyJourneyCard() {
                       text-sm
                       leading-6
                       tracking-[-0.015em]
-                      text-white/90
+                      text-[#2B1F00]/85
                     "
                   >
                     +45 {t("xpEarnedMessage")}

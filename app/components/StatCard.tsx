@@ -1,5 +1,8 @@
+import { t } from "@/app/data/i18n";
+
 type StatCardProps = {
   title: string;
+  kind: "net" | "income" | "expense" | "invest";
   value: string;
   icon: React.ReactNode;
 };
@@ -7,6 +10,7 @@ type StatCardProps = {
 
 export default function StatCard({
   title,
+  kind,
   value,
   icon,
 }: StatCardProps) {
@@ -14,21 +18,21 @@ export default function StatCard({
 
   const getTheme = () => {
 
-    if(title === "Net Worth") {
+    if(kind === "net") {
 
       return {
         icon:
-          "bg-cyan-500/10 text-cyan-500",
+          "bg-[var(--primary)]/10 text-[var(--primary)]",
         glow:
-          "from-cyan-500/10",
+          "from-[var(--primary)]/10",
         label:
-          "Financial foundation",
+          t("statNet"),
       };
 
     }
 
 
-    if(title === "Monthly Income") {
+    if(kind === "income") {
 
       return {
         icon:
@@ -36,35 +40,35 @@ export default function StatCard({
         glow:
           "from-emerald-500/10",
         label:
-          "Money coming in",
+          t("statIncome"),
       };
 
     }
 
 
-    if(title === "Expenses") {
+    if(kind === "expense") {
 
       return {
         icon:
-          "bg-rose-500/10 text-rose-500",
+          "bg-[var(--sun)]/10 text-[var(--sun)]",
         glow:
-          "from-rose-500/10",
+          "from-[var(--sun)]/10",
         label:
-          "Money awareness",
+          t("statExpense"),
       };
 
     }
 
 
-    if(title === "Investments") {
+    if(kind === "invest") {
 
       return {
         icon:
-          "bg-violet-500/10 text-violet-500",
+          "bg-[var(--gold)]/15 text-[var(--gold)]",
         glow:
-          "from-violet-500/10",
+          "from-[var(--gold)]/15",
         label:
-          "Future wealth",
+          t("statInvest"),
       };
 
     }
@@ -76,7 +80,7 @@ export default function StatCard({
       glow:
         "from-[var(--primary)]/10",
       label:
-        "Financial progress",
+        t("statNet"),
     };
 
   };
@@ -148,8 +152,6 @@ className="
 font-body
 text-xs
 font-medium
-uppercase
-tracking-[0.14em]
 text-[var(--muted)]
 "
 >
@@ -162,7 +164,7 @@ text-[var(--muted)]
 className="
 mt-3
 font-display
-text-4xl
+text-[28px]
 font-medium
 tracking-[-0.055em]
 leading-none

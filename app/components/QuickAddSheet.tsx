@@ -264,8 +264,8 @@ function QuickAddPanel({
   const chip = (selected: boolean) =>
     `rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
       selected
-        ? "border-violet-600 bg-violet-600 text-white"
-        : "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:border-violet-400"
+        ? "border-[var(--primary)] bg-[var(--primary)] text-white"
+        : "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:border-[var(--primary)]"
     }`;
 
   const parsedOk = parsed && parsed.ok ? parsed.data : null;
@@ -305,7 +305,7 @@ function QuickAddPanel({
 
         <div className="flex items-center justify-between px-6 pt-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-cyan-500 text-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--forest)] text-white">
               <Zap size={22} />
             </div>
 
@@ -379,7 +379,7 @@ function QuickAddPanel({
               }}
               inputMode="decimal"
               placeholder="0"
-              className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-4 text-3xl font-bold outline-none focus:border-violet-500"
+              className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-4 text-3xl font-bold outline-none focus:border-[var(--primary)]"
             />
 
             <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
@@ -420,7 +420,7 @@ function QuickAddPanel({
               type="button"
               onClick={saveQuick}
               disabled={!canSaveQuick}
-              className="mt-7 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-cyan-600 py-4 text-base font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-7 w-full rounded-2xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] py-4 text-base font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-40"
             >
               {text.save}
             </button>
@@ -440,14 +440,14 @@ function QuickAddPanel({
               }}
               rows={4}
               placeholder={text.smsPlaceholder}
-              className="mt-3 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm outline-none focus:border-violet-500"
+              className="mt-3 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm outline-none focus:border-[var(--primary)]"
             />
 
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={pasteFromClipboard}
-                className="flex items-center justify-center gap-2 rounded-2xl border border-[var(--border)] py-3 text-sm font-bold transition hover:border-violet-400"
+                className="flex items-center justify-center gap-2 rounded-2xl border border-[var(--border)] py-3 text-sm font-bold transition hover:border-[var(--primary)]"
               >
                 <ClipboardPaste size={16} />
                 {text.pasteButton}
@@ -456,7 +456,7 @@ function QuickAddPanel({
               <button
                 type="button"
                 onClick={() => readMessage(smsText)}
-                className="rounded-2xl bg-violet-600 py-3 text-sm font-bold text-white transition hover:bg-violet-700"
+                className="rounded-2xl bg-[var(--primary)] py-3 text-sm font-bold text-white transition hover:bg-[var(--primary-dark)]"
               >
                 {text.readButton}
               </button>
@@ -475,7 +475,7 @@ function QuickAddPanel({
             <Link
               href="/sms-setup"
               onClick={onClose}
-              className="mt-2 inline-block text-xs font-semibold text-violet-600"
+              className="mt-2 inline-block text-xs font-semibold text-[var(--primary)]"
             >
               ⚡ {t("smsAutoTitle")}
             </Link>
@@ -567,7 +567,7 @@ function QuickAddPanel({
                   type="button"
                   onClick={saveParsed}
                   disabled={duplicate}
-                  className="mt-4 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-cyan-600 py-3.5 text-sm font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-40"
+                  className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] py-3.5 text-sm font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {text.saveThis}
                 </button>

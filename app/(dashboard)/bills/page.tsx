@@ -114,7 +114,7 @@ export default function BillsPage() {
         </p>
       </div>
 
-      <div className="rounded-3xl bg-gradient-to-r from-violet-600 to-cyan-600 p-6 text-white">
+      <div className="rounded-3xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] p-6 text-white">
         <p className="text-sm opacity-90">
           {t("billMonthlyTotal")}
         </p>
@@ -223,7 +223,7 @@ export default function BillsPage() {
                 setDay("");
                 setAdding(false);
               }}
-              className="rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
+              className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
             >
               {t("saveLabel")}
             </button>
@@ -241,7 +241,7 @@ export default function BillsPage() {
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-purple-600 py-3 text-sm font-semibold text-white"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--primary)] py-3 text-sm font-semibold text-white"
         >
           <Plus size={16} />
           {t("addBillTitle")}

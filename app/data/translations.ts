@@ -186,6 +186,17 @@ export type TranslationKey =
   | "streakFreezeUsed"
 
   // Bills and net worth
+  | "statNet"
+  | "statIncome"
+  | "statExpense"
+  | "statInvest"
+  | "heroStreak"
+  | "heroFreezes"
+  | "heroTasks"
+  | "greetingMorning"
+  | "greetingAfternoon"
+  | "greetingEvening"
+  | "greetingNight"
   | "smsAutoTitle"
   | "smsAutoSubtitle"
   | "billsTitle"
@@ -713,6 +724,28 @@ en: {
     "Automatic SMS setup",
   smsAutoSubtitle:
     "Open MyFinance from a bKash or Nagad SMS",
+  heroStreak:
+    "day streak",
+  heroFreezes:
+    "freezes",
+  heroTasks:
+    "tasks done today",
+  greetingMorning:
+    "Good morning",
+  greetingAfternoon:
+    "Good afternoon",
+  greetingEvening:
+    "Good evening",
+  greetingNight:
+    "Good night",
+  statNet:
+    "Financial foundation",
+  statIncome:
+    "Money coming in",
+  statExpense:
+    "Money going out",
+  statInvest:
+    "Future wealth",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1407,6 +1440,28 @@ bn: {
     "স্বয়ংক্রিয় এসএমএস সেটআপ",
   smsAutoSubtitle:
     "বিকাশ বা নগদের এসএমএস থেকে সরাসরি অ্যাপ খুলুন",
+  heroStreak:
+    "দিনের ধারা",
+  heroFreezes:
+    "ফ্রিজ",
+  heroTasks:
+    "আজকের কাজ সম্পন্ন",
+  greetingMorning:
+    "শুভ সকাল",
+  greetingAfternoon:
+    "শুভ অপরাহ্ণ",
+  greetingEvening:
+    "শুভ সন্ধ্যা",
+  greetingNight:
+    "শুভ রাত্রি",
+  statNet:
+    "আর্থিক ভিত্তি",
+  statIncome:
+    "আয়ের টাকা",
+  statExpense:
+    "খরচের টাকা",
+  statInvest:
+    "ভবিষ্যতের সম্পদ",
   // Bills and net worth
   billsTitle:
     "বিল",

@@ -170,105 +170,53 @@ export default function WelcomeBanner() {
     "User";
 
 
+  const hour = new Date().getHours();
+
+  const greeting =
+    hour >= 5 && hour < 12
+      ? t("greetingMorning")
+      : hour >= 12 && hour < 17
+      ? t("greetingAfternoon")
+      : hour >= 17 && hour < 21
+      ? t("greetingEvening")
+      : t("greetingNight");
+
   return (
 
-    <div className="mb-6 md:mb-8">
-
-
-      {/* Greeting */}
+    <div>
 
       <h2
         className="
           font-display
           max-w-full
           truncate
-          text-4xl
-          font-medium
-          tracking-[-0.045em]
-          leading-[1.05]
+          text-[28px]
+          leading-[1.2]
           text-[var(--foreground)]
-          sm:text-5xl
+          sm:text-4xl
         "
       >
-        {t("welcomeBack")},{" "}
-        {displayName} 👋
+        {greeting}, {displayName}
       </h2>
 
-
-      {/* Journey Message */}
-
-      <div
+      <p
         className={`
-          mt-3
-          max-w-2xl
-          rounded-2xl
-          border
-          px-4
-          py-3
+          mt-1.5
+          max-w-xl
           text-sm
           leading-6
-          font-body
-          transition-all
-
           ${
             journeyCompleted
-              ? `
-                border-emerald-400/40
-                bg-emerald-500/10
-                text-emerald-600
-                dark:text-emerald-400
-                shadow-sm
-              `
-              : `
-                border-[var(--border)]
-                bg-[var(--card)]
-                text-[var(--muted)]
-                shadow-sm
-              `
+              ? "font-medium text-[var(--primary)]"
+              : "text-[var(--muted)]"
           }
         `}
       >
-
-        <div
-          className="
-            flex
-            items-start
-            gap-3
-          "
-        >
-
-          {journeyCompleted && (
-
-            <span
-              className="
-                mt-0.5
-                text-lg
-              "
-            >
-              🎉
-            </span>
-
-          )}
-
-
-          <p
-            className="
-              font-body
-              text-sm
-              font-normal
-              leading-6
-              tracking-[-0.015em]
-            "
-          >
-            {message}
-          </p>
-
-        </div>
-
-      </div>
+        {journeyCompleted && "🎉 "}
+        {message}
+      </p>
 
     </div>
 
   );
-
 }

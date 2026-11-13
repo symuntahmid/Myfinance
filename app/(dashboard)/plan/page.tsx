@@ -168,10 +168,10 @@ export default function PlanPage() {
       <div
         className={`rounded-3xl p-6 text-white ${
           rta < 0
-            ? "bg-gradient-to-r from-red-500 to-rose-500"
+            ? "bg-gradient-to-br from-[#8F1D18] to-[var(--sun)]"
             : rta === 0
-            ? "bg-gradient-to-r from-emerald-500 to-teal-500"
-            : "bg-gradient-to-r from-violet-600 to-cyan-600"
+            ? "bg-gradient-to-br from-[#0B5D47] to-[#1F9D55]"
+            : "bg-gradient-to-br from-[var(--forest)] to-[var(--primary)]"
         }`}
       >
         <p className="text-sm opacity-90">
@@ -246,7 +246,7 @@ export default function PlanPage() {
                   setAddError(t("planCategoryExists"));
                 }
               }}
-              className="rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+              className="rounded-2xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
             >
               {t("saveLabel")}
             </button>
@@ -348,7 +348,7 @@ export default function PlanPage() {
                       onKeyDown={(e) => {
                         if (e.key === "Enter") commit(row.category);
                       }}
-                      className="mt-1 w-full rounded-xl border border-violet-400 bg-[var(--card)] p-2 text-sm font-semibold text-[var(--foreground)]"
+                      className="mt-1 w-full rounded-xl border border-[var(--primary)] bg-[var(--card)] p-2 text-sm font-semibold text-[var(--foreground)]"
                     />
                   ) : (
                     <button

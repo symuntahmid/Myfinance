@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bell, Sparkles } from "lucide-react";
+import { Bell, Flame, Snowflake } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { getSettings } from "@/app/data/settings";
@@ -18,7 +18,13 @@ import {
   type BillStatus,
 } from "@/app/data/bills";
 import { formatCurrency } from "@/app/utils/currency";
-import { todayKey } from "@/app/data/streakFreeze";
+import { getPlayer } from "@/app/data/player";
+import { getJourneyProgress } from "@/app/data/dailyJourney";
+import {
+  getFreezeData,
+  MAX_FREEZES,
+  todayKey,
+} from "@/app/data/streakFreeze";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
   getDayReminders,
@@ -40,6 +46,10 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     reminders: CoachReminder[];
     custom: DueReminder[];
     bills: BillStatus[];
+    streak: number;
+    freezes: number;
+    done: number;
+    total: number;
   } | null>(null);
 
   useEffect(() => {
@@ -84,7 +94,18 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
             .slice(0, 2)
         : [];
 
-      setState({ nudge, reminders, custom, bills });
+      const journey = getJourneyProgress();
+
+      setState({
+        nudge,
+        reminders,
+        custom,
+        bills,
+        streak: getPlayer().streak,
+        freezes: getFreezeData().freezes,
+        done: journey.completed,
+        total: journey.total,
+      });
     };
 
     refresh();
@@ -95,6 +116,8 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
       "languageUpdated",
       "remindersUpdated",
       "billsUpdated",
+      "dailyJourneyUpdated",
+      "player-updated",
     ];
 
     events.forEach((name) =>
@@ -115,18 +138,21 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     reports: t("coachOpenReports"),
   };
 
+  const number = (value: number) =>
+    value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
+
+  const goldButton =
+    "mt-5 inline-flex items-center rounded-full bg-[var(--gold)] px-5 py-2.5 text-sm font-semibold text-[#1F1500] transition active:scale-[0.97]";
+
   const renderCta = (cta?: CoachCta) => {
     if (!cta) return null;
-
-    const className =
-      "mt-2 inline-block rounded-xl bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white";
 
     if (cta === "quickAdd") {
       return (
         <button
           type="button"
           onClick={onQuickAdd}
-          className={className}
+          className={goldButton}
         >
           {ctaLabel[cta]}
         </button>
@@ -136,84 +162,159 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     return (
       <Link
         href={cta === "goals" ? "/goals" : "/reports"}
-        className={className}
+        className={goldButton}
       >
         {ctaLabel[cta]}
       </Link>
     );
   };
 
+  // Everything that needs attention today, as short rows.
+  const rows: { id: string; href?: string; text: string }[] = [
+    ...state.bills.map((item) => ({
+      id: `bill-${item.bill.id}`,
+      href: "/bills",
+      text: `${t("billDueReminder", {
+        name: item.bill.name,
+        amount: formatCurrency(item.bill.amount),
+      })} · ${
+        item.state === "overdue"
+          ? t("billOverdue")
+          : item.state === "today"
+          ? t("billDueToday")
+          : t("billDueIn", { days: number(item.daysLeft) })
+      }`,
+    })),
+    ...state.reminders.map((item) => ({
+      id: item.id,
+      text: t(item.key, item.params),
+    })),
+    ...state.custom.map((item) => ({
+      id: `custom-${item.id}`,
+      text:
+        item.daysLeft === 0
+          ? t("reminderDueToday", { title: item.title })
+          : item.daysLeft === 1
+          ? t("reminderDueTomorrow", { title: item.title })
+          : t("reminderDueInDays", {
+              days: number(item.daysLeft),
+              title: item.title,
+            }),
+    })),
+  ];
+
+  const percent =
+    state.total > 0
+      ? Math.round((state.done / state.total) * 100)
+      : 0;
+
   return (
-    <section className="rounded-[28px] border border-[var(--border)] bg-[var(--card)] p-5 text-[var(--foreground)]">
-      <div className="flex items-center gap-2 text-sm font-semibold text-[var(--muted)]">
-        <Sparkles size={16} />
-        {t("coachTitle")}
-      </div>
+    <section className="hero-rise alpona relative overflow-hidden rounded-[28px] bg-[var(--forest)] p-6 text-[var(--on-forest)] shadow-[0_18px_40px_rgba(11,59,46,0.28)]">
+      {/* The sonali sun */}
 
-      {state.reminders.map((reminder) => (
-        <div
-          key={reminder.id}
-          className="mt-3 flex items-start gap-3 rounded-2xl bg-amber-500/10 p-3"
-        >
-          <Bell size={18} className="mt-0.5 shrink-0 text-amber-500" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(226,182,79,0.55) 0%, rgba(226,182,79,0.12) 45%, transparent 70%)",
+        }}
+      />
 
-          <div>
-            <p className="text-sm">
-              {t(reminder.key, reminder.params)}
-            </p>
-            {renderCta(reminder.cta)}
-          </div>
-        </div>
-      ))}
+      <div className="relative">
+        <p className="text-sm font-medium text-[var(--gold)]">
+          {t("coachTitle")}
+        </p>
 
-      {state.bills.map((item) => (
-        <Link
-          key={item.bill.id}
-          href="/bills"
-          className="mt-3 flex items-start gap-3 rounded-2xl bg-amber-500/10 p-3"
-        >
-          <Bell size={18} className="mt-0.5 shrink-0 text-amber-500" />
-
-          <p className="text-sm">
-            {t("billDueReminder", {
-              name: item.bill.name,
-              amount: formatCurrency(item.bill.amount),
-            })}
-            {" · "}
-            {item.state === "overdue"
-              ? t("billOverdue")
-              : item.state === "today"
-              ? t("billDueToday")
-              : t("billDueIn", { days: item.daysLeft })}
-          </p>
-        </Link>
-      ))}
-
-      {state.custom.map((item) => (
-        <div
-          key={item.id}
-          className="mt-3 flex items-start gap-3 rounded-2xl bg-amber-500/10 p-3"
-        >
-          <Bell size={18} className="mt-0.5 shrink-0 text-amber-500" />
-
-          <p className="text-sm">
-            {item.daysLeft === 0
-              ? t("reminderDueToday", { title: item.title })
-              : item.daysLeft === 1
-              ? t("reminderDueTomorrow", { title: item.title })
-              : t("reminderDueInDays", {
-                  days: item.daysLeft,
-                  title: item.title,
-                })}
-          </p>
-        </div>
-      ))}
-
-      <div className="mt-3">
-        <p className="text-sm leading-6">
+        <p className="font-display mt-3 text-[26px] leading-[1.35] sm:text-[30px]">
           {t(state.nudge.key, state.nudge.params)}
         </p>
+
         {renderCta(state.nudge.cta)}
+
+        {rows.length > 0 && (
+          <div className="mt-6 space-y-2">
+            {rows.map((row) => {
+              const inner = (
+                <>
+                  <Bell
+                    size={16}
+                    className="mt-0.5 shrink-0 text-[var(--gold)]"
+                  />
+
+                  <span className="text-sm leading-6">
+                    {row.text}
+                  </span>
+                </>
+              );
+
+              const className =
+                "flex items-start gap-3 rounded-xl border-l-2 border-[var(--gold)] bg-black/20 px-3 py-2.5";
+
+              return row.href ? (
+                <Link
+                  key={row.id}
+                  href={row.href}
+                  className={className}
+                >
+                  {inner}
+                </Link>
+              ) : (
+                <div key={row.id} className={className}>
+                  {inner}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Streak and today's progress */}
+
+        <div className="mt-6 grid grid-cols-[auto_auto_1fr] items-end gap-x-6 gap-y-1 border-t border-[var(--gold)]/20 pt-5">
+          <div>
+            <p className="font-display flex items-center gap-1.5 text-3xl leading-none">
+              <Flame
+                size={22}
+                className="text-[var(--gold)]"
+              />
+
+              {number(state.streak)}
+            </p>
+
+            <p className="mt-1.5 text-xs text-[var(--on-forest)]/70">
+              {t("heroStreak")}
+            </p>
+          </div>
+
+          <div>
+            <p className="font-display flex items-center gap-1.5 text-3xl leading-none">
+              <Snowflake
+                size={20}
+                className="text-[var(--gold)]"
+              />
+
+              {number(state.freezes)}/{number(MAX_FREEZES)}
+            </p>
+
+            <p className="mt-1.5 text-xs text-[var(--on-forest)]/70">
+              {t("heroFreezes")}
+            </p>
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-right text-xs text-[var(--on-forest)]/70">
+              {t("heroTasks")} {number(state.done)}/
+              {number(state.total)}
+            </p>
+
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-black/25">
+              <div
+                className="h-full rounded-full bg-[var(--gold)] transition-all duration-700"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

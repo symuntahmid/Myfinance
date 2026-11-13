@@ -13,9 +13,35 @@ import StatCard from "./StatCard";
 
 import { getSummary } from "../data/transactions";
 import { getPortfolioSummary } from "../data/investments";
+import { getAccounts, getBalances } from "../data/accounts";
+import { getGoals } from "../data/goals";
+import { computeNetWorth, getDebts } from "../data/netWorth";
 
 import { formatCurrency } from "@/app/utils/currency";
 import { t } from "@/app/data/i18n";
+
+
+// Accounts + goal savings + investments - debts.
+function trueNetWorth(): number {
+  const balances = getBalances();
+
+  const accounts = getAccounts().reduce(
+    (sum, item) => sum + (balances[item.id] ?? 0),
+    0
+  );
+
+  const goals = getGoals().reduce(
+    (sum, item) => sum + (Number(item.savedAmount) || 0),
+    0
+  );
+
+  return computeNetWorth({
+    accounts,
+    goals,
+    investments: getPortfolioSummary().current,
+    debts: getDebts(),
+  }).netWorth;
+}
 
 
 export default function SummaryCards() {
@@ -87,6 +113,10 @@ export default function SummaryCards() {
       refresh
     );
 
+    ["accountsUpdated","goalsUpdated","debtsUpdated"].forEach(
+      (name) => window.addEventListener(name, refresh)
+    );
+
 
     window.addEventListener(
       "currencyUpdated",
@@ -111,6 +141,10 @@ export default function SummaryCards() {
       window.removeEventListener(
         "investmentsUpdated",
         refresh
+      );
+
+      ["accountsUpdated","goalsUpdated","debtsUpdated"].forEach(
+        (name) => window.removeEventListener(name, refresh)
       );
 
 
@@ -146,9 +180,11 @@ export default function SummaryCards() {
 
         title={t("netWorth")}
 
+        kind="net"
+
         value={
           formatCurrency(
-            summary.netWorth
+            trueNetWorth()
           )
         }
 
@@ -164,6 +200,8 @@ export default function SummaryCards() {
       <StatCard
 
         title={t("monthlyIncome")}
+
+        kind="income"
 
         value={
           formatCurrency(
@@ -184,6 +222,8 @@ export default function SummaryCards() {
 
         title={t("expenses")}
 
+        kind="expense"
+
         value={
           formatCurrency(
             summary.expense
@@ -202,6 +242,8 @@ export default function SummaryCards() {
       <StatCard
 
         title={t("investments")}
+
+        kind="invest"
 
         value={
           formatCurrency(
