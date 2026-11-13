@@ -5,6 +5,7 @@ export type UserProfile = {
   username: string;
   email: string;
   passwordHash: string | null;
+  avatar?: string;
 };
 
 const STORAGE_KEY = "myfinance-profile";

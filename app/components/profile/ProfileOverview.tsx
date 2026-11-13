@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
+  Camera,
   BadgeCheck,
   Flame,
   Lock,
@@ -17,7 +18,8 @@ import {
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getLevel, getPlayer } from "@/app/data/player";
-import { getProfile } from "@/app/data/profile";
+import { getProfile, updateProfile } from "@/app/data/profile";
+import { fileToAvatar } from "@/app/utils/imageResize";
 import { getFreezeData, MAX_FREEZES } from "@/app/data/streakFreeze";
 import { getMonthlyReport } from "@/app/data/transactions";
 import { getBadgeProgress } from "@/app/data/badgeProgress";
@@ -57,6 +59,7 @@ function weekDays(language: string) {
 
 type State = {
   name: string;
+  avatar: string;
   level: ReturnType<typeof getLevel>;
   streak: number;
   freezes: number;
@@ -91,6 +94,7 @@ export default function ProfileOverview() {
           profile.displayName ||
           `${profile.firstName} ${profile.lastName}`.trim() ||
           player.name,
+        avatar: profile.avatar || "",
         level: getLevel(),
         streak: player.streak,
         freezes: freeze.freezes,
@@ -136,22 +140,53 @@ export default function ProfileOverview() {
         <div className="alpona pointer-events-none absolute inset-0 opacity-60" />
 
         <div className="relative flex items-center gap-3">
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[var(--gold)]/60 bg-[var(--primary)]">
-            {!avatarError ? (
-              <Image
-                src="/images/quokka/quokka-profile.png"
-                alt=""
-                fill
-                sizes="56px"
-                className="object-cover"
-                onError={() => setAvatarError(true)}
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center">
-                <User size={24} />
-              </div>
-            )}
-          </div>
+          <label
+            aria-label={t("lgChangePhoto")}
+            className="relative block h-14 w-14 shrink-0 cursor-pointer"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={async (event) => {
+                const file = event.target.files?.[0];
+
+                event.target.value = "";
+
+                if (!file) return;
+
+                try {
+                  updateProfile({ avatar: await fileToAvatar(file) });
+                } catch {
+                  /* not an image: ignore */
+                }
+              }}
+            />
+
+            <span className="relative block h-14 w-14 overflow-hidden rounded-full border-2 border-[var(--gold)]/60 bg-[var(--primary)]">
+              {state.avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={state.avatar} alt="" className="h-full w-full object-cover" />
+              ) : !avatarError ? (
+                <Image
+                  src="/images/quokka/quokka-profile.png"
+                  alt=""
+                  fill
+                  sizes="56px"
+                  className="object-cover"
+                  onError={() => setAvatarError(true)}
+                />
+              ) : (
+                <span className="flex h-full items-center justify-center">
+                  <User size={24} />
+                </span>
+              )}
+            </span>
+
+            <span className="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--gold)] text-[#2B1F00]">
+              <Camera size={11} />
+            </span>
+          </label>
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">

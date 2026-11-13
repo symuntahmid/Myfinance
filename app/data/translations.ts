@@ -201,6 +201,25 @@ export type TranslationKey =
   | "pfThisWeek"
   | "pfMaxLevel"
   | "pfXpTotal"
+  | "lgFreedomTitle"
+  | "lgFreedomHint"
+  | "lgMonthlyCost"
+  | "lgSetCost"
+  | "lgYouHave"
+  | "lgPercentDone"
+  | "lgGoalsTitle"
+  | "lgAddGoal"
+  | "lgGoalName"
+  | "lgAmount"
+  | "lgYear"
+  | "lgSave"
+  | "lgEmpty"
+  | "lgTotal"
+  | "lgEdit"
+  | "lgSaveCost"
+  | "lgChangePhoto"
+  | "lgDelete"
+  | "lgByYear"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -791,6 +810,44 @@ en: {
     "Top level reached",
   pfXpTotal:
     "{xp} XP",
+  lgFreedomTitle:
+    "Financial freedom number",
+  lgFreedomHint:
+    "Monthly living cost × 12 × 25. With this much saved, your money can pay for your life.",
+  lgMonthlyCost:
+    "Monthly living cost",
+  lgSetCost:
+    "Enter your monthly cost to see your number.",
+  lgYouHave:
+    "You have {amount}",
+  lgPercentDone:
+    "{percent}% there",
+  lgGoalsTitle:
+    "Life goals",
+  lgAddGoal:
+    "Add goal",
+  lgGoalName:
+    "Goal name, like Buy a home",
+  lgAmount:
+    "Amount needed",
+  lgYear:
+    "Target year (optional)",
+  lgSave:
+    "Save goal",
+  lgEmpty:
+    "Add the big things you want in life, like a home, Hajj, or your child's education.",
+  lgTotal:
+    "Total for all goals: {amount}",
+  lgEdit:
+    "Edit",
+  lgSaveCost:
+    "Save",
+  lgChangePhoto:
+    "Change photo",
+  lgDelete:
+    "Delete",
+  lgByYear:
+    "By {year}",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1537,6 +1594,44 @@ bn: {
     "সর্বোচ্চ স্তরে পৌঁছেছেন",
   pfXpTotal:
     "{xp} XP",
+  lgFreedomTitle:
+    "আর্থিক স্বাধীনতার অঙ্ক",
+  lgFreedomHint:
+    "মাসিক খরচ × ১২ × ২৫। এই পরিমাণ জমলে আপনার সঞ্চয়ই আপনার জীবনযাত্রার খরচ চালাবে।",
+  lgMonthlyCost:
+    "মাসিক জীবনযাত্রার খরচ",
+  lgSetCost:
+    "আপনার অঙ্ক দেখতে মাসিক খরচ লিখুন।",
+  lgYouHave:
+    "আপনার আছে {amount}",
+  lgPercentDone:
+    "{percent}% পূর্ণ",
+  lgGoalsTitle:
+    "জীবনের লক্ষ্য",
+  lgAddGoal:
+    "লক্ষ্য যোগ করুন",
+  lgGoalName:
+    "লক্ষ্যের নাম, যেমন বাড়ি কেনা",
+  lgAmount:
+    "প্রয়োজনীয় পরিমাণ",
+  lgYear:
+    "লক্ষ্য সাল (ঐচ্ছিক)",
+  lgSave:
+    "লক্ষ্য সংরক্ষণ করুন",
+  lgEmpty:
+    "জীবনের বড় স্বপ্নগুলো যোগ করুন, যেমন বাড়ি, হজ্জ বা সন্তানের পড়াশোনা।",
+  lgTotal:
+    "সব লক্ষ্যের মোট: {amount}",
+  lgEdit:
+    "সম্পাদনা",
+  lgSaveCost:
+    "সংরক্ষণ",
+  lgChangePhoto:
+    "ছবি পরিবর্তন",
+  lgDelete:
+    "মুছুন",
+  lgByYear:
+    "{year} সালের মধ্যে",
   // Bills and net worth
   billsTitle:
     "বিল",

@@ -303,13 +303,15 @@ to-[var(--secondary)]
 
 <Image
 
-src="/images/quokka/quokka-profile.png"
+src={profile.avatar || "/images/quokka/quokka-profile.png"}
 
 alt="Profile"
 
 fill
 
 sizes="64px"
+
+unoptimized={Boolean(profile.avatar)}
 
 className="object-cover"
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 import ProfileOverview from "@/app/components/profile/ProfileOverview";
+import LifeGoalsCard from "@/app/components/profile/LifeGoalsCard";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function ProfilePage() {
@@ -24,6 +25,8 @@ export default function ProfilePage() {
       </div>
 
       <ProfileOverview />
+
+      <LifeGoalsCard />
 
       <Link
         href="/profile/developer"
