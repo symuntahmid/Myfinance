@@ -185,6 +185,41 @@ export type TranslationKey =
   | "streakFreezeHint"
   | "streakFreezeUsed"
 
+  // Bills and net worth
+  | "billsTitle"
+  | "billsSubtitle"
+  | "addBillTitle"
+  | "billNamePlaceholder"
+  | "billAmountLabel"
+  | "billDayLabel"
+  | "billPayFrom"
+  | "billCategoryLabel"
+  | "billMarkPaid"
+  | "billUndo"
+  | "billPaid"
+  | "billOverdue"
+  | "billDueToday"
+  | "billDueIn"
+  | "billMonthlyTotal"
+  | "billsEmpty"
+  | "billsCardNone"
+  | "billsCardNext"
+  | "billDeleteConfirm"
+  | "netWorthTitle"
+  | "netWorthSubtitle"
+  | "netWorthOwn"
+  | "netWorthOwe"
+  | "netWorthAccounts"
+  | "netWorthGoals"
+  | "netWorthInvestments"
+  | "netWorthChange"
+  | "addDebt"
+  | "debtNamePlaceholder"
+  | "debtAmountLabel"
+  | "debtsEmpty"
+  | "netWorthCardTitle"
+  | "billDueReminder"
+
   // Monthly plan
   | "planNewCategory"
   | "planCategoryPlaceholder"
@@ -672,6 +707,74 @@ en: {
     "This category already exists.",
   planDeleteCategory:
     "Remove this category? Your past spending stays.",
+  // Bills and net worth
+  billsTitle:
+    "Bills",
+  billsSubtitle:
+    "Bills that repeat every month",
+  addBillTitle:
+    "Add a bill",
+  billNamePlaceholder:
+    "e.g. House rent, Internet",
+  billAmountLabel:
+    "Amount",
+  billDayLabel:
+    "Due day (1-31)",
+  billPayFrom:
+    "Pay from",
+  billCategoryLabel:
+    "Category",
+  billMarkPaid:
+    "Mark paid",
+  billUndo:
+    "Undo",
+  billPaid:
+    "Paid ✓",
+  billOverdue:
+    "Overdue",
+  billDueToday:
+    "Due today",
+  billDueIn:
+    "Due in {days} day(s)",
+  billMonthlyTotal:
+    "Total bills each month",
+  billsEmpty:
+    "No bills yet. Add rent, internet, school fee...",
+  billsCardNone:
+    "Add your monthly bills",
+  billsCardNext:
+    "Next: {name}",
+  billDeleteConfirm:
+    "Delete this bill? Past payments stay.",
+  netWorthTitle:
+    "Net worth",
+  netWorthSubtitle:
+    "What you own minus what you owe",
+  netWorthOwn:
+    "What you own",
+  netWorthOwe:
+    "What you owe",
+  netWorthAccounts:
+    "Money in accounts",
+  netWorthGoals:
+    "Saved in goals",
+  netWorthInvestments:
+    "Investments",
+  netWorthChange:
+    "{amount} since last month",
+  addDebt:
+    "Add a debt",
+  debtNamePlaceholder:
+    "e.g. Bank loan, Borrowed from friend",
+  debtAmountLabel:
+    "Still owed",
+  debtsEmpty:
+    "No debts. Add a loan if you have one.",
+  netWorthCardTitle:
+    "Net worth",
+  billDueReminder:
+    "Bill: {name} ({amount})",
+
   // Monthly plan
   planTitle:
     "Monthly plan",
@@ -1294,6 +1397,74 @@ bn: {
     "এই খাত আগেই আছে।",
   planDeleteCategory:
     "এই খাত সরাবেন? আপনার আগের খরচ থেকে যাবে।",
+  // Bills and net worth
+  billsTitle:
+    "বিল",
+  billsSubtitle:
+    "প্রতি মাসে যে বিলগুলো আসে",
+  addBillTitle:
+    "বিল যোগ করুন",
+  billNamePlaceholder:
+    "যেমন: বাসা ভাড়া, ইন্টারনেট",
+  billAmountLabel:
+    "টাকার পরিমাণ",
+  billDayLabel:
+    "কত তারিখে (১-৩১)",
+  billPayFrom:
+    "যেখান থেকে দেবেন",
+  billCategoryLabel:
+    "খাত",
+  billMarkPaid:
+    "পরিশোধ হয়েছে",
+  billUndo:
+    "ফেরত নিন",
+  billPaid:
+    "পরিশোধিত ✓",
+  billOverdue:
+    "মেয়াদ পেরিয়েছে",
+  billDueToday:
+    "আজ দেওয়ার দিন",
+  billDueIn:
+    "{days} দিন পরে",
+  billMonthlyTotal:
+    "প্রতি মাসের মোট বিল",
+  billsEmpty:
+    "এখনও কোনো বিল নেই। বাসা ভাড়া, ইন্টারনেট, স্কুল ফি যোগ করুন...",
+  billsCardNone:
+    "মাসিক বিল যোগ করুন",
+  billsCardNext:
+    "পরের বিল: {name}",
+  billDeleteConfirm:
+    "এই বিল মুছবেন? আগের পরিশোধ থেকে যাবে।",
+  netWorthTitle:
+    "মোট সম্পদ",
+  netWorthSubtitle:
+    "যা আছে থেকে যা দেনা তা বাদ",
+  netWorthOwn:
+    "আপনার যা আছে",
+  netWorthOwe:
+    "আপনার যা দেনা",
+  netWorthAccounts:
+    "অ্যাকাউন্টের টাকা",
+  netWorthGoals:
+    "লক্ষ্যে জমানো",
+  netWorthInvestments:
+    "বিনিয়োগ",
+  netWorthChange:
+    "গত মাসের চেয়ে {amount}",
+  addDebt:
+    "দেনা যোগ করুন",
+  debtNamePlaceholder:
+    "যেমন: ব্যাংক ঋণ, বন্ধুর কাছ থেকে ধার",
+  debtAmountLabel:
+    "এখনও বাকি",
+  debtsEmpty:
+    "কোনো দেনা নেই। ঋণ থাকলে যোগ করুন।",
+  netWorthCardTitle:
+    "মোট সম্পদ",
+  billDueReminder:
+    "বিল: {name} ({amount})",
+
   // Monthly plan
   planTitle:
     "মাসিক পরিকল্পনা",

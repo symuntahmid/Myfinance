@@ -12,6 +12,12 @@ import {
   getDueReminders,
   type DueReminder,
 } from "@/app/data/customReminders";
+import {
+  getBills,
+  sortedStatuses,
+  type BillStatus,
+} from "@/app/data/bills";
+import { formatCurrency } from "@/app/utils/currency";
 import { todayKey } from "@/app/data/streakFreeze";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
@@ -33,6 +39,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
     nudge: CoachNudge;
     reminders: CoachReminder[];
     custom: DueReminder[];
+    bills: BillStatus[];
   } | null>(null);
 
   useEffect(() => {
@@ -66,7 +73,18 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
         ? getDueReminders(getCustomReminders(), todayKey())
         : [];
 
-      setState({ nudge, reminders, custom });
+      const bills = settings.remindersEnabled
+        ? sortedStatuses(getBills(), now)
+            .filter(
+              (item) =>
+                item.state === "overdue" ||
+                item.state === "today" ||
+                item.state === "soon"
+            )
+            .slice(0, 2)
+        : [];
+
+      setState({ nudge, reminders, custom, bills });
     };
 
     refresh();
@@ -76,6 +94,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
       "settingsUpdated",
       "languageUpdated",
       "remindersUpdated",
+      "billsUpdated",
     ];
 
     events.forEach((name) =>
@@ -145,6 +164,29 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
             {renderCta(reminder.cta)}
           </div>
         </div>
+      ))}
+
+      {state.bills.map((item) => (
+        <Link
+          key={item.bill.id}
+          href="/bills"
+          className="mt-3 flex items-start gap-3 rounded-2xl bg-amber-500/10 p-3"
+        >
+          <Bell size={18} className="mt-0.5 shrink-0 text-amber-500" />
+
+          <p className="text-sm">
+            {t("billDueReminder", {
+              name: item.bill.name,
+              amount: formatCurrency(item.bill.amount),
+            })}
+            {" · "}
+            {item.state === "overdue"
+              ? t("billOverdue")
+              : item.state === "today"
+              ? t("billDueToday")
+              : t("billDueIn", { days: item.daysLeft })}
+          </p>
+        </Link>
       ))}
 
       {state.custom.map((item) => (

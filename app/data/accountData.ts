@@ -19,6 +19,9 @@ const STORAGE_KEYS = {
   accounts: "myfinance-accounts",
   plan: "myfinance-plan",
   planCategories: "myfinance-plan-categories",
+  bills: "myfinance-bills",
+  debts: "myfinance-debts",
+  netWorthHistory: "myfinance-networth-history",
 };
 
 /* ==========================================

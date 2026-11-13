@@ -27,6 +27,7 @@ import GoalProgressCard from "../../components/GoalProgressCard";
 
 import { getPortfolioSummary } from "@/app/data/investments";
 import PlanSummaryCard from "@/app/components/PlanSummaryCard";
+import BillsNetWorthCards from "@/app/components/BillsNetWorthCards";
 
 import AIInsightCard from "@/app/components/ai/AIInsightCard";
 import { formatCurrency } from "@/app/utils/currency";
@@ -138,7 +139,11 @@ text-[var(--foreground)]
 {/* Monthly plan */}
 
   <FadeIn delay={0.6}>
-  <PlanSummaryCard />
+  <BillsNetWorthCards />
+
+  <div className="mt-6">
+    <PlanSummaryCard />
+  </div>
 </FadeIn>
 
         {portfolio.totalAssets > 0 && (
