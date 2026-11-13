@@ -15,7 +15,7 @@ import {
   useTheme,
 } from "@/app/context/ThemeContext";
 
-import {
+import { Zap,
   User,
   Globe2,
   Languages,
@@ -440,6 +440,17 @@ subtitle={t("financialIdentity")}
             onClick={() =>
               setRemindersOpen(true)
             }
+          />
+
+          <Divider />
+
+          <SettingRow
+            icon={<Zap size={19} />}
+            title={t("smsAutoTitle")}
+            subtitle={t("smsAutoSubtitle")}
+            onClick={() => {
+              window.location.href = "/sms-setup";
+            }}
           />
 
           <Divider />

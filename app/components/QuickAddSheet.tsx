@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { X, Zap, ClipboardPaste, Check } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -32,6 +33,8 @@ import {
 interface Props {
   open: boolean;
   onClose: () => void;
+  // A message to read right away (from the automatic SMS link).
+  initialSms?: string;
 }
 
 const BANGLA_DIGITS = "০১২৩৪৫৬৭৮৯";
@@ -55,17 +58,39 @@ function cleanAmountInput(value: string): string {
 
 // The panel only exists while the sheet is open, so every time it opens
 // it starts with empty fields.
-export default function QuickAddSheet({ open, onClose }: Props) {
+export default function QuickAddSheet({
+  open,
+  onClose,
+  initialSms,
+}: Props) {
   if (!open || typeof document === "undefined") return null;
 
-  return <QuickAddPanel onClose={onClose} />;
+  return <QuickAddPanel onClose={onClose} initialSms={initialSms} />;
 }
 
-function QuickAddPanel({ onClose }: { onClose: () => void }) {
+function QuickAddPanel({
+  onClose,
+  initialSms,
+}: {
+  onClose: () => void;
+  initialSms?: string;
+}) {
   const { language, t } = useLanguage();
   const text = quickText[language];
 
-  const [tab, setTab] = useState<"quick" | "sms">("quick");
+  // When opened from the automatic SMS link, read the message at once.
+  const [initial] = useState(() =>
+    initialSms
+      ? {
+          text: initialSms,
+          result: parseMobileMoneySms(initialSms),
+        }
+      : null
+  );
+
+  const [tab, setTab] = useState<"quick" | "sms">(
+    initial ? "sms" : "quick"
+  );
 
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -85,10 +110,18 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
     () => getAccounts()[0]?.source ?? CASH_SOURCE
   );
 
-  const [smsText, setSmsText] = useState("");
-  const [parsed, setParsed] = useState<SmsParseResult | null>(null);
-  const [smsCategory, setSmsCategory] = useState("");
-  const [duplicate, setDuplicate] = useState(false);
+  const [smsText, setSmsText] = useState(initial?.text ?? "");
+  const [parsed, setParsed] = useState<SmsParseResult | null>(
+    initial?.result ?? null
+  );
+  const [smsCategory, setSmsCategory] = useState(
+    initial?.result.ok ? initial.result.data.category : ""
+  );
+  const [duplicate, setDuplicate] = useState(
+    initial?.result.ok
+      ? hasTransactionWithTrxId(initial.result.data.trxId)
+      : false
+  );
   const [cashMode, setCashMode] =
     useState<"move" | "full" | "fee">("move");
   const [clipboardFailed, setClipboardFailed] = useState(false);
@@ -438,6 +471,14 @@ function QuickAddPanel({ onClose }: { onClose: () => void }) {
             <p className="mt-2 text-xs text-[var(--muted)]">
               🔒 {text.privacy}
             </p>
+
+            <Link
+              href="/sms-setup"
+              onClick={onClose}
+              className="mt-2 inline-block text-xs font-semibold text-violet-600"
+            >
+              ⚡ {t("smsAutoTitle")}
+            </Link>
 
             {failureMessage() && (
               <p className="mt-4 rounded-2xl bg-red-500/10 px-4 py-3 text-sm font-medium text-red-600">

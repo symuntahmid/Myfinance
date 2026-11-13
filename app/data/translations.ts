@@ -186,6 +186,8 @@ export type TranslationKey =
   | "streakFreezeUsed"
 
   // Bills and net worth
+  | "smsAutoTitle"
+  | "smsAutoSubtitle"
   | "billsTitle"
   | "billsSubtitle"
   | "addBillTitle"
@@ -707,6 +709,10 @@ en: {
     "This category already exists.",
   planDeleteCategory:
     "Remove this category? Your past spending stays.",
+  smsAutoTitle:
+    "Automatic SMS setup",
+  smsAutoSubtitle:
+    "Open MyFinance from a bKash or Nagad SMS",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1397,6 +1403,10 @@ bn: {
     "এই খাত আগেই আছে।",
   planDeleteCategory:
     "এই খাত সরাবেন? আপনার আগের খরচ থেকে যাবে।",
+  smsAutoTitle:
+    "স্বয়ংক্রিয় এসএমএস সেটআপ",
+  smsAutoSubtitle:
+    "বিকাশ বা নগদের এসএমএস থেকে সরাসরি অ্যাপ খুলুন",
   // Bills and net worth
   billsTitle:
     "বিল",
