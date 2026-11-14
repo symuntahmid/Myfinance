@@ -18,6 +18,7 @@ import {
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getLevel, getPlayer } from "@/app/data/player";
+import { levelTitle } from "@/app/data/levels";
 import { getProfile, updateProfile } from "@/app/data/profile";
 import { fileToAvatar } from "@/app/utils/imageResize";
 import { getFreezeData, MAX_FREEZES } from "@/app/data/streakFreeze";
@@ -197,7 +198,7 @@ export default function ProfileOverview() {
             </div>
 
             <p className="truncate text-xs opacity-75">
-              {level.icon} {t("level")} {level.level} · {level.title}
+              {level.icon} {t("level")} {level.level} · {levelTitle(level.title, language)}
             </p>
           </div>
 

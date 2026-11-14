@@ -189,3 +189,41 @@ export const LEVELS: LevelDefinition[] = [
     xpRequired: 100000,
   },
 ];
+
+/* Level names in Bangla (the stored title stays English). */
+
+const LEVEL_TITLES_BN: Record<string, string> = {
+  "Financial Beginner": "আর্থিক শিক্ষানবিস",
+  "Money Aware": "অর্থ-সচেতন",
+  "Expense Tracker": "খরচের হিসাবরক্ষক",
+  "Goal Setter": "লক্ষ্য-নির্ধারক",
+  "Money Explorer": "অর্থ অন্বেষক",
+  "Safety Builder": "নিরাপত্তা নির্মাতা",
+  "Smart Saver": "স্মার্ট সঞ্চয়ী",
+  "Budget Strategist": "বাজেট কৌশলী",
+  "Habit Builder": "অভ্যাস গঠনকারী",
+  "Cash Flow Manager": "নগদ প্রবাহ ব্যবস্থাপক",
+  "Savings Expert": "সঞ্চয় বিশেষজ্ঞ",
+  "Beginner Investor": "নবীন বিনিয়োগকারী",
+  "Money Strategist": "অর্থ কৌশলী",
+  "Financial Balancer": "আর্থিক ভারসাম্যকারী",
+  "Wealth Builder": "সম্পদ নির্মাতা",
+  "Financial Defender": "আর্থিক রক্ষক",
+  "Investment Strategist": "বিনিয়োগ কৌশলী",
+  "Financial Planner": "আর্থিক পরিকল্পনাকারী",
+  "Wealth Manager": "সম্পদ ব্যবস্থাপক",
+  "Financial Expert": "আর্থিক বিশেষজ্ঞ",
+  "Wealth Strategist": "সম্পদ কৌশলী",
+  "Financial Master": "আর্থিক ওস্তাদ",
+  "Wealth Architect": "সম্পদ স্থপতি",
+  "Capital Builder": "পুঁজি নির্মাতা",
+  "Financial Visionary": "আর্থিক দূরদর্শী",
+  "Financial Elite": "আর্থিক অভিজাত",
+  "Master Wealth": "সম্পদ সম্রাট",
+  "Financial Legacy": "আর্থিক উত্তরাধিকার",
+  "Financial Independence": "আর্থিক স্বাধীনতা",
+};
+
+export function levelTitle(title: string, language: string): string {
+  return language === "bn" ? LEVEL_TITLES_BN[title] ?? title : title;
+}

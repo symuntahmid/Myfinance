@@ -248,6 +248,9 @@ export type TranslationKey =
   | "insCurrent"
   | "insProfit"
   | "insReturn"
+  | "moreGroupMoney"
+  | "moreGroupInsights"
+  | "moreGroupYou"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -932,6 +935,12 @@ en: {
     "Profit",
   insReturn:
     "Return",
+  moreGroupMoney:
+    "Manage money",
+  moreGroupInsights:
+    "See your money",
+  moreGroupYou:
+    "You",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1772,6 +1781,12 @@ bn: {
     "লাভ",
   insReturn:
     "রিটার্ন",
+  moreGroupMoney:
+    "টাকা পরিচালনা",
+  moreGroupInsights:
+    "টাকা দেখুন",
+  moreGroupYou:
+    "আপনি",
   // Bills and net worth
   billsTitle:
     "বিল",

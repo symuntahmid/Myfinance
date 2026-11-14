@@ -118,22 +118,9 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
   const number = (value: number) =>
     value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
 
-  // Everything that needs attention today, as short rows.
+  // Day and custom reminders. Bills have their own row in the
+  // money list, so they are not repeated here.
   const rows: { id: string; href?: string; text: string }[] = [
-    ...state.bills.map((item) => ({
-      id: `bill-${item.bill.id}`,
-      href: "/bills",
-      text: `${t("billDueReminder", {
-        name: item.bill.name,
-        amount: formatCurrency(item.bill.amount),
-      })} · ${
-        item.state === "overdue"
-          ? t("billOverdue")
-          : item.state === "today"
-          ? t("billDueToday")
-          : t("billDueIn", { days: number(item.daysLeft) })
-      }`,
-    })),
     ...state.reminders.map((item) => ({
       id: item.id,
       text: t(item.key, item.params),

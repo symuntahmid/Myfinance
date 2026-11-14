@@ -102,17 +102,32 @@ export default function BottomNavigation() {
 
 
 
-  const moreItems = [
-    { href: "/profile", name: t("profile"), icon: User },
-    { href: "/goals", name: t("goalsTitle"), icon: Target },
-    { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
-    { href: "/plan", name: t("planTitle"), icon: ClipboardList },
-    { href: "/bills", name: t("billsTitle"), icon: Receipt },
-    { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
-    { href: "/insights", name: t("insTitle"), icon: Lightbulb },
-    { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
-    { href: "/sms-setup", name: t("smsAutoTitle"), icon: Zap },
-    { href: "/settings", name: t("settings"), icon: Settings },
+  const moreGroups = [
+    {
+      title: t("moreGroupMoney"),
+      items: [
+        { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
+        { href: "/bills", name: t("billsTitle"), icon: Receipt },
+        { href: "/plan", name: t("planTitle"), icon: ClipboardList },
+        { href: "/goals", name: t("goalsTitle"), icon: Target },
+      ],
+    },
+    {
+      title: t("moreGroupInsights"),
+      items: [
+        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
+        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
+        { href: "/insights", name: t("insTitle"), icon: Lightbulb },
+      ],
+    },
+    {
+      title: t("moreGroupYou"),
+      items: [
+        { href: "/profile", name: t("profile"), icon: User },
+        { href: "/sms-setup", name: t("smsAutoTitle"), icon: Zap },
+        { href: "/settings", name: t("settings"), icon: Settings },
+      ],
+    },
   ];
 
   const items = [
@@ -342,7 +357,7 @@ export default function BottomNavigation() {
       {moreOpen &&
         typeof document !== "undefined" &&
         createPortal(
-          <div className="fixed inset-0 z-[70] lg:hidden">
+          <div className="fixed inset-0 z-[1000] lg:hidden">
             <button
               type="button"
               aria-label="close"
@@ -372,28 +387,38 @@ export default function BottomNavigation() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
-                {moreItems.map((entry) => {
-                  const EntryIcon = entry.icon;
+              <div className="space-y-4">
+                {moreGroups.map((group) => (
+                  <div key={group.title}>
+                    <p className="mb-2 text-xs font-semibold text-[var(--muted)]">
+                      {group.title}
+                    </p>
 
-                  return (
-                    <Link
-                      key={entry.href}
-                      href={entry.href}
-                      onClick={() => setMoreOpen(false)}
-                      className="flex flex-col items-center gap-2 rounded-2xl bg-black/5 p-3 text-center"
-                    >
-                      <EntryIcon
-                        size={22}
-                        className="text-[var(--primary)]"
-                      />
+                    <div className="grid grid-cols-3 gap-3">
+                      {group.items.map((entry) => {
+                        const EntryIcon = entry.icon;
 
-                      <span className="text-[11px] font-medium leading-tight text-[var(--foreground)]">
-                        {entry.name}
-                      </span>
-                    </Link>
-                  );
-                })}
+                        return (
+                          <Link
+                            key={entry.href}
+                            href={entry.href}
+                            onClick={() => setMoreOpen(false)}
+                            className="flex flex-col items-center gap-2 rounded-2xl bg-black/5 p-3 text-center"
+                          >
+                            <EntryIcon
+                              size={22}
+                              className="text-[var(--primary)]"
+                            />
+
+                            <span className="text-[11px] font-medium leading-tight text-[var(--foreground)]">
+                              {entry.name}
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>,
