@@ -251,6 +251,75 @@ export type TranslationKey =
   | "moreGroupMoney"
   | "moreGroupInsights"
   | "moreGroupYou"
+  | "inVerdictGreat"
+  | "inVerdictOk"
+  | "inVerdictLow"
+  | "inVerdictNone"
+  | "inKeptSoFar"
+  | "inGoalLine"
+  | "inStoryTitle"
+  | "inLess"
+  | "inMore"
+  | "inTop"
+  | "inGap"
+  | "inGood"
+  | "inNoSpend"
+  | "inBiggest"
+  | "inActionGoals"
+  | "inActionAdd"
+  | "inActionFlow"
+  | "inPaceTitle"
+  | "inPaceSub"
+  | "inPaceMonth"
+  | "inPaceSpent"
+  | "inPaceProjection"
+  | "inPaceLast"
+  | "inDailyTitle"
+  | "inDailyLine"
+  | "inDailyNone"
+  | "inChangedTitle"
+  | "inSixTitle"
+  | "inBest"
+  | "inFreedomTitle"
+  | "inFreedomLine"
+  | "inFreedomSet"
+  | "inDeepDive"
+  | "fxTitle"
+  | "fxEraLabel"
+  | "fxEra1"
+  | "fxEra2"
+  | "fxEra3"
+  | "fxEra4"
+  | "fxEra0"
+  | "fxHide"
+  | "fxShow"
+  | "fxCards"
+  | "fxShare"
+  | "fxCopied"
+  | "fxKeptBig"
+  | "fxKeptCap"
+  | "fxRateBig"
+  | "fxRateHigh"
+  | "fxRateMid"
+  | "fxStreakBig"
+  | "fxStreakCap"
+  | "fxNoSpendBig"
+  | "fxNoSpendCap"
+  | "fxLessBig"
+  | "fxLessCap"
+  | "fxFreeBig"
+  | "fxFreeCap"
+  | "fxWorthBig"
+  | "fxWorthCap"
+  | "fxLevelBig"
+  | "fxTrophyBig"
+  | "fxTrophyCap"
+  | "fxStartBig"
+  | "fxStartCap"
+  | "fxShelfTitle"
+  | "fxDaysTitle"
+  | "fxDaysCount"
+  | "fxFreedomTitle"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -941,6 +1010,144 @@ en: {
     "See your money",
   moreGroupYou:
     "You",
+  inVerdictGreat:
+    "You're doing great this month",
+  inVerdictOk:
+    "You're keeping some. Let's grow it.",
+  inVerdictLow:
+    "Money is tight this month",
+  inVerdictNone:
+    "Add a few entries to see your story",
+  inKeptSoFar:
+    "kept so far this month",
+  inGoalLine:
+    "Goal: keep {percent}% of what comes in",
+  inStoryTitle:
+    "Your month, in plain words",
+  inLess:
+    "You spent {amount} less than last month. Well done.",
+  inMore:
+    "You spent {amount} more than last month.",
+  inTop:
+    "{category} is your biggest spend: {amount}, {percent}% of spending.",
+  inGap:
+    "Keep {amount} more this month to reach your {percent}% goal.",
+  inGood:
+    "You're keeping {percent}%, above the {goal}% goal.",
+  inNoSpend:
+    "{count} days this month with no spending.",
+  inBiggest:
+    "Biggest single spend: {name}, {amount}.",
+  inActionGoals:
+    "Set a goal",
+  inActionAdd:
+    "Add entry",
+  inActionFlow:
+    "See cash flow",
+  inPaceTitle:
+    "Spending pace",
+  inPaceSub:
+    "{spent} spent, day {day} of {total}",
+  inPaceMonth:
+    "Month so far",
+  inPaceSpent:
+    "Spent",
+  inPaceProjection:
+    "At this pace you'll spend about {amount} by month end.",
+  inPaceLast:
+    "Last month you spent {amount}.",
+  inDailyTitle:
+    "Safe to spend each day",
+  inDailyLine:
+    "for the next {days} days, and you'll still keep the rest.",
+  inDailyNone:
+    "Everything that came in this month is already used.",
+  inChangedTitle:
+    "What changed since last month",
+  inSixTitle:
+    "Money kept, last 6 months",
+  inBest:
+    "Best month: {month}, {amount} kept",
+  inFreedomTitle:
+    "Financial freedom",
+  inFreedomLine:
+    "{percent}% of your freedom number",
+  inFreedomSet:
+    "Set your freedom number to track this.",
+  inDeepDive:
+    "Deep-dive charts",
+  fxTitle:
+    "Flex zone",
+  fxEraLabel:
+    "Your money era",
+  fxEra1:
+    "Untouchable",
+  fxEra2:
+    "Locked in",
+  fxEra3:
+    "Warming up",
+  fxEra4:
+    "Rebuilding",
+  fxEra0:
+    "Starts here",
+  fxHide:
+    "Hide amounts",
+  fxShow:
+    "Show amounts",
+  fxCards:
+    "Flex cards",
+  fxShare:
+    "Share",
+  fxCopied:
+    "Copied",
+  fxKeptBig:
+    "Kept {amount}",
+  fxKeptCap:
+    "Main character money.",
+  fxRateBig:
+    "{percent}% saved",
+  fxRateHigh:
+    "Savings rate: elite.",
+  fxRateMid:
+    "Climbing. Watch me.",
+  fxStreakBig:
+    "{days}-day streak",
+  fxStreakCap:
+    "Locked in.",
+  fxNoSpendBig:
+    "{count} no-spend days",
+  fxNoSpendCap:
+    "Discipline era.",
+  fxLessBig:
+    "{amount} less spent",
+  fxLessCap:
+    "Wallet says thanks.",
+  fxFreeBig:
+    "{percent}% free",
+  fxFreeCap:
+    "Building the exit.",
+  fxWorthBig:
+    "Worth {amount}",
+  fxWorthCap:
+    "Level up.",
+  fxLevelBig:
+    "Level {level}",
+  fxTrophyBig:
+    "{count} trophies",
+  fxTrophyCap:
+    "Collecting them.",
+  fxStartBig:
+    "Start your flex",
+  fxStartCap:
+    "Add one entry.",
+  fxShelfTitle:
+    "Trophy shelf",
+  fxDaysTitle:
+    "Spend-free days",
+  fxDaysCount:
+    "{count} so far",
+  fxFreedomTitle:
+    "Freedom meter",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1787,6 +1994,144 @@ bn: {
     "টাকা দেখুন",
   moreGroupYou:
     "আপনি",
+  inVerdictGreat:
+    "এই মাসে আপনি দারুণ করছেন",
+  inVerdictOk:
+    "কিছু টাকা রাখছেন। আরও বাড়ানো যাক।",
+  inVerdictLow:
+    "এই মাসে টাকার টান চলছে",
+  inVerdictNone:
+    "আপনার গল্প দেখতে কয়েকটি এন্ট্রি যোগ করুন",
+  inKeptSoFar:
+    "এই মাসে এ পর্যন্ত রেখেছেন",
+  inGoalLine:
+    "লক্ষ্য: আয়ের {percent}% রাখা",
+  inStoryTitle:
+    "আপনার মাস, সহজ কথায়",
+  inLess:
+    "গত মাসের চেয়ে {amount} কম খরচ করেছেন। চমৎকার।",
+  inMore:
+    "গত মাসের চেয়ে {amount} বেশি খরচ করেছেন।",
+  inTop:
+    "{category} আপনার সবচেয়ে বড় খরচ: {amount}, মোট খরচের {percent}%।",
+  inGap:
+    "আপনার {percent}% লক্ষ্যে পৌঁছাতে এ মাসে আরও {amount} রাখুন।",
+  inGood:
+    "আপনি {percent}% রাখছেন, যা {goal}% লক্ষ্যের চেয়ে বেশি।",
+  inNoSpend:
+    "এ মাসে {count} দিন কোনো খরচ হয়নি।",
+  inBiggest:
+    "সবচেয়ে বড় একক খরচ: {name}, {amount}।",
+  inActionGoals:
+    "লক্ষ্য ঠিক করুন",
+  inActionAdd:
+    "এন্ট্রি যোগ করুন",
+  inActionFlow:
+    "অর্থপ্রবাহ দেখুন",
+  inPaceTitle:
+    "খরচের গতি",
+  inPaceSub:
+    "{spent} খরচ, {total} দিনের {day} দিন",
+  inPaceMonth:
+    "মাস এ পর্যন্ত",
+  inPaceSpent:
+    "খরচ",
+  inPaceProjection:
+    "এই গতিতে মাস শেষে প্রায় {amount} খরচ হবে।",
+  inPaceLast:
+    "গত মাসে খরচ হয়েছিল {amount}।",
+  inDailyTitle:
+    "প্রতিদিন নিরাপদ খরচ",
+  inDailyLine:
+    "পরের {days} দিন, তাহলেও বাকিটা থাকবে।",
+  inDailyNone:
+    "এ মাসে যা এসেছে সবই ব্যবহার হয়ে গেছে।",
+  inChangedTitle:
+    "গত মাসের পর কী বদলেছে",
+  inSixTitle:
+    "গত ৬ মাসে রাখা টাকা",
+  inBest:
+    "সেরা মাস: {month}, রেখেছেন {amount}",
+  inFreedomTitle:
+    "আর্থিক স্বাধীনতা",
+  inFreedomLine:
+    "আপনার স্বাধীনতার অঙ্কের {percent}%",
+  inFreedomSet:
+    "এটি ট্র্যাক করতে আপনার স্বাধীনতার অঙ্ক ঠিক করুন।",
+  inDeepDive:
+    "বিস্তারিত চার্ট",
+  fxTitle:
+    "ফ্লেক্স জোন",
+  fxEraLabel:
+    "আপনার মানি এরা",
+  fxEra1:
+    "আনটাচেবল",
+  fxEra2:
+    "পুরো ফোকাসে",
+  fxEra3:
+    "গরম হচ্ছে",
+  fxEra4:
+    "নতুন করে শুরু",
+  fxEra0:
+    "শুরু এখান থেকেই",
+  fxHide:
+    "অঙ্ক লুকান",
+  fxShow:
+    "অঙ্ক দেখান",
+  fxCards:
+    "ফ্লেক্স কার্ড",
+  fxShare:
+    "শেয়ার",
+  fxCopied:
+    "কপি হয়েছে",
+  fxKeptBig:
+    "{amount} জমিয়েছি",
+  fxKeptCap:
+    "জমানোতে ফুল ফর্মে।",
+  fxRateBig:
+    "{percent}% সঞ্চয়",
+  fxRateHigh:
+    "সঞ্চয়ের হার: দুর্দান্ত।",
+  fxRateMid:
+    "উঠছি। দেখে নিন।",
+  fxStreakBig:
+    "{days} দিনের স্ট্রিক",
+  fxStreakCap:
+    "থামছি না।",
+  fxNoSpendBig:
+    "{count} দিন খরচ ০",
+  fxNoSpendCap:
+    "ডিসিপ্লিন মোড অন।",
+  fxLessBig:
+    "{amount} কম খরচ",
+  fxLessCap:
+    "ওয়ালেট বলছে ধন্যবাদ।",
+  fxFreeBig:
+    "{percent}% স্বাধীন",
+  fxFreeCap:
+    "মুক্তির পথে।",
+  fxWorthBig:
+    "মোট {amount}",
+  fxWorthCap:
+    "লেভেল আপ।",
+  fxLevelBig:
+    "লেভেল {level}",
+  fxTrophyBig:
+    "{count}টি ট্রফি",
+  fxTrophyCap:
+    "জমাচ্ছি একটা একটা করে।",
+  fxStartBig:
+    "ফ্লেক্স শুরু করুন",
+  fxStartCap:
+    "একটা এন্ট্রি যোগ করুন।",
+  fxShelfTitle:
+    "ট্রফি শেলফ",
+  fxDaysTitle:
+    "খরচহীন দিন",
+  fxDaysCount:
+    "এ পর্যন্ত {count}",
+  fxFreedomTitle:
+    "ফ্রিডম মিটার",
   // Bills and net worth
   billsTitle:
     "বিল",

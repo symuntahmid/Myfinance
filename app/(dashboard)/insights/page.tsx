@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  Lock,
+  Share2,
+  Target,
+} from "lucide-react";
 
-import AIInsightCard from "@/app/components/ai/AIInsightCard";
-import GoalProgressCard from "../../components/GoalProgressCard";
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
@@ -11,88 +19,522 @@ import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
-import { getPortfolioSummary } from "@/app/data/investments";
+import {
+  SAVING_GOAL_PERCENT,
+  buildInsights,
+  type Insights,
+} from "@/app/data/insights";
+import { freedomNumber, getMonthlyCost } from "@/app/data/lifeGoals";
+import { getNetWorthNow } from "@/app/data/overview";
+import { getLevel, getPlayer } from "@/app/data/player";
+import { levelTitle } from "@/app/data/levels";
+import { getBadgeProgress } from "@/app/data/badgeProgress";
+import type { TranslationKey } from "@/app/data/translations";
+
+const HIDE_KEY = "myfinance-hide-amounts";
+const DISPLAY = { fontFamily: "var(--font-tiro), Georgia, serif" } as const;
+
+type Extra = {
+  streak: number;
+  level: number;
+  levelName: string;
+  worth: number;
+  freedomTarget: number;
+  badges: ReturnType<typeof getBadgeProgress>;
+};
+
+type Flex = {
+  id: string;
+  emoji: string;
+  big: string;
+  caption: string;
+  style: string;
+};
+
+// One look per card. The text colour always matches its background.
+const STYLES = [
+  "bg-[var(--forest)] text-[var(--on-forest)]",
+  "bg-gradient-to-br from-[#C8962E] to-[#E4B85A] text-[#2B1F00]",
+  "bg-[#14110F] text-[#F2C96B]",
+  "bg-[#D6322B] text-white",
+  "bg-[#CFE8DC] text-[#0B3B2E]",
+];
 
 export default function InsightsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const [portfolio, setPortfolio] = useState(getPortfolioSummary());
+  const [data, setData] = useState<Insights | null>(null);
+  const [extra, setExtra] = useState<Extra | null>(null);
+  const [hide, setHide] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [deepOpen, setDeepOpen] = useState(false);
 
   useEffect(() => {
-    const refresh = () => setPortfolio(getPortfolioSummary());
+    const refresh = () => {
+      const level = getLevel();
+
+      try {
+        setHide(localStorage.getItem(HIDE_KEY) === "1");
+      } catch {
+        /* storage not available: keep amounts visible */
+      }
+
+      setData(buildInsights());
+      setExtra({
+        streak: getPlayer().streak,
+        level: level.level,
+        levelName: level.title,
+        worth: Math.max(getNetWorthNow().netWorth, 0),
+        freedomTarget: freedomNumber(getMonthlyCost()),
+        badges: getBadgeProgress(),
+      });
+    };
 
     refresh();
 
-    window.addEventListener("investmentsUpdated", refresh);
+    const events = [
+      "transactionsUpdated",
+      "investmentsUpdated",
+      "lifeGoalsUpdated",
+      "player-updated",
+      "currencyUpdated",
+      "languageUpdated",
+    ];
 
-    return () => window.removeEventListener("investmentsUpdated", refresh);
+    events.forEach((name) => window.addEventListener(name, refresh));
+
+    return () =>
+      events.forEach((name) => window.removeEventListener(name, refresh));
   }, []);
 
-  const stats = [
-    [t("insInvested"), formatCurrency(portfolio.invested), ""],
-    [t("insCurrent"), formatCurrency(portfolio.current), ""],
-    [
-      t("insProfit"),
-      `${portfolio.profit >= 0 ? "+" : "-"}${formatCurrency(Math.abs(portfolio.profit))}`,
-      portfolio.profit >= 0 ? "text-emerald-600" : "text-[var(--sun)]",
-    ],
-    [
-      t("insReturn"),
-      `${portfolio.returnPercentage.toFixed(2)}%`,
-      portfolio.returnPercentage >= 0 ? "text-emerald-600" : "text-[var(--sun)]",
-    ],
-  ] as const;
+  const toggleHide = () => {
+    const next = !hide;
+
+    setHide(next);
+
+    try {
+      localStorage.setItem(HIDE_KEY, next ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const number = useCallback(
+    (value: number) =>
+      value.toLocaleString(language === "bn" ? "bn-BD" : "en-US"),
+    [language]
+  );
+
+  // Amounts can be hidden, so a screenshot shows the flex, not the balance.
+  const money = useCallback(
+    (value: number) => (hide ? "•••••" : formatCurrency(value)),
+    [hide]
+  );
+
+  const flexes = useMemo<Flex[]>(() => {
+    if (!data || !extra) return [];
+
+    const list: Omit<Flex, "style">[] = [];
+    const hasIncome = data.income > 0;
+
+    if (hasIncome && data.kept > 0) {
+      list.push({
+        id: "kept",
+        emoji: "💰",
+        big: t("fxKeptBig", { amount: money(data.kept) }),
+        caption: t("fxKeptCap"),
+      });
+    }
+
+    if (hasIncome && data.rate >= 10) {
+      list.push({
+        id: "rate",
+        emoji: "🔥",
+        big: t("fxRateBig", { percent: number(data.rate) }),
+        caption:
+          data.rate >= SAVING_GOAL_PERCENT ? t("fxRateHigh") : t("fxRateMid"),
+      });
+    }
+
+    if (extra.streak >= 2) {
+      list.push({
+        id: "streak",
+        emoji: "⚡",
+        big: t("fxStreakBig", { days: number(extra.streak) }),
+        caption: t("fxStreakCap"),
+      });
+    }
+
+    if (data.noSpendDays >= 2) {
+      list.push({
+        id: "nospend",
+        emoji: "🧊",
+        big: t("fxNoSpendBig", { count: number(data.noSpendDays) }),
+        caption: t("fxNoSpendCap"),
+      });
+    }
+
+    if (data.lastExpense > 0 && data.expense < data.lastExpense) {
+      list.push({
+        id: "less",
+        emoji: "📉",
+        big: t("fxLessBig", {
+          amount: money(data.lastExpense - data.expense),
+        }),
+        caption: t("fxLessCap"),
+      });
+    }
+
+    if (extra.freedomTarget > 0 && extra.worth > 0) {
+      const percent = Math.min(
+        Math.round((extra.worth / extra.freedomTarget) * 100),
+        100
+      );
+
+      if (percent >= 1) {
+        list.push({
+          id: "free",
+          emoji: "🕊️",
+          big: t("fxFreeBig", { percent: number(percent) }),
+          caption: t("fxFreeCap"),
+        });
+      }
+    }
+
+    const trophies = extra.badges.filter((item) => item.unlocked).length;
+
+    if (trophies > 0) {
+      list.push({
+        id: "trophy",
+        emoji: "🏆",
+        big: t("fxTrophyBig", { count: number(trophies) }),
+        caption: t("fxTrophyCap"),
+      });
+    }
+
+    if (extra.level >= 2) {
+      list.push({
+        id: "level",
+        emoji: "🚀",
+        big: t("fxLevelBig", { level: number(extra.level) }),
+        caption: levelTitle(extra.levelName, language),
+      });
+    }
+
+    if (extra.worth > 0) {
+      list.push({
+        id: "worth",
+        emoji: "💎",
+        big: t("fxWorthBig", { amount: money(extra.worth) }),
+        caption: t("fxWorthCap"),
+      });
+    }
+
+    if (list.length === 0) {
+      list.push({
+        id: "start",
+        emoji: "✨",
+        big: t("fxStartBig"),
+        caption: t("fxStartCap"),
+      });
+    }
+
+    return list.slice(0, 6).map((item, index) => ({
+      ...item,
+      style: STYLES[index % STYLES.length],
+    }));
+  }, [data, extra, language, t, money, number]);
+
+  if (!data || !extra) {
+    return <div className="h-72 animate-pulse rounded-3xl bg-[var(--card)]" />;
+  }
+
+  const hasIncome = data.income > 0;
+
+  const era: { key: TranslationKey; emoji: string } = !hasIncome
+    ? { key: "fxEra0", emoji: "✨" }
+    : data.rate >= 40
+      ? { key: "fxEra1", emoji: "👑" }
+      : data.rate >= SAVING_GOAL_PERCENT
+        ? { key: "fxEra2", emoji: "😎" }
+        : data.rate >= 5
+          ? { key: "fxEra3", emoji: "🌱" }
+          : { key: "fxEra4", emoji: "🛠️" };
+
+  const share = async (flex: Flex) => {
+    const text = `${flex.emoji} ${flex.big}. ${flex.caption} #MyFinance`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ text });
+        return;
+      }
+
+      await navigator.clipboard.writeText(text);
+      setCopied(flex.id);
+      setTimeout(() => setCopied(null), 1600);
+    } catch {
+      /* person closed the share sheet */
+    }
+  };
+
+  const shelf = extra.badges.slice(0, 8);
+  const nextBadge = extra.badges
+    .filter((item) => !item.unlocked)
+    .sort((a, b) => b.progress - a.progress)[0];
+
+  const freedomPercent =
+    extra.freedomTarget > 0
+      ? Math.min(Math.round((extra.worth / extra.freedomTarget) * 100), 100)
+      : 0;
+
+  const today = data.day;
+  const spent = new Set(data.spendDays);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4 overflow-x-clip pb-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
-          {t("insTitle")}
+    <div className="mx-auto max-w-3xl space-y-5 overflow-x-clip pb-6">
+      {/* ERA */}
+      <section>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold text-[var(--muted)]">
+            {t("fxTitle")}
+          </p>
+
+          <button
+            type="button"
+            onClick={toggleHide}
+            className="flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs font-semibold text-[var(--muted)]"
+          >
+            {hide ? <EyeOff size={13} /> : <Eye size={13} />}
+            {hide ? t("fxShow") : t("fxHide")}
+          </button>
+        </div>
+
+        <p className="mt-4 text-sm text-[var(--muted)]">{t("fxEraLabel")}</p>
+
+        <h1
+          style={DISPLAY}
+          className="mt-1 text-[40px] font-bold leading-none tracking-tight text-[var(--foreground)]"
+        >
+          {t(era.key)} <span className="text-3xl">{era.emoji}</span>
         </h1>
+      </section>
 
-        <p className="mt-0.5 text-sm text-[var(--muted)]">
-          {t("insSubtitle")}
-        </p>
-      </div>
+      {/* FLEX CARDS */}
+      <section>
+        <p className="mb-2 text-sm font-bold">{t("fxCards")}</p>
 
-      <AIInsightCard />
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+          {flexes.map((flex) => (
+            <article
+              key={flex.id}
+              className={`relative flex aspect-[4/5] w-[72%] max-w-[260px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl p-5 shadow-[var(--shadow-soft)] ${flex.style}`}
+            >
+              <div className="alpona pointer-events-none absolute inset-0 opacity-30" />
 
-      <GoalProgressCard />
+              <div className="relative flex items-start justify-between">
+                <span className="text-[10px] font-semibold opacity-60">
+                  MyFinance
+                </span>
 
-      {portfolio.totalAssets > 0 && (
-        <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
-          <h2 className="mb-3 text-sm font-bold">{t("insPortfolio")}</h2>
-
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {stats.map(([label, value, tone]) => (
-              <div key={label}>
-                <p className="text-xs text-[var(--muted)]">{label}</p>
-                <p className={`mt-0.5 text-lg font-bold ${tone}`}>{value}</p>
+                <span className="-rotate-6 text-5xl leading-none">
+                  {flex.emoji}
+                </span>
               </div>
-            ))}
+
+              <div className="relative">
+                <p
+                  style={DISPLAY}
+                  className="text-[34px] font-bold leading-[1.05]"
+                >
+                  {flex.big}
+                </p>
+
+                <p className="mt-2 text-sm font-medium opacity-80">
+                  {flex.caption}
+                </p>
+
+                {flex.id === "start" ? (
+                  <Link
+                    href="/dashboard"
+                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold"
+                  >
+                    {t("fxStartCap")}
+                    <ChevronRight size={13} />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => share(flex)}
+                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold active:scale-95"
+                  >
+                    <Share2 size={13} />
+                    {copied === flex.id ? t("fxCopied") : t("fxShare")}
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* TROPHY SHELF */}
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-bold">{t("fxShelfTitle")}</h2>
+
+          <Link
+            href="/profile/badges"
+            className="text-xs font-semibold text-[var(--primary)]"
+          >
+            <ChevronRight size={16} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2.5">
+          {shelf.map((item) => (
+            <div
+              key={item.badge.id}
+              className={`relative flex aspect-square items-center justify-center rounded-2xl text-3xl ${
+                item.unlocked
+                  ? "bg-[var(--gold-soft)]"
+                  : "bg-[var(--background)] grayscale"
+              }`}
+            >
+              <span className={item.unlocked ? "" : "opacity-30"}>
+                {item.badge.icon}
+              </span>
+
+              {!item.unlocked && (
+                <Lock
+                  size={12}
+                  className="absolute bottom-1.5 right-1.5 text-[var(--muted)]"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {nextBadge && (
+          <div className="mt-3 flex items-center gap-2.5">
+            <span className="text-xl">{nextBadge.badge.icon}</span>
+
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--background)]">
+              <div
+                className="h-full rounded-full bg-[var(--gold)]"
+                style={{
+                  width: `${Math.max(Math.round(nextBadge.progress), 3)}%`,
+                }}
+              />
+            </div>
+
+            <span className="text-xs font-semibold text-[var(--muted)]">
+              {number(Math.round(nextBadge.progress))}%
+            </span>
           </div>
-        </section>
+        )}
+      </section>
+
+      {/* SPEND-FREE DAYS */}
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-bold">{t("fxDaysTitle")}</h2>
+
+          <span className="text-xs font-semibold text-[var(--primary)]">
+            {t("fxDaysCount", { count: number(data.noSpendDays) })}
+          </span>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5">
+          {Array.from({ length: data.daysInMonth }, (_, index) => {
+            const day = index + 1;
+            const past = day < today;
+            const free = past && !spent.has(day);
+
+            return (
+              <span
+                key={day}
+                className={`h-[22px] w-[22px] rounded-md ${
+                  day === today
+                    ? "ring-2 ring-[var(--gold)] bg-[var(--background)]"
+                    : free
+                      ? "bg-[var(--primary)]"
+                      : past
+                        ? "bg-[var(--muted)]/30"
+                        : "border border-dashed border-[var(--border)]"
+                }`}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      {/* FREEDOM */}
+      <Link
+        href="/profile"
+        className="flex items-center gap-3 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--gold-soft)] text-[#8A6212]">
+          <Target size={18} />
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-bold">{t("fxFreedomTitle")}</p>
+
+          {extra.freedomTarget > 0 ? (
+            <>
+              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[var(--background)]">
+                <div
+                  className="h-full rounded-full bg-[var(--gold)]"
+                  style={{ width: `${Math.max(freedomPercent, 2)}%` }}
+                />
+              </div>
+
+              <p className="mt-1 text-xs text-[var(--muted)]">
+                {t("lgPercentDone", { percent: number(freedomPercent) })}
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-[var(--muted)]">{t("inFreedomSet")}</p>
+          )}
+        </div>
+
+        <ChevronRight size={16} className="shrink-0 text-[var(--muted)]" />
+      </Link>
+
+      {/* DEEP DIVE */}
+      <button
+        type="button"
+        onClick={() => setDeepOpen((open) => !open)}
+        className="flex w-full items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-semibold"
+      >
+        {t("inDeepDive")}
+
+        <ChevronDown
+          size={16}
+          className={`transition ${deepOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {deepOpen && (
+        <div className="space-y-3">
+          <div className="min-w-0">
+            <NetWorthChart />
+          </div>
+
+          <div className="min-w-0">
+            <FinancialInsights />
+          </div>
+
+          <div className="min-w-0">
+            <IncomeExpenseChart />
+          </div>
+
+          <div className="min-w-0">
+            <InvestmentPieChart />
+          </div>
+        </div>
       )}
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="min-w-0 lg:col-span-2">
-          <NetWorthChart />
-        </div>
-
-        <div className="min-w-0">
-          <FinancialInsights />
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="min-w-0">
-          <IncomeExpenseChart />
-        </div>
-
-        <div className="min-w-0">
-          <InvestmentPieChart />
-        </div>
-      </div>
     </div>
   );
 }
