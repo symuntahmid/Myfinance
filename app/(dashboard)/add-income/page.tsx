@@ -1,26 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useState } from "react";
-import TransactionForm from "../../components/TransactionForm";
-
-export default function AddIncomePage() {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <>
-      <h1 className="text-4xl font-bold">
-        Add Income
-      </h1>
-
-      <p className="mt-2 text-[var(--muted)]">
-        Record a new income.
-      </p>
-
-      <TransactionForm
-        type="Income"
-        open={open}
-        onClose={() => setOpen(false)}
-      />
-    </>
-  );
+// The old form is gone: Quick Add is the one way to add.
+export default function Page() {
+  redirect("/dashboard");
 }

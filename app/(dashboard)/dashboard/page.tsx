@@ -9,9 +9,6 @@ import HomeHero from "@/app/components/HomeHero";
 import MonthStats from "@/app/components/MonthStats";
 import MoneyMap from "@/app/components/MoneyMap";
 import FloatingActionButton from "../../components/FloatingActionButton";
-import AddTransactionSheet from "../../components/AddTransactionSheet";
-import TransactionForm from "../../components/TransactionForm";
-import AddInvestmentModal from "../../components/AddInvestmentModal";
 import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 
@@ -28,18 +25,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 export default function Dashboard() {
   const { language, t } = useLanguage();
 
-  const [sheetOpen, setSheetOpen] = useState(false);
-
   const [quickOpen, setQuickOpen] = useState(false);
-
-  const [formOpen, setFormOpen] = useState(false);
-
-  const [investmentModalOpen, setInvestmentModalOpen] =
-    useState(false);
-
-  const [transactionType, setTransactionType] = useState<
-    "Income" | "Expense"
-  >("Income");
 
   return (
     <>
@@ -91,59 +77,11 @@ export default function Dashboard() {
   </Link>
 </div>
 
-      <FloatingActionButton
-        onClick={() => setSheetOpen(true)}
-      />
-
-      <AddTransactionSheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        onQuick={() => {
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setQuickOpen(true);
-          }, 250);
-        }}
-        onIncome={() => {
-          setTransactionType("Income");
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setFormOpen(true);
-          }, 250);
-        }}
-        onExpense={() => {
-          setTransactionType("Expense");
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setFormOpen(true);
-          }, 250);
-        }}
-        onInvestment={() => {
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setInvestmentModalOpen(true);
-          }, 250);
-        }}
-      />
+      <FloatingActionButton onClick={() => setQuickOpen(true)} />
 
       <QuickAddSheet
         open={quickOpen}
         onClose={() => setQuickOpen(false)}
-      />
-
-      <TransactionForm
-        open={formOpen}
-        type={transactionType}
-        onClose={() => setFormOpen(false)}
-      />
-
-      <AddInvestmentModal
-        open={investmentModalOpen}
-        onClose={() => setInvestmentModalOpen(false)}
       />
     </>
   );

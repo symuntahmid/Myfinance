@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import AddTransactionSheet from "@/app/components/AddTransactionSheet";
-import TransactionForm from "@/app/components/TransactionForm";
 import SpendingInsights from "@/app/components/SpendingInsights";
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
@@ -20,15 +18,7 @@ import {
 } from "@/app/data/transactions";
 
 export default function MoneyPage() {
-  const [sheetOpen, setSheetOpen] = useState(false);
-
   const [quickOpen, setQuickOpen] = useState(false);
-
-  const [formOpen, setFormOpen] = useState(false);
-
-  const [transactionType, setTransactionType] = useState<
-    "Income" | "Expense" | "Investment"
-  >("Income");
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -401,60 +391,12 @@ export default function MoneyPage() {
 
       {/* Floating Action Button */}
 
-      <FloatingActionButton
-        onClick={() => setSheetOpen(true)}
-      />
-
-      {/* Add Transaction Sheet */}
-
-      <AddTransactionSheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        onQuick={() => {
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setQuickOpen(true);
-          }, 250);
-        }}
-        onIncome={() => {
-          setTransactionType("Income");
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setFormOpen(true);
-          }, 250);
-        }}
-        onExpense={() => {
-          setTransactionType("Expense");
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setFormOpen(true);
-          }, 250);
-        }}
-        onInvestment={() => {
-          setTransactionType("Investment");
-          setSheetOpen(false);
-
-          setTimeout(() => {
-            setFormOpen(true);
-          }, 250);
-        }}
-      />
+      <FloatingActionButton onClick={() => setQuickOpen(true)} />
 
       <QuickAddSheet
         open={quickOpen}
-        onClose={() => setQuickOpen(false)}
-      />
-
-      {/* Transaction Form */}
-
-      <TransactionForm
-        open={formOpen}
-        type={transactionType}
         onClose={() => {
-          setFormOpen(false);
+          setQuickOpen(false);
           refreshData();
         }}
       />

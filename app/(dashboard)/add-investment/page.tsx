@@ -1,24 +1,6 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useState } from "react";
-import TransactionForm from "../../components/TransactionForm";
-
-export default function AddInvestmentPage() {
-  const [open, setOpen] = useState(true);
-
-  return (
-    <>
-      <h1 className="text-4xl font-bold">Add Investment</h1>
-
-      <p className="mt-2 text-[var(--muted)]">
-        Record a new investment.
-      </p>
-
-      <TransactionForm
-        open={open}
-        onClose={() => setOpen(false)}
-        type="Investment"
-      />
-    </>
-  );
+// The old form is gone: Quick Add is the one way to add.
+export default function Page() {
+  redirect("/investments");
 }

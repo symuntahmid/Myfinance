@@ -1,13 +1,6 @@
-export default function AddTransactionPage() {
-  return (
-    <>
-      <h1 className="text-4xl font-bold">
-        Add Transaction
-      </h1>
+import { redirect } from "next/navigation";
 
-      <p className="mt-2 text-[var(--muted)]">
-        Record your income and expenses.
-      </p>
-    </>
-  );
+// The old form is gone: Quick Add is the one way to add.
+export default function Page() {
+  redirect("/dashboard");
 }
