@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { X, Target } from "lucide-react";
 
-import { addGoal } from "@/app/data/goals";
+import { addGoal, termFromDate, type GoalTerm } from "@/app/data/goals";
+import TermPicker from "@/app/components/TermPicker";
 import { useLanguage } from "@/app/context/LanguageContext";
 import {
   goalTemplates,
@@ -25,6 +26,7 @@ export default function AddGoalModal({
   const [emoji, setEmoji] = useState("🎯");
   const [targetAmount, setTargetAmount] = useState("");
   const [targetDate, setTargetDate] = useState("");
+  const [chosenTerm, setChosenTerm] = useState<GoalTerm | null>(null);
 
   const { language, t } = useLanguage();
 
@@ -59,6 +61,8 @@ export default function AddGoalModal({
 
       createdAt: new Date().toISOString(),
 
+      term: chosenTerm ?? termFromDate(targetDate),
+
     });
 
 
@@ -70,6 +74,8 @@ export default function AddGoalModal({
     setTargetAmount("");
 
     setTargetDate("");
+
+    setChosenTerm(null);
 
     setTemplateId(null);
 
@@ -470,7 +476,10 @@ focus:ring-cyan-500/20
 
 </div>
 
-
+<TermPicker
+value={chosenTerm ?? termFromDate(targetDate)}
+onChange={setChosenTerm}
+/>
 
 </div>
 

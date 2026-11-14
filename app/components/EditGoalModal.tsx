@@ -5,7 +5,8 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-import { Goal, updateGoal } from "@/app/data/goals";
+import { Goal, GoalTerm, termOf, updateGoal } from "@/app/data/goals";
+import TermPicker from "@/app/components/TermPicker";
 
 type Props = {
   open: boolean;
@@ -39,6 +40,7 @@ export default function EditGoalModal({
     useState("");
   const [targetDate, setTargetDate] =
     useState("");
+  const [term, setTerm] = useState<GoalTerm>("medium");
 
   const { t } = useLanguage();
 
@@ -51,6 +53,7 @@ export default function EditGoalModal({
       goal.targetAmount.toString()
     );
     setTargetDate(goal.targetDate);
+    setTerm(termOf(goal));
   }, [goal]);
 
   if (!open || !goal) return null;
@@ -85,6 +88,8 @@ export default function EditGoalModal({
       targetDate,
 
       createdAt: goal.createdAt,
+
+      term,
     });
 
     onClose();
@@ -187,7 +192,9 @@ export default function EditGoalModal({
                 }
                 className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
               />
-            </div>
+              <TermPicker value={term} onChange={setTerm} />
+          </div>
+            <TermPicker value={term} onChange={setTerm} />
           </div>
 
           <div className="flex gap-4 px-8 pb-8">

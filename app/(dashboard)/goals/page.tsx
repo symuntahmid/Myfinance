@@ -1,574 +1,370 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
+
 import { useLanguage } from "@/app/context/LanguageContext";
-import AddMoneyModal from "@/app/components/AddMoneyModal";
-import EditGoalModal from "@/app/components/EditGoalModal";
-import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
-import { useEffect, useState } from "react";
-import {
-  Plus,
-  Target,
-  MoreVertical,
-  Pencil,
-  Trash2,
-} from "lucide-react";
-
-import AddGoalModal from "@/app/components/AddGoalModal";
 import { formatCurrency } from "@/app/utils/currency";
-
+import AddGoalModal from "@/app/components/AddGoalModal";
+import EditGoalModal from "@/app/components/EditGoalModal";
+import AddMoneyModal from "@/app/components/AddMoneyModal";
+import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
 import {
-  getGoals,
+  GOAL_TERMS,
   deleteGoal,
-  Goal,
+  getGoals,
+  monthsLeft,
+  termOf,
+  type Goal,
+  type GoalTerm,
 } from "@/app/data/goals";
 
-// A target of 0 would otherwise produce NaN/Infinity in every percentage
-// calculation below — this keeps those cases safely at 0%.
-function getProgressPercent(saved: number, target: number) {
-  if (!target || target <= 0) return 0;
-  return Math.min(100, (saved / target) * 100);
-}
+const TEXT = {
+  short: ["gtShort", "gtShortRange", "gtEmptyShort"],
+  medium: ["gtMedium", "gtMediumRange", "gtEmptyMedium"],
+  long: ["gtLong", "gtLongRange", "gtEmptyLong"],
+} as const;
 
-// Shows "{saved} saved of {target}" with the two amounts in bold,
-// in whichever word order the current language uses.
-function renderSavedOf(template: string, saved: string, target: string) {
-  return template.split(/(\{saved\}|\{target\})/).map((part, i) =>
-    part === "{saved}" || part === "{target}" ? (
-      <span key={i} className="font-semibold">
-        {part === "{saved}" ? saved : target}
-      </span>
-    ) : (
-      part
-    )
-  );
-}
+const percent = (saved: number, target: number) =>
+  target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
 
 export default function GoalsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+
   const [goals, setGoals] = useState<Goal[]>([]);
-  const [goalModalOpen, setGoalModalOpen] = useState(false);
+  const [tab, setTab] = useState<GoalTerm | null>(null);
 
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  const [editGoalOpen, setEditGoalOpen] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editing, setEditing] = useState<Goal | null>(null);
+  const [adding, setAdding] = useState<Goal | null>(null);
+  const [withdrawing, setWithdrawing] = useState<Goal | null>(null);
+  const [menuId, setMenuId] = useState<string | null>(null);
 
-  const [addMoneyOpen, setAddMoneyOpen] = useState(false);
-  const [moneyGoal, setMoneyGoal] = useState<Goal | null>(null);
-
-  const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const [withdrawGoal, setWithdrawGoal] = useState<Goal | null>(null);
-
-  const [, forceCurrencyUpdate] = useState(0);
+  const [, bump] = useState(0);
 
   useEffect(() => {
-  function refreshGoals() {
-    setGoals(getGoals());
-  }
+    const refresh = () => setGoals(getGoals());
+    const money = () => bump((v) => v + 1);
 
-  function refreshCurrency() {
-    forceCurrencyUpdate(
-      value => value + 1
+    refresh();
+
+    window.addEventListener("goalsUpdated", refresh);
+    window.addEventListener("currencyUpdated", money);
+    window.addEventListener("languageUpdated", money);
+
+    return () => {
+      window.removeEventListener("goalsUpdated", refresh);
+      window.removeEventListener("currencyUpdated", money);
+      window.removeEventListener("languageUpdated", money);
+    };
+  }, []);
+
+  const num = (value: number) =>
+    value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
+
+  const byTerm = useMemo(() => {
+    const map: Record<GoalTerm, Goal[]> = { short: [], medium: [], long: [] };
+
+    goals.forEach((goal) => map[termOf(goal)].push(goal));
+
+    // Nearest date first, goals without a date last.
+    GOAL_TERMS.forEach((term) =>
+      map[term].sort(
+        (a, b) =>
+          (a.targetDate ? new Date(a.targetDate).getTime() : Infinity) -
+          (b.targetDate ? new Date(b.targetDate).getTime() : Infinity)
+      )
     );
-  }
 
-  refreshGoals();
+    return map;
+  }, [goals]);
 
-  window.addEventListener(
-    "goalsUpdated",
-    refreshGoals
+  // Open on the first part that has something in it.
+  const active: GoalTerm =
+    tab ?? GOAL_TERMS.find((term) => byTerm[term].length > 0) ?? "short";
+
+  const list = byTerm[active];
+  const target = list.reduce((sum, g) => sum + g.targetAmount, 0);
+  const saved = list.reduce(
+    (sum, g) => sum + Math.min(g.savedAmount, g.targetAmount),
+    0
   );
 
-  window.addEventListener(
-    "currencyUpdated",
-    refreshCurrency
-  );
+  const timeText = (goal: Goal) => {
+    const months = monthsLeft(goal.targetDate);
 
-  return () => {
-    window.removeEventListener(
-      "goalsUpdated",
-      refreshGoals
-    );
+    if (months === null) return t("gtNoDate");
+    if (months < 0) return t("gtPastDue");
+    if (months === 0) return t("gtDueNow");
 
-    window.removeEventListener(
-      "currencyUpdated",
-      refreshCurrency
-    );
+    return months >= 12
+      ? `${num(Math.round((months / 12) * 10) / 10)} ${
+          language === "bn" ? "বছর" : "yr"
+        }`
+      : t("gtMonthsLeft", { n: num(months) });
   };
 
-}, []);
-
-  const activeGoalsCount = goals.filter(
-    (g) => g.savedAmount < g.targetAmount
-  ).length;
-
-  const completedGoalsCount = goals.filter(
-    (g) => g.savedAmount >= g.targetAmount
-  ).length;
-
-  const totalSaved = goals.reduce((sum, g) => sum + g.savedAmount, 0);
-
-  const averageCompletion =
-    goals.length === 0
-      ? 0
-      : Math.round(
-          goals.reduce(
-            (sum, g) => sum + getProgressPercent(g.savedAmount, g.targetAmount),
-            0
-          ) / goals.length
-        );
-
   return (
-    <>
-      <div className="space-y-8">
-        {/* Hero */}
-        <div className="relative overflow-hidden rounded-[36px] bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-600 p-8 text-white shadow-xl">
-          {/* Decorative only — pointer-events-none keeps it from
-              intercepting clicks meant for the content below it. */}
-          <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
-
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-                <Target size={24} />
-              </div>
-
-  <h1
-className="
-font-display
-text-5xl
-font-medium
-tracking-[-0.05em]
-md:text-6xl
-"
->
-{t("goalsTitle")}
-</h1>
-
-<p
-className="
-mt-4
-max-w-md
-font-body
-text-sm
-leading-relaxed
-tracking-tight
-text-cyan-100
-"
->
-                {t("goalsSubtitle")}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setGoalModalOpen(true)}
-              className="relative z-10 rounded-2xl bg-white px-5 py-4 text-sm font-bold text-cyan-700 shadow-lg transition hover:scale-105"
-            >
-              {t("addGoal")}
-            </button>
-          </div>
+    <div className="space-y-4 pb-24">
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">{t("goalsTitle")}</h1>
+          <p className="text-sm text-[var(--muted)]">{t("goalsSubtitle")}</p>
         </div>
 
-        {/* Summary */}
-        <div className="grid gap-4 md:grid-cols-4">
-          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-           <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-{t("activeGoals")}
-</p>
+        <button
+          type="button"
+          onClick={() => setAddOpen(true)}
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white"
+        >
+          <Plus size={16} />
+          {t("addGoal")}
+        </button>
+      </header>
 
-            <div className="mt-3 flex items-center justify-between">
-              <h2
-className="
-mt-3
-font-display
-text-4xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->{activeGoalsCount}</h2>
+      {/* The three parts */}
 
-              <div className="rounded-2xl bg-cyan-100 p-3">
-                <Target className="text-cyan-600" size={22} />
-              </div>
-            </div>
-          </div>
+      <div className="grid grid-cols-3 gap-2">
+        {GOAL_TERMS.map((term) => {
+          const items = byTerm[term];
+          const on = term === active;
 
-          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-            <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-{t("goalsCompleted")}</p>
-
-            <div className="mt-3 flex items-center justify-between">
-              <h2
-className="
-mt-3
-font-display
-text-4xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->{completedGoalsCount}</h2>
-
-              <div className="rounded-2xl bg-green-100 p-3 text-green-600">
-                🏆
-              </div>
-            </div>
-          </div>
-
-          <div className="
-rounded-3xl
-bg-[var(--card)]
-border border-[var(--border)]
-p-6
-shadow-sm
-">
-
-  <p className="
-  text-sm
-  text-[var(--muted)]
-  ">
-    {t("savedLabel")}
-  </p>
-
-  <div className="
-  mt-3
-  flex
-  items-center
-  justify-between
-  ">
-
-    <h2 className="
-    text-3xl
-    font-bold
-    text-[var(--foreground)]
-    ">
-      {formatCurrency(totalSaved)}
-    </h2>
-
-    <div className="
-    rounded-2xl
-    bg-cyan-100
-    p-3
-    ">
-      💰
-    </div>
-
-  </div>
-
-</div>
-
-          <div className="rounded-3xl bg-[var(--card)] border border-[var(--border)] p-6 shadow-sm">
-            <p className="text-sm text-[var(--muted)]">{t("goalCompletion")}</p>
-
-            <h2 className="mt-3 text-3xl font-bold text-cyan-600">
-              {averageCompletion}%
-            </h2>
-
-            <div className="mt-4 h-3 rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
-                style={{ width: `${averageCompletion}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Empty */}
-        {goals.length === 0 ? (
-          <div className="rounded-3xl bg-white p-16 text-center shadow-sm">
-            <Target size={48} className="mx-auto text-cyan-500" />
-
-            <h2 className="mt-6 text-3xl font-bold">{t("noGoalsYet")}</h2>
-
-            <p className="mt-3 text-slate-500">
-              {t("createFirstGoal")}
-            </p>
-
+          return (
             <button
+              key={term}
               type="button"
-              onClick={() => setGoalModalOpen(true)}
-              className="mt-8 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-8 py-4 font-semibold text-white"
+              onClick={() => setTab(term)}
+              aria-pressed={on}
+              className={`rounded-2xl border px-2 py-3 text-left transition ${
+                on
+                  ? "border-[var(--forest)] bg-[var(--forest)] text-[var(--on-forest)]"
+                  : "border-[var(--border)] bg-[var(--card)]"
+              }`}
             >
-              {t("createGoal")}
+              <span className="block text-sm font-bold">
+                {t(TEXT[term][0])}
+              </span>
+
+              <span
+                className={`block text-[11px] ${
+                  on ? "opacity-80" : "text-[var(--muted)]"
+                }`}
+              >
+                {t(TEXT[term][1])}
+              </span>
+
+              <span className="mt-2 block text-xs font-semibold">
+                {t("gtGoalsCount", { n: num(items.length) })}
+              </span>
             </button>
-          </div>
-        ) : (
-          <div
-className="
-grid
-gap-6
-md:grid-cols-2
-"
->
-            {goals.map((goal) => {
-              const progressPercent = getProgressPercent(
-                goal.savedAmount,
-                goal.targetAmount
-              );
-              const isCompleted = goal.savedAmount >= goal.targetAmount;
-
-              return (
-                <div
-                  key={goal.id}
-                  className="relative overflow-hidden rounded-[34px] bg-[linear-gradient(135deg,#06b6d4_0%,#0ea5e9_45%,#2563eb_78%,#4f46e5_100%)] p-6
-sm:p-8 text-white shadow-[0_20px_45px_rgba(37,99,235,.28)]"
-                >
-                  {/* Lighting effect */}
-                  <div className="pointer-events-none absolute -top-16 -right-12 h-48 w-48 rounded-full bg-white/15 blur-3xl" />
-                  <div className="pointer-events-none absolute -bottom-20 -left-20 h-52 w-52 rounded-full bg-cyan-300/10 blur-3xl" />
-
-                  {/* Emoji */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white/25 backdrop-blur-md border border-white/30 shadow-lg text-4xl">
-                      {goal.emoji}
-                    </div>
-
-                    <div className="flex flex-col items-end gap-2">
-                      {/* 3 DOT MENU */}
-                      <div className="relative z-10">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setOpenMenuId(
-                              openMenuId === goal.id ? null : goal.id
-                            )
-                          }
-                          aria-label={t("goalOptions")}
-                          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white backdrop-blur-md transition hover:bg-white/30"
-                        >
-                          <MoreVertical size={18} />
-                        </button>
-
-                        {openMenuId === goal.id && (
-                          <>
-                            {/* Invisible overlay so clicking anywhere else
-                                closes the menu. */}
-                            <div
-                              className="fixed inset-0 z-10"
-                              onClick={() => setOpenMenuId(null)}
-                            />
-
-<div
-className="
-absolute
-right-0
-z-20
-mt-2
-w-40
-sm:w-44
-"
->
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSelectedGoal(goal);
-                                  setEditGoalOpen(true);
-                                  setOpenMenuId(null);
-                                }}
-                                className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50"
-                              >
-                                <Pencil size={18} />
-                                {t("editGoal")}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  if (!confirm(t("deleteGoalConfirm"))) return;
-                                  deleteGoal(goal.id);
-                                  setOpenMenuId(null);
-                                }}
-                                className="flex w-full items-center gap-3 px-4 py-3 text-left text-red-600 hover:bg-red-50"
-                              >
-                                <Trash2 size={18} />
-                                {t("deleteGoal")}
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      <div className="text-right">
- <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-cyan-100/80
-"
->
-{t("progress")}
-</p>
-<h2
-className="
-font-display
-text-5xl
-font-medium
-tracking-[-0.05em]
-"
->
-                          {Math.round(progressPercent)}%
-                        </h2>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Title */}
-                  <h2
-className="
-mt-6
-font-display
-text-4xl
-font-medium
-tracking-[-0.04em]
-"
->{goal.title}</h2>
-
-                  {/* Saved */}
-                  <div className="mt-3 text-cyan-100">
-                    <p className="mt-3 text-base text-cyan-100">
-                      {renderSavedOf(t("savedOf"), formatCurrency(goal.savedAmount), formatCurrency(goal.targetAmount))}
-                    </p>
-
-                    {isCompleted && (
-                      <div className="mt-5 inline-flex items-center rounded-full bg-green-400/20 px-5 py-2 text-sm font-semibold text-green-100 border border-green-300/20">
-                        ✨ {t("goalReached")}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Progress */}
-                  <div className="mt-6 h-2 rounded-full bg-white/20 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-white shadow-[0_0_14px_rgba(255,255,255,.8)]"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-
-                  <div className="mt-8 space-y-4">
-                    <div className="mt-8 grid grid-cols-3 gap-4 rounded-3xl bg-white/14 border border-white/15 p-4 backdrop-blur">
-                      <div>
-  <p className="text-xs text-cyan-100">
-    {t("savedLabel")}
-  </p>
-
-  <h3 className="mt-1 font-bold text-green-300">
-    {formatCurrency(goal.savedAmount)}
-  </h3>
-</div>
-
-<div>
-  <p className="text-xs text-cyan-100">
-    {t("goalLabel")}
-  </p>
-
-  <h3 className="mt-1 font-bold">
-    {formatCurrency(goal.targetAmount)}
-  </h3>
-</div>
-
-                      <div>
-                        <p className="text-xs text-cyan-100">{t("remaining")}</p>
-                        <h3 className="mt-1 font-bold text-orange-300">
-                          {formatCurrency(
-  Math.max(
-    goal.targetAmount - goal.savedAmount,
-    0
-  )
-)}
-                        </h3>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isCompleted) return;
-                        setMoneyGoal(goal);
-                        setAddMoneyOpen(true);
-                      }}
-                      disabled={isCompleted}
-                      className={`mt-6 w-full rounded-2xl py-4 font-bold shadow-lg transition ${
-                        isCompleted
-                          ? "cursor-not-allowed bg-green-600 text-white"
-                          : "bg-white text-blue-700 hover:scale-[1.02]"
-                      }`}
-                    >
-                      {isCompleted ? `✅ ${t("goalsCompleted")}` : `💰 ${t("addMoney")}`}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setWithdrawGoal(goal);
-                        setWithdrawOpen(true);
-                      }}
-                      disabled={goal.savedAmount <= 0}
-                      className={`mt-4 w-full rounded-2xl border py-4 font-bold backdrop-blur transition ${
-                        goal.savedAmount <= 0
-                          ? "cursor-not-allowed border-white/10 bg-white/5 text-white/40"
-                          : "border-white/30 bg-white/10 text-white hover:bg-white/20"
-                      }`}
-                    >
-                      {t("withdrawMoney")}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+          );
+        })}
       </div>
 
-      <AddGoalModal
-        open={goalModalOpen}
-        onClose={() => setGoalModalOpen(false)}
-      />
+      {/* Totals for this part */}
+
+      {list.length > 0 && (
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-sm font-semibold">
+              {t("gtTotalSaved", {
+                saved: formatCurrency(saved),
+                target: formatCurrency(target),
+              })}
+            </p>
+
+            <p className="text-sm font-bold text-[var(--primary)]">
+              {num(percent(saved, target))}%
+            </p>
+          </div>
+
+          <div className="mt-2 h-2 rounded-full bg-[var(--border)]">
+            <div
+              className="h-2 rounded-full bg-[var(--primary)]"
+              style={{ width: `${percent(saved, target)}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Goals */}
+
+      {list.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-6 text-center">
+          <p className="text-sm text-[var(--muted)]">{t(TEXT[active][2])}</p>
+
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="mt-4 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-white"
+          >
+            {t("gtAddHere")}
+          </button>
+        </div>
+      ) : (
+        <ul className="space-y-3">
+          {list.map((goal) => {
+            const pct = percent(goal.savedAmount, goal.targetAmount);
+            const done = goal.savedAmount >= goal.targetAmount;
+            const left = Math.max(goal.targetAmount - goal.savedAmount, 0);
+            const months = monthsLeft(goal.targetDate);
+            const monthly =
+              !done && months !== null && months > 0
+                ? Math.ceil(left / months)
+                : 0;
+
+            return (
+              <li
+                key={goal.id}
+                className="relative rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-2xl">
+                    {goal.emoji}
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold">{goal.title}</p>
+
+                    <p className="text-xs text-[var(--muted)]">
+                      {timeText(goal)}
+                    </p>
+                  </div>
+
+                  <p className="text-sm font-bold text-[var(--primary)]">
+                    {done ? "✓" : `${num(pct)}%`}
+                  </p>
+
+                  <button
+                    type="button"
+                    aria-label={t("goalOptions")}
+                    onClick={() =>
+                      setMenuId(menuId === goal.id ? null : goal.id)
+                    }
+                    className="-mr-1 rounded-full p-1 text-[var(--muted)]"
+                  >
+                    <MoreVertical size={18} />
+                  </button>
+                </div>
+
+                {menuId === goal.id && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setMenuId(null)}
+                    />
+
+                    <div className="absolute right-3 top-12 z-20 w-40 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-lg">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditing(goal);
+                          setMenuId(null);
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2.5 text-sm"
+                      >
+                        <Pencil size={16} />
+                        {t("editGoal")}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMenuId(null);
+
+                          if (confirm(t("deleteGoalConfirm"))) {
+                            deleteGoal(goal.id);
+                          }
+                        }}
+                        className="flex w-full items-center gap-2 px-3 py-2.5 text-sm text-red-600"
+                      >
+                        <Trash2 size={16} />
+                        {t("deleteGoal")}
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                <div className="mt-3 h-2 rounded-full bg-[var(--border)]">
+                  <div
+                    className="h-2 rounded-full bg-[var(--primary)]"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+
+                <p className="mt-2 text-xs text-[var(--muted)]">
+                  {t("savedOf", {
+                    saved: formatCurrency(goal.savedAmount),
+                    target: formatCurrency(goal.targetAmount),
+                  })}
+                </p>
+
+                {monthly > 0 && (
+                  <p className="mt-1 text-xs font-semibold text-[var(--foreground)]">
+                    {t("gtPerMonth", { amount: formatCurrency(monthly) })}
+                  </p>
+                )}
+
+                {done ? (
+                  <p className="mt-3 text-xs font-semibold text-[var(--primary)]">
+                    ✨ {t("goalReached")}
+                  </p>
+                ) : (
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setAdding(goal)}
+                      className="flex-1 rounded-full bg-[var(--primary)] py-2 text-sm font-semibold text-white"
+                    >
+                      {t("addMoney")}
+                    </button>
+
+                    {goal.savedAmount > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setWithdrawing(goal)}
+                        className="flex-1 rounded-full border border-[var(--border)] py-2 text-sm font-semibold"
+                      >
+                        {t("withdrawMoney")}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      {active === "long" && (
+        <Link
+          href="/profile"
+          className="block rounded-2xl bg-[var(--gold-soft)] px-4 py-3 text-sm font-semibold"
+        >
+          {t("gtLifeLink")}
+        </Link>
+      )}
+
+      <AddGoalModal open={addOpen} onClose={() => setAddOpen(false)} />
+
       <EditGoalModal
-        open={editGoalOpen}
-        goal={selectedGoal}
-        onClose={() => {
-          setEditGoalOpen(false);
-          setSelectedGoal(null);
-        }}
+        open={editing !== null}
+        goal={editing}
+        onClose={() => setEditing(null)}
       />
+
       <AddMoneyModal
-        open={addMoneyOpen}
-        goal={moneyGoal}
-        onClose={() => {
-          setAddMoneyOpen(false);
-          setMoneyGoal(null);
-        }}
+        open={adding !== null}
+        goal={adding}
+        onClose={() => setAdding(null)}
       />
+
       <WithdrawMoneyModal
-        open={withdrawOpen}
-        goal={withdrawGoal}
-        onClose={() => {
-          setWithdrawOpen(false);
-          setWithdrawGoal(null);
-        }}
+        open={withdrawing !== null}
+        goal={withdrawing}
+        onClose={() => setWithdrawing(null)}
       />
-    </>
+    </div>
   );
 }

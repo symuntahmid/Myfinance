@@ -545,6 +545,25 @@ export type TranslationKey =
   // Goals page
   | "goalsTitle"
   | "goalsSubtitle"
+  | "gtShort"
+  | "gtMedium"
+  | "gtLong"
+  | "gtShortRange"
+  | "gtMediumRange"
+  | "gtLongRange"
+  | "gtPick"
+  | "gtEmptyShort"
+  | "gtEmptyMedium"
+  | "gtEmptyLong"
+  | "gtAddHere"
+  | "gtTotalSaved"
+  | "gtMonthsLeft"
+  | "gtDueNow"
+  | "gtPastDue"
+  | "gtNoDate"
+  | "gtPerMonth"
+  | "gtGoalsCount"
+  | "gtLifeLink"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -1631,6 +1650,44 @@ en: {
     "Financial Goals",
   goalsSubtitle:
     "Every bit you save today brings you one step closer to the life you truly want.",
+  gtShort:
+    "Short term",
+  gtMedium:
+    "Medium term",
+  gtLong:
+    "Long term",
+  gtShortRange:
+    "Under 1 year",
+  gtMediumRange:
+    "1 to 5 years",
+  gtLongRange:
+    "More than 5 years",
+  gtPick:
+    "When do you want this?",
+  gtEmptyShort:
+    "No short-term goals yet. Try an emergency fund or a phone.",
+  gtEmptyMedium:
+    "No medium-term goals yet. Try a bike, a wedding or a course.",
+  gtEmptyLong:
+    "No long-term goals yet. Try a home, Hajj or your children's study.",
+  gtAddHere:
+    "Add a goal",
+  gtTotalSaved:
+    "{saved} saved of {target}",
+  gtMonthsLeft:
+    "{n} mo left",
+  gtDueNow:
+    "Due this month",
+  gtPastDue:
+    "Past its date",
+  gtNoDate:
+    "No date set",
+  gtPerMonth:
+    "Save {amount} a month to finish on time",
+  gtGoalsCount:
+    "Goals: {n}",
+  gtLifeLink:
+    "Your freedom number lives in Profile",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -2783,6 +2840,44 @@ bn: {
     "আর্থিক লক্ষ্য",
   goalsSubtitle:
     "আজ আপনি যা সঞ্চয় করছেন, তা আপনাকে কাঙ্ক্ষিত জীবনের এক ধাপ কাছে নিয়ে যাচ্ছে।",
+  gtShort:
+    "স্বল্পমেয়াদি",
+  gtMedium:
+    "মধ্যমেয়াদি",
+  gtLong:
+    "দীর্ঘমেয়াদি",
+  gtShortRange:
+    "১ বছরের কম",
+  gtMediumRange:
+    "১ থেকে ৫ বছর",
+  gtLongRange:
+    "৫ বছরের বেশি",
+  gtPick:
+    "কবে এটি চান?",
+  gtEmptyShort:
+    "স্বল্পমেয়াদি লক্ষ্য নেই। জরুরি তহবিল বা ফোন দিয়ে শুরু করুন।",
+  gtEmptyMedium:
+    "মধ্যমেয়াদি লক্ষ্য নেই। বাইক, বিয়ে বা কোর্স দিয়ে শুরু করুন।",
+  gtEmptyLong:
+    "দীর্ঘমেয়াদি লক্ষ্য নেই। বাড়ি, হজ বা সন্তানের পড়াশোনা দিয়ে শুরু করুন।",
+  gtAddHere:
+    "লক্ষ্য যোগ করুন",
+  gtTotalSaved:
+    "{target}-এর মধ্যে {saved} জমেছে",
+  gtMonthsLeft:
+    "আর {n} মাস",
+  gtDueNow:
+    "এই মাসেই শেষ",
+  gtPastDue:
+    "সময় পার হয়েছে",
+  gtNoDate:
+    "তারিখ দেওয়া নেই",
+  gtPerMonth:
+    "সময়মতো শেষ করতে মাসে {amount} জমান",
+  gtGoalsCount:
+    "{n}টি লক্ষ্য",
+  gtLifeLink:
+    "আপনার ফ্রিডম নাম্বার প্রোফাইলে আছে",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

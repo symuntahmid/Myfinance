@@ -12,7 +12,42 @@ export type Goal = {
   targetDate: string;
 
   createdAt: string;
+
+  // Chosen by the person. Old goals have none: we work it out from the date.
+  term?: GoalTerm;
 };
+
+export type GoalTerm = "short" | "medium" | "long";
+
+export const GOAL_TERMS: GoalTerm[] = ["short", "medium", "long"];
+
+/* Whole months from today to a yyyy-mm-dd date. null = no usable date. */
+export function monthsLeft(date: string, now: Date = new Date()): number | null {
+  const end = new Date(date);
+
+  if (!date || Number.isNaN(end.getTime())) return null;
+
+  return (
+    (end.getFullYear() - now.getFullYear()) * 12 +
+    (end.getMonth() - now.getMonth())
+  );
+}
+
+/* Under 1 year = short, 1 to 5 years = medium, over 5 years = long. */
+export function termFromDate(date: string): GoalTerm {
+  const months = monthsLeft(date);
+
+  if (months === null) return "medium";
+  if (months <= 12) return "short";
+  if (months <= 60) return "medium";
+
+  return "long";
+}
+
+export function termOf(goal: Goal): GoalTerm {
+  return goal.term ?? termFromDate(goal.targetDate);
+}
+
 
 const STORAGE_KEY = "myfinance-goals";
 
