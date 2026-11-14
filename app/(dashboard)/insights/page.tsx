@@ -1,17 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import {
-  ChevronDown,
-  ChevronRight,
-  Download,
-  Eye,
-  EyeOff,
-  Lock,
-  Share2,
-  Target,
-} from "lucide-react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { ChevronDown, Download, Eye, EyeOff, Share2 } from "lucide-react";
 
 import NetWorthChart from "../../components/NetWorthChart";
 import FinancialInsights from "../../components/FinancialInsights";
@@ -21,90 +11,261 @@ import InvestmentPieChart from "../../components/InvestmentPieChart";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import {
-  SAVING_GOAL_PERCENT,
-  buildInsights,
-  type Insights,
-} from "@/app/data/insights";
+  RATE_TARGET,
+  RUNWAY_TARGET,
+  buildProgress,
+  type Progress,
+} from "@/app/data/progress";
 import { freedomNumber, getMonthlyCost } from "@/app/data/lifeGoals";
 import { getNetWorthNow } from "@/app/data/overview";
-import { getLevel, getPlayer } from "@/app/data/player";
-import { levelTitle } from "@/app/data/levels";
-import { getBadgeProgress } from "@/app/data/badgeProgress";
-import { renderFlexImage, type FlexTheme } from "@/app/utils/flexImage";
-import type { TranslationKey } from "@/app/data/translations";
+import {
+  renderMilestoneImage,
+  type MilestoneChart,
+  type MilestoneTheme,
+} from "@/app/utils/flexImage";
 
 const HIDE_KEY = "myfinance-hide-amounts";
 const DISPLAY = { fontFamily: "var(--font-tiro), Georgia, serif" } as const;
 
-type Extra = {
-  streak: number;
-  level: number;
-  levelName: string;
-  worth: number;
-  freedomTarget: number;
-  badges: ReturnType<typeof getBadgeProgress>;
-};
-
-type Flex = {
-  id: string;
-  emoji: string;
+type Spec = {
+  label: string;
   big: string;
-  caption: string;
-  style: string;
-  theme: FlexTheme;
+  sub: string;
+  chart?: MilestoneChart;
+  theme: MilestoneTheme;
 };
 
-// One look per card. The text colour always matches its background.
-const THEMES: { className: string; theme: FlexTheme }[] = [
-  {
-    className: "bg-[var(--forest)] text-[var(--on-forest)]",
-    theme: { from: "#0B3B2E", to: "#06241B", fg: "#F6F0DC" },
-  },
-  {
-    className: "bg-gradient-to-br from-[#C8962E] to-[#E4B85A] text-[#2B1F00]",
-    theme: { from: "#C8962E", to: "#E4B85A", fg: "#2B1F00" },
-  },
-  {
-    className: "bg-[#14110F] text-[#F2C96B]",
-    theme: { from: "#14110F", to: "#2A211A", fg: "#F2C96B" },
-  },
-  {
-    className: "bg-[#D6322B] text-white",
-    theme: { from: "#D6322B", to: "#A82019", fg: "#FFFFFF" },
-  },
-  {
-    className: "bg-[#CFE8DC] text-[#0B3B2E]",
-    theme: { from: "#CFE8DC", to: "#A9D4C0", fg: "#0B3B2E" },
-  },
-];
+/* ---------- small charts ---------- */
+
+function Line({ values }: { values: number[] }) {
+  const W = 300;
+  const H = 84;
+  const PAD = 6;
+
+  const min = Math.min(0, ...values);
+  const max = Math.max(0, ...values);
+  const span = max - min || 1;
+
+  const x = (i: number) => PAD + ((W - PAD * 2) * i) / (values.length - 1);
+  const y = (v: number) => H - PAD - ((v - min) / span) * (H - PAD * 2);
+
+  const path = values.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join(" ");
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="h-24 w-full" aria-hidden>
+      <line
+        x1={PAD}
+        x2={W - PAD}
+        y1={y(0)}
+        y2={y(0)}
+        stroke="var(--border)"
+        strokeWidth="1.5"
+      />
+
+      <path
+        d={`${path} L${x(values.length - 1)},${y(0)} L${x(0)},${y(0)} Z`}
+        fill="var(--primary)"
+        opacity="0.12"
+      />
+
+      <path
+        d={path}
+        fill="none"
+        stroke="var(--primary)"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+      />
+
+      <circle
+        cx={x(values.length - 1)}
+        cy={y(values[values.length - 1])}
+        r="4"
+        fill="var(--primary)"
+      />
+    </svg>
+  );
+}
+
+function Bars({ values, target }: { values: number[]; target: number }) {
+  const max = Math.max(target, ...values, 1);
+
+  return (
+    <div className="relative flex h-24 items-end gap-2">
+      <div
+        className="absolute inset-x-0 border-t border-dashed border-[var(--gold)]"
+        style={{ bottom: `${(target / max) * 100}%` }}
+      />
+
+      {values.map((value, index) => (
+        <div
+          key={index}
+          className={`flex-1 rounded-t ${
+            index >= values.length - 3
+              ? "bg-[var(--primary)]"
+              : "bg-[var(--border)]"
+          }`}
+          style={{ height: `${Math.max((Math.max(value, 0) / max) * 100, 3)}%` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Meter({
+  value,
+  max,
+  marks,
+}: {
+  value: number;
+  max: number;
+  marks: number[];
+}) {
+  const ratio = Math.min(Math.max(value / max, 0), 1) * 100;
+
+  return (
+    <div className="pt-1">
+      <div className="relative h-3 rounded-full bg-[var(--background)]">
+        <div
+          className="h-full rounded-full bg-[var(--primary)]"
+          style={{ width: `${Math.max(ratio, 2)}%` }}
+        />
+
+        {marks.map((mark) => (
+          <span
+            key={mark}
+            className="absolute -top-1 h-5 w-px bg-[var(--foreground)]/50"
+            style={{ left: `${(mark / max) * 100}%` }}
+          />
+        ))}
+      </div>
+
+      <div className="relative mt-1.5 h-4 text-[11px] text-[var(--muted)]">
+        {marks.map((mark) => (
+          <span
+            key={mark}
+            className="absolute -translate-x-1/2"
+            style={{ left: `${Math.min((mark / max) * 100, 96)}%` }}
+          >
+            {mark}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- card ---------- */
+
+function Metric({
+  title,
+  big,
+  sub,
+  delta,
+  deltaTone,
+  note,
+  children,
+  onShare,
+  onSave,
+  shareLabel,
+  saveLabel,
+}: {
+  title: string;
+  big: string;
+  sub?: string;
+  delta?: string;
+  deltaTone?: "good" | "bad";
+  note?: string;
+  children?: ReactNode;
+  onShare?: () => void;
+  onSave?: () => void;
+  shareLabel: string;
+  saveLabel: string;
+}) {
+  return (
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-[var(--muted)]">{title}</h2>
+
+        {onShare && (
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-label={shareLabel}
+              onClick={onShare}
+              className="rounded-full p-2 text-[var(--muted)] hover:bg-[var(--background)]"
+            >
+              <Share2 size={16} />
+            </button>
+
+            <button
+              type="button"
+              aria-label={saveLabel}
+              onClick={onSave}
+              className="rounded-full p-2 text-[var(--muted)] hover:bg-[var(--background)]"
+            >
+              <Download size={16} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {big && (
+        <p
+          style={DISPLAY}
+          className="mt-1 text-[34px] font-bold leading-none tracking-tight"
+        >
+          {big}
+        </p>
+      )}
+
+      {sub && (
+        <p
+          className={`text-sm text-[var(--muted)] ${big ? "mt-1.5" : "mt-1"}`}
+        >
+          {sub}
+        </p>
+      )}
+
+      {delta && (
+        <p
+          className={`mt-0.5 text-sm font-semibold ${
+            deltaTone === "bad" ? "text-[var(--sun)]" : "text-[var(--primary)]"
+          }`}
+        >
+          {delta}
+        </p>
+      )}
+
+      {children && <div className="mt-3">{children}</div>}
+
+      {note && <p className="mt-3 text-xs text-[var(--muted)]">{note}</p>}
+    </section>
+  );
+}
+
+/* ---------- page ---------- */
 
 export default function InsightsPage() {
   const { t, language } = useLanguage();
 
-  const [data, setData] = useState<Insights | null>(null);
-  const [extra, setExtra] = useState<Extra | null>(null);
+  const [p, setP] = useState<Progress | null>(null);
+  const [freedom, setFreedom] = useState({ target: 0, worth: 0 });
   const [hide, setHide] = useState(false);
-  const [copied, setCopied] = useState<string | null>(null);
+  const [done, setDone] = useState<string | null>(null);
   const [deepOpen, setDeepOpen] = useState(false);
 
   useEffect(() => {
     const refresh = () => {
-      const level = getLevel();
-
       try {
         setHide(localStorage.getItem(HIDE_KEY) === "1");
       } catch {
         /* storage not available: keep amounts visible */
       }
 
-      setData(buildInsights());
-      setExtra({
-        streak: getPlayer().streak,
-        level: level.level,
-        levelName: level.title,
+      setP(buildProgress());
+      setFreedom({
+        target: freedomNumber(getMonthlyCost()),
         worth: Math.max(getNetWorthNow().netWorth, 0),
-        freedomTarget: freedomNumber(getMonthlyCost()),
-        badges: getBadgeProgress(),
       });
     };
 
@@ -113,8 +274,8 @@ export default function InsightsPage() {
     const events = [
       "transactionsUpdated",
       "investmentsUpdated",
+      "accountsUpdated",
       "lifeGoalsUpdated",
-      "player-updated",
       "currencyUpdated",
       "languageUpdated",
     ];
@@ -143,159 +304,35 @@ export default function InsightsPage() {
     [language]
   );
 
-  // Amounts can be hidden, so a screenshot shows the flex, not the balance.
+  // Amounts can be hidden, so a screenshot shows progress, not balances.
   const money = useCallback(
     (value: number) => (hide ? "•••••" : formatCurrency(value)),
     [hide]
   );
 
-  const flexes = useMemo<Flex[]>(() => {
-    if (!data || !extra) return [];
-
-    const list: Omit<Flex, "style" | "theme">[] = [];
-    const hasIncome = data.income > 0;
-
-    if (hasIncome && data.kept > 0) {
-      list.push({
-        id: "kept",
-        emoji: "💰",
-        big: t("fxKeptBig", { amount: money(data.kept) }),
-        caption: t("fxKeptCap"),
-      });
-    }
-
-    if (hasIncome && data.rate >= 10) {
-      list.push({
-        id: "rate",
-        emoji: "🔥",
-        big: t("fxRateBig", { percent: number(data.rate) }),
-        caption:
-          data.rate >= SAVING_GOAL_PERCENT ? t("fxRateHigh") : t("fxRateMid"),
-      });
-    }
-
-    if (extra.streak >= 2) {
-      list.push({
-        id: "streak",
-        emoji: "⚡",
-        big: t("fxStreakBig", { days: number(extra.streak) }),
-        caption: t("fxStreakCap"),
-      });
-    }
-
-    if (data.noSpendDays >= 2) {
-      list.push({
-        id: "nospend",
-        emoji: "🧊",
-        big: t("fxNoSpendBig", { count: number(data.noSpendDays) }),
-        caption: t("fxNoSpendCap"),
-      });
-    }
-
-    if (data.lastExpense > 0 && data.expense < data.lastExpense) {
-      list.push({
-        id: "less",
-        emoji: "📉",
-        big: t("fxLessBig", {
-          amount: money(data.lastExpense - data.expense),
-        }),
-        caption: t("fxLessCap"),
-      });
-    }
-
-    if (extra.freedomTarget > 0 && extra.worth > 0) {
-      const percent = Math.min(
-        Math.round((extra.worth / extra.freedomTarget) * 100),
-        100
-      );
-
-      if (percent >= 1) {
-        list.push({
-          id: "free",
-          emoji: "🕊️",
-          big: t("fxFreeBig", { percent: number(percent) }),
-          caption: t("fxFreeCap"),
-        });
-      }
-    }
-
-    const trophies = extra.badges.filter((item) => item.unlocked).length;
-
-    if (trophies > 0) {
-      list.push({
-        id: "trophy",
-        emoji: "🏆",
-        big: t("fxTrophyBig", { count: number(trophies) }),
-        caption: t("fxTrophyCap"),
-      });
-    }
-
-    if (extra.level >= 2) {
-      list.push({
-        id: "level",
-        emoji: "🚀",
-        big: t("fxLevelBig", { level: number(extra.level) }),
-        caption: levelTitle(extra.levelName, language),
-      });
-    }
-
-    if (extra.worth > 0) {
-      list.push({
-        id: "worth",
-        emoji: "💎",
-        big: t("fxWorthBig", { amount: money(extra.worth) }),
-        caption: t("fxWorthCap"),
-      });
-    }
-
-    if (list.length === 0) {
-      list.push({
-        id: "start",
-        emoji: "✨",
-        big: t("fxStartBig"),
-        caption: t("fxStartCap"),
-      });
-    }
-
-    return list.slice(0, 6).map((item, index) => ({
-      ...item,
-      style: THEMES[index % THEMES.length].className,
-      theme: THEMES[index % THEMES.length].theme,
-    }));
-  }, [data, extra, language, t, money, number]);
-
-  if (!data || !extra) {
-    return <div className="h-72 animate-pulse rounded-3xl bg-[var(--card)]" />;
+  if (!p) {
+    return <div className="h-72 animate-pulse rounded-2xl bg-[var(--card)]" />;
   }
 
-  const hasIncome = data.income > 0;
+  const locale = language === "bn" ? "bn-BD" : "en-US";
+  const first = p.months[0];
+  const last = p.months[p.months.length - 1];
 
-  const era: { key: TranslationKey; emoji: string } = !hasIncome
-    ? { key: "fxEra0", emoji: "✨" }
-    : data.rate >= 40
-      ? { key: "fxEra1", emoji: "👑" }
-      : data.rate >= SAVING_GOAL_PERCENT
-        ? { key: "fxEra2", emoji: "😎" }
-        : data.rate >= 5
-          ? { key: "fxEra3", emoji: "🌱" }
-          : { key: "fxEra4", emoji: "🛠️" };
+  const monthName = (year: number, month: number) =>
+    new Date(year, month, 1).toLocaleDateString(locale, { month: "short" });
 
-  // Draws the card as a 9:16 picture, then shares it (or saves it).
-  const makeImage = (flex: Flex) =>
-    renderFlexImage({
-      emoji: flex.emoji,
-      big: flex.big,
-      caption: flex.caption,
-      theme: flex.theme,
-      footer: window.location.host,
-    });
+  const period = first
+    ? `${monthName(first.year, first.month)} – ${monthName(last.year, last.month)} ${last.year}`
+    : "";
+
+  /* ---- sharing ---- */
 
   const download = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = "myfinance-flex.png";
+    link.download = "myfinance-progress.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -303,14 +340,17 @@ export default function InsightsPage() {
   };
 
   const flash = (id: string) => {
-    setCopied(id);
-    setTimeout(() => setCopied(null), 1600);
+    setDone(id);
+    setTimeout(() => setDone(null), 1600);
   };
 
-  const share = async (flex: Flex) => {
+  const draw = (spec: Spec) =>
+    renderMilestoneImage({ ...spec, period, footer: window.location.host });
+
+  const share = async (id: string, spec: Spec) => {
     try {
-      const blob = await makeImage(flex);
-      const file = new File([blob], "myfinance-flex.png", {
+      const blob = await draw(spec);
+      const file = new File([blob], "myfinance-progress.png", {
         type: "image/png",
       });
 
@@ -319,257 +359,221 @@ export default function InsightsPage() {
         return;
       }
 
-      // No share sheet (computer): save the picture instead.
       download(blob);
-      flash(flex.id);
+      flash(id);
     } catch {
       /* person closed the share sheet */
     }
   };
 
-  const save = async (flex: Flex) => {
+  const save = async (id: string, spec: Spec) => {
     try {
-      download(await makeImage(flex));
-      flash(flex.id);
+      download(await draw(spec));
+      flash(id);
     } catch {
       /* ignore */
     }
   };
 
-  const shelf = extra.badges.slice(0, 8);
-  const nextBadge = extra.badges
-    .filter((item) => !item.unlocked)
-    .sort((a, b) => b.progress - a.progress)[0];
+  const labels = { shareLabel: t("fxShare"), saveLabel: t("fxSave") };
+  const monthsCount = p.months.length;
+
+  /* ---- headline ---- */
+
+  const headline = !p.hasData
+    ? t("pgHeadNone")
+    : p.keptTotal >= 0
+      ? t("pgHeadKept", {
+          amount: money(p.keptTotal),
+          months: number(monthsCount),
+        })
+      : t("pgHeadLost", {
+          amount: money(Math.abs(p.keptTotal)),
+          months: number(monthsCount),
+        });
+
+  /* ---- the four numbers ---- */
+
+  const signed = `${p.keptTotal >= 0 ? "+" : "−"}${money(Math.abs(p.keptTotal))}`;
+
+  const wealth: Spec = {
+    label: t("pgWealthTitle"),
+    big: signed,
+    sub: t("pgOverMonths", { months: number(monthsCount) }),
+    chart:
+      p.cumulative.length >= 2
+        ? { kind: "line", values: p.cumulative }
+        : undefined,
+    theme: "ivory",
+  };
+
+  const rateDiff =
+    p.rateNow !== null && p.ratePrev !== null ? p.rateNow - p.ratePrev : null;
+
+  const rateDelta =
+    rateDiff !== null
+      ? t("pgPoints", {
+          points: `${rateDiff > 0 ? "+" : rateDiff < 0 ? "−" : ""}${number(Math.abs(rateDiff))}`,
+        })
+      : undefined;
+
+  const rate: Spec = {
+    label: t("pgRateTitle"),
+    big: p.rateNow !== null ? `${number(p.rateNow)}%` : "–",
+    sub: rateDelta ?? t("pgLast3"),
+    chart: { kind: "bars", values: p.rates, target: RATE_TARGET },
+    theme: "ink",
+  };
+
+  const runway: Spec = {
+    label: t("pgRunwayTitle"),
+    big:
+      p.runway !== null ? t("pgRunwayValue", { months: number(p.runway) }) : "–",
+    sub: t("pgRunwayLine"),
+    chart:
+      p.runway !== null
+        ? { kind: "meter", value: p.runway, max: RUNWAY_TARGET, marks: [3, 6] }
+        : undefined,
+    theme: "ivory",
+  };
+
+  const independence: Spec = {
+    label: t("pgFreeTitle"),
+    big: p.coverage !== null ? `${number(p.coverage)}%` : "–",
+    sub: t("pgFreeCover"),
+    chart:
+      p.coverage !== null
+        ? { kind: "meter", value: Math.min(p.coverage, 100), max: 100, marks: [50, 100] }
+        : undefined,
+    theme: "ink",
+  };
 
   const freedomPercent =
-    extra.freedomTarget > 0
-      ? Math.min(Math.round((extra.worth / extra.freedomTarget) * 100), 100)
-      : 0;
+    freedom.target > 0
+      ? Math.min(Math.round((freedom.worth / freedom.target) * 100), 100)
+      : null;
 
-  const today = data.day;
-  const spent = new Set(data.spendDays);
+  const wire = (id: string, spec: Spec, enabled: boolean) =>
+    enabled
+      ? {
+          onShare: () => share(id, spec),
+          onSave: () => save(id, spec),
+        }
+      : {};
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5 overflow-x-clip pb-6">
-      {/* ERA */}
-      <section>
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold text-[var(--muted)]">
-            {t("fxTitle")}
-          </p>
+    <div className="mx-auto max-w-3xl space-y-3 overflow-x-clip pb-6">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
+            {t("pgTitle")}
+          </h1>
 
-          <button
-            type="button"
-            onClick={toggleHide}
-            className="flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs font-semibold text-[var(--muted)]"
-          >
-            {hide ? <EyeOff size={13} /> : <Eye size={13} />}
-            {hide ? t("fxShow") : t("fxHide")}
-          </button>
+          <p className="mt-0.5 text-sm text-[var(--muted)]">{t("pgSub")}</p>
         </div>
 
-        <p className="mt-4 text-sm text-[var(--muted)]">{t("fxEraLabel")}</p>
-
-        <h1
-          style={DISPLAY}
-          className="mt-1 text-[40px] font-bold leading-none tracking-tight text-[var(--foreground)]"
+        <button
+          type="button"
+          onClick={toggleHide}
+          aria-label={hide ? t("fxShow") : t("fxHide")}
+          className="flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-xs font-semibold text-[var(--muted)]"
         >
-          {t(era.key)} <span className="text-3xl">{era.emoji}</span>
-        </h1>
-      </section>
+          {hide ? <EyeOff size={13} /> : <Eye size={13} />}
+          {hide ? t("fxShow") : t("fxHide")}
+        </button>
+      </div>
 
-      {/* FLEX CARDS */}
-      <section>
-        <p className="mb-2 text-sm font-bold">{t("fxCards")}</p>
-
-        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-          {flexes.map((flex) => (
-            <article
-              key={flex.id}
-              className={`relative flex aspect-[9/16] w-[58%] max-w-[230px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl p-5 shadow-[var(--shadow-soft)] ${flex.style}`}
-            >
-              <div className="alpona pointer-events-none absolute inset-0 opacity-30" />
-
-              <div className="relative flex items-start justify-between">
-                <span className="text-[10px] font-semibold opacity-60">
-                  MyFinance
-                </span>
-
-                <span className="-rotate-6 text-4xl leading-none">
-                  {flex.emoji}
-                </span>
-              </div>
-
-              <div className="relative">
-                <p
-                  style={DISPLAY}
-                  className="text-[28px] font-bold leading-[1.05]"
-                >
-                  {flex.big}
-                </p>
-
-                <p className="mt-2 text-sm font-medium opacity-80">
-                  {flex.caption}
-                </p>
-
-                {flex.id === "start" ? (
-                  <Link
-                    href="/dashboard"
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold"
-                  >
-                    {t("fxStartCap")}
-                    <ChevronRight size={13} />
-                  </Link>
-                ) : (
-                  <div className="mt-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => share(flex)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold active:scale-95"
-                    >
-                      <Share2 size={13} />
-                      {copied === flex.id ? t("fxSaved") : t("fxShare")}
-                    </button>
-
-                    <button
-                      type="button"
-                      aria-label={t("fxSave")}
-                      onClick={() => save(flex)}
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-black/20 active:scale-95"
-                    >
-                      <Download size={14} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* TROPHY SHELF */}
-      <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-bold">{t("fxShelfTitle")}</h2>
-
-          <Link
-            href="/profile/badges"
-            className="text-xs font-semibold text-[var(--primary)]"
-          >
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-4 gap-2.5">
-          {shelf.map((item) => (
-            <div
-              key={item.badge.id}
-              className={`relative flex aspect-square items-center justify-center rounded-2xl text-3xl ${
-                item.unlocked
-                  ? "bg-[var(--gold-soft)]"
-                  : "bg-[var(--background)] grayscale"
-              }`}
-            >
-              <span className={item.unlocked ? "" : "opacity-30"}>
-                {item.badge.icon}
-              </span>
-
-              {!item.unlocked && (
-                <Lock
-                  size={12}
-                  className="absolute bottom-1.5 right-1.5 text-[var(--muted)]"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
-        {nextBadge && (
-          <div className="mt-3 flex items-center gap-2.5">
-            <span className="text-xl">{nextBadge.badge.icon}</span>
-
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--background)]">
-              <div
-                className="h-full rounded-full bg-[var(--gold)]"
-                style={{
-                  width: `${Math.max(Math.round(nextBadge.progress), 3)}%`,
-                }}
-              />
-            </div>
-
-            <span className="text-xs font-semibold text-[var(--muted)]">
-              {number(Math.round(nextBadge.progress))}%
-            </span>
-          </div>
-        )}
-      </section>
-
-      {/* SPEND-FREE DAYS */}
-      <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-bold">{t("fxDaysTitle")}</h2>
-
-          <span className="text-xs font-semibold text-[var(--primary)]">
-            {t("fxDaysCount", { count: number(data.noSpendDays) })}
-          </span>
-        </div>
-
-        <div className="flex flex-wrap gap-1.5">
-          {Array.from({ length: data.daysInMonth }, (_, index) => {
-            const day = index + 1;
-            const past = day < today;
-            const free = past && !spent.has(day);
-
-            return (
-              <span
-                key={day}
-                className={`h-[22px] w-[22px] rounded-md ${
-                  day === today
-                    ? "ring-2 ring-[var(--gold)] bg-[var(--background)]"
-                    : free
-                      ? "bg-[var(--primary)]"
-                      : past
-                        ? "bg-[var(--muted)]/30"
-                        : "border border-dashed border-[var(--border)]"
-                }`}
-              />
-            );
-          })}
-        </div>
-      </section>
-
-      {/* FREEDOM */}
-      <Link
-        href="/profile"
-        className="flex items-center gap-3 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
+      <p
+        style={DISPLAY}
+        className="py-3 text-[26px] font-bold leading-[1.2] tracking-tight"
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--gold-soft)] text-[#8A6212]">
-          <Target size={18} />
-        </span>
+        {headline}
+      </p>
 
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-bold">{t("fxFreedomTitle")}</p>
+      {p.hasData && (
+        <>
+          {/* 1. MONEY KEPT */}
+          <Metric
+            title={t("pgWealthTitle")}
+            big={wealth.big}
+            sub={wealth.sub}
+            deltaTone={p.keptTotal < 0 ? "bad" : "good"}
+            note={t("pgWealthSub")}
+            {...labels}
+            {...wire("wealth", wealth, true)}
+          >
+            {p.cumulative.length >= 2 ? (
+              <Line values={p.cumulative} />
+            ) : (
+              <p className="text-xs text-[var(--muted)]">{t("pgNeedData")}</p>
+            )}
+          </Metric>
 
-          {extra.freedomTarget > 0 ? (
-            <>
-              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[var(--background)]">
-                <div
-                  className="h-full rounded-full bg-[var(--gold)]"
-                  style={{ width: `${Math.max(freedomPercent, 2)}%` }}
-                />
-              </div>
+          {/* 2. SAVINGS RATE */}
+          <Metric
+            title={t("pgRateTitle")}
+            big={rate.big}
+            sub={t("pgLast3")}
+            delta={rateDelta}
+            deltaTone={rateDiff !== null && rateDiff < 0 ? "bad" : "good"}
+            note={t("pgTarget", { percent: number(RATE_TARGET) })}
+            {...labels}
+            {...wire("rate", rate, p.rateNow !== null)}
+          >
+            {p.rateNow !== null ? (
+              <Bars values={p.rates} target={RATE_TARGET} />
+            ) : (
+              <p className="text-xs text-[var(--muted)]">{t("pgNeedData")}</p>
+            )}
+          </Metric>
 
-              <p className="mt-1 text-xs text-[var(--muted)]">
-                {t("lgPercentDone", { percent: number(freedomPercent) })}
+          {/* 3. SAFETY RUNWAY */}
+          <Metric
+            title={t("pgRunwayTitle")}
+            big={p.runway !== null ? runway.big : ""}
+            sub={p.runway !== null ? t("pgRunwayLine") : t("pgNoCash")}
+            note={
+              p.runway !== null
+                ? p.runway >= 3
+                  ? t("pgRunwayGood")
+                  : t("pgRunwayBuild")
+                : undefined
+            }
+            {...labels}
+            {...wire("runway", runway, p.runway !== null)}
+          >
+            {p.runway !== null && (
+              <Meter value={p.runway} max={RUNWAY_TARGET} marks={[3, 6]} />
+            )}
+          </Metric>
+
+          {/* 4. INDEPENDENCE */}
+          <Metric
+            title={t("pgFreeTitle")}
+            big={p.coverage !== null ? independence.big : ""}
+            sub={p.coverage !== null ? t("pgFreeCover") : t("pgNoInvest")}
+            note={p.coverage !== null ? t("pgFreeNote") : undefined}
+            {...labels}
+            {...wire("free", independence, p.coverage !== null)}
+          >
+            {p.coverage !== null && (
+              <Meter value={Math.min(p.coverage, 100)} max={100} marks={[50, 100]} />
+            )}
+
+            {freedomPercent !== null && (
+              <p className="mt-2 text-xs text-[var(--muted)]">
+                {t("inFreedomLine", { percent: number(freedomPercent) })}
               </p>
-            </>
-          ) : (
-            <p className="text-xs text-[var(--muted)]">{t("inFreedomSet")}</p>
-          )}
-        </div>
+            )}
+          </Metric>
+        </>
+      )}
 
-        <ChevronRight size={16} className="shrink-0 text-[var(--muted)]" />
-      </Link>
+      {done && (
+        <p className="text-center text-xs font-semibold text-[var(--primary)]">
+          {t("fxSaved")}
+        </p>
+      )}
 
       {/* DEEP DIVE */}
       <button

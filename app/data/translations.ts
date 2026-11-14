@@ -322,6 +322,54 @@ export type TranslationKey =
   | "fxFreedomTitle"
   | "fxSaved"
   | "fxSave"
+  | "pgTitle"
+  | "pgSub"
+  | "pgHeadKept"
+  | "pgHeadLost"
+  | "pgHeadNone"
+  | "pgOverMonths"
+  | "pgWealthTitle"
+  | "pgWealthSub"
+  | "pgRateTitle"
+  | "pgLast3"
+  | "pgPoints"
+  | "pgTarget"
+  | "pgRunwayTitle"
+  | "pgRunwayValue"
+  | "pgRunwayLine"
+  | "pgRunwayGood"
+  | "pgRunwayBuild"
+  | "pgFreeTitle"
+  | "pgFreeCover"
+  | "pgFreeNote"
+  | "pgNoInvest"
+  | "pgNoCash"
+  | "pgSubtitle"
+  | "pgNetWorth"
+  | "pgChange6"
+  | "pgEstimated"
+  | "pgNeedData"
+  | "pgRunway"
+  | "pgRunwayVal"
+  | "pgRunwaySub"
+  | "pgSavingsRate"
+  | "pgSavingsSub"
+  | "pgSpending"
+  | "pgSpendingSub"
+  | "pgFreedomTitle"
+  | "pgFreedomDate"
+  | "pgFreedomNote"
+  | "pgFreedomReached"
+  | "pgFreedomNeed"
+  | "pgFreedomFar"
+  | "pgChecksTitle"
+  | "pgCheck1"
+  | "pgCheck2"
+  | "pgCheck3"
+  | "pgCheck4"
+  | "pgShareTitle"
+  | "pgUp"
+  | "pgDown"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -1154,6 +1202,102 @@ en: {
     "Saved",
   fxSave:
     "Save image",
+  pgTitle:
+    "Progress",
+  pgSub:
+    "Four numbers that show if you're really getting ahead.",
+  pgHeadKept:
+    "You've kept {amount} in the last {months} months.",
+  pgHeadLost:
+    "You spent {amount} more than you earned in the last {months} months.",
+  pgHeadNone:
+    "Add income and spending to see your progress.",
+  pgOverMonths:
+    "over {months} months",
+  pgWealthTitle:
+    "Money kept",
+  pgWealthSub:
+    "Running total of income minus spending.",
+  pgRateTitle:
+    "Savings rate",
+  pgLast3:
+    "last 3 months",
+  pgPoints:
+    "{points} points vs the 3 months before",
+  pgTarget:
+    "Target {percent}%",
+  pgRunwayTitle:
+    "Safety runway",
+  pgRunwayValue:
+    "{months} months",
+  pgRunwayLine:
+    "Your cash covers this many months of spending.",
+  pgRunwayGood:
+    "Solid. A common target is 3 to 6 months.",
+  pgRunwayBuild:
+    "Aim for 3 months first.",
+  pgFreeTitle:
+    "Independence",
+  pgFreeCover:
+    "of your monthly spending is covered by investments.",
+  pgFreeNote:
+    "Based on withdrawing 4% a year.",
+  pgNoInvest:
+    "Invest to start covering your spending.",
+  pgNoCash:
+    "Add your accounts to see this.",
+  pgSubtitle:
+    "Your money, over time.",
+  pgNetWorth:
+    "Net worth",
+  pgChange6:
+    "{amount} in 6 months",
+  pgEstimated:
+    "Estimated from your entries.",
+  pgNeedData:
+    "Add a few months of entries to see your trend.",
+  pgRunway:
+    "Runway",
+  pgRunwayVal:
+    "{months} months",
+  pgRunwaySub:
+    "of expenses covered",
+  pgSavingsRate:
+    "Savings rate",
+  pgSavingsSub:
+    "3-month average",
+  pgSpending:
+    "Spending",
+  pgSpendingSub:
+    "vs previous 3 months",
+  pgFreedomTitle:
+    "Freedom date",
+  pgFreedomDate:
+    "{date}",
+  pgFreedomNote:
+    "At your pace over the last 3 months, before investment growth.",
+  pgFreedomReached:
+    "You've reached your freedom number.",
+  pgFreedomNeed:
+    "Save more each month to see a date.",
+  pgFreedomFar:
+    "More than 50 years away at this pace.",
+  pgChecksTitle:
+    "Fundamentals",
+  pgCheck1:
+    "Spend less than you earn",
+  pgCheck2:
+    "Save 20% or more",
+  pgCheck3:
+    "3 or more months of runway",
+  pgCheck4:
+    "No overdue bills",
+  pgShareTitle:
+    "Share your progress",
+  pgUp:
+    "Up",
+  pgDown:
+    "Down",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -2142,6 +2286,102 @@ bn: {
     "সেভ হয়েছে",
   fxSave:
     "ছবি সেভ করুন",
+  pgTitle:
+    "অগ্রগতি",
+  pgSub:
+    "চারটি সংখ্যা, যা দেখায় আপনি সত্যিই এগোচ্ছেন কি না।",
+  pgHeadKept:
+    "গত {months} মাসে আপনি {amount} রেখেছেন।",
+  pgHeadLost:
+    "গত {months} মাসে আয়ের চেয়ে {amount} বেশি খরচ হয়েছে।",
+  pgHeadNone:
+    "অগ্রগতি দেখতে আয় ও খরচ যোগ করুন।",
+  pgOverMonths:
+    "{months} মাসে",
+  pgWealthTitle:
+    "জমানো টাকা",
+  pgWealthSub:
+    "আয় থেকে খরচ বাদ দিয়ে চলমান মোট।",
+  pgRateTitle:
+    "সঞ্চয়ের হার",
+  pgLast3:
+    "গত ৩ মাস",
+  pgPoints:
+    "আগের ৩ মাসের চেয়ে {points} পয়েন্ট",
+  pgTarget:
+    "লক্ষ্য {percent}%",
+  pgRunwayTitle:
+    "নিরাপত্তা সময়",
+  pgRunwayValue:
+    "{months} মাস",
+  pgRunwayLine:
+    "আপনার নগদ এতগুলো মাসের খরচ চালাতে পারবে।",
+  pgRunwayGood:
+    "ভালো অবস্থা। সাধারণ লক্ষ্য ৩ থেকে ৬ মাস।",
+  pgRunwayBuild:
+    "আগে ৩ মাসের লক্ষ্য রাখুন।",
+  pgFreeTitle:
+    "আর্থিক স্বাধীনতা",
+  pgFreeCover:
+    "মাসিক খরচের এতটুকু বিনিয়োগ থেকে চলে যায়।",
+  pgFreeNote:
+    "বছরে ৪% তোলার হিসাবে।",
+  pgNoInvest:
+    "খরচ চালাতে বিনিয়োগ শুরু করুন।",
+  pgNoCash:
+    "এটি দেখতে আপনার অ্যাকাউন্ট যোগ করুন।",
+  pgSubtitle:
+    "সময়ের সাথে আপনার টাকা।",
+  pgNetWorth:
+    "মোট সম্পদ",
+  pgChange6:
+    "৬ মাসে {amount}",
+  pgEstimated:
+    "আপনার এন্ট্রি থেকে অনুমান।",
+  pgNeedData:
+    "ট্রেন্ড দেখতে কয়েক মাসের এন্ট্রি যোগ করুন।",
+  pgRunway:
+    "রানওয়ে",
+  pgRunwayVal:
+    "{months} মাস",
+  pgRunwaySub:
+    "খরচ চালানো যাবে",
+  pgSavingsRate:
+    "সঞ্চয়ের হার",
+  pgSavingsSub:
+    "৩ মাসের গড়",
+  pgSpending:
+    "খরচ",
+  pgSpendingSub:
+    "আগের ৩ মাসের তুলনায়",
+  pgFreedomTitle:
+    "স্বাধীনতার তারিখ",
+  pgFreedomDate:
+    "{date}",
+  pgFreedomNote:
+    "গত ৩ মাসের গতিতে, বিনিয়োগ-বৃদ্ধি ধরা ছাড়া।",
+  pgFreedomReached:
+    "আপনি স্বাধীনতার অঙ্কে পৌঁছে গেছেন।",
+  pgFreedomNeed:
+    "তারিখ দেখতে প্রতি মাসে আরও সঞ্চয় করুন।",
+  pgFreedomFar:
+    "এই গতিতে ৫০ বছরের বেশি লাগবে।",
+  pgChecksTitle:
+    "মৌলিক বিষয়",
+  pgCheck1:
+    "আয়ের চেয়ে কম খরচ",
+  pgCheck2:
+    "২০% বা বেশি সঞ্চয়",
+  pgCheck3:
+    "৩ বা তার বেশি মাসের রানওয়ে",
+  pgCheck4:
+    "কোনো বকেয়া বিল নেই",
+  pgShareTitle:
+    "আপনার অগ্রগতি শেয়ার করুন",
+  pgUp:
+    "বেড়েছে",
+  pgDown:
+    "কমেছে",
   // Bills and net worth
   billsTitle:
     "বিল",
