@@ -130,7 +130,9 @@ export default function MoneyMap() {
         state.overspent > 0
           ? t("planOverspentCount", { count: number(state.overspent) })
           : t("planReadyToAssign"),
-      value: formatCurrency(state.ready),
+      // Same as the accounts total? Don't repeat the number.
+      value:
+        state.ready === state.total ? "" : formatCurrency(state.ready),
       tone:
         state.ready < 0 || state.overspent > 0
           ? "text-[var(--sun)]"

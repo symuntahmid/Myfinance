@@ -1,391 +1,110 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import {
-  getTransactions,
-  Transaction,
-} from "../data/transactions";
+import { useLanguage } from "@/app/context/LanguageContext";
+import { formatCurrency } from "@/app/utils/currency";
+import { getTransactions, type Transaction } from "../data/transactions";
+import { quickExpenseCategories } from "@/app/data/quickAdd";
 
-import {
-  formatCurrency,
-} from "@/app/utils/currency";
-
-import { t } from "@/app/data/i18n";
-
+const SIGN: Record<Transaction["type"], string> = {
+  Income: "+",
+  Expense: "-",
+  Investment: "-",
+  Transfer: "",
+};
 
 export default function RecentTransactions() {
+  const { t, language } = useLanguage();
 
-  const [transactions, setTransactions] =
-    useState<Transaction[]>([]);
-
-
-  const [, forceCurrencyUpdate] =
-    useState(0);
-
-
-  const [, refreshLanguage] =
-    useState(0);
-
+  const [items, setItems] = useState<Transaction[]>([]);
 
   useEffect(() => {
-
-    function refreshTransactions() {
-
-      setTransactions(
-        getTransactions()
+    const refresh = () =>
+      setItems(
+        [...getTransactions()]
+          .sort(
+            (a, b) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime() ||
+              b.id - a.id
+          )
+          .slice(0, 5)
       );
 
-    }
+    refresh();
 
+    const events = ["transactionsUpdated", "currencyUpdated", "languageUpdated"];
 
-    const currencyListener = () => {
+    events.forEach((name) => window.addEventListener(name, refresh));
 
-      forceCurrencyUpdate(
-        value => value + 1
-      );
-
-    };
-
-
-    const languageListener = () => {
-
-      refreshLanguage(
-        value => value + 1
-      );
-
-    };
-
-
-    refreshTransactions();
-
-
-    window.addEventListener(
-      "transactionsUpdated",
-      refreshTransactions
-    );
-
-
-    window.addEventListener(
-      "currencyUpdated",
-      currencyListener
-    );
-
-
-    window.addEventListener(
-      "languageUpdated",
-      languageListener
-    );
-
-
-    return () => {
-
-      window.removeEventListener(
-        "transactionsUpdated",
-        refreshTransactions
-      );
-
-
-      window.removeEventListener(
-        "currencyUpdated",
-        currencyListener
-      );
-
-
-      window.removeEventListener(
-        "languageUpdated",
-        languageListener
-      );
-
-    };
-
+    return () =>
+      events.forEach((name) => window.removeEventListener(name, refresh));
   }, []);
 
+  const labelOf = (item: Transaction) => {
+    const raw = item.category?.trim() || item.type;
+    const found = quickExpenseCategories.find((c) => c.value === raw);
+
+    return found
+      ? { emoji: found.emoji, text: found[language] }
+      : {
+          emoji: item.type === "Income" ? "💰" : "💸",
+          text: raw.replace(/^[^\p{L}\p{N}]+/u, ""),
+        };
+  };
 
   return (
-
-    <div
-      className="
-        mt-10
-        rounded-3xl
-        border
-        border-[var(--border)]
-        bg-[var(--card)]
-        p-8
-        shadow-sm
-      "
-    >
-
-      <div
-        className="
-          mb-8
-          flex
-          items-center
-          justify-between
-        "
-      >
-
-        <h2
-          className="
-            font-display
-            text-3xl
-            font-medium
-            tracking-[-0.04em]
-            text-[var(--foreground)]
-          "
-        >
-          {t("recentTransactions")}
-        </h2>
-
+    <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-sm font-bold">{t("recentTransactions")}</h2>
 
         <Link
           href="/money/transactions"
-          className="
-            text-sm
-            font-medium
-            tracking-tight
-            text-[var(--primary)]
-            transition
-            hover:opacity-80
-          "
+          className="text-xs font-semibold text-[var(--primary)]"
         >
-          {t("viewAll")} →
+          {t("viewAll")}
         </Link>
-
       </div>
 
-
-      {transactions.length === 0 ? (
-
-        <div
-          className="
-            rounded-2xl
-            border-2
-            border-dashed
-            border-[var(--border)]
-            py-14
-            text-center
-          "
-        >
-
-          <p
-            className="
-              font-display
-              text-2xl
-              font-medium
-              tracking-[-0.04em]
-              text-[var(--foreground)]
-            "
-          >
-            {t("noTransactionsYet")}
-          </p>
-
-
-          <p
-            className="
-              mt-2
-              font-body
-              text-sm
-              leading-relaxed
-              tracking-[-0.015em]
-              text-[var(--muted)]
-            "
-          >
-            {t("latestTransactionsMessage")}
-          </p>
-
-        </div>
-
+      {items.length === 0 ? (
+        <p className="py-4 text-sm text-[var(--muted)]">
+          {t("noTransactionsYet")}
+        </p>
       ) : (
+        <ul className="divide-y divide-[var(--border)]">
+          {items.map((item) => {
+            const label = labelOf(item);
 
-        <table className="w-full">
+            return (
+              <li key={item.id} className="flex items-center gap-3 py-2.5">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-lg">
+                  {label.emoji}
+                </span>
 
-          <thead>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">
+                    {label.text}
+                  </p>
 
-            <tr
-              className="
-                border-b
-                border-[var(--border)]
-              "
-            >
+                  <p className="truncate text-xs text-[var(--muted)]">
+                    {item.source.replace(/^[^\p{L}\p{N}]+/u, "")}
+                  </p>
+                </div>
 
-              <th
-                className="
-                  py-3
-                  text-left
-                  font-body
-                  text-xs
-                  font-medium
-                  uppercase
-                  tracking-[0.12em]
-                  text-[var(--muted)]
-                "
-              >
-                {t("type")}
-              </th>
-
-
-              <th
-                className="
-                  py-3
-                  text-left
-                  font-body
-                  text-xs
-                  font-medium
-                  uppercase
-                  tracking-[0.12em]
-                  text-[var(--muted)]
-                "
-              >
-                {t("source")}
-              </th>
-
-
-              <th
-                className="
-                  py-3
-                  text-left
-                  font-body
-                  text-xs
-                  font-medium
-                  uppercase
-                  tracking-[0.12em]
-                  text-[var(--muted)]
-                "
-              >
-                {t("category")}
-              </th>
-
-
-              <th
-                className="
-                  py-3
-                  text-right
-                  font-body
-                  text-xs
-                  font-medium
-                  uppercase
-                  tracking-[0.12em]
-                  text-[var(--muted)]
-                "
-              >
-                {t("amount")}
-              </th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            {transactions
-              .slice(0, 3)
-              .map((transaction) => (
-
-                <tr
-                  key={transaction.id}
-                  className="
-                    border-b
-                    border-[var(--border)]
-                    last:border-0
-                  "
+                <span
+                  className={`shrink-0 text-sm font-bold ${
+                    item.type === "Income" ? "text-[var(--success)]" : ""
+                  }`}
                 >
-
-                  <td className="py-5">
-
-                    <span
-                      className={`
-                        rounded-full
-                        px-3
-                        py-1
-                        text-xs
-                        font-semibold
-
-                        ${
-                          transaction.type === "Income"
-                            ? "bg-green-100 text-green-700"
-                            : transaction.type === "Expense"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-[var(--primary)]/10 text-[var(--primary)]"
-                        }
-                      `}
-                    >
-                      {transaction.type}
-                    </span>
-
-                  </td>
-
-
-                  <td
-                    className="
-                      font-body
-                      text-sm
-                      font-normal
-                      tracking-[-0.015em]
-                      text-[var(--foreground)]
-                    "
-                  >
-                    {transaction.source}
-                  </td>
-
-
-                  <td
-                    className="
-                      font-body
-                      text-sm
-                      tracking-[-0.015em]
-                      text-[var(--muted)]
-                    "
-                  >
-                    {transaction.category || "-"}
-                  </td>
-
-
-                  <td
-                    className={`
-                      text-right
-                      font-display
-                      text-2xl
-                      font-medium
-                      tracking-[-0.04em]
-
-                      ${
-                        transaction.type === "Income"
-                          ? "text-green-600"
-                          : transaction.type === "Expense"
-                            ? "text-red-500"
-                            : "text-[var(--primary)]"
-                      }
-                    `}
-                  >
-
-                    {transaction.type === "Expense"
-                      ? "-"
-                      : "+"}
-
-                    {formatCurrency(
-                      transaction.amount
-                    )}
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-          </tbody>
-
-        </table>
-
+                  {SIGN[item.type]}
+                  {formatCurrency(item.amount)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       )}
-
-    </div>
-
+    </section>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import NotificationBell from "@/app/components/NotificationBell";
 import HomeHero from "@/app/components/HomeHero";
@@ -12,28 +14,19 @@ import TransactionForm from "../../components/TransactionForm";
 import AddInvestmentModal from "../../components/AddInvestmentModal";
 import QuickAddSheet from "@/app/components/QuickAddSheet";
 
-import IncomeExpenseChart from "../../components/IncomeExpenseChart";
-import NetWorthChart from "../../components/NetWorthChart";
-import FinancialInsights from "../../components/FinancialInsights";
-import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
-import ProfileCard from "../../components/ProfileCard";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
 
 import RecentTransactions from "../../components/RecentTransactions";
-import GoalProgressCard from "../../components/GoalProgressCard";
 
-import { getPortfolioSummary } from "@/app/data/investments";
 
 import { useLanguage } from "@/app/context/LanguageContext";
-import AIInsightCard from "@/app/components/ai/AIInsightCard";
-import { formatCurrency } from "@/app/utils/currency";
 
 export default function Dashboard() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -47,30 +40,6 @@ export default function Dashboard() {
   const [transactionType, setTransactionType] = useState<
     "Income" | "Expense"
   >("Income");
-
-  const [portfolio, setPortfolio] = useState(
-    getPortfolioSummary()
-  );
-
-  useEffect(() => {
-    function refreshPortfolio() {
-      setPortfolio(getPortfolioSummary());
-    }
-
-    refreshPortfolio();
-
-    window.addEventListener(
-      "investmentsUpdated",
-      refreshPortfolio
-    );
-
-    return () => {
-      window.removeEventListener(
-        "investmentsUpdated",
-        refreshPortfolio
-      );
-    };
-  }, []);
 
   return (
     <>
@@ -107,238 +76,20 @@ export default function Dashboard() {
 
   <MoneyMap />
 
-  {/* Daily journey and level */}
+  {/* Daily journey keeps the streak alive */}
 
-  <div className="grid gap-6 lg:grid-cols-2">
-    <DailyJourneyCard />
+  <DailyJourneyCard />
 
-    <ProfileCard compact />
-  </div>
+  <RecentTransactions />
 
-  {/* Goal Progress */}
-
-  <GoalProgressCard />
-
-  <AIInsightCard />
-
-        {portfolio.totalAssets > 0 && (
-          <div>
-            <div
-className="
-rounded-3xl
-bg-[var(--card)]
-p-6
-shadow-sm
-border
-border-[var(--border)]
-"
->
-
-<div
-className="
-mb-5
-flex
-items-center
-justify-between
-"
->
-
-
-<h2
-className="
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-Investment Portfolio
-</h2>
-
-
-
-<span
-className="
-font-body
-rounded-full
-bg-[var(--primary)]/15
-px-4
-py-2
-text-xs
-font-medium
-uppercase
-tracking-[0.08em]
-text-[var(--primary)]
-"
->
-{portfolio.totalAssets} Assets
-</span>
-
-
+  <Link
+    href="/insights"
+    className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-semibold text-[var(--primary)]"
+  >
+    {t("insMore")}
+    <ChevronRight size={16} />
+  </Link>
 </div>
-
-              <div className="grid gap-5 md:grid-cols-4">
-                <div>
-                  <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Invested
-</p>
-
- <h3
-className="
-mt-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-{formatCurrency(portfolio.invested)}
-</h3>
-                </div>
-
-                <div>
-                                    <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-                    Current Value
-                  </p>
-
-<h3
-className="
-mt-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-{formatCurrency(portfolio.current)}
-</h3>
-
-</div>
-
-
-<div>
-
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Profit
-</p>
-<h3
-className={`
-mt-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-
-${
-portfolio.profit >= 0
-? "text-emerald-500"
-: "text-red-500"
-}
-`}
->
-                    {portfolio.profit >= 0 ? "+" : "-"}
-
-{formatCurrency(
-  Math.abs(portfolio.profit)
-)}
-                  </h3>
-                </div>
-
-                <div>
-                                    <p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-                    Return
-                  </p>
-
-<h3
-className={`
-mt-3
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-
-${
-portfolio.returnPercentage >= 0
-? "text-cyan-500"
-: "text-red-500"
-}
-`}
->
-                    {portfolio.returnPercentage.toFixed(
-                      2
-                    )}
-                    %
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="mt-4 grid gap-6 lg:grid-cols-3">
-          <div className="min-w-0 lg:col-span-2">
-            <NetWorthChart />
-          </div>
-
-          <div className="min-w-0">
-            <FinancialInsights />
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-6 lg:grid-cols-2">
-          <div className="min-w-0">
-            <IncomeExpenseChart />
-          </div>
-
-          <div className="min-w-0">
-            <InvestmentPieChart />
-          </div>
-        </div>
-
-        <div>
-          <RecentTransactions />
-        </div>
-      </div>
 
       <FloatingActionButton
         onClick={() => setSheetOpen(true)}

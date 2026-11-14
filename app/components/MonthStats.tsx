@@ -46,14 +46,21 @@ export default function MonthStats() {
 
   if (!values) return null;
 
-  const tiles = [
+  // Only show the investments tile once the user invests.
+  const tiles: (readonly [string, number, string])[] = [
     [t("monthlyIncome"), values.income, "bg-[var(--success)]"],
     [t("expenses"), values.expense, "bg-[var(--sun)]"],
-    [t("investments"), values.invested, "bg-[var(--gold)]"],
-  ] as const;
+    ...(values.invested > 0
+      ? ([[t("investments"), values.invested, "bg-[var(--gold)]"]] as const)
+      : []),
+  ];
 
   return (
-    <div className="grid grid-cols-3 gap-2.5">
+    <div
+      className={`grid gap-2.5 ${
+        tiles.length === 3 ? "grid-cols-3" : "grid-cols-2"
+      }`}
+    >
       {tiles.map(([label, value, dot]) => (
         <div
           key={label}

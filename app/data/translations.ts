@@ -240,6 +240,14 @@ export type TranslationKey =
   | "cfCount"
   | "cfKept"
   | "cfOverspent"
+  | "insTitle"
+  | "insSubtitle"
+  | "insMore"
+  | "insPortfolio"
+  | "insInvested"
+  | "insCurrent"
+  | "insProfit"
+  | "insReturn"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -908,6 +916,22 @@ en: {
     "You kept {percent}% of what came in.",
   cfOverspent:
     "You used {amount} more than you earned.",
+  insTitle:
+    "Insights",
+  insSubtitle:
+    "Charts and tips about your money.",
+  insMore:
+    "See all insights",
+  insPortfolio:
+    "Investment portfolio",
+  insInvested:
+    "Invested",
+  insCurrent:
+    "Current value",
+  insProfit:
+    "Profit",
+  insReturn:
+    "Return",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1732,6 +1756,22 @@ bn: {
     "আপনি যা পেয়েছেন তার {percent}% রেখেছেন।",
   cfOverspent:
     "আপনি আয়ের চেয়ে {amount} বেশি ব্যবহার করেছেন।",
+  insTitle:
+    "বিশ্লেষণ",
+  insSubtitle:
+    "আপনার টাকার চার্ট ও পরামর্শ।",
+  insMore:
+    "সব বিশ্লেষণ দেখুন",
+  insPortfolio:
+    "বিনিয়োগ পোর্টফোলিও",
+  insInvested:
+    "বিনিয়োগ",
+  insCurrent:
+    "বর্তমান মূল্য",
+  insProfit:
+    "লাভ",
+  insReturn:
+    "রিটার্ন",
   // Bills and net worth
   billsTitle:
     "বিল",
