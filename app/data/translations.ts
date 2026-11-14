@@ -220,6 +220,26 @@ export type TranslationKey =
   | "lgChangePhoto"
   | "lgDelete"
   | "lgByYear"
+  | "cfTitle"
+  | "cfSubtitle"
+  | "cfThisMonth"
+  | "cfLastMonth"
+  | "cf3Months"
+  | "cfYear"
+  | "cfIncome"
+  | "cfSpent"
+  | "cfInvested"
+  | "cfSaved"
+  | "cfShortfall"
+  | "cfOther"
+  | "cfIn"
+  | "cfOut"
+  | "cfEmpty"
+  | "cfTapHint"
+  | "cfShare"
+  | "cfCount"
+  | "cfKept"
+  | "cfOverspent"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -848,6 +868,46 @@ en: {
     "Delete",
   lgByYear:
     "By {year}",
+  cfTitle:
+    "Cash flow",
+  cfSubtitle:
+    "See where your money comes from and where it goes.",
+  cfThisMonth:
+    "This month",
+  cfLastMonth:
+    "Last month",
+  cf3Months:
+    "3 months",
+  cfYear:
+    "This year",
+  cfIncome:
+    "Income",
+  cfSpent:
+    "Spent",
+  cfInvested:
+    "Invested",
+  cfSaved:
+    "Saved",
+  cfShortfall:
+    "From savings",
+  cfOther:
+    "Other",
+  cfIn:
+    "Money in",
+  cfOut:
+    "Where it went",
+  cfEmpty:
+    "No income or spending in this period yet. Add a few transactions to see your flow.",
+  cfTapHint:
+    "Tap a block to see details.",
+  cfShare:
+    "{percent}% of money in",
+  cfCount:
+    "{count} entries",
+  cfKept:
+    "You kept {percent}% of what came in.",
+  cfOverspent:
+    "You used {amount} more than you earned.",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -1632,6 +1692,46 @@ bn: {
     "মুছুন",
   lgByYear:
     "{year} সালের মধ্যে",
+  cfTitle:
+    "অর্থপ্রবাহ",
+  cfSubtitle:
+    "আপনার টাকা কোথা থেকে আসে আর কোথায় যায় দেখুন।",
+  cfThisMonth:
+    "এই মাস",
+  cfLastMonth:
+    "গত মাস",
+  cf3Months:
+    "৩ মাস",
+  cfYear:
+    "এই বছর",
+  cfIncome:
+    "আয়",
+  cfSpent:
+    "খরচ",
+  cfInvested:
+    "বিনিয়োগ",
+  cfSaved:
+    "সঞ্চয়",
+  cfShortfall:
+    "সঞ্চয় থেকে",
+  cfOther:
+    "অন্যান্য",
+  cfIn:
+    "যা এসেছে",
+  cfOut:
+    "যেভাবে গেছে",
+  cfEmpty:
+    "এই সময়ে এখনো কোনো আয় বা খরচ নেই। কিছু লেনদেন যোগ করলে প্রবাহ দেখতে পাবেন।",
+  cfTapHint:
+    "বিস্তারিত দেখতে ব্লকে ট্যাপ করুন।",
+  cfShare:
+    "মোট আয়ের {percent}%",
+  cfCount:
+    "{count}টি এন্ট্রি",
+  cfKept:
+    "আপনি যা পেয়েছেন তার {percent}% রেখেছেন।",
+  cfOverspent:
+    "আপনি আয়ের চেয়ে {amount} বেশি ব্যবহার করেছেন।",
   // Bills and net worth
   billsTitle:
     "বিল",

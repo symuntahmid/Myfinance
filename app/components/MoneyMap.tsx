@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Landmark,
   Receipt,
+  Waypoints,
 } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -134,6 +135,14 @@ export default function MoneyMap() {
         state.ready < 0 || state.overspent > 0
           ? "text-[var(--sun)]"
           : "",
+    },
+    {
+      href: "/cash-flow",
+      icon: Waypoints,
+      title: t("cfTitle"),
+      sub: t("cfSubtitle"),
+      value: "",
+      tone: "",
     },
   ];
 
