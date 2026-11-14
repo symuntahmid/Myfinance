@@ -320,6 +320,8 @@ export type TranslationKey =
   | "fxDaysTitle"
   | "fxDaysCount"
   | "fxFreedomTitle"
+  | "fxSaved"
+  | "fxSave"
   | "statNet"
   | "statIncome"
   | "statExpense"
@@ -1148,6 +1150,10 @@ en: {
     "{count} so far",
   fxFreedomTitle:
     "Freedom meter",
+  fxSaved:
+    "Saved",
+  fxSave:
+    "Save image",
   // Bills and net worth
   billsTitle:
     "Bills",
@@ -2132,6 +2138,10 @@ bn: {
     "এ পর্যন্ত {count}",
   fxFreedomTitle:
     "ফ্রিডম মিটার",
+  fxSaved:
+    "সেভ হয়েছে",
+  fxSave:
+    "ছবি সেভ করুন",
   // Bills and net worth
   billsTitle:
     "বিল",

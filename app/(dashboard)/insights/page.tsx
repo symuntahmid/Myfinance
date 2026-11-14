@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ChevronDown,
   ChevronRight,
+  Download,
   Eye,
   EyeOff,
   Lock,
@@ -29,6 +30,7 @@ import { getNetWorthNow } from "@/app/data/overview";
 import { getLevel, getPlayer } from "@/app/data/player";
 import { levelTitle } from "@/app/data/levels";
 import { getBadgeProgress } from "@/app/data/badgeProgress";
+import { renderFlexImage, type FlexTheme } from "@/app/utils/flexImage";
 import type { TranslationKey } from "@/app/data/translations";
 
 const HIDE_KEY = "myfinance-hide-amounts";
@@ -49,15 +51,31 @@ type Flex = {
   big: string;
   caption: string;
   style: string;
+  theme: FlexTheme;
 };
 
 // One look per card. The text colour always matches its background.
-const STYLES = [
-  "bg-[var(--forest)] text-[var(--on-forest)]",
-  "bg-gradient-to-br from-[#C8962E] to-[#E4B85A] text-[#2B1F00]",
-  "bg-[#14110F] text-[#F2C96B]",
-  "bg-[#D6322B] text-white",
-  "bg-[#CFE8DC] text-[#0B3B2E]",
+const THEMES: { className: string; theme: FlexTheme }[] = [
+  {
+    className: "bg-[var(--forest)] text-[var(--on-forest)]",
+    theme: { from: "#0B3B2E", to: "#06241B", fg: "#F6F0DC" },
+  },
+  {
+    className: "bg-gradient-to-br from-[#C8962E] to-[#E4B85A] text-[#2B1F00]",
+    theme: { from: "#C8962E", to: "#E4B85A", fg: "#2B1F00" },
+  },
+  {
+    className: "bg-[#14110F] text-[#F2C96B]",
+    theme: { from: "#14110F", to: "#2A211A", fg: "#F2C96B" },
+  },
+  {
+    className: "bg-[#D6322B] text-white",
+    theme: { from: "#D6322B", to: "#A82019", fg: "#FFFFFF" },
+  },
+  {
+    className: "bg-[#CFE8DC] text-[#0B3B2E]",
+    theme: { from: "#CFE8DC", to: "#A9D4C0", fg: "#0B3B2E" },
+  },
 ];
 
 export default function InsightsPage() {
@@ -134,7 +152,7 @@ export default function InsightsPage() {
   const flexes = useMemo<Flex[]>(() => {
     if (!data || !extra) return [];
 
-    const list: Omit<Flex, "style">[] = [];
+    const list: Omit<Flex, "style" | "theme">[] = [];
     const hasIncome = data.income > 0;
 
     if (hasIncome && data.kept > 0) {
@@ -241,7 +259,8 @@ export default function InsightsPage() {
 
     return list.slice(0, 6).map((item, index) => ({
       ...item,
-      style: STYLES[index % STYLES.length],
+      style: THEMES[index % THEMES.length].className,
+      theme: THEMES[index % THEMES.length].theme,
     }));
   }, [data, extra, language, t, money, number]);
 
@@ -261,20 +280,59 @@ export default function InsightsPage() {
           ? { key: "fxEra3", emoji: "🌱" }
           : { key: "fxEra4", emoji: "🛠️" };
 
-  const share = async (flex: Flex) => {
-    const text = `${flex.emoji} ${flex.big}. ${flex.caption} #MyFinance`;
+  // Draws the card as a 9:16 picture, then shares it (or saves it).
+  const makeImage = (flex: Flex) =>
+    renderFlexImage({
+      emoji: flex.emoji,
+      big: flex.big,
+      caption: flex.caption,
+      theme: flex.theme,
+      footer: window.location.host,
+    });
 
+  const download = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "myfinance-flex.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const flash = (id: string) => {
+    setCopied(id);
+    setTimeout(() => setCopied(null), 1600);
+  };
+
+  const share = async (flex: Flex) => {
     try {
-      if (navigator.share) {
-        await navigator.share({ text });
+      const blob = await makeImage(flex);
+      const file = new File([blob], "myfinance-flex.png", {
+        type: "image/png",
+      });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file] });
         return;
       }
 
-      await navigator.clipboard.writeText(text);
-      setCopied(flex.id);
-      setTimeout(() => setCopied(null), 1600);
+      // No share sheet (computer): save the picture instead.
+      download(blob);
+      flash(flex.id);
     } catch {
       /* person closed the share sheet */
+    }
+  };
+
+  const save = async (flex: Flex) => {
+    try {
+      download(await makeImage(flex));
+      flash(flex.id);
+    } catch {
+      /* ignore */
     }
   };
 
@@ -328,7 +386,7 @@ export default function InsightsPage() {
           {flexes.map((flex) => (
             <article
               key={flex.id}
-              className={`relative flex aspect-[4/5] w-[72%] max-w-[260px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl p-5 shadow-[var(--shadow-soft)] ${flex.style}`}
+              className={`relative flex aspect-[9/16] w-[58%] max-w-[230px] shrink-0 snap-center flex-col justify-between overflow-hidden rounded-3xl p-5 shadow-[var(--shadow-soft)] ${flex.style}`}
             >
               <div className="alpona pointer-events-none absolute inset-0 opacity-30" />
 
@@ -337,7 +395,7 @@ export default function InsightsPage() {
                   MyFinance
                 </span>
 
-                <span className="-rotate-6 text-5xl leading-none">
+                <span className="-rotate-6 text-4xl leading-none">
                   {flex.emoji}
                 </span>
               </div>
@@ -345,7 +403,7 @@ export default function InsightsPage() {
               <div className="relative">
                 <p
                   style={DISPLAY}
-                  className="text-[34px] font-bold leading-[1.05]"
+                  className="text-[28px] font-bold leading-[1.05]"
                 >
                   {flex.big}
                 </p>
@@ -363,14 +421,25 @@ export default function InsightsPage() {
                     <ChevronRight size={13} />
                   </Link>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => share(flex)}
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold active:scale-95"
-                  >
-                    <Share2 size={13} />
-                    {copied === flex.id ? t("fxCopied") : t("fxShare")}
-                  </button>
+                  <div className="mt-4 flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => share(flex)}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-black/20 px-3.5 py-1.5 text-xs font-semibold active:scale-95"
+                    >
+                      <Share2 size={13} />
+                      {copied === flex.id ? t("fxSaved") : t("fxShare")}
+                    </button>
+
+                    <button
+                      type="button"
+                      aria-label={t("fxSave")}
+                      onClick={() => save(flex)}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-black/20 active:scale-95"
+                    >
+                      <Download size={14} />
+                    </button>
+                  </div>
                 )}
               </div>
             </article>
