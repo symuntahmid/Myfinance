@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, Download, Eye, EyeOff, Share2 } from "lucide-react";
 
 import NetWorthChart from "../../components/NetWorthChart";
@@ -164,10 +164,6 @@ function Metric({
   deltaTone,
   note,
   children,
-  onShare,
-  onSave,
-  shareLabel,
-  saveLabel,
 }: {
   title: string;
   big: string;
@@ -176,38 +172,10 @@ function Metric({
   deltaTone?: "good" | "bad";
   note?: string;
   children?: ReactNode;
-  onShare?: () => void;
-  onSave?: () => void;
-  shareLabel: string;
-  saveLabel: string;
 }) {
   return (
     <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-[var(--muted)]">{title}</h2>
-
-        {onShare && (
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              aria-label={shareLabel}
-              onClick={onShare}
-              className="rounded-full p-2 text-[var(--muted)] hover:bg-[var(--background)]"
-            >
-              <Share2 size={16} />
-            </button>
-
-            <button
-              type="button"
-              aria-label={saveLabel}
-              onClick={onSave}
-              className="rounded-full p-2 text-[var(--muted)] hover:bg-[var(--background)]"
-            >
-              <Download size={16} />
-            </button>
-          </div>
-        )}
-      </div>
+      <h2 className="text-sm font-semibold text-[var(--muted)]">{title}</h2>
 
       {big && (
         <p
@@ -240,6 +208,125 @@ function Metric({
 
       {note && <p className="mt-3 text-xs text-[var(--muted)]">{note}</p>}
     </section>
+  );
+}
+
+/* ---------- top row: the exact pictures that get shared ---------- */
+
+type StoryItem = { id: string; spec: Spec };
+
+function StoryCards({
+  items,
+  period,
+  doneId,
+  shareLabel,
+  saveLabel,
+  savedLabel,
+  onShare,
+  onSave,
+}: {
+  items: StoryItem[];
+  period: string;
+  doneId: string | null;
+  shareLabel: string;
+  saveLabel: string;
+  savedLabel: string;
+  onShare: (id: string, spec: Spec) => void;
+  onSave: (id: string, spec: Spec) => void;
+}) {
+  const [urls, setUrls] = useState<Record<string, string>>({});
+  const live = useRef<string[]>([]);
+
+  // Draw each card as a picture. The preview is the same image
+  // that gets shared, so what you see is what you post.
+  const signature = JSON.stringify([items, period]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      const next: Record<string, string> = {};
+      const made: string[] = [];
+
+      for (const item of items) {
+        try {
+          const blob = await renderMilestoneImage({
+            ...item.spec,
+            period,
+            footer: window.location.host,
+          });
+          const url = URL.createObjectURL(blob);
+
+          made.push(url);
+          next[item.id] = url;
+        } catch {
+          /* skip a card that fails to draw */
+        }
+      }
+
+      if (cancelled) {
+        made.forEach((url) => URL.revokeObjectURL(url));
+        return;
+      }
+
+      live.current.forEach((url) => URL.revokeObjectURL(url));
+      live.current = made;
+      setUrls(next);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signature]);
+
+  useEffect(
+    () => () => live.current.forEach((url) => URL.revokeObjectURL(url)),
+    []
+  );
+
+  return (
+    <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="w-[62%] max-w-[250px] shrink-0 snap-center"
+        >
+          <div className="aspect-[9/16] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-soft)]">
+            {urls[item.id] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={urls[item.id]}
+                alt={item.spec.label}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="h-full w-full animate-pulse bg-[var(--background)]" />
+            )}
+          </div>
+
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => onShare(item.id, item.spec)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[var(--forest)] px-4 py-2 text-xs font-semibold text-[var(--on-forest)] active:scale-95"
+            >
+              <Share2 size={13} />
+              {doneId === item.id ? savedLabel : shareLabel}
+            </button>
+
+            <button
+              type="button"
+              aria-label={saveLabel}
+              onClick={() => onSave(item.id, item.spec)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--muted)] active:scale-95"
+            >
+              <Download size={14} />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -375,7 +462,6 @@ export default function InsightsPage() {
     }
   };
 
-  const labels = { shareLabel: t("fxShare"), saveLabel: t("fxSave") };
   const monthsCount = p.months.length;
 
   /* ---- headline ---- */
@@ -453,13 +539,12 @@ export default function InsightsPage() {
       ? Math.min(Math.round((freedom.worth / freedom.target) * 100), 100)
       : null;
 
-  const wire = (id: string, spec: Spec, enabled: boolean) =>
-    enabled
-      ? {
-          onShare: () => share(id, spec),
-          onSave: () => save(id, spec),
-        }
-      : {};
+  const stories: StoryItem[] = [
+    ...(p.hasData ? [{ id: "wealth", spec: wealth }] : []),
+    ...(p.rateNow !== null ? [{ id: "rate", spec: rate }] : []),
+    ...(p.runway !== null ? [{ id: "runway", spec: runway }] : []),
+    ...(p.coverage !== null ? [{ id: "free", spec: independence }] : []),
+  ];
 
   return (
     <div className="mx-auto max-w-3xl space-y-3 overflow-x-clip pb-6">
@@ -483,6 +568,19 @@ export default function InsightsPage() {
         </button>
       </div>
 
+      {stories.length > 0 && (
+        <StoryCards
+          items={stories}
+          period={period}
+          doneId={done}
+          shareLabel={t("fxShare")}
+          saveLabel={t("fxSave")}
+          savedLabel={t("fxSaved")}
+          onShare={share}
+          onSave={save}
+        />
+      )}
+
       <p
         style={DISPLAY}
         className="py-3 text-[26px] font-bold leading-[1.2] tracking-tight"
@@ -499,8 +597,6 @@ export default function InsightsPage() {
             sub={wealth.sub}
             deltaTone={p.keptTotal < 0 ? "bad" : "good"}
             note={t("pgWealthSub")}
-            {...labels}
-            {...wire("wealth", wealth, true)}
           >
             {p.cumulative.length >= 2 ? (
               <Line values={p.cumulative} />
@@ -517,8 +613,6 @@ export default function InsightsPage() {
             delta={rateDelta}
             deltaTone={rateDiff !== null && rateDiff < 0 ? "bad" : "good"}
             note={t("pgTarget", { percent: number(RATE_TARGET) })}
-            {...labels}
-            {...wire("rate", rate, p.rateNow !== null)}
           >
             {p.rateNow !== null ? (
               <Bars values={p.rates} target={RATE_TARGET} />
@@ -539,8 +633,6 @@ export default function InsightsPage() {
                   : t("pgRunwayBuild")
                 : undefined
             }
-            {...labels}
-            {...wire("runway", runway, p.runway !== null)}
           >
             {p.runway !== null && (
               <Meter value={p.runway} max={RUNWAY_TARGET} marks={[3, 6]} />
@@ -553,8 +645,6 @@ export default function InsightsPage() {
             big={p.coverage !== null ? independence.big : ""}
             sub={p.coverage !== null ? t("pgFreeCover") : t("pgNoInvest")}
             note={p.coverage !== null ? t("pgFreeNote") : undefined}
-            {...labels}
-            {...wire("free", independence, p.coverage !== null)}
           >
             {p.coverage !== null && (
               <Meter value={Math.min(p.coverage, 100)} max={100} marks={[50, 100]} />
@@ -567,12 +657,6 @@ export default function InsightsPage() {
             )}
           </Metric>
         </>
-      )}
-
-      {done && (
-        <p className="text-center text-xs font-semibold text-[var(--primary)]">
-          {t("fxSaved")}
-        </p>
       )}
 
       {/* DEEP DIVE */}
