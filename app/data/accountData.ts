@@ -77,54 +77,23 @@ export function exportMyFinanceData() {
     return;
   }
 
+  // Version 2: a copy of everything the app keeps on this phone
+  // (every "myfinance-" entry), so nothing is forgotten.
+  const keys: Record<string, string> = {};
+
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const key = localStorage.key(i);
+
+    if (key && key.startsWith("myfinance-")) {
+      keys[key] = localStorage.getItem(key) ?? "";
+    }
+  }
+
   const backup = {
-    version: 1,
-
-    exportedAt:
-      new Date().toISOString(),
-
-    transactions:
-      getStoredArray(
-        STORAGE_KEYS.transactions
-      ),
-
-    investments:
-      getStoredArray(
-        STORAGE_KEYS.investments
-      ),
-
-    budgets:
-      getStoredArray(
-        STORAGE_KEYS.budgets
-      ),
-
-    player:
-      getStoredObject(
-        STORAGE_KEYS.player
-      ),
-
-    settings:
-      getSettings(),
-
-    portfolioHistory:
-      getStoredArray(
-        STORAGE_KEYS.portfolioHistory
-      ),
-
-    goals:
-      getStoredArray(
-        STORAGE_KEYS.goals
-      ),
-
-    achievements:
-      getStoredArray(
-        STORAGE_KEYS.achievements
-      ),
-
-    dailyJourney:
-      getStoredArray(
-        STORAGE_KEYS.dailyJourney
-      ),
+    app: "myfinance",
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    keys,
   };
 
   const blob = new Blob(
@@ -197,6 +166,34 @@ export async function importMyFinanceData(
     throw new Error(
       "Invalid MyFinance backup."
     );
+  }
+
+  if (backup.version === 2 && backup.keys && typeof backup.keys === "object") {
+    const entries = Object.entries(backup.keys as Record<string, unknown>).filter(
+      ([key, value]) => key.startsWith("myfinance-") && typeof value === "string"
+    );
+
+    if (entries.length === 0) {
+      throw new Error("The backup is empty.");
+    }
+
+    // Replace the current data with the backup.
+    for (let i = localStorage.length - 1; i >= 0; i -= 1) {
+      const key = localStorage.key(i);
+
+      if (key && key.startsWith("myfinance-")) {
+        localStorage.removeItem(key);
+      }
+    }
+
+    entries.forEach(([key, value]) =>
+      localStorage.setItem(key, value as string)
+    );
+
+    // Reload so every screen reads the restored data.
+    setTimeout(() => window.location.reload(), 300);
+
+    return;
   }
 
   if (
