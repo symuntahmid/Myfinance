@@ -24,6 +24,7 @@ const STORAGE_KEYS = {
   netWorthHistory: "myfinance-networth-history",
   lifeGoals: "myfinance-life-goals",
   freedom: "myfinance-freedom",
+  needWant: "myfinance-need-want",
 };
 
 /* ==========================================

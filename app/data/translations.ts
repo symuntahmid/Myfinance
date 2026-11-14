@@ -222,6 +222,40 @@ export type TranslationKey =
   | "lgByYear"
   | "cfTitle"
   | "cfSubtitle"
+  | "fpTitle"
+  | "fpSubtitle"
+  | "fpStepOf"
+  | "fpYouAreHere"
+  | "fpDoneLabel"
+  | "fpAllDone"
+  | "fpGo"
+  | "fpTrackTitle"
+  | "fpTrackHint"
+  | "fpPlanTitle"
+  | "fpPlanHint"
+  | "fpStarterTitle"
+  | "fpSafetyTitle"
+  | "fpRunwayHint"
+  | "fpDebtTitle"
+  | "fpDebtHint"
+  | "fpDebtFree"
+  | "fpInvestTitle"
+  | "fpInvestHint"
+  | "fpFreedomTitle"
+  | "fpFreedomHint"
+  | "fpFreedomSet"
+  | "brTitle"
+  | "brSubtitle"
+  | "brNeeds"
+  | "brWants"
+  | "brSavings"
+  | "brTarget"
+  | "brNoIncome"
+  | "brSuggest"
+  | "brOnTrack"
+  | "brSortTitle"
+  | "brTagNeed"
+  | "brTagWant"
   | "cfThisMonth"
   | "cfLastMonth"
   | "cf3Months"
@@ -1002,6 +1036,74 @@ en: {
     "Cash flow",
   cfSubtitle:
     "See where your money comes from and where it goes.",
+  fpTitle:
+    "Freedom Path",
+  fpSubtitle:
+    "7 steps from tracking to freedom",
+  fpStepOf:
+    "Step {n} of {total}",
+  fpYouAreHere:
+    "You are here",
+  fpDoneLabel:
+    "Done",
+  fpAllDone:
+    "All steps done. Work is now a choice.",
+  fpGo:
+    "Go",
+  fpTrackTitle:
+    "Track your money",
+  fpTrackHint:
+    "{n} of {total} entries in the last 30 days",
+  fpPlanTitle:
+    "Give every taka a job",
+  fpPlanHint:
+    "Plan this month's money",
+  fpStarterTitle:
+    "Starter safety: 1 month",
+  fpSafetyTitle:
+    "Safety net: 3 months",
+  fpRunwayHint:
+    "{n} months of spending saved",
+  fpDebtTitle:
+    "Clear what you owe",
+  fpDebtHint:
+    "{amount} still owed",
+  fpDebtFree:
+    "No debts. Nice.",
+  fpInvestTitle:
+    "Start investing",
+  fpInvestHint:
+    "Put some money to work",
+  fpFreedomTitle:
+    "Reach your freedom number",
+  fpFreedomHint:
+    "{n}% of {amount}",
+  fpFreedomSet:
+    "Set your monthly cost in Profile to see this",
+  brTitle:
+    "50/30/20 check",
+  brSubtitle:
+    "Needs, wants and savings against your income",
+  brNeeds:
+    "Needs",
+  brWants:
+    "Wants",
+  brSavings:
+    "Savings",
+  brTarget:
+    "Aim for {n}%",
+  brNoIncome:
+    "Add your income this month to see your split.",
+  brSuggest:
+    "Spend about {amount} less on {category} to get closer to 20% savings.",
+  brOnTrack:
+    "You are on track. Keep it up.",
+  brSortTitle:
+    "Move a category",
+  brTagNeed:
+    "Need",
+  brTagWant:
+    "Want",
   cfThisMonth:
     "This month",
   cfLastMonth:
@@ -2086,6 +2188,74 @@ bn: {
     "অর্থপ্রবাহ",
   cfSubtitle:
     "আপনার টাকা কোথা থেকে আসে আর কোথায় যায় দেখুন।",
+  fpTitle:
+    "ফ্রিডম পাথ",
+  fpSubtitle:
+    "ট্র্যাকিং থেকে স্বাধীনতার ৭ ধাপ",
+  fpStepOf:
+    "ধাপ {n}/{total}",
+  fpYouAreHere:
+    "আপনি এখানে",
+  fpDoneLabel:
+    "সম্পন্ন",
+  fpAllDone:
+    "সব ধাপ শেষ। কাজ এখন আপনার পছন্দ।",
+  fpGo:
+    "শুরু করুন",
+  fpTrackTitle:
+    "টাকার হিসাব রাখুন",
+  fpTrackHint:
+    "গত ৩০ দিনে {total}টির মধ্যে {n}টি এন্ট্রি",
+  fpPlanTitle:
+    "প্রতিটি টাকার কাজ ঠিক করুন",
+  fpPlanHint:
+    "এই মাসের টাকার পরিকল্পনা করুন",
+  fpStarterTitle:
+    "শুরুর নিরাপত্তা: ১ মাস",
+  fpSafetyTitle:
+    "নিরাপত্তা তহবিল: ৩ মাস",
+  fpRunwayHint:
+    "{n} মাসের খরচ জমা আছে",
+  fpDebtTitle:
+    "দেনা শোধ করুন",
+  fpDebtHint:
+    "{amount} এখনও বাকি",
+  fpDebtFree:
+    "কোনো দেনা নেই।",
+  fpInvestTitle:
+    "বিনিয়োগ শুরু করুন",
+  fpInvestHint:
+    "কিছু টাকা কাজে লাগান",
+  fpFreedomTitle:
+    "ফ্রিডম নাম্বারে পৌঁছান",
+  fpFreedomHint:
+    "{amount}-এর {n}%",
+  fpFreedomSet:
+    "এটি দেখতে প্রোফাইলে মাসিক খরচ দিন",
+  brTitle:
+    "৫০/৩০/২০ হিসাব",
+  brSubtitle:
+    "আয়ের তুলনায় প্রয়োজন, চাহিদা ও সঞ্চয়",
+  brNeeds:
+    "প্রয়োজন",
+  brWants:
+    "চাহিদা",
+  brSavings:
+    "সঞ্চয়",
+  brTarget:
+    "লক্ষ্য {n}%",
+  brNoIncome:
+    "ভাগ দেখতে এই মাসের আয় যোগ করুন।",
+  brSuggest:
+    "২০% সঞ্চয়ের কাছে যেতে {category}-এ প্রায় {amount} কম খরচ করুন।",
+  brOnTrack:
+    "আপনি ঠিক পথে আছেন। চালিয়ে যান।",
+  brSortTitle:
+    "ক্যাটেগরি সরান",
+  brTagNeed:
+    "প্রয়োজন",
+  brTagWant:
+    "চাহিদা",
   cfThisMonth:
     "এই মাস",
   cfLastMonth:

@@ -29,6 +29,7 @@ import {
   Lightbulb,
   Scale,
   Waypoints,
+  Flag,
   Zap,
   Settings,
   X,
@@ -115,6 +116,7 @@ export default function BottomNavigation() {
     {
       title: t("moreGroupInsights"),
       items: [
+        { href: "/freedom", name: t("fpTitle"), icon: Flag },
         { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
         { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
         { href: "/insights", name: t("insTitle"), icon: Lightbulb },

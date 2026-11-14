@@ -8,6 +8,7 @@ import {
   Landmark,
   Receipt,
   Waypoints,
+  Flag,
 } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -137,6 +138,14 @@ export default function MoneyMap() {
         state.ready < 0 || state.overspent > 0
           ? "text-[var(--sun)]"
           : "",
+    },
+    {
+      href: "/freedom",
+      icon: Flag,
+      title: t("fpTitle"),
+      sub: t("fpSubtitle"),
+      value: "",
+      tone: "",
     },
     {
       href: "/cash-flow",
