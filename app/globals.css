@@ -382,3 +382,29 @@ h3 {
   }
 
 }
+
+
+/* ==========================================
+   PAPER: the notebook look used for stories
+   (cream page, green hand-lettered headings)
+========================================== */
+
+.paper {
+  --paper: #f6f1e2;
+  --ink: #1f3d2b;
+  --pen: #2e7d4f;
+  --mark: #f4d35e;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.font-hand {
+  font-family: var(--font-hand), var(--font-tiro), cursive;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.hl {
+  background: linear-gradient(transparent 62%, var(--mark) 62%, var(--mark) 92%, transparent 92%);
+  padding: 0 0.15em;
+}

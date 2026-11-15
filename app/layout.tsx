@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import {
   Hind_Siliguri,
   Tiro_Bangla,
+  Caveat_Brush,
 } from "next/font/google";
 
 import "./globals.css";
@@ -33,6 +34,13 @@ const tiro = Tiro_Bangla({
   display: "swap",
 });
 
+const hand = Caveat_Brush({
+  variable: "--font-hand",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "MyFinance | Your Personal CFO",
 
@@ -52,6 +60,7 @@ export default function RootLayout({
       className={`
         ${hind.variable}
         ${tiro.variable}
+        ${hand.variable}
         h-full
         antialiased
       `}

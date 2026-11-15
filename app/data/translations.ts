@@ -564,6 +564,59 @@ export type TranslationKey =
   | "gtPerMonth"
   | "gtGoalsCount"
   | "gtLifeLink"
+  | "hpEntryTitle"
+  | "hpEntrySub"
+  | "hpStory1"
+  | "hpStory2"
+  | "hpStory3"
+  | "hpNext"
+  | "hpAsk"
+  | "hpOwn"
+  | "hpRentAns"
+  | "hpFamily"
+  | "hpOwnReply"
+  | "hpBack"
+  | "hpPlanTitle"
+  | "hpPlanSub"
+  | "hpBurnTitle"
+  | "hpBurnHint"
+  | "hpRentLabel"
+  | "hpHike"
+  | "hpNYears"
+  | "hpPaid"
+  | "hpCouldBe"
+  | "hpTargetTitle"
+  | "hpTargetHint"
+  | "hpPrice"
+  | "hpBuyIn"
+  | "hpPropInfl"
+  | "hpDown"
+  | "hpReg"
+  | "hpFuturePrice"
+  | "hpCashNeeded"
+  | "hpSaveTitle"
+  | "hpReturn"
+  | "hpMonthly"
+  | "hpIfBank"
+  | "hpBucketShort"
+  | "hpBucketLong"
+  | "hpSafeTitle"
+  | "hpSafeHint"
+  | "hpIncome"
+  | "hpLoanRate"
+  | "hpTenor"
+  | "hpMaxEmi"
+  | "hpMaxLoan"
+  | "hpMaxPrice"
+  | "hpSafeYes"
+  | "hpSafeNo"
+  | "hpNeedIncome"
+  | "hpMakeGoal"
+  | "hpGoalMade"
+  | "hpSeeGoals"
+  | "hpGoalTitle"
+  | "hpDisclaimer"
+  | "hpRedo"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -1688,6 +1741,112 @@ en: {
     "Goals: {n}",
   gtLifeLink:
     "Your freedom number lives in Profile",
+  hpEntryTitle:
+    "Rent to own",
+  hpEntrySub:
+    "A short story, then your plan",
+  hpStory1:
+    "Rahim pays {rent} rent every month.",
+  hpStory2:
+    "In 20 years that is {total} gone. And the key to his own door? Zero.",
+  hpStory3:
+    "Flat prices rise about 6% a year. Saving without a plan never catches up.",
+  hpNext:
+    "Next",
+  hpAsk:
+    "Do you have a home of your own?",
+  hpOwn:
+    "Yes, I own one",
+  hpRentAns:
+    "No, I pay rent",
+  hpFamily:
+    "No, I live with family",
+  hpOwnReply:
+    "Great. Come back when you plan your next place.",
+  hpBack:
+    "Back to My Money",
+  hpPlanTitle:
+    "Home Roadmap",
+  hpPlanSub:
+    "From renter to down-payment ready",
+  hpBurnTitle:
+    "Rent burn",
+  hpBurnHint:
+    "What rent costs you, and what the same money could have grown into.",
+  hpRentLabel:
+    "Monthly rent",
+  hpHike:
+    "Yearly rent rise (%)",
+  hpNYears:
+    "{n} years",
+  hpPaid:
+    "Rent paid",
+  hpCouldBe:
+    "Could have grown to",
+  hpTargetTitle:
+    "Your real target",
+  hpTargetHint:
+    "Prices rise, so we plan for the price on closing day.",
+  hpPrice:
+    "Home price today",
+  hpBuyIn:
+    "Buy in (years)",
+  hpPropInfl:
+    "Property price rise (%)",
+  hpDown:
+    "Down payment (%)",
+  hpReg:
+    "Registration and tax (%)",
+  hpFuturePrice:
+    "Home price then",
+  hpCashNeeded:
+    "Cash needed on the day",
+  hpSaveTitle:
+    "Monthly savings",
+  hpReturn:
+    "Expected yearly return (%)",
+  hpMonthly:
+    "Save every month",
+  hpIfBank:
+    "In a 4% savings account you would need {amount} a month.",
+  hpBucketShort:
+    "Under 2 years: keep it safe in an FDR or DPS.",
+  hpBucketLong:
+    "2 years or more: mix DPS with dividend funds or gold, so returns can beat property prices.",
+  hpSafeTitle:
+    "Safe zone",
+  hpSafeHint:
+    "Keep the loan payment under 35% of income.",
+  hpIncome:
+    "Monthly income then",
+  hpLoanRate:
+    "Loan rate (%)",
+  hpTenor:
+    "Loan years",
+  hpMaxEmi:
+    "Safe monthly payment",
+  hpMaxLoan:
+    "Largest safe loan",
+  hpMaxPrice:
+    "Largest safe home price",
+  hpSafeYes:
+    "Your target is inside the safe zone.",
+  hpSafeNo:
+    "Your target is above the safe zone. Aim near {amount}, or raise income or the down payment.",
+  hpNeedIncome:
+    "Add your income to see this.",
+  hpMakeGoal:
+    "Add to my goals",
+  hpGoalMade:
+    "Added to your goals",
+  hpSeeGoals:
+    "See goals",
+  hpGoalTitle:
+    "Home down payment",
+  hpDisclaimer:
+    "Rough estimates. Real prices, rates and fees change.",
+  hpRedo:
+    "Start the story again",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -2878,6 +3037,112 @@ bn: {
     "{n}টি লক্ষ্য",
   gtLifeLink:
     "আপনার ফ্রিডম নাম্বার প্রোফাইলে আছে",
+  hpEntryTitle:
+    "ভাড়া থেকে নিজের বাড়ি",
+  hpEntrySub:
+    "ছোট একটি গল্প, তারপর আপনার পরিকল্পনা",
+  hpStory1:
+    "রহিম প্রতি মাসে {rent} ভাড়া দেন।",
+  hpStory2:
+    "২০ বছরে {total} চলে যায়। আর নিজের দরজার চাবি? শূন্য।",
+  hpStory3:
+    "ফ্ল্যাটের দাম বছরে প্রায় ৬% বাড়ে। পরিকল্পনা ছাড়া সঞ্চয় কখনো নাগাল পায় না।",
+  hpNext:
+    "পরের",
+  hpAsk:
+    "আপনার কি নিজের বাড়ি আছে?",
+  hpOwn:
+    "হ্যাঁ, আছে",
+  hpRentAns:
+    "না, আমি ভাড়া দিই",
+  hpFamily:
+    "না, পরিবারের সাথে থাকি",
+  hpOwnReply:
+    "দারুণ। পরের বাড়ির পরিকল্পনা করলে আবার আসুন।",
+  hpBack:
+    "আমার টাকায় ফিরুন",
+  hpPlanTitle:
+    "হোম রোডম্যাপ",
+  hpPlanSub:
+    "ভাড়াটিয়া থেকে ডাউন পেমেন্টের জন্য প্রস্তুত",
+  hpBurnTitle:
+    "ভাড়ায় পুড়ছে যা",
+  hpBurnHint:
+    "ভাড়ায় কত যায়, আর সেই টাকা জমালে কত হতো।",
+  hpRentLabel:
+    "মাসিক ভাড়া",
+  hpHike:
+    "বছরে ভাড়া বাড়ে (%)",
+  hpNYears:
+    "{n} বছর",
+  hpPaid:
+    "ভাড়া দিয়েছেন",
+  hpCouldBe:
+    "জমালে হতো",
+  hpTargetTitle:
+    "আপনার আসল লক্ষ্য",
+  hpTargetHint:
+    "দাম বাড়ে, তাই কেনার দিনের দামের হিসাবে পরিকল্পনা।",
+  hpPrice:
+    "আজকের বাড়ির দাম",
+  hpBuyIn:
+    "কত বছরে কিনবেন",
+  hpPropInfl:
+    "সম্পত্তির দাম বাড়ে (%)",
+  hpDown:
+    "ডাউন পেমেন্ট (%)",
+  hpReg:
+    "রেজিস্ট্রেশন ও কর (%)",
+  hpFuturePrice:
+    "তখনকার দাম",
+  hpCashNeeded:
+    "সেদিন যত নগদ লাগবে",
+  hpSaveTitle:
+    "মাসিক সঞ্চয়",
+  hpReturn:
+    "প্রত্যাশিত বার্ষিক রিটার্ন (%)",
+  hpMonthly:
+    "প্রতি মাসে জমান",
+  hpIfBank:
+    "৪% সঞ্চয়ী হিসাবে মাসে {amount} লাগত।",
+  hpBucketShort:
+    "২ বছরের কম: FDR বা DPS-এ নিরাপদ রাখুন।",
+  hpBucketLong:
+    "২ বছর বা বেশি: DPS-এর সাথে ডিভিডেন্ড ফান্ড বা স্বর্ণ মেশান, যাতে রিটার্ন সম্পত্তির দামের সাথে পাল্লা দেয়।",
+  hpSafeTitle:
+    "নিরাপদ সীমা",
+  hpSafeHint:
+    "কিস্তি আয়ের ৩৫%-এর নিচে রাখুন।",
+  hpIncome:
+    "তখনকার মাসিক আয়",
+  hpLoanRate:
+    "ঋণের সুদ (%)",
+  hpTenor:
+    "ঋণের বছর",
+  hpMaxEmi:
+    "নিরাপদ মাসিক কিস্তি",
+  hpMaxLoan:
+    "সর্বোচ্চ নিরাপদ ঋণ",
+  hpMaxPrice:
+    "সর্বোচ্চ নিরাপদ বাড়ির দাম",
+  hpSafeYes:
+    "আপনার লক্ষ্য নিরাপদ সীমার ভেতরে।",
+  hpSafeNo:
+    "আপনার লক্ষ্য নিরাপদ সীমার ওপরে। {amount}-এর কাছাকাছি রাখুন, অথবা আয় বা ডাউন পেমেন্ট বাড়ান।",
+  hpNeedIncome:
+    "এটি দেখতে আয় লিখুন।",
+  hpMakeGoal:
+    "লক্ষ্যে যোগ করুন",
+  hpGoalMade:
+    "লক্ষ্যে যোগ হয়েছে",
+  hpSeeGoals:
+    "লক্ষ্য দেখুন",
+  hpGoalTitle:
+    "বাড়ির ডাউন পেমেন্ট",
+  hpDisclaimer:
+    "মোটামুটি হিসাব। আসল দাম, সুদ ও ফি বদলায়।",
+  hpRedo:
+    "গল্পটি আবার দেখুন",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

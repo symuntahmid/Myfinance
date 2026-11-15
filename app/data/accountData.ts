@@ -25,6 +25,7 @@ const STORAGE_KEYS = {
   lifeGoals: "myfinance-life-goals",
   freedom: "myfinance-freedom",
   needWant: "myfinance-need-want",
+  homePlan: "myfinance-home-plan",
 };
 
 /* ==========================================
