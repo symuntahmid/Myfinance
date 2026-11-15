@@ -18,6 +18,8 @@ export type Debt = {
   name: string;
   emoji: string;
   amount: number; // how much is still owed
+  rate?: number; // yearly interest in %, 0 or missing = none
+  minPay?: number; // the smallest monthly payment
 };
 
 export type NetWorth = {
@@ -95,6 +97,14 @@ export function updateDebtAmount(id: string, amount: number) {
   saveDebts(
     getDebts().map((item) =>
       item.id === id ? { ...item, amount } : item
+    )
+  );
+}
+
+export function updateDebt(id: string, patch: Partial<Omit<Debt, "id">>) {
+  saveDebts(
+    getDebts().map((item) =>
+      item.id === id ? { ...item, ...patch } : item
     )
   );
 }

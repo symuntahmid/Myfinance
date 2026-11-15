@@ -617,6 +617,40 @@ export type TranslationKey =
   | "hpGoalTitle"
   | "hpDisclaimer"
   | "hpRedo"
+  | "dpEntryTitle"
+  | "dpEntrySub"
+  | "dpStory1"
+  | "dpStory2"
+  | "dpStory3"
+  | "dpAsk"
+  | "dpNo"
+  | "dpYes"
+  | "dpNoReply"
+  | "dpPlanTitle"
+  | "dpPlanSub"
+  | "dpListTitle"
+  | "dpListHint"
+  | "dpOwed"
+  | "dpRate"
+  | "dpMin"
+  | "dpName"
+  | "dpAdd"
+  | "dpRemove"
+  | "dpPlanSection"
+  | "dpExtra"
+  | "dpAvalanche"
+  | "dpAvalancheHint"
+  | "dpSnowball"
+  | "dpSnowballHint"
+  | "dpFreeBy"
+  | "dpInterestTotal"
+  | "dpSaves"
+  | "dpOrder"
+  | "dpClearedIn"
+  | "dpNever"
+  | "dpNeedPay"
+  | "dpRedo"
+  | "dpDisclaimer"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -1847,6 +1881,74 @@ en: {
     "Rough estimates. Real prices, rates and fees change.",
   hpRedo:
     "Start the story again",
+  dpEntryTitle:
+    "Debt free",
+  dpEntrySub:
+    "A short story, then your plan",
+  dpStory1:
+    "Karim borrows {amount} at {rate}% a year. He pays {pay} a month.",
+  dpStory2:
+    "After {months} months he has paid {total}. {interest} of it was only interest.",
+  dpStory3:
+    "Add just {extra} more each month and he is free {months} months sooner, saving {saved}.",
+  dpAsk:
+    "Do you owe anyone money?",
+  dpNo:
+    "No, I am debt free",
+  dpYes:
+    "Yes, I owe money",
+  dpNoReply:
+    "Great. Stay here. Borrow only when it builds something.",
+  dpPlanTitle:
+    "Debt Planner",
+  dpPlanSub:
+    "One debt at a time, until you are free",
+  dpListTitle:
+    "What you owe",
+  dpListHint:
+    "Add the interest and the smallest monthly payment for each.",
+  dpOwed:
+    "Owed",
+  dpRate:
+    "Interest a year (%)",
+  dpMin:
+    "Smallest payment a month",
+  dpName:
+    "Who or what",
+  dpAdd:
+    "Add this debt",
+  dpRemove:
+    "Remove",
+  dpPlanSection:
+    "Your pay-off plan",
+  dpExtra:
+    "Extra you can pay each month",
+  dpAvalanche:
+    "Highest interest first",
+  dpAvalancheHint:
+    "Costs you the least",
+  dpSnowball:
+    "Smallest debt first",
+  dpSnowballHint:
+    "Quick wins keep you going",
+  dpFreeBy:
+    "Debt free by",
+  dpInterestTotal:
+    "Interest you will pay",
+  dpSaves:
+    "Your extra saves {saved} and {months} months.",
+  dpOrder:
+    "Order to clear",
+  dpClearedIn:
+    "clear in {n} months",
+  dpNever:
+    "These payments never clear the debt. Raise a payment or add extra.",
+  dpNeedPay:
+    "Add a payment to see your plan.",
+  dpRedo:
+    "Start the story again",
+  dpDisclaimer:
+    "Rough estimates. Your lender's real terms may differ.",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3143,6 +3245,74 @@ bn: {
     "মোটামুটি হিসাব। আসল দাম, সুদ ও ফি বদলায়।",
   hpRedo:
     "গল্পটি আবার দেখুন",
+  dpEntryTitle:
+    "দেনামুক্ত",
+  dpEntrySub:
+    "ছোট একটি গল্প, তারপর আপনার পরিকল্পনা",
+  dpStory1:
+    "করিম বছরে {rate}% সুদে {amount} ধার নেন। তিনি মাসে {pay} দেন।",
+  dpStory2:
+    "{months} মাস পর তিনি {total} দিয়েছেন। এর {interest} শুধুই সুদ।",
+  dpStory3:
+    "প্রতি মাসে মাত্র {extra} বেশি দিলে তিনি {months} মাস আগে মুক্ত, আর {saved} বাঁচান।",
+  dpAsk:
+    "আপনি কি কারও কাছে টাকা ধারেন?",
+  dpNo:
+    "না, আমি দেনামুক্ত",
+  dpYes:
+    "হ্যাঁ, ধার আছে",
+  dpNoReply:
+    "দারুণ। এভাবেই থাকুন। শুধু তখনই ধার নিন যখন তা কিছু গড়ে।",
+  dpPlanTitle:
+    "ঋণ পরিকল্পনা",
+  dpPlanSub:
+    "একবারে একটি ঋণ, মুক্ত না হওয়া পর্যন্ত",
+  dpListTitle:
+    "যা ধার আছে",
+  dpListHint:
+    "প্রতিটির সুদ ও সর্বনিম্ন মাসিক কিস্তি লিখুন।",
+  dpOwed:
+    "বাকি",
+  dpRate:
+    "বার্ষিক সুদ (%)",
+  dpMin:
+    "সর্বনিম্ন মাসিক কিস্তি",
+  dpName:
+    "কার কাছে / কী জন্য",
+  dpAdd:
+    "ঋণ যোগ করুন",
+  dpRemove:
+    "মুছুন",
+  dpPlanSection:
+    "আপনার শোধের পরিকল্পনা",
+  dpExtra:
+    "প্রতি মাসে অতিরিক্ত যা দিতে পারেন",
+  dpAvalanche:
+    "বেশি সুদ আগে",
+  dpAvalancheHint:
+    "সবচেয়ে কম খরচ",
+  dpSnowball:
+    "ছোট ঋণ আগে",
+  dpSnowballHint:
+    "দ্রুত জয় এগিয়ে রাখে",
+  dpFreeBy:
+    "দেনামুক্ত হবেন",
+  dpInterestTotal:
+    "সুদ দেবেন",
+  dpSaves:
+    "আপনার অতিরিক্ত টাকা {saved} ও {months} মাস বাঁচায়।",
+  dpOrder:
+    "শোধের ক্রম",
+  dpClearedIn:
+    "{n} মাসে শোধ",
+  dpNever:
+    "এই কিস্তিতে ঋণ কখনো শোধ হবে না। কিস্তি বা অতিরিক্ত টাকা বাড়ান।",
+  dpNeedPay:
+    "পরিকল্পনা দেখতে একটি কিস্তি লিখুন।",
+  dpRedo:
+    "গল্পটি আবার দেখুন",
+  dpDisclaimer:
+    "মোটামুটি হিসাব। ঋণদাতার আসল শর্ত আলাদা হতে পারে।",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

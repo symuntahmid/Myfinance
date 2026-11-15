@@ -25,7 +25,7 @@ const HREF: Record<StepId, string> = {
   track: "/dashboard",
   plan: "/plan",
   starter: "/accounts",
-  debt: "/net-worth",
+  debt: "/debt-plan",
   safety: "/accounts",
   invest: "/investments",
   freedom: "/profile",

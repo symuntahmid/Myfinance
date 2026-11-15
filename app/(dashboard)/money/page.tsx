@@ -87,19 +87,24 @@ export default function MoneyPage() {
 
       {/* A story, not a feature list */}
 
-      <Link
-        href="/home-plan"
-        className="paper block rounded-3xl border-2 border-[var(--ink)]/10 p-4"
-      >
-        <p className="font-hand text-3xl leading-tight text-[var(--pen)]">
-          <span className="hl">{t("hpEntryTitle")}</span>
-        </p>
+      <div className="grid grid-cols-2 gap-3">
+        {[
+          { href: "/home-plan", title: t("hpEntryTitle"), sub: t("hpEntrySub") },
+          { href: "/debt-plan", title: t("dpEntryTitle"), sub: t("dpEntrySub") },
+        ].map((card) => (
+          <Link
+            key={card.href}
+            href={card.href}
+            className="paper block rounded-3xl border-2 border-[var(--ink)]/10 p-4"
+          >
+            <p className="font-hand text-2xl leading-tight text-[var(--pen)]">
+              <span className="hl">{card.title}</span>
+            </p>
 
-        <p className="mt-2 flex items-center justify-between gap-3 text-sm">
-          {t("hpEntrySub")}
-          <ChevronRight size={18} className="shrink-0 text-[var(--pen)]" />
-        </p>
-      </Link>
+            <p className="mt-2 text-xs">{card.sub}</p>
+          </Link>
+        ))}
+      </div>
 
       <MoneyTrendChart />
 
