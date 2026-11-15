@@ -715,6 +715,71 @@ export type TranslationKey =
   | "stOn"
   | "stOff"
   | "stSecurity"
+  | "ivTitle"
+  | "ivSub"
+  | "ivTabPortfolio"
+  | "ivTabGrow"
+  | "ivTabRetire"
+  | "ivTabLearn"
+  | "ivValue"
+  | "ivInvestedLbl"
+  | "ivGain"
+  | "ivAdd"
+  | "ivNoneTitle"
+  | "ivNoneText"
+  | "ivHoldings"
+  | "ivMix"
+  | "ivSpread"
+  | "ivGrowTitle"
+  | "ivStart"
+  | "ivMonthly"
+  | "ivRate"
+  | "ivYears"
+  | "ivInflation"
+  | "ivFinal"
+  | "ivPutIn"
+  | "ivEarned"
+  | "ivReal"
+  | "ivDouble"
+  | "ivEarlyTitle"
+  | "ivEarlyText"
+  | "ivExample"
+  | "ivChart"
+  | "ivRetTitle"
+  | "ivAge"
+  | "ivRetireAge"
+  | "ivLifeTo"
+  | "ivCostNow"
+  | "ivSaved"
+  | "ivSavingNow"
+  | "ivRetReturn"
+  | "ivPostReturn"
+  | "ivNeedAtRet"
+  | "ivNest"
+  | "ivProjected"
+  | "ivOnTrack"
+  | "ivShort"
+  | "ivReady"
+  | "ivYearsLeft"
+  | "ivRetNote"
+  | "ivBadAges"
+  | "ivRules"
+  | "ivRule1"
+  | "ivRule2"
+  | "ivRule3"
+  | "ivRule4"
+  | "ivByTime"
+  | "ivUnder1"
+  | "ivMid"
+  | "ivOver5"
+  | "ivUnder1Do"
+  | "ivMidDo"
+  | "ivOver5Do"
+  | "ivRisk"
+  | "ivHorizon"
+  | "ivGoodFor"
+  | "ivWatch"
+  | "ivCheckRates"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2141,6 +2206,136 @@ en: {
     "Off",
   stSecurity:
     "Security and backup",
+  ivTitle:
+    "Invest",
+  ivSub:
+    "Grow your money with a plan",
+  ivTabPortfolio:
+    "Portfolio",
+  ivTabGrow:
+    "Grow",
+  ivTabRetire:
+    "Retire",
+  ivTabLearn:
+    "Learn",
+  ivValue:
+    "Portfolio value",
+  ivInvestedLbl:
+    "Invested",
+  ivGain:
+    "Gain",
+  ivAdd:
+    "Add investment",
+  ivNoneTitle:
+    "Start your portfolio",
+  ivNoneText:
+    "Add what you already own, or open Grow to see what regular saving can become.",
+  ivHoldings:
+    "Holdings",
+  ivMix:
+    "Your mix",
+  ivSpread:
+    "{pct}% of your portfolio is in {type}. Spreading across types lowers the risk.",
+  ivGrowTitle:
+    "Compound growth",
+  ivStart:
+    "Starting amount",
+  ivMonthly:
+    "Add every month",
+  ivRate:
+    "Yearly return (%)",
+  ivYears:
+    "Years",
+  ivInflation:
+    "Inflation (%)",
+  ivFinal:
+    "You could have",
+  ivPutIn:
+    "You put in",
+  ivEarned:
+    "Growth earned",
+  ivReal:
+    "In today's money: {amount}",
+  ivDouble:
+    "At {rate}% your money doubles about every {n} years.",
+  ivEarlyTitle:
+    "Start early wins",
+  ivEarlyText:
+    "Starting 5 years later leaves you with {amount} less at the end.",
+  ivExample:
+    "Example numbers. Use your own.",
+  ivChart:
+    "Growth by year",
+  ivRetTitle:
+    "Retirement planner",
+  ivAge:
+    "Your age",
+  ivRetireAge:
+    "Retire at",
+  ivLifeTo:
+    "Plan until age",
+  ivCostNow:
+    "Monthly cost today",
+  ivSaved:
+    "Saved for retirement",
+  ivSavingNow:
+    "Saving each month",
+  ivRetReturn:
+    "Return before retiring (%)",
+  ivPostReturn:
+    "Return after retiring (%)",
+  ivNeedAtRet:
+    "Monthly cost then",
+  ivNest:
+    "Nest egg you need",
+  ivProjected:
+    "Your savings by then",
+  ivOnTrack:
+    "You are on track.",
+  ivShort:
+    "You are short by {amount}. Save {monthly} more each month to close the gap.",
+  ivReady:
+    "{pct}% ready",
+  ivYearsLeft:
+    "{n} years to go",
+  ivRetNote:
+    "Rough estimate. Costs rise with inflation, and your money keeps earning after you retire.",
+  ivBadAges:
+    "Retirement age must be above your age, and the plan age above that.",
+  ivRules:
+    "Coach rules",
+  ivRule1:
+    "Build an emergency fund first: 3 months of spending.",
+  ivRule2:
+    "Pay high-interest debt before you invest.",
+  ivRule3:
+    "Spread your money across different types.",
+  ivRule4:
+    "Time beats timing. Start early and stay.",
+  ivByTime:
+    "Pick by timeline",
+  ivUnder1:
+    "Under 1 year",
+  ivMid:
+    "1 to 5 years",
+  ivOver5:
+    "5 years or more",
+  ivUnder1Do:
+    "Keep it safe and easy to reach: savings account or DPS.",
+  ivMidDo:
+    "Steady and low risk: FDR, savings certificates, bonds.",
+  ivOver5Do:
+    "Let it grow: add mutual funds or stocks, plus gold, in small steps.",
+  ivRisk:
+    "Risk",
+  ivHorizon:
+    "Best for",
+  ivGoodFor:
+    "Good for",
+  ivWatch:
+    "Watch out",
+  ivCheckRates:
+    "Rates and rules change. Check with your bank or the official source before you invest.",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3633,6 +3828,136 @@ bn: {
     "বন্ধ",
   stSecurity:
     "নিরাপত্তা ও ব্যাকআপ",
+  ivTitle:
+    "বিনিয়োগ",
+  ivSub:
+    "পরিকল্পনা করে টাকা বাড়ান",
+  ivTabPortfolio:
+    "পোর্টফোলিও",
+  ivTabGrow:
+    "বাড়ান",
+  ivTabRetire:
+    "অবসর",
+  ivTabLearn:
+    "শিখুন",
+  ivValue:
+    "পোর্টফোলিওর মূল্য",
+  ivInvestedLbl:
+    "বিনিয়োগ",
+  ivGain:
+    "লাভ",
+  ivAdd:
+    "বিনিয়োগ যোগ করুন",
+  ivNoneTitle:
+    "পোর্টফোলিও শুরু করুন",
+  ivNoneText:
+    "যা আছে তা যোগ করুন, অথবা নিয়মিত জমালে কত হয় তা দেখতে বাড়ান ট্যাব খুলুন।",
+  ivHoldings:
+    "আপনার বিনিয়োগ",
+  ivMix:
+    "আপনার মিশ্রণ",
+  ivSpread:
+    "পোর্টফোলিওর {pct}% শুধু {type}-এ। একাধিক ধরনে ছড়ালে ঝুঁকি কমে।",
+  ivGrowTitle:
+    "চক্রবৃদ্ধি বৃদ্ধি",
+  ivStart:
+    "শুরুর টাকা",
+  ivMonthly:
+    "প্রতি মাসে যোগ",
+  ivRate:
+    "বার্ষিক রিটার্ন (%)",
+  ivYears:
+    "বছর",
+  ivInflation:
+    "মূল্যস্ফীতি (%)",
+  ivFinal:
+    "আপনার হতে পারে",
+  ivPutIn:
+    "আপনি দেবেন",
+  ivEarned:
+    "বৃদ্ধি থেকে আয়",
+  ivReal:
+    "আজকের টাকায়: {amount}",
+  ivDouble:
+    "{rate}% হারে টাকা প্রায় প্রতি {n} বছরে দ্বিগুণ হয়।",
+  ivEarlyTitle:
+    "আগে শুরু করলেই জয়",
+  ivEarlyText:
+    "৫ বছর দেরিতে শুরু করলে শেষে {amount} কম থাকে।",
+  ivExample:
+    "উদাহরণের সংখ্যা। নিজেরটি দিন।",
+  ivChart:
+    "বছরভিত্তিক বৃদ্ধি",
+  ivRetTitle:
+    "অবসর পরিকল্পনা",
+  ivAge:
+    "আপনার বয়স",
+  ivRetireAge:
+    "অবসর নেবেন",
+  ivLifeTo:
+    "পরিকল্পনা কত বয়স পর্যন্ত",
+  ivCostNow:
+    "আজকের মাসিক খরচ",
+  ivSaved:
+    "অবসরের জন্য জমা",
+  ivSavingNow:
+    "প্রতি মাসে জমান",
+  ivRetReturn:
+    "অবসরের আগে রিটার্ন (%)",
+  ivPostReturn:
+    "অবসরের পরে রিটার্ন (%)",
+  ivNeedAtRet:
+    "তখনকার মাসিক খরচ",
+  ivNest:
+    "যত তহবিল লাগবে",
+  ivProjected:
+    "তখন আপনার জমা",
+  ivOnTrack:
+    "আপনি ঠিক পথে আছেন।",
+  ivShort:
+    "{amount} কম পড়ছে। ঘাটতি মেটাতে প্রতি মাসে আরও {monthly} জমান।",
+  ivReady:
+    "{pct}% প্রস্তুত",
+  ivYearsLeft:
+    "আর {n} বছর",
+  ivRetNote:
+    "মোটামুটি হিসাব। মূল্যস্ফীতিতে খরচ বাড়ে, আর অবসরের পরেও টাকা আয় করে।",
+  ivBadAges:
+    "অবসরের বয়স বর্তমান বয়সের বেশি, আর পরিকল্পনার বয়স তার বেশি হতে হবে।",
+  ivRules:
+    "কোচের নিয়ম",
+  ivRule1:
+    "আগে জরুরি তহবিল: ৩ মাসের খরচ।",
+  ivRule2:
+    "বিনিয়োগের আগে বেশি সুদের ঋণ শোধ করুন।",
+  ivRule3:
+    "টাকা বিভিন্ন ধরনে ছড়িয়ে রাখুন।",
+  ivRule4:
+    "সময়ই সেরা। আগে শুরু করুন, লেগে থাকুন।",
+  ivByTime:
+    "সময় অনুযায়ী বাছুন",
+  ivUnder1:
+    "১ বছরের কম",
+  ivMid:
+    "১ থেকে ৫ বছর",
+  ivOver5:
+    "৫ বছর বা বেশি",
+  ivUnder1Do:
+    "নিরাপদ ও সহজে তোলার মতো রাখুন: সঞ্চয়ী হিসাব বা DPS।",
+  ivMidDo:
+    "স্থির ও কম ঝুঁকি: FDR, সঞ্চয়পত্র, বন্ড।",
+  ivOver5Do:
+    "বাড়তে দিন: অল্প অল্প করে মিউচুয়াল ফান্ড বা শেয়ার, সাথে স্বর্ণ।",
+  ivRisk:
+    "ঝুঁকি",
+  ivHorizon:
+    "উপযুক্ত সময়",
+  ivGoodFor:
+    "কাজে লাগে",
+  ivWatch:
+    "সতর্ক থাকুন",
+  ivCheckRates:
+    "সুদের হার ও নিয়ম বদলায়। বিনিয়োগের আগে ব্যাংক বা সরকারি উৎসে যাচাই করুন।",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
