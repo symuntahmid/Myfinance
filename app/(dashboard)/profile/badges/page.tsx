@@ -1,671 +1,165 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Lock,
-  CheckCircle2,
-  Sparkles,
-} from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 
-import {
-  getBadgeProgress,
-} from "@/app/data/badgeProgress";
+import { useLanguage } from "@/app/context/LanguageContext";
+import { getBadgeProgress } from "@/app/data/badgeProgress";
 
+const TEXT = {
+  en: {
+    title: "Badges",
+    sub: "Small wins that show your progress.",
+    of: "{a} of {b} unlocked",
+    next: "Next up",
+    done: "Unlocked",
+    all: "All badges",
+    premium: "Premium badges",
+    none: "Earn XP by adding entries and finishing your Daily Journey. Your first badge is close.",
+  },
+  bn: {
+    title: "ব্যাজ",
+    sub: "ছোট ছোট অর্জন, যা আপনার অগ্রগতি দেখায়।",
+    of: "{b}টির মধ্যে {a}টি পেয়েছেন",
+    next: "এরপর যা পাবেন",
+    done: "পেয়েছেন",
+    all: "সব ব্যাজ",
+    premium: "প্রিমিয়াম ব্যাজ",
+    none: "এন্ট্রি যোগ করে ও ডেইলি জার্নি শেষ করে XP জিতুন। প্রথম ব্যাজ কাছেই।",
+  },
+} as const;
 
-export default function BadgesPage() {
+type Item = ReturnType<typeof getBadgeProgress>[number];
 
-  const categories = [
-    "Points",
-    "Saving",
-    "Investment",
-    "Psychology",
-    "Premium",
-  ];
-
-
-  const badgeProgress =
-  getBadgeProgress();
-
-  const badges =
-  badgeProgress.map(
-    (item) => item.badge
-  );
+function Row({ item }: { item: Item }) {
+  const { badge } = item;
 
   return (
-
-    <div className="mx-auto max-w-4xl pb-10">
-
-
-{/* HEADER */}
-
-<div
-className="
-mb-8
-flex
-items-start
-gap-3
-"
->
-
-<Link
-href="/profile"
-className="
-flex
-h-10
-w-10
-shrink-0
-items-center
-justify-center
-rounded-xl
-border
-border-[var(--border)]
-bg-[var(--card)]
-text-[var(--muted)]
-shadow-sm
-transition
-hover:bg-[var(--background)]
-hover:text-[var(--foreground)]
-"
->
-<ArrowLeft size={18}/>
-</Link>
-
-
-<div>
-
-<h1
-className="
-font-display
-text-4xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-Badges
-</h1>
-
-
-<p
-className="
-mt-1
-font-body
-text-sm
-leading-relaxed
-tracking-tight
-text-[var(--muted)]
-"
->
-Your financial achievements, habits, and milestones.
-</p>
-
-
-</div>
-
-
-</div>
-
-
-{/* SUMMARY */}
-
-<div
-className="
-mb-8
-grid
-gap-4
-sm:grid-cols-3
-"
->
-
-
-<div
-className="
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--card)]
-p-5
-shadow-sm
-"
->
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Total Badges
-</p>
-
-
-<p
-className="
-mt-2
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-[var(--foreground)]
-"
->
-{badges.length}
-</p>
-
-
-</div>
-
-
-
-
-
-<div
-className="
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--card)]
-p-5
-shadow-sm
-"
->
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Unlocked
-</p>
-
-
-<p
-className="
-mt-2
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-emerald-500
-"
->
-{
-  badgeProgress.filter(
-    (item) => item.unlocked
-  ).length
-}
-</p>
-
-
-</div>
-
-
-
-
-
-
-<div
-className="
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--card)]
-p-5
-shadow-sm
-"
->
-
-<p
-className="
-font-body
-text-xs
-font-medium
-uppercase
-tracking-[0.12em]
-text-[var(--muted)]
-"
->
-Premium
-</p>
-
-
-<p
-className="
-mt-2
-font-display
-text-3xl
-font-medium
-tracking-[-0.04em]
-text-violet-500
-"
->
-
-{
-badges.filter(
-badge=>badge.premium
-).length
-}
-
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-{/* CATEGORY BUTTONS */}
-
-<div
-className="
-mb-8
-flex
-gap-2
-overflow-x-auto
-pb-1
-"
->
-
-{
-categories.map(category=>(
-
-<button
-key={category}
-type="button"
-className="
-shrink-0
-rounded-full
-border
-border-[var(--border)]
-bg-[var(--card)]
-px-4
-py-2
-font-body
-text-xs
-font-medium
-tracking-tight
-text-[var(--muted)]
-transition
-hover:border-cyan-300
-hover:bg-cyan-500/10
-hover:text-cyan-500
-"
->
-{category}
-</button>
-
-))
-}
-
-</div>
-
-
-  {/* BADGES */}
-
-<div
-className="
-grid
-gap-5
-sm:grid-cols-2
-lg:grid-cols-3
-"
->
-
-{
-badgeProgress.map((item)=>{
-
-const badge = item.badge;
-const isUnlocked = item.unlocked;
-
-
-return (
-
-<div
-key={badge.id}
-className={`
-relative
-overflow-hidden
-rounded-3xl
-border
-p-5
-shadow-sm
-transition
-
-${
-badge.premium
-
-?
-
-`
-border-violet-300
-bg-gradient-to-br
-from-violet-500/10
-via-fuchsia-500/5
-to-transparent
-`
-
-:
-
-`
-${
-  isUnlocked
-  ?
-  `
-  border-emerald-500/30
-  bg-emerald-500/5
-  `
-  :
-  `
-  border-[var(--border)]
-  bg-[var(--card)]
-  `
-}
-`
-
-}
-
-`}
->
-
-
-{
-badge.premium && (
-
-<div
-className="
-absolute
-right-4
-top-4
-flex
-items-center
-gap-1
-rounded-full
-bg-violet-500/10
-px-2.5
-py-1
-font-body
-text-[10px]
-font-semibold
-text-violet-500
-"
->
-
-<Sparkles size={11}/>
-
-PREMIUM
-
-</div>
-
-)
-}
-
-
-
-
-
-{/* ICON */}
-
-<div
-className={`
-flex
-h-16
-w-16
-items-center
-justify-center
-rounded-2xl
-text-3xl
-
-${
-badge.premium
-
-?
-
-"bg-violet-500/10"
-
-:
-
-"bg-[var(--background)]"
-
-}
-
-`}
->
-
-{badge.icon}
-
-</div>
-
-
-
-
-
-<h2
-className="
-mt-5
-font-display
-text-lg
-font-medium
-tracking-[-0.02em]
-text-[var(--foreground)]
-"
->
-{badge.name}
-</h2>
-
-
-
-
-<p
-className="
-mt-1
-font-body
-text-xs
-leading-relaxed
-tracking-tight
-text-[var(--muted)]
-"
->
-{badge.description}
-</p>
-
-
-
-
-
-{/* REQUIREMENT */}
-
-<div
-className="
-mt-5
-rounded-2xl
-bg-[var(--background)]
-p-3
-"
->
-
-
-<p
-className="
-font-body
-text-[10px]
-font-semibold
-uppercase
-tracking-wider
-text-[var(--muted)]
-"
->
-Requirement
-</p>
-
-
-<p
-className="
-mt-1
-font-body
-text-xs
-font-medium
-text-[var(--foreground)]
-"
->
-{badge.requirement}
-</p>
-
-
-<div
-className="
-mt-3
-h-2
-overflow-hidden
-rounded-full
-bg-[var(--border)]
-"
->
-<div
-className="
-h-full
-rounded-full
-bg-cyan-500
-transition-all
-duration-700
-"
-style={{
-width:`${item.progress}%`
-}}
-/>
-</div>
-
-
-<p
-className="
-mt-2
-font-body
-text-[11px]
-text-[var(--muted)]
-"
->
-{item.current} / {item.target}
-</p>
-
-
-</div>
-
-
-
-
-
-{/* STATUS */}
-
-<div
-className="
-mt-4
-flex
-items-center
-gap-2
-"
->
-
-
-{
-badge.premium ? (
-
-<>
-
-<Lock
-size={15}
-className="text-violet-500"
-/>
-
-<span
-className="
-font-body
-text-xs
-font-medium
-text-violet-500
-"
->
-Premium badge
-</span>
-
-</>
-
-) : isUnlocked ? (
-
-<>
-
-<CheckCircle2
-size={15}
-className="text-emerald-500"
-/>
-
-<span
-className="
-font-body
-text-xs
-font-medium
-text-emerald-500
-"
->
-Unlocked
-</span>
-
-</>
-
-) : (
-
-<>
-
-<Lock
-size={15}
-className="text-[var(--muted)]"
-/>
-
-<span
-className="
-font-body
-text-xs
-font-medium
-text-[var(--muted)]
-"
->
-Locked
-</span>
-
-</>
-
-)
-}
-
-
-
-</div>
-
-
-
-</div>
-
-)
-
-})
-}
-
-
-</div>
-
-
-    </div>
-
+    <li className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-2xl">
+        {badge.icon}
+      </span>
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-bold">{badge.name}</p>
+        <p className="truncate text-xs text-[var(--muted)]">
+          {badge.requirement}
+        </p>
+
+        {!item.unlocked && (
+          <div className="mt-2 h-1.5 rounded-full bg-[var(--border)]">
+            <div
+              className="h-1.5 rounded-full bg-[var(--primary)]"
+              style={{ width: `${Math.min(100, item.progress)}%` }}
+            />
+          </div>
+        )}
+      </div>
+
+      <span className="shrink-0 text-xs font-semibold text-[var(--primary)]">
+        {item.unlocked ? "✓" : `${Math.round(item.progress)}%`}
+      </span>
+    </li>
   );
+}
 
+export default function BadgesPage() {
+  const { language } = useLanguage();
+  const x = TEXT[language === "bn" ? "bn" : "en"];
+
+  const items = getBadgeProgress();
+
+  const unlocked = items.filter((i) => i.unlocked);
+  const regular = items.filter((i) => !i.unlocked && !i.badge.premium);
+  const premium = items.filter((i) => i.badge.premium && !i.unlocked);
+
+  const next = [...regular].sort((a, b) => b.progress - a.progress).slice(0, 3);
+
+  return (
+    <div className="space-y-5 pb-24">
+      <header className="flex items-start gap-3">
+        <Link
+          href="/profile"
+          aria-label="Back"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--muted)]"
+        >
+          <ArrowLeft size={18} />
+        </Link>
+
+        <div>
+          <h1 className="text-xl font-bold">{x.title}</h1>
+          <p className="text-sm text-[var(--muted)]">{x.sub}</p>
+        </div>
+      </header>
+
+      <div className="rounded-2xl bg-[var(--forest)] p-4 text-[var(--on-forest)]">
+        <p className="text-sm font-semibold">
+          {x.of
+            .replace("{a}", String(unlocked.length))
+            .replace("{b}", String(items.length))}
+        </p>
+
+        <div className="mt-2 h-2 rounded-full bg-white/20">
+          <div
+            className="h-2 rounded-full bg-[var(--gold)]"
+            style={{
+              width: `${items.length ? (unlocked.length / items.length) * 100 : 0}%`,
+            }}
+          />
+        </div>
+
+        {unlocked.length === 0 && (
+          <p className="mt-3 text-xs opacity-80">{x.none}</p>
+        )}
+      </div>
+
+      {unlocked.length > 0 && (
+        <section>
+          <h2 className="mb-2 text-sm font-bold">{x.done}</h2>
+          <ul className="space-y-2">
+            {unlocked.map((i) => (
+              <Row key={i.badge.id} item={i} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {next.length > 0 && (
+        <section>
+          <h2 className="mb-2 text-sm font-bold">{x.next}</h2>
+          <ul className="space-y-2">
+            {next.map((i) => (
+              <Row key={i.badge.id} item={i} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {[
+        { label: x.all, list: regular.filter((i) => !next.includes(i)) },
+        { label: x.premium, list: premium },
+      ]
+        .filter((g) => g.list.length > 0)
+        .map((g) => (
+          <details
+            key={g.label}
+            className="group rounded-2xl border border-[var(--border)] bg-[var(--card)]"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
+              {g.label} ({g.list.length})
+              <ChevronRight
+                size={16}
+                className="transition group-open:rotate-90"
+              />
+            </summary>
+
+            <ul className="space-y-2 px-3 pb-3">
+              {g.list.map((i) => (
+                <Row key={i.badge.id} item={i} />
+              ))}
+            </ul>
+          </details>
+        ))}
+    </div>
+  );
 }

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getTransactions } from "@/app/data/transactions";
 import { getAccounts, getBalances } from "@/app/data/accounts";
+import { getSettings } from "@/app/data/settings";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
 import {
   addCustomCategory,
@@ -41,6 +43,7 @@ export default function PlanPage() {
   const [month, setMonth] = useState(currentMonth());
   const [result, setResult] = useState<PlanResult | null>(null);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [income, setIncome] = useState<number | null>(null);
 
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
@@ -61,6 +64,7 @@ export default function PlanPage() {
       );
 
       setTotalBalance(total);
+      setIncome(getSettings().monthlyIncome);
 
       const custom = getCustomCategories().map((item) => item.value);
 
@@ -84,6 +88,7 @@ export default function PlanPage() {
       "transactionsUpdated",
       "accountsUpdated",
       "languageUpdated",
+      "settingsUpdated",
     ];
 
     events.forEach((e) => window.addEventListener(e, refresh));
@@ -129,10 +134,20 @@ export default function PlanPage() {
       )
   );
 
+  const activeRows = visibleRows.filter(
+    (row) => row.assigned > 0 || row.spent > 0 || row.available !== 0
+  );
+  const emptyRows = visibleRows.filter((row) => !activeRows.includes(row));
+  const planned = result.totalAssigned;
+  const plannedPct =
+    income && income > 0 ? Math.min(100, Math.round((planned / income) * 100)) : 0;
+
+  const bn = language === "bn";
+
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 pb-32 pt-6 md:px-0">
+    <div className="space-y-4 pb-24">
       <div>
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">
+        <h1 className="text-xl font-bold text-[var(--foreground)]">
           {t("planTitle")}
         </h1>
 
@@ -166,12 +181,10 @@ export default function PlanPage() {
       </div>
 
       <div
-        className={`rounded-3xl p-6 text-white ${
+        className={`rounded-3xl p-5 text-white ${
           rta < 0
             ? "bg-gradient-to-br from-[#8F1D18] to-[var(--sun)]"
-            : rta === 0
-            ? "bg-gradient-to-br from-[#0B5D47] to-[#1F9D55]"
-            : "bg-gradient-to-br from-[var(--forest)] to-[var(--primary)]"
+            : "bg-[var(--forest)]"
         }`}
       >
         <p className="text-sm opacity-90">
@@ -189,18 +202,46 @@ export default function PlanPage() {
             ? t("planAllAssigned")
             : ""}
         </p>
+
+        {income !== null && income > 0 && (
+          <div className="mt-3 border-t border-white/20 pt-3">
+            <div className="flex justify-between text-xs opacity-90">
+              <span>
+                {bn ? "মাসিক আয়ের" : "Of your monthly income"}{" "}
+                {formatCurrency(income)}
+              </span>
+              <span>
+                {bn ? "পরিকল্পনা" : "planned"} {plannedPct}%
+              </span>
+            </div>
+
+            <div className="mt-1.5 h-1.5 rounded-full bg-white/20">
+              <div
+                className="h-1.5 rounded-full bg-[var(--gold)]"
+                style={{ width: `${plannedPct}%` }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {totalBalance === 0 && result.totalAssigned === 0 && (
-        <p className="rounded-2xl bg-amber-500/10 p-3 text-sm text-[var(--foreground)]">
-          {t("planSetBalances")}
-        </p>
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-[var(--gold-soft)] p-3 text-sm text-[var(--foreground)]">
+          <span>{t("planSetBalances")}</span>
+
+          <Link
+            href="/accounts"
+            className="shrink-0 rounded-full bg-[var(--primary)] px-4 py-2 text-xs font-semibold text-white"
+          >
+            {bn ? "ব্যালান্স দিন" : "Set balances"}
+          </Link>
+        </div>
       )}
 
       <button
         type="button"
         onClick={() => copyFromPreviousMonth(month)}
-        className="w-full rounded-2xl border border-[var(--border)] py-3 text-sm font-semibold text-[var(--foreground)]"
+        className="w-full rounded-full border border-[var(--border)] py-2.5 text-sm font-semibold text-[var(--foreground)]"
       >
         {t("planCopyLast")}
       </button>
@@ -271,113 +312,130 @@ export default function PlanPage() {
         </button>
       )}
 
-      <div className="space-y-3">
-        {visibleRows.map((row) => {
-          // How much of what this category had has been used up.
-          const had = row.spent + Math.max(row.available, 0);
-          const share = had > 0 ? (row.spent / had) * 100 : 0;
-
-          return (
-            <div
-              key={row.category}
-              className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <p className="flex min-w-0 items-center gap-2 truncate font-semibold text-[var(--foreground)]">
-                  {label(row.category)}
-
-                  {customList.includes(row.category) && (
-                    <button
-                      type="button"
-                      aria-label="remove category"
-                      onClick={() => {
-                        if (window.confirm(t("planDeleteCategory"))) {
-                          deleteCustomCategory(row.category);
-                        }
-                      }}
-                      className="text-[var(--muted)]"
+      {(() => {
+        const renderRow = (row: (typeof visibleRows)[number]) => {
+                  // How much of what this category had has been used up.
+                  const had = row.spent + Math.max(row.available, 0);
+                  const share = had > 0 ? (row.spent / had) * 100 : 0;
+        
+                  return (
+                    <div
+                      key={row.category}
+                      className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
                     >
-                      <Trash2 size={13} />
-                    </button>
-                  )}
-                </p>
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="flex min-w-0 items-center gap-2 truncate font-semibold text-[var(--foreground)]">
+                          {label(row.category)}
+        
+                          {customList.includes(row.category) && (
+                            <button
+                              type="button"
+                              aria-label="remove category"
+                              onClick={() => {
+                                if (window.confirm(t("planDeleteCategory"))) {
+                                  deleteCustomCategory(row.category);
+                                }
+                              }}
+                              className="text-[var(--muted)]"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </p>
+        
+                        <p
+                          className={`shrink-0 text-sm font-bold ${
+                            row.available < 0
+                              ? "text-red-500"
+                              : row.available > 0
+                              ? "text-emerald-600"
+                              : "text-[var(--muted)]"
+                          }`}
+                        >
+                          {row.available < 0
+                            ? `${t("planOverspent")} ${formatCurrency(-row.available)}`
+                            : `${t("planAvailable")} ${formatCurrency(row.available)}`}
+                        </p>
+                      </div>
+        
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/10">
+                        <div
+                          className={`h-full rounded-full ${
+                            row.available < 0
+                              ? "bg-red-500"
+                              : "bg-emerald-500"
+                          }`}
+                          style={{
+                            width: `${row.available < 0 ? 100 : share}%`,
+                          }}
+                        />
+                      </div>
+        
+                      <div className="mt-3 grid grid-cols-2 gap-3 text-xs text-[var(--muted)]">
+                        <div>
+                          {t("planAssigned")}
+        
+                          {editing === row.category ? (
+                            <input
+                              autoFocus
+                              inputMode="decimal"
+                              value={draft}
+                              onChange={(e) =>
+                                setDraft(
+                                  e.target.value.replace(/[^\d.]/g, "")
+                                )
+                              }
+                              onBlur={() => commit(row.category)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") commit(row.category);
+                              }}
+                              className="mt-1 w-full rounded-xl border border-[var(--primary)] bg-[var(--card)] p-2 text-sm font-semibold text-[var(--foreground)]"
+                            />
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditing(row.category);
+                                setDraft(
+                                  row.assigned ? String(row.assigned) : ""
+                                );
+                              }}
+                              className="mt-1 block w-full rounded-xl bg-black/5 p-2 text-left text-sm font-semibold text-[var(--foreground)]"
+                            >
+                              {formatCurrency(row.assigned)}
+                            </button>
+                          )}
+                        </div>
+        
+                        <div>
+                          {t("planSpent")}
+        
+                          <p className="mt-1 p-2 text-sm font-semibold text-[var(--foreground)]">
+                            {formatCurrency(row.spent)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                };
 
-                <p
-                  className={`shrink-0 text-sm font-bold ${
-                    row.available < 0
-                      ? "text-red-500"
-                      : row.available > 0
-                      ? "text-emerald-600"
-                      : "text-[var(--muted)]"
-                  }`}
-                >
-                  {row.available < 0
-                    ? `${t("planOverspent")} ${formatCurrency(-row.available)}`
-                    : `${t("planAvailable")} ${formatCurrency(row.available)}`}
-                </p>
-              </div>
+        return (
+          <>
+            <div className="space-y-3">{activeRows.map(renderRow)}</div>
 
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/10">
-                <div
-                  className={`h-full rounded-full ${
-                    row.available < 0
-                      ? "bg-red-500"
-                      : "bg-emerald-500"
-                  }`}
-                  style={{
-                    width: `${row.available < 0 ? 100 : share}%`,
-                  }}
-                />
-              </div>
+            {emptyRows.length > 0 && (
+              <details className="group rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+                <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
+                  {bn ? "আরও ক্যাটাগরি" : "More categories"} ({emptyRows.length})
+                  <ChevronRight size={16} className="transition group-open:rotate-90" />
+                </summary>
 
-              <div className="mt-3 grid grid-cols-2 gap-3 text-xs text-[var(--muted)]">
-                <div>
-                  {t("planAssigned")}
-
-                  {editing === row.category ? (
-                    <input
-                      autoFocus
-                      inputMode="decimal"
-                      value={draft}
-                      onChange={(e) =>
-                        setDraft(
-                          e.target.value.replace(/[^\d.]/g, "")
-                        )
-                      }
-                      onBlur={() => commit(row.category)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") commit(row.category);
-                      }}
-                      className="mt-1 w-full rounded-xl border border-[var(--primary)] bg-[var(--card)] p-2 text-sm font-semibold text-[var(--foreground)]"
-                    />
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditing(row.category);
-                        setDraft(
-                          row.assigned ? String(row.assigned) : ""
-                        );
-                      }}
-                      className="mt-1 block w-full rounded-xl bg-black/5 p-2 text-left text-sm font-semibold text-[var(--foreground)]"
-                    >
-                      {formatCurrency(row.assigned)}
-                    </button>
-                  )}
-                </div>
-
-                <div>
-                  {t("planSpent")}
-
-                  <p className="mt-1 p-2 text-sm font-semibold text-[var(--foreground)]">
-                    {formatCurrency(row.spent)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                <div className="space-y-3 px-3 pb-3">{emptyRows.map(renderRow)}</div>
+              </details>
+            )}
+          </>
+        );
+      })()}
 
       <p className="text-xs leading-5 text-[var(--muted)]">
         {t("planHint")}

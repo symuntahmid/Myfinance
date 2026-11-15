@@ -1,194 +1,143 @@
 "use client";
 
 import Link from "next/link";
+import { CheckCircle2, ChevronRight, Clock3 } from "lucide-react";
 
-import {
-  BookOpen,
-  CheckCircle2,
-  Lock,
-  Clock3,
-  Star,
-} from "lucide-react";
-
+import { useLanguage } from "@/app/context/LanguageContext";
 import {
   getLessons,
   getModuleProgress,
   isLessonUnlocked,
 } from "../../data/lessons";
 
-export default function AcademyPage() {
-  const lessons = getLessons();
+const TEXT = {
+  en: {
+    title: "Finance Academy",
+    sub: "Short lessons. Earn XP as you learn.",
+    start: "Start here",
+    go: "Start lesson",
+    again: "Continue",
+    done: "Completed",
+    soon: "Coming next",
+    progress: "{a} of {b} lessons done",
+    unlockHint: "Finish the lesson above to open the next one.",
+  },
+  bn: {
+    title: "ফাইন্যান্স একাডেমি",
+    sub: "ছোট ছোট পাঠ। শিখতে শিখতে XP জিতুন।",
+    start: "এখান থেকে শুরু করুন",
+    go: "পাঠ শুরু করুন",
+    again: "চালিয়ে যান",
+    done: "শেষ হয়েছে",
+    soon: "এরপর আসছে",
+    progress: "{b}টির মধ্যে {a}টি পাঠ শেষ",
+    unlockHint: "পরেরটি খুলতে ওপরের পাঠটি শেষ করুন।",
+  },
+} as const;
 
+export default function AcademyPage() {
+  const { language } = useLanguage();
+  const x = TEXT[language === "bn" ? "bn" : "en"];
+
+  const lessons = getLessons();
   const progress = getModuleProgress(1);
 
+  const current = lessons.find(
+    (lesson) => !lesson.completed && isLessonUnlocked(lesson.id)
+  );
+  const finished = lessons.filter((lesson) => lesson.completed);
+  const later = lessons.filter(
+    (lesson) => !lesson.completed && lesson.id !== current?.id
+  );
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 pb-24">
+      <header>
+        <h1 className="text-xl font-bold">{x.title}</h1>
+        <p className="text-sm text-[var(--muted)]">{x.sub}</p>
+      </header>
 
       <div>
-
-        <h1 className="text-4xl font-bold">
-          Finance Academy
-        </h1>
-
-        <p className="mt-2 text-slate-500">
-          Complete lessons, earn XP and become financially smarter.
+        <p className="mb-1 text-xs font-semibold text-[var(--muted)]">
+          {x.progress
+            .replace("{a}", String(progress.completed))
+            .replace("{b}", String(progress.total))}
         </p>
 
-      </div>
-
-      <div className="rounded-3xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-700 p-8 text-white shadow-xl">
-
-        <div className="flex items-center justify-between">
-
-          <div>
-
-            <p className="text-sm uppercase tracking-widest opacity-80">
-              Module 1
-            </p>
-
-            <h2 className="mt-2 text-4xl font-bold">
-              Money Fundamentals
-            </h2>
-
-          </div>
-
-          <div className="rounded-2xl bg-white/15 px-5 py-3 backdrop-blur">
-
-            <p className="text-sm">
-              Progress
-            </p>
-
-            <h3 className="text-2xl font-bold">
-              {progress.completed}/{progress.total}
-            </h3>
-
-          </div>
-
-        </div>
-
-        <div className="mt-8 h-3 overflow-hidden rounded-full bg-white/20">
-
+        <div className="h-2 rounded-full bg-[var(--border)]">
           <div
-            className="h-full rounded-full bg-white transition-all duration-700"
-            style={{
-              width: `${progress.percent}%`,
-            }}
+            className="h-2 rounded-full bg-[var(--primary)]"
+            style={{ width: `${progress.percent}%` }}
           />
-
         </div>
-
       </div>
 
-      <div className="space-y-5">
+      {current && (
+        <Link
+          href={`/academy/${current.id}`}
+          className="block rounded-3xl bg-[var(--forest)] p-5 text-[var(--on-forest)]"
+        >
+          <p className="text-xs font-semibold opacity-80">{x.start}</p>
 
-        {lessons.map((lesson) => {
+          <h2 className="mt-1 text-2xl font-bold">{current.title}</h2>
+          <p className="mt-1 text-sm opacity-80">{current.description}</p>
 
-          const unlocked =
-            isLessonUnlocked(lesson.id);
+          <div className="mt-4 flex items-center justify-between">
+            <span className="flex items-center gap-1 text-xs opacity-80">
+              <Clock3 size={14} />
+              {current.duration} · +{current.xp} XP
+            </span>
 
-          return (
+            <span className="rounded-full bg-[var(--gold)] px-5 py-2 text-sm font-semibold text-black">
+              {progress.completed > 0 ? x.again : x.go}
+            </span>
+          </div>
+        </Link>
+      )}
 
-            <Link
-              key={lesson.id}
-              href={
-                unlocked
-                  ? `/academy/${lesson.id}`
-                  : "#"
-              }
-            >
+      {finished.length > 0 && (
+        <ul className="space-y-2">
+          {finished.map((lesson) => (
+            <li key={lesson.id}>
+              <Link
+                href={`/academy/${lesson.id}`}
+                className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3"
+              >
+                <CheckCircle2 className="shrink-0 text-[var(--success)]" size={22} />
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <span className="flex-1 text-sm font-semibold">
+                  {lesson.title}
+                </span>
 
-                <div className="flex items-center justify-between">
+                <span className="text-xs text-[var(--muted)]">{x.done}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
-                  <div className="flex items-center gap-5">
+      {later.length > 0 && (
+        <details className="group rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+          <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
+            {x.soon} ({later.length})
+            <ChevronRight size={16} className="transition group-open:rotate-90" />
+          </summary>
 
-                    <div className="rounded-2xl bg-indigo-100 p-4">
+          <ul className="space-y-2 px-4 pb-3">
+            {later.map((lesson) => (
+              <li
+                key={lesson.id}
+                className="flex items-center justify-between text-sm text-[var(--muted)]"
+              >
+                <span>{lesson.title}</span>
+                <span className="text-xs">{lesson.duration}</span>
+              </li>
+            ))}
 
-                      <BookOpen className="text-indigo-600" />
-
-                    </div>
-
-                    <div>
-
-                      <h3 className="text-xl font-bold">
-                        {lesson.title}
-                      </h3>
-
-                      <p className="mt-1 text-slate-500">
-                        {lesson.description}
-                      </p>
-
-                      <div className="mt-3 flex flex-wrap gap-2">
-
-                        <span className="flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-sm">
-
-                          <Clock3 size={14} />
-
-                          {lesson.duration}
-
-                        </span>
-
-                        <span className="flex items-center gap-1 rounded-full bg-yellow-100 px-3 py-1 text-sm text-yellow-700">
-
-                          <Star size={14} />
-
-                          {lesson.difficulty}
-
-                        </span>
-
-                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700">
-
-                          +{lesson.xp} XP
-
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <div>
-
-                    {lesson.completed ? (
-
-                      <CheckCircle2
-                        className="text-green-500"
-                        size={32}
-                      />
-
-                    ) : unlocked ? (
-
-                      <div className="rounded-xl bg-indigo-600 px-5 py-3 font-semibold text-white">
-
-                        Continue
-
-                      </div>
-
-                    ) : (
-
-                      <Lock
-                        className="text-slate-400"
-                        size={26}
-                      />
-
-                    )}
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </Link>
-
-          );
-
-        })}
-
-      </div>
-
+            <li className="pt-1 text-xs text-[var(--muted)]">{x.unlockHint}</li>
+          </ul>
+        </details>
+      )}
     </div>
   );
 }
