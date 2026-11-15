@@ -8,7 +8,21 @@
    snowball : smallest balance first (quick wins)
 ========================================== */
 
-import type { Debt } from "@/app/data/netWorth";
+import {
+  addBill,
+  deleteBill,
+  getBills,
+  monthKeyOf,
+  updateBill,
+} from "@/app/data/bills";
+import { getAccounts } from "@/app/data/accounts";
+import { addTransaction } from "@/app/data/transactions";
+import {
+  getDebts,
+  recordDebtPayment,
+  updateDebt,
+  type Debt,
+} from "@/app/data/netWorth";
 
 export type Strategy = "avalanche" | "snowball";
 
@@ -156,4 +170,129 @@ export function storyNumbers() {
     monthsSooner: slow.months - fast.months,
     interestSaved: Math.round(slow.interest - fast.interest),
   };
+}
+
+
+/* What to pay each debt THIS month: the minimums, then the extra
+   on the debt the strategy says comes first. */
+export function allocation(
+  debts: Pick<Debt, "id" | "amount" | "rate" | "minPay">[],
+  extra: number,
+  strategy: Strategy
+): Record<string, number> {
+  const open = debts.filter((d) => d.amount > 0);
+  const out: Record<string, number> = {};
+
+  open.forEach((d) => {
+    out[d.id] = Math.min(Math.max(d.minPay ?? 0, 0), d.amount);
+  });
+
+  let left = Math.max(extra, 0);
+
+  [...open]
+    .sort((a, b) =>
+      strategy === "avalanche"
+        ? (b.rate ?? 0) - (a.rate ?? 0) || a.amount - b.amount
+        : a.amount - b.amount
+    )
+    .forEach((d) => {
+      const room = d.amount - out[d.id];
+      const add = Math.min(room, left);
+
+      out[d.id] += add;
+      left -= add;
+    });
+
+  return out;
+}
+
+/* Days until the next due day (0 = today). */
+export function daysToDue(day: number, now: Date = new Date()): number {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const lastThis = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  let due = new Date(now.getFullYear(), now.getMonth(), Math.min(day, lastThis));
+
+  if (due < today) {
+    const lastNext = new Date(now.getFullYear(), now.getMonth() + 2, 0).getDate();
+
+    due = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, lastNext));
+  }
+
+  return Math.round((due.getTime() - today.getTime()) / 86_400_000);
+}
+
+/* Make or refresh one monthly reminder (a Bill) per debt. */
+export function syncReminders(alloc: Record<string, number>): number {
+  const account = getAccounts()[0]?.source ?? "";
+  let count = 0;
+
+  getDebts().forEach((debt) => {
+    const amount = Math.round(alloc[debt.id] ?? 0);
+
+    if (!debt.dueDay || debt.amount <= 0 || amount <= 0) return;
+
+    const bill = debt.billId
+      ? getBills().find((b) => b.id === debt.billId)
+      : undefined;
+
+    if (bill) {
+      updateBill(bill.id, { amount, day: debt.dueDay, name: debt.name });
+    } else {
+      const id = addBill({
+        name: debt.name,
+        emoji: "💳",
+        amount,
+        day: debt.dueDay,
+        category: "💳 Debt payment",
+        source: account,
+      });
+
+      updateDebt(debt.id, { billId: id });
+    }
+
+    count += 1;
+  });
+
+  return count;
+}
+
+/* Log a payment: lowers the debt, saves a real expense, and ticks
+   this month's reminder off. */
+export function payDebt(id: string, amount: number, now: Date = new Date()) {
+  const debt = getDebts().find((d) => d.id === id);
+  const pay = Math.min(Math.max(amount, 0), debt?.amount ?? 0);
+
+  if (!debt || pay <= 0) return;
+
+  const date = `${monthKeyOf(now)}-${String(now.getDate()).padStart(2, "0")}`;
+  const txId = Date.now() + Math.floor(Math.random() * 1000);
+
+  addTransaction({
+    id: txId,
+    type: "Expense",
+    source: getAccounts()[0]?.source ?? "",
+    category: "💳 Debt payment",
+    amount: pay,
+    date,
+    note: `Debt: ${debt.name}`,
+  });
+
+  window.dispatchEvent(new CustomEvent("transactionsUpdated"));
+
+  const bill = debt.billId
+    ? getBills().find((b) => b.id === debt.billId)
+    : undefined;
+
+  recordDebtPayment(id, pay, date);
+
+  if (bill) {
+    if (debt.amount - pay <= 0.005) {
+      deleteBill(bill.id);
+      updateDebt(id, { billId: undefined });
+    } else if (!bill.paid[monthKeyOf(now)]) {
+      updateBill(bill.id, {
+        paid: { ...bill.paid, [monthKeyOf(now)]: txId },
+      });
+    }
+  }
 }

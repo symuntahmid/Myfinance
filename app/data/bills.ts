@@ -133,15 +133,18 @@ function saveBills(bills: Bill[]) {
   window.dispatchEvent(new Event("billsUpdated"));
 }
 
-export function addBill(input: Omit<Bill, "id" | "paid">) {
-  saveBills([
-    ...getBills(),
-    {
-      ...input,
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      paid: {},
-    },
-  ]);
+export function addBill(input: Omit<Bill, "id" | "paid">): string {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+
+  saveBills([...getBills(), { ...input, id, paid: {} }]);
+
+  return id;
+}
+
+export function updateBill(id: string, patch: Partial<Omit<Bill, "id">>) {
+  saveBills(
+    getBills().map((item) => (item.id === id ? { ...item, ...patch } : item))
+  );
 }
 
 export function deleteBill(id: string) {

@@ -20,6 +20,10 @@ export type Debt = {
   amount: number; // how much is still owed
   rate?: number; // yearly interest in %, 0 or missing = none
   minPay?: number; // the smallest monthly payment
+  dueDay?: number; // day of the month it is due, 1-31
+  original?: number; // what was owed when it was added
+  billId?: string; // the monthly reminder (a Bill) made for it
+  payments?: { date: string; amount: number }[];
 };
 
 export type NetWorth = {
@@ -87,6 +91,7 @@ export function addDebt(input: Omit<Debt, "id">) {
   saveDebts([
     ...getDebts(),
     {
+      original: input.amount,
       ...input,
       id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     },
@@ -105,6 +110,21 @@ export function updateDebt(id: string, patch: Partial<Omit<Debt, "id">>) {
   saveDebts(
     getDebts().map((item) =>
       item.id === id ? { ...item, ...patch } : item
+    )
+  );
+}
+
+/* Money paid towards a debt: lowers what is owed and keeps a history. */
+export function recordDebtPayment(id: string, amount: number, date: string) {
+  saveDebts(
+    getDebts().map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            amount: Math.max(item.amount - amount, 0),
+            payments: [{ date, amount }, ...(item.payments ?? [])].slice(0, 24),
+          }
+        : item
     )
   );
 }

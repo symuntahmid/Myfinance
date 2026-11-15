@@ -651,6 +651,25 @@ export type TranslationKey =
   | "dpNeedPay"
   | "dpRedo"
   | "dpDisclaimer"
+  | "dpTabDebts"
+  | "dpTabStrategy"
+  | "dpTabPlan"
+  | "dpTabTrack"
+  | "dpDueDay"
+  | "dpThisMonth"
+  | "dpRemind"
+  | "dpRemindOn"
+  | "dpRemindNeedDay"
+  | "dpPaidSoFar"
+  | "dpLogPayment"
+  | "dpPayAmount"
+  | "dpDueIn"
+  | "dpDueToday"
+  | "dpNoDue"
+  | "dpCleared"
+  | "dpTotalProgress"
+  | "dpHistory"
+  | "dpNoDebts"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -1949,6 +1968,44 @@ en: {
     "Start the story again",
   dpDisclaimer:
     "Rough estimates. Your lender's real terms may differ.",
+  dpTabDebts:
+    "Debts",
+  dpTabStrategy:
+    "Strategy",
+  dpTabPlan:
+    "Plan",
+  dpTabTrack:
+    "Track",
+  dpDueDay:
+    "Due day (1-31)",
+  dpThisMonth:
+    "Pay this month",
+  dpRemind:
+    "Remind me every month",
+  dpRemindOn:
+    "Reminders are on. You will see them under Bills.",
+  dpRemindNeedDay:
+    "Set a due day on at least one debt first.",
+  dpPaidSoFar:
+    "{paid} of {total} paid",
+  dpLogPayment:
+    "Log payment",
+  dpPayAmount:
+    "Amount paid",
+  dpDueIn:
+    "Due in {n} days",
+  dpDueToday:
+    "Due today",
+  dpNoDue:
+    "No due day set",
+  dpCleared:
+    "Cleared 🎉",
+  dpTotalProgress:
+    "Total paid off",
+  dpHistory:
+    "Recent payments",
+  dpNoDebts:
+    "Add a debt in the Debts tab first.",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3313,6 +3370,44 @@ bn: {
     "গল্পটি আবার দেখুন",
   dpDisclaimer:
     "মোটামুটি হিসাব। ঋণদাতার আসল শর্ত আলাদা হতে পারে।",
+  dpTabDebts:
+    "ঋণ",
+  dpTabStrategy:
+    "কৌশল",
+  dpTabPlan:
+    "পরিকল্পনা",
+  dpTabTrack:
+    "ট্র্যাক",
+  dpDueDay:
+    "কত তারিখে (১-৩১)",
+  dpThisMonth:
+    "এই মাসে দিন",
+  dpRemind:
+    "প্রতি মাসে মনে করান",
+  dpRemindOn:
+    "রিমাইন্ডার চালু। বিলস-এ দেখতে পাবেন।",
+  dpRemindNeedDay:
+    "আগে অন্তত একটি ঋণে তারিখ দিন।",
+  dpPaidSoFar:
+    "{total}-এর {paid} শোধ",
+  dpLogPayment:
+    "কিস্তি লিখুন",
+  dpPayAmount:
+    "কত দিলেন",
+  dpDueIn:
+    "আর {n} দিনে",
+  dpDueToday:
+    "আজই দিতে হবে",
+  dpNoDue:
+    "তারিখ দেওয়া নেই",
+  dpCleared:
+    "শোধ হয়েছে 🎉",
+  dpTotalProgress:
+    "মোট শোধ হয়েছে",
+  dpHistory:
+    "সাম্প্রতিক কিস্তি",
+  dpNoDebts:
+    "আগে ঋণ ট্যাবে একটি ঋণ যোগ করুন।",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
