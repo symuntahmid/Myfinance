@@ -670,6 +670,25 @@ export type TranslationKey =
   | "dpTotalProgress"
   | "dpHistory"
   | "dpNoDebts"
+  | "txTitle"
+  | "txCount"
+  | "txSearch"
+  | "txAll"
+  | "txInvested"
+  | "txTransfers"
+  | "txTransferOne"
+  | "txSpent"
+  | "txNet"
+  | "txToday"
+  | "txYesterday"
+  | "txEdit"
+  | "txDelete"
+  | "txDeleteConfirm"
+  | "txEmpty"
+  | "txNoMatch"
+  | "txAllTime"
+  | "txPrevMonth"
+  | "txNextMonth"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2006,6 +2025,44 @@ en: {
     "Recent payments",
   dpNoDebts:
     "Add a debt in the Debts tab first.",
+  txTitle:
+    "Transactions",
+  txCount:
+    "{n} entries",
+  txSearch:
+    "Search by name, note or amount",
+  txAll:
+    "All",
+  txInvested:
+    "Invested",
+  txTransfers:
+    "Transfers",
+  txTransferOne:
+    "Transfer",
+  txSpent:
+    "Spent",
+  txNet:
+    "Net",
+  txToday:
+    "Today",
+  txYesterday:
+    "Yesterday",
+  txEdit:
+    "Edit",
+  txDelete:
+    "Delete",
+  txDeleteConfirm:
+    "Delete this entry? This cannot be undone.",
+  txEmpty:
+    "No entries here yet.",
+  txNoMatch:
+    "Nothing matches your search.",
+  txAllTime:
+    "All time",
+  txPrevMonth:
+    "Previous month",
+  txNextMonth:
+    "Next month",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3408,6 +3465,44 @@ bn: {
     "সাম্প্রতিক কিস্তি",
   dpNoDebts:
     "আগে ঋণ ট্যাবে একটি ঋণ যোগ করুন।",
+  txTitle:
+    "লেনদেন",
+  txCount:
+    "{n}টি এন্ট্রি",
+  txSearch:
+    "নাম, নোট বা পরিমাণ দিয়ে খুঁজুন",
+  txAll:
+    "সব",
+  txInvested:
+    "বিনিয়োগ",
+  txTransfers:
+    "ট্রান্সফার",
+  txTransferOne:
+    "ট্রান্সফার",
+  txSpent:
+    "খরচ",
+  txNet:
+    "নিট",
+  txToday:
+    "আজ",
+  txYesterday:
+    "গতকাল",
+  txEdit:
+    "এডিট",
+  txDelete:
+    "মুছুন",
+  txDeleteConfirm:
+    "এই এন্ট্রি মুছবেন? এটি ফেরানো যাবে না।",
+  txEmpty:
+    "এখানে এখনও কোনো এন্ট্রি নেই।",
+  txNoMatch:
+    "আপনার খোঁজার সাথে কিছু মেলেনি।",
+  txAllTime:
+    "সব সময়",
+  txPrevMonth:
+    "আগের মাস",
+  txNextMonth:
+    "পরের মাস",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
