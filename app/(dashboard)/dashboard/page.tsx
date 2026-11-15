@@ -16,6 +16,7 @@ import DailyJourneyCard from "../../components/DailyJourneyCard";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
+import FirstRunWelcome from "@/app/components/FirstRunWelcome";
 
 import RecentTransactions from "../../components/RecentTransactions";
 
@@ -58,24 +59,35 @@ export default function Dashboard() {
 
   <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
 
-  <MonthStats />
-
-  <MoneyMap />
-
-  {/* Daily journey keeps the streak alive */}
-
-  <DailyJourneyCard />
-
   <RecentTransactions />
 
-  <Link
-    href="/insights"
-    className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-semibold text-[var(--primary)]"
-  >
-    {t("insMore")}
-    <ChevronRight size={16} />
-  </Link>
+  {/* Everything else, one tap away */}
+
+  <details className="group rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+    <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold text-[var(--primary)]">
+      {language === "bn" ? "আরও দেখুন" : "See more"}
+      <ChevronRight size={16} className="transition group-open:rotate-90" />
+    </summary>
+
+    <div className="space-y-4 px-3 pb-3">
+      <MonthStats />
+
+      <MoneyMap />
+
+      <DailyJourneyCard />
+
+      <Link
+        href="/insights"
+        className="flex items-center justify-between rounded-2xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--primary)]"
+      >
+        {t("insMore")}
+        <ChevronRight size={16} />
+      </Link>
+    </div>
+  </details>
 </div>
+
+      <FirstRunWelcome />
 
       <FloatingActionButton onClick={() => setQuickOpen(true)} />
 

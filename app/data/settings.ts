@@ -15,6 +15,9 @@ export type AppSettings = {
 
   rentDay: number | null;
 
+  // What the person earns in a normal month (from the welcome step)
+  monthlyIncome: number | null;
+
   darkMode: boolean;
 
   passcodeEnabled: boolean;
@@ -45,6 +48,9 @@ const DEFAULT_SETTINGS: AppSettings = {
     null,
 
   rentDay:
+    null,
+
+  monthlyIncome:
     null,
 
   darkMode:
