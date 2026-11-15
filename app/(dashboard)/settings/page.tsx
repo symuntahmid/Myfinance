@@ -16,7 +16,6 @@ import {
 } from "@/app/context/ThemeContext";
 
 import { Zap,
-  User,
   Globe2,
   Languages,
   Coins,
@@ -49,6 +48,8 @@ import {
 import {
   useLanguage,
 } from "@/app/context/LanguageContext";
+import { getProfile } from "@/app/data/profile";
+import { getLevel, getPlayer } from "@/app/data/player";
 
 /* ==========================================
    TYPES
@@ -58,6 +59,8 @@ type SettingRowProps = {
   icon: ReactNode;
   title: string;
   subtitle?: string;
+  value?: string;
+  href?: string;
   onClick?: () => void;
   right?: ReactNode;
   danger?: boolean;
@@ -77,54 +80,62 @@ function SettingRow({
   icon,
   title,
   subtitle,
+  value,
+  href,
   onClick,
   right,
   danger = false,
 }: SettingRowProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex w-full items-center gap-4 px-4 py-4 text-left transition ${
-        danger
-          ? "hover:bg-red-50/50 active:bg-red-100"
-          : "hover:bg-black/5 dark:hover:bg-[var(--card)]/5"
-      }`}
-    >
-      <div
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+  const body = (
+    <>
+      <span
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
           danger
-            ? "bg-red-50 text-red-500 dark:bg-red-500/10"
-            : "bg-black/5 text-slate-600 dark:text-slate-300 dark:bg-[var(--card)]/10 dark:text-slate-300"
+            ? "bg-red-500/10 text-red-500"
+            : "bg-[var(--primary)]/10 text-[var(--primary)]"
         }`}
       >
         {icon}
-      </div>
+      </span>
 
-      <div className="min-w-0 flex-1">
-        <p
-          className={`text-sm font-semibold ${
-            danger
-              ? "text-red-600"
-              : "text-[var(--foreground)]"
+      <span className="min-w-0 flex-1">
+        <span
+          className={`block text-sm font-semibold ${
+            danger ? "text-red-600" : "text-[var(--foreground)]"
           }`}
         >
           {title}
-        </p>
+        </span>
 
         {subtitle && (
-          <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500 dark:text-[var(--muted)]">
+          <span className="mt-0.5 block text-xs text-[var(--muted)]">
             {subtitle}
-          </p>
+          </span>
         )}
-      </div>
+      </span>
+
+      {value && (
+        <span className="max-w-[40%] truncate text-sm text-[var(--muted)]">
+          {value}
+        </span>
+      )}
 
       {right ?? (
-        <ChevronRight
-          size={18}
-          className="shrink-0 text-slate-300 dark:text-slate-600 dark:text-slate-300"
-        />
+        <ChevronRight size={16} className="shrink-0 text-[var(--muted)]/60" />
       )}
+    </>
+  );
+
+  const cls =
+    "flex w-full items-center gap-3 px-4 py-3.5 text-left transition active:bg-[var(--background)]";
+
+  return href ? (
+    <Link href={href} className={cls}>
+      {body}
+    </Link>
+  ) : (
+    <button type="button" onClick={onClick} className={cls}>
+      {body}
     </button>
   );
 }
@@ -134,14 +145,24 @@ function SettingRow({
 ========================================== */
 
 function SettingGroup({
+  title,
   children,
 }: {
+  title?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
-      {children}
-    </div>
+    <section>
+      {title && (
+        <h2 className="mb-2 px-1 text-xs font-semibold text-[var(--muted)]">
+          {title}
+        </h2>
+      )}
+
+      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]">
+        {children}
+      </div>
+    </section>
   );
 }
 
@@ -150,9 +171,7 @@ function SettingGroup({
 ========================================== */
 
 function Divider() {
-  return (
-    <div className="ml-[72px] border-t border-slate-100 dark:border-slate-600" />
-  );
+  return <div className="ml-[60px] border-t border-[var(--border)]" />;
 }
 
 /* ==========================================
@@ -172,7 +191,7 @@ function Modal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full p-2 text-slate-400 dark:text-slate-500hover:bg-black/5 dark:bg-white/10 hover:text-slate-700"
+          className="absolute right-4 top-4 rounded-full p-2 text-[var(--muted)] hover:bg-[var(--background)]"
         >
           <X size={18} />
         </button>
@@ -189,7 +208,7 @@ function Modal({
 
 export default function Settings() {
 
-const { t } = useLanguage();
+const { t, language: languageCode } = useLanguage();
   const {
   theme,
   toggleTheme,
@@ -240,10 +259,24 @@ const [passcodeConfirm, setPasscodeConfirm] =
      REFRESH SETTINGS
   ======================================== */
 
+  const [me, setMe] = useState({ name: "", avatar: "", level: 1 });
+
   useEffect(() => {
     const refresh = () => {
+      const profile = getProfile();
+
       setSettings(getSettings());
+      setMe({
+        name:
+          profile.displayName ||
+          `${profile.firstName} ${profile.lastName}`.trim() ||
+          getPlayer().name,
+        avatar: profile.avatar || "",
+        level: getLevel().level,
+      });
     };
+
+    refresh();
 
     window.addEventListener(
       "settingsUpdated",
@@ -336,322 +369,211 @@ const [passcodeConfirm, setPasscodeConfirm] =
       .join("");
   }
 
+  const langName: Record<string, string> = { en: "English", bn: "বাংলা" };
+
+  const on = (flag: boolean) => (flag ? t("stOn") : t("stOff"));
+
   return (
-    <div className="mx-auto max-w-3xl pb-10">
+    <div className="mx-auto max-w-3xl space-y-5 pb-24">
+      <h1 className="text-xl font-bold tracking-tight">{t("settings")}</h1>
 
-      {/* HEADER */}
+      {/* WHO YOU ARE */}
 
-      <div className="mb-6">
-<h1 className="text-3xl font-bold tracking-tight text-[var(--foreground)]">
-  {t("settings")}
-</h1>
+      <Link
+        href="/profile"
+        className="flex items-center gap-4 rounded-3xl bg-[var(--forest)] p-4 text-[var(--on-forest)]"
+      >
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/15 text-xl font-bold">
+          {me.avatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={me.avatar} alt="" className="h-full w-full object-cover" />
+          ) : (
+            (me.name || "?").slice(0, 1).toUpperCase()
+          )}
+        </span>
 
-<p className="mt-1 text-sm text-[var(--muted)]">
-  {t("settingsDescription")}
-</p>
-      </div>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-base font-bold">{me.name}</span>
 
+          <span className="block text-xs opacity-75">
+            {t("stLevel", { n: me.level.toLocaleString(languageCode === "bn" ? "bn-BD" : "en-US") })}
+            {" · "}
+            {t("stViewProfile")}
+          </span>
+        </span>
 
-      {/* ACCOUNT */}
+        <ChevronRight size={18} className="shrink-0 opacity-70" />
+      </Link>
 
-      <section className="mb-6">
-<p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-  {t("account")}
-</p>
+      {/* REGION */}
 
-        <SettingGroup>
+      <SettingGroup title={t("regionalPreferences")}>
+        <SettingRow
+          icon={<Globe2 size={18} />}
+          title={t("country")}
+          value={settings.country}
+          href="/settings/country"
+        />
 
-          <SettingRow
-            icon={<User size={19} />}
-            title={t("profile")}
-subtitle={t("financialIdentity")}
-            onClick={() => {
-              window.location.href =
-                "/profile";
-            }}
-          />
+        <Divider />
 
-        </SettingGroup>
-      </section>
+        <SettingRow
+          icon={<Languages size={18} />}
+          title={t("language")}
+          value={langName[settings.language] ?? settings.language}
+          href="/settings/language"
+        />
 
+        <Divider />
 
-      {/* REGIONAL */}
-
-      <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {t("regionalPreferences")}
-        </p>
-
-        <SettingGroup>
-
-          <SettingRow
-  icon={<Globe2 size={19} />}
-  title={t("country")}
-  subtitle={settings.country}
-  onClick={() => {
-    window.location.href = "/settings/country";
-  }}
-/>
-
-          <Divider />
-
-          <SettingRow
-  icon={<Languages size={19} />}
-  title={t("language")}
-  subtitle={settings.language}
-  onClick={() => {
-    window.location.href =
-      "/settings/language";
-  }}
-/>
-
-          <Divider />
-
-          <SettingRow
-            icon={<Coins size={19} />}
-            title={t("currency")}
-            subtitle={settings.currency}
-            onClick={() =>
-              setRegionalOpen(true)
-            }
-          />
-
-        </SettingGroup>
-      </section>
-
+        <SettingRow
+          icon={<Coins size={18} />}
+          title={t("currency")}
+          value={settings.currency}
+          onClick={() => setRegionalOpen(true)}
+        />
+      </SettingGroup>
 
       {/* PREFERENCES */}
 
-      <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {t("preferences")}
-        </p>
+      <SettingGroup title={t("preferences")}>
+        <SettingRow
+          icon={<Bell size={18} />}
+          title={t("reminders")}
+          value={on(settings.remindersEnabled)}
+          onClick={() => setRemindersOpen(true)}
+        />
 
-        <SettingGroup>
+        <Divider />
 
-          <SettingRow
-            icon={<Bell size={19} />}
-            title={t("reminders")}
-            subtitle={
-              settings.remindersEnabled
-                ? t("enabled")
-                : t("disabled")
-            }
-            onClick={() =>
-              setRemindersOpen(true)
-            }
-          />
+        <SettingRow
+          icon={<Zap size={18} />}
+          title={t("smsAutoTitle")}
+          subtitle={t("smsAutoSubtitle")}
+          href="/sms-setup"
+        />
 
-          <Divider />
+        <Divider />
 
-          <SettingRow
-            icon={<Zap size={19} />}
-            title={t("smsAutoTitle")}
-            subtitle={t("smsAutoSubtitle")}
-            onClick={() => {
-              window.location.href = "/sms-setup";
-            }}
-          />
+        <SettingRow
+          icon={<Moon size={18} />}
+          title={t("darkMode")}
+          onClick={toggleTheme}
+          right={
+            <span
+              role="switch"
+              aria-checked={theme === "dark"}
+              className={`relative h-6 w-11 shrink-0 rounded-full transition ${
+                theme === "dark" ? "bg-[var(--primary)]" : "bg-[var(--border)]"
+              }`}
+            >
+              <span
+                className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-all ${
+                  theme === "dark" ? "left-6" : "left-1"
+                }`}
+              />
+            </span>
+          }
+        />
+      </SettingGroup>
 
-          <Divider />
+      {/* SECURITY AND BACKUP */}
 
-          <SettingRow
-  icon={<Moon size={19} />}
-  title={t("darkMode")}
-  subtitle={
-    theme === "dark"
-      ? t("enabled")
-      : t("disabled")
-  }
-  right={
-    <span
-      className={`relative h-6 w-11 rounded-full transition ${
-        theme === "dark"
-          ? "bg-cyan-500"
-          : "bg-slate-300"
-      }`}
-    >
-      <span
-        className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
-          theme === "dark"
-            ? "left-6"
-            : "left-1"
-        }`}
-      />
-    </span>
-  }
-  onClick={toggleTheme}
-/>
+      <SettingGroup title={t("stSecurity")}>
+        <SettingRow
+          icon={<Lock size={18} />}
+          title={t("passcodeLock")}
+          value={on(settings.passcodeEnabled)}
+          onClick={() => setPasscodeOpen(true)}
+        />
 
-        </SettingGroup>
-      </section>
+        <Divider />
 
+        <SettingRow
+          icon={<Download size={18} />}
+          title={t("exportData")}
+          subtitle={t("downloadBackup")}
+          onClick={() => exportMyFinanceData()}
+        />
 
-      {/* DATA */}
+        <Divider />
 
-      <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {t("yourData")}
-        </p>
+        <SettingRow
+          icon={<Upload size={18} />}
+          title={t("importData")}
+          subtitle={t("restoreBackup")}
+          onClick={() => fileInputRef.current?.click()}
+        />
 
-        <SettingGroup>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json,application/json"
+          className="hidden"
+          onChange={handleImport}
+        />
+      </SettingGroup>
 
-          <SettingRow
-  icon={<Download size={19} />}
-  title={t("exportData")}
-subtitle={t("downloadBackup")}
-  onClick={() => {
-    exportMyFinanceData();
-  }}
-/>
+      {/* HELP */}
 
-          <Divider />
+      <SettingGroup title={t("support")}>
+        <SettingRow
+          icon={<Star size={18} />}
+          title={t("rateMyFinance")}
+          subtitle={t("tellUsWhatYouThink")}
+          onClick={() => alert("Thanks for supporting MyFinance!")}
+        />
 
-          <SettingRow
-            icon={<Upload size={19} />}
-            title={t("importData")}
-            subtitle={t("restoreBackup")}
-            onClick={() =>
-              fileInputRef.current?.click()
-            }
-          />
+        <Divider />
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json,application/json"
-            className="hidden"
-            onChange={handleImport}
-          />
+        <SettingRow
+          icon={<MessageSquare size={18} />}
+          title={t("sendFeedback")}
+          subtitle={t("helpUsImprove")}
+          onClick={() => setFeedbackOpen(true)}
+        />
 
-          <Divider />
+        <Divider />
 
-          <SettingRow
-            icon={<Lock size={19} />}
-            title={t("passcodeLock")}
-            subtitle={
-              settings.passcodeEnabled
-                ? t("enabled")
-                : t("notEnabled")
-            }
-            onClick={() =>
-              setPasscodeOpen(true)
-            }
-          />
+        <SettingRow
+          icon={<ShieldCheck size={18} />}
+          title={t("privacyPolicy")}
+          onClick={() => alert("Privacy Policy page coming soon.")}
+        />
 
-          <Divider />
+        <Divider />
 
-          <SettingRow
-            icon={<Trash2 size={19} />}
-            title={t("deleteAccountData")}
-            subtitle={t("permanentlyRemoveData")}
-            danger
-            onClick={() =>
-              setDeleteOpen(true)
-            }
-          />
+        <SettingRow
+          icon={<FileText size={18} />}
+          title={t("termsOfUse")}
+          onClick={() => alert("Terms of Use page coming soon.")}
+        />
+      </SettingGroup>
 
-        </SettingGroup>
-      </section>
+      {/* ACCOUNT ACTIONS */}
 
+      <SettingGroup>
+        <SettingRow
+          icon={<LogOut size={18} />}
+          title={t("logOut")}
+          subtitle={t("signOutOfMyFinance")}
+          onClick={() => alert(t("youHaveBeenLoggedOut"))}
+        />
+      </SettingGroup>
 
-      {/* SUPPORT */}
+      <SettingGroup title={t("stDanger")}>
+        <SettingRow
+          icon={<Trash2 size={18} />}
+          title={t("deleteAccountData")}
+          subtitle={t("permanentlyRemoveData")}
+          danger
+          onClick={() => setDeleteOpen(true)}
+        />
+      </SettingGroup>
 
-      <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {t("support")}
-        </p>
-
-        <SettingGroup>
-
-          <SettingRow
-            icon={<Star size={19} />}
-            title={t("rateMyFinance")}
-            subtitle={t("tellUsWhatYouThink")}
-            onClick={() =>
-              alert(
-                "Thanks for supporting MyFinance!"
-              )
-            }
-          />
-
-          <Divider />
-
-          <SettingRow
-            icon={<MessageSquare size={19} />}
-            title={t("sendFeedback")}
-            subtitle={t("helpUsImprove")}
-            onClick={() =>
-              setFeedbackOpen(true)
-            }
-          />
-
-        </SettingGroup>
-      </section>
-
-
-      {/* LEGAL */}
-
-      <section className="mb-6">
-        <p className="mb-2 px-2 text-xs font-medium text-slate-400 dark:text-slate-500">
-          {t("termsPrivacy")}
-        </p>
-
-        <SettingGroup>
-
-          <SettingRow
-            icon={<ShieldCheck size={19} />}
-            title={t("privacyPolicy")}
-            onClick={() =>
-              alert(
-                "Privacy Policy page coming soon."
-              )
-            }
-          />
-
-          <Divider />
-
-          <SettingRow
-            icon={<FileText size={19} />}
-            title={t("termsOfUse")}
-            onClick={() =>
-              alert(
-                "Terms of Use page coming soon."
-              )
-            }
-          />
-
-        </SettingGroup>
-      </section>
-
-
-      {/* LOGOUT */}
-
-      <section>
-        <SettingGroup>
-
-          <SettingRow
-            icon={<LogOut size={19} />}
-            title={t("logOut")}
-            subtitle={t("signOutOfMyFinance")}
-            onClick={() => {
-              alert(
-                t("youHaveBeenLoggedOut")
-              );
-            }}
-          />
-
-        </SettingGroup>
-      </section>
-
-
-      {/* FOOTER */}
-
-      <p className="mt-8 text-center text-[11px] text-slate-400 dark:text-slate-500">
+      <p className="pt-2 text-center text-[11px] text-[var(--muted)]">
         MyFinance · Your Personal CFO
       </p>
-
-
 
       {/* ======================================
           REGIONAL MODAL
@@ -690,7 +612,7 @@ subtitle={t("downloadBackup")}
 
             setRegionalOpen(false);
           }}
-          className="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+          className="mt-6 w-full rounded-full bg-[var(--primary)] px-4 py-3 text-sm font-bold text-white"
         >
           {t("savePreferences")}
         </button>
@@ -723,7 +645,7 @@ subtitle={t("downloadBackup")}
                 !settings.remindersEnabled,
             })
           }
-          className="mt-6 flex w-full items-center justify-between rounded-2xl bg-black/5 dark:bg-[var(--card)]/5 p-4"
+          className="mt-6 flex w-full items-center justify-between rounded-2xl bg-[var(--background)] p-4"
         >
           <span className="text-sm font-semibold text-[var(--foreground)]">
             {t("financialReminders")}
@@ -732,8 +654,8 @@ subtitle={t("downloadBackup")}
           <span
             className={`relative h-6 w-11 rounded-full ${
               settings.remindersEnabled
-                ? "bg-emerald-500"
-                : "bg-slate-300"
+                ? "bg-[var(--primary)]"
+                : "bg-[var(--border)]"
             }`}
           >
             <span
@@ -810,7 +732,7 @@ subtitle={t("downloadBackup")}
 
   {!settings.passcodeEnabled ? (
     <>
-      <div className="mt-5 rounded-2xl bg-black/5 dark:bg-[var(--card)]/5 p-4">
+      <div className="mt-5 rounded-2xl bg-[var(--background)] p-4">
         <div className="flex items-center gap-3">
           <Lock
             size={20}
@@ -831,7 +753,7 @@ subtitle={t("downloadBackup")}
 
       {passcodeStep === "create" ? (
         <>
-          <label className="mt-6 block text-sm font-semibold text-slate-700">
+          <label className="mt-6 block text-sm font-semibold text-[var(--foreground)]">
             {t("createPasscode")}
           </label>
 
@@ -850,7 +772,7 @@ subtitle={t("downloadBackup")}
               setPasscodeInput(value);
             }}
             placeholder={t("enterFourToSixDigits")}
-            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] placeholder:text-sm placeholder:tracking-normal outline-none focus:border-[var(--primary)]"
           />
 
           <button
@@ -861,14 +783,14 @@ subtitle={t("downloadBackup")}
             onClick={() => {
               setPasscodeStep("confirm");
             }}
-            className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-5 w-full rounded-full bg-[var(--primary)] px-4 py-3 text-sm font-bold text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("continue")}
           </button>
         </>
       ) : (
         <>
-          <label className="mt-6 block text-sm font-semibold text-slate-700">
+          <label className="mt-6 block text-sm font-semibold text-[var(--foreground)]">
             {t("confirmPasscode")}
           </label>
 
@@ -887,7 +809,7 @@ subtitle={t("downloadBackup")}
               setPasscodeConfirm(value);
             }}
             placeholder={t("enterPasscodeAgain")}
-            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-50"
+            className="mt-2 w-full rounded-xl border border-[var(--border)] px-4 py-3 text-center text-lg tracking-[0.4em] placeholder:text-sm placeholder:tracking-normal outline-none focus:border-[var(--primary)]"
           />
 
           {passcodeConfirm.length > 0 &&
@@ -921,7 +843,7 @@ subtitle={t("downloadBackup")}
               setPasscodeInput("");
               setPasscodeConfirm("");
             }}
-            className="mt-5 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-5 w-full rounded-full bg-[var(--primary)] px-4 py-3 text-sm font-bold text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("enablePasscodeLock")}
           </button>
@@ -930,7 +852,7 @@ subtitle={t("downloadBackup")}
     </>
   ) : (
     <>
-      <div className="mt-5 rounded-2xl bg-emerald-50 p-4">
+      <div className="mt-5 rounded-2xl bg-[var(--primary)]/10 p-4">
         <div className="flex items-center gap-3">
           <ShieldCheck
             size={21}
@@ -990,7 +912,7 @@ subtitle={t("downloadBackup")}
         <textarea
           rows={5}
           placeholder={t("writeFeedback")}
-          className="mt-5 w-full resize-none rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-cyan-500"
+          className="mt-5 w-full resize-none rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:border-[var(--primary)]"
         />
 
         <button
@@ -1002,7 +924,7 @@ subtitle={t("downloadBackup")}
               t("thankYouForFeedback")
             );
           }}
-          className="mt-4 w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white"
+          className="mt-4 w-full rounded-full bg-[var(--primary)] px-4 py-3 text-sm font-bold text-white"
         >
           {t("sendFeedback")}
         </button>
@@ -1038,7 +960,7 @@ subtitle={t("downloadBackup")}
             onClick={() =>
               setDeleteOpen(false)
             }
-            className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-slate-700"
+            className="rounded-xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--foreground)]"
           >
             {t("cancel")}
           </button>

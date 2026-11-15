@@ -709,6 +709,12 @@ export type TranslationKey =
   | "rpDownload"
   | "rpEmpty"
   | "rpKeptOf"
+  | "stLevel"
+  | "stViewProfile"
+  | "stDanger"
+  | "stOn"
+  | "stOff"
+  | "stSecurity"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2123,6 +2129,18 @@ en: {
     "No entries in this month yet.",
   rpKeptOf:
     "Kept {kept} of {income}",
+  stLevel:
+    "Level {n}",
+  stViewProfile:
+    "View profile",
+  stDanger:
+    "Danger zone",
+  stOn:
+    "On",
+  stOff:
+    "Off",
+  stSecurity:
+    "Security and backup",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3603,6 +3621,18 @@ bn: {
     "এই মাসে এখনও কোনো এন্ট্রি নেই।",
   rpKeptOf:
     "{income}-এর মধ্যে {kept} রেখেছেন",
+  stLevel:
+    "লেভেল {n}",
+  stViewProfile:
+    "প্রোফাইল দেখুন",
+  stDanger:
+    "ঝুঁকিপূর্ণ এলাকা",
+  stOn:
+    "চালু",
+  stOff:
+    "বন্ধ",
+  stSecurity:
+    "নিরাপত্তা ও ব্যাকআপ",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
