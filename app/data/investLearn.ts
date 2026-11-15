@@ -173,18 +173,115 @@ export const LEARN: LearnCard[] = [
   },
 ];
 
-/* Names and icons for the types you can record in the portfolio. */
-export const TYPE_INFO: Record<InvestmentType, { emoji: string; bn: string }> = {
-  Stocks: { emoji: "📈", bn: "শেয়ার" },
-  Crypto: { emoji: "⚠️", bn: "ক্রিপ্টো" },
-  Gold: { emoji: "🪙", bn: "স্বর্ণ" },
-  "Real Estate": { emoji: "🏠", bn: "সম্পত্তি" },
-  "Mutual Fund": { emoji: "🧺", bn: "মিউচুয়াল ফান্ড" },
-  ETF: { emoji: "📊", bn: "ETF" },
-  Bonds: { emoji: "🧾", bn: "বন্ড" },
-  Savings: { emoji: "🏦", bn: "সঞ্চয়" },
-  "Fixed Deposit (FDR)": { emoji: "🔒", bn: "FDR" },
-  Business: { emoji: "🏪", bn: "ব্যবসা" },
-  Retirement: { emoji: "👴", bn: "অবসর" },
-  Other: { emoji: "💼", bn: "অন্যান্য" },
+/* Names, icons, one-line help and a name example for each type
+   you can record in the portfolio. */
+export const TYPE_INFO: Record<
+  InvestmentType,
+  { emoji: string; en: string; bn: string; hint: Pair; example: string }
+> = {
+  Savings: {
+    emoji: "🏦",
+    en: "Savings account",
+    bn: "সঞ্চয়ী হিসাব",
+    hint: { en: "Money kept in a bank account that earns a little.", bn: "ব্যাংকে রাখা টাকা, যা অল্প আয় দেয়।" },
+    example: "Bank savings",
+  },
+  DPS: {
+    emoji: "🗓️",
+    en: "DPS",
+    bn: "DPS",
+    hint: { en: "A fixed amount you deposit every month for a set time.", bn: "নির্দিষ্ট সময়ের জন্য প্রতি মাসে নির্দিষ্ট টাকা জমা।" },
+    example: "Brac Bank DPS",
+  },
+  "Fixed Deposit (FDR)": {
+    emoji: "🔒",
+    en: "FDR",
+    bn: "FDR",
+    hint: { en: "A lump sum locked in a bank for a set time.", bn: "একসাথে টাকা নির্দিষ্ট সময়ের জন্য ব্যাংকে আটকে রাখা।" },
+    example: "City Bank FDR",
+  },
+  "Savings Certificate": {
+    emoji: "📜",
+    en: "Savings certificate",
+    bn: "সঞ্চয়পত্র",
+    hint: { en: "Government savings certificate (Sanchayapatra).", bn: "সরকারি সঞ্চয়পত্র।" },
+    example: "5-year certificate",
+  },
+  Bonds: {
+    emoji: "🧾",
+    en: "Bonds",
+    bn: "বন্ড",
+    hint: { en: "Money lent to the government or a company for steady income.", bn: "সরকার বা কোম্পানিকে ধার দিয়ে স্থির আয়।" },
+    example: "Treasury bond",
+  },
+  "Mutual Fund": {
+    emoji: "🧺",
+    en: "Mutual fund",
+    bn: "মিউচুয়াল ফান্ড",
+    hint: { en: "A fund that spreads your money across many companies.", bn: "অনেক কোম্পানিতে টাকা ছড়িয়ে দেওয়া ফান্ড।" },
+    example: "Fund name",
+  },
+  Stocks: {
+    emoji: "📈",
+    en: "Stocks",
+    bn: "শেয়ার",
+    hint: { en: "Shares of a company you hold, for example on the DSE.", bn: "কোনো কোম্পানির শেয়ার, যেমন DSE-তে।" },
+    example: "Square Pharma",
+  },
+  ETF: {
+    emoji: "📊",
+    en: "ETF",
+    bn: "ETF",
+    hint: { en: "A fund that trades like a share.", bn: "শেয়ারের মতো কেনাবেচা হওয়া ফান্ড।" },
+    example: "ETF name",
+  },
+  Gold: {
+    emoji: "🪙",
+    en: "Gold",
+    bn: "স্বর্ণ",
+    hint: { en: "Gold you hold as an investment. Enter grams or vori as units.", bn: "বিনিয়োগ হিসেবে রাখা স্বর্ণ। একক হিসেবে গ্রাম বা ভরি দিন।" },
+    example: "Gold 2 vori",
+  },
+  "Real Estate": {
+    emoji: "🏠",
+    en: "Property",
+    bn: "সম্পত্তি",
+    hint: { en: "Land, a flat or a shop kept as an investment.", bn: "বিনিয়োগ হিসেবে রাখা জমি, ফ্ল্যাট বা দোকান।" },
+    example: "Plot in Savar",
+  },
+  Business: {
+    emoji: "🏪",
+    en: "Business",
+    bn: "ব্যবসা",
+    hint: { en: "Money you put into a business.", bn: "ব্যবসায় লাগানো টাকা।" },
+    example: "Shop share",
+  },
+  Retirement: {
+    emoji: "👴",
+    en: "Pension or provident fund",
+    bn: "পেনশন বা প্রভিডেন্ট ফান্ড",
+    hint: { en: "Money set apart for retirement.", bn: "অবসরের জন্য আলাদা করা টাকা।" },
+    example: "Pension scheme",
+  },
+  Crypto: {
+    emoji: "⚠️",
+    en: "Crypto",
+    bn: "ক্রিপ্টো",
+    hint: { en: "Very high risk. Check the rules in Bangladesh first.", bn: "খুব ঝুঁকিপূর্ণ। আগে বাংলাদেশের নিয়ম যাচাই করুন।" },
+    example: "Coin name",
+  },
+  Other: {
+    emoji: "💼",
+    en: "Other",
+    bn: "অন্যান্য",
+    hint: { en: "Anything that does not fit the others.", bn: "অন্য কিছুতে না মিললে।" },
+    example: "Name",
+  },
 };
+
+/* How the type picker is grouped, safest first. */
+export const TYPE_GROUPS: { key: "invGroupSafe" | "invGroupGrow" | "invGroupSpecial"; types: InvestmentType[] }[] = [
+  { key: "invGroupSafe", types: ["Savings", "DPS", "Fixed Deposit (FDR)", "Savings Certificate", "Bonds"] },
+  { key: "invGroupGrow", types: ["Mutual Fund", "Stocks", "ETF", "Gold", "Real Estate", "Business"] },
+  { key: "invGroupSpecial", types: ["Retirement", "Crypto", "Other"] },
+];

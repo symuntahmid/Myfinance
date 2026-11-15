@@ -780,6 +780,50 @@ export type TranslationKey =
   | "ivGoodFor"
   | "ivWatch"
   | "ivCheckRates"
+  | "invAddTitle"
+  | "invEditTitle"
+  | "invWhat"
+  | "invGroupSafe"
+  | "invGroupGrow"
+  | "invGroupSpecial"
+  | "invName"
+  | "invHow"
+  | "invModeTotal"
+  | "invModeMonthly"
+  | "invModeUnits"
+  | "invPutIn"
+  | "invWorth"
+  | "invWorthHint"
+  | "invMonthlyAmt"
+  | "invMonthsPaid"
+  | "invUnitsLabel"
+  | "invBuyPrice"
+  | "invNowPrice"
+  | "invNowPriceHint"
+  | "invSummaryIn"
+  | "invSummaryWorth"
+  | "invSummaryGain"
+  | "invStartDate"
+  | "invNewPurchase"
+  | "invYesNew"
+  | "invNoOwned"
+  | "invPaidFrom"
+  | "invCashWillDrop"
+  | "invCashSame"
+  | "invLinkedNote"
+  | "invNote"
+  | "invSave"
+  | "invSaveChanges"
+  | "invCancel"
+  | "invRemoveTitle"
+  | "invRemoveMistake"
+  | "invRemoveMistakeSub"
+  | "invRemoveSold"
+  | "invRemoveSoldSub"
+  | "invRemoveOnly"
+  | "invRemoveOnlySub"
+  | "invSoldFor"
+  | "invConfirmSold"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2336,6 +2380,94 @@ en: {
     "Watch out",
   ivCheckRates:
     "Rates and rules change. Check with your bank or the official source before you invest.",
+  invAddTitle:
+    "Add investment",
+  invEditTitle:
+    "Edit investment",
+  invWhat:
+    "What is it?",
+  invGroupSafe:
+    "Safe and steady",
+  invGroupGrow:
+    "Grow over time",
+  invGroupSpecial:
+    "Long-term and special",
+  invName:
+    "Name",
+  invHow:
+    "How do you want to enter it?",
+  invModeTotal:
+    "Total amount",
+  invModeMonthly:
+    "Every month",
+  invModeUnits:
+    "Units × price",
+  invPutIn:
+    "Money you put in",
+  invWorth:
+    "Worth today",
+  invWorthHint:
+    "Leave empty if it is the same",
+  invMonthlyAmt:
+    "Deposit each month",
+  invMonthsPaid:
+    "Months paid so far",
+  invUnitsLabel:
+    "How many (shares, units or grams)",
+  invBuyPrice:
+    "Buy price each",
+  invNowPrice:
+    "Price today each",
+  invNowPriceHint:
+    "Leave empty to use the buy price",
+  invSummaryIn:
+    "Put in",
+  invSummaryWorth:
+    "Worth today",
+  invSummaryGain:
+    "Gain",
+  invStartDate:
+    "Starting date",
+  invNewPurchase:
+    "Did you just buy this?",
+  invYesNew:
+    "Yes, just bought",
+  invNoOwned:
+    "No, I already own it",
+  invPaidFrom:
+    "Paid from",
+  invCashWillDrop:
+    "{amount} will be taken from your cash.",
+  invCashSame:
+    "Your cash will not change.",
+  invLinkedNote:
+    "The purchase entry will update to match.",
+  invNote:
+    "Note (optional)",
+  invSave:
+    "Save investment",
+  invSaveChanges:
+    "Save changes",
+  invCancel:
+    "Cancel",
+  invRemoveTitle:
+    "Remove {name}",
+  invRemoveMistake:
+    "I added it by mistake",
+  invRemoveMistakeSub:
+    "Removes it and gives the money back to your cash.",
+  invRemoveSold:
+    "I sold it",
+  invRemoveSoldSub:
+    "Removes it and adds the sale money to your cash.",
+  invRemoveOnly:
+    "Just remove it",
+  invRemoveOnlySub:
+    "Removes it. Your cash does not change.",
+  invSoldFor:
+    "Sold for",
+  invConfirmSold:
+    "Confirm sale",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3958,6 +4090,94 @@ bn: {
     "সতর্ক থাকুন",
   ivCheckRates:
     "সুদের হার ও নিয়ম বদলায়। বিনিয়োগের আগে ব্যাংক বা সরকারি উৎসে যাচাই করুন।",
+  invAddTitle:
+    "বিনিয়োগ যোগ করুন",
+  invEditTitle:
+    "বিনিয়োগ এডিট করুন",
+  invWhat:
+    "এটি কী?",
+  invGroupSafe:
+    "নিরাপদ ও স্থির",
+  invGroupGrow:
+    "সময়ের সাথে বাড়ে",
+  invGroupSpecial:
+    "দীর্ঘমেয়াদি ও বিশেষ",
+  invName:
+    "নাম",
+  invHow:
+    "কীভাবে লিখবেন?",
+  invModeTotal:
+    "মোট টাকা",
+  invModeMonthly:
+    "প্রতি মাসে",
+  invModeUnits:
+    "পরিমাণ × দাম",
+  invPutIn:
+    "আপনি যত টাকা দিয়েছেন",
+  invWorth:
+    "আজকের মূল্য",
+  invWorthHint:
+    "একই হলে খালি রাখুন",
+  invMonthlyAmt:
+    "প্রতি মাসের জমা",
+  invMonthsPaid:
+    "এ পর্যন্ত কত মাস দিয়েছেন",
+  invUnitsLabel:
+    "কত (শেয়ার, ইউনিট বা গ্রাম)",
+  invBuyPrice:
+    "কেনা দাম (প্রতিটি)",
+  invNowPrice:
+    "আজকের দাম (প্রতিটি)",
+  invNowPriceHint:
+    "খালি রাখলে কেনা দামই ধরা হবে",
+  invSummaryIn:
+    "দিয়েছেন",
+  invSummaryWorth:
+    "আজকের মূল্য",
+  invSummaryGain:
+    "লাভ",
+  invStartDate:
+    "শুরুর তারিখ",
+  invNewPurchase:
+    "এটি কি এখনই কিনেছেন?",
+  invYesNew:
+    "হ্যাঁ, এখনই কিনেছি",
+  invNoOwned:
+    "না, আগে থেকেই আছে",
+  invPaidFrom:
+    "কোথা থেকে দিয়েছেন",
+  invCashWillDrop:
+    "আপনার নগদ থেকে {amount} কাটা হবে।",
+  invCashSame:
+    "আপনার নগদ বদলাবে না।",
+  invLinkedNote:
+    "কেনার এন্ট্রিও মিলিয়ে বদলে যাবে।",
+  invNote:
+    "নোট (ঐচ্ছিক)",
+  invSave:
+    "বিনিয়োগ সেভ করুন",
+  invSaveChanges:
+    "পরিবর্তন সেভ করুন",
+  invCancel:
+    "বাতিল",
+  invRemoveTitle:
+    "{name} সরান",
+  invRemoveMistake:
+    "ভুলে যোগ করেছি",
+  invRemoveMistakeSub:
+    "এটি সরিয়ে টাকা নগদে ফেরত দেয়।",
+  invRemoveSold:
+    "আমি বিক্রি করেছি",
+  invRemoveSoldSub:
+    "এটি সরিয়ে বিক্রির টাকা নগদে যোগ করে।",
+  invRemoveOnly:
+    "শুধু সরান",
+  invRemoveOnlySub:
+    "এটি সরায়। নগদ বদলায় না।",
+  invSoldFor:
+    "কত টাকায় বিক্রি",
+  invConfirmSold:
+    "বিক্রি নিশ্চিত করুন",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

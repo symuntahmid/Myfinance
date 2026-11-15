@@ -5,11 +5,11 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 
 import AddInvestmentModal from "@/app/components/AddInvestmentModal";
 import EditInvestmentModal from "@/app/components/EditInvestmentModal";
+import RemoveSheet from "@/app/components/invest/RemoveSheet";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { TYPE_INFO } from "@/app/data/investLearn";
 import {
-  deleteInvestment,
   getInvestments,
   getPortfolioSummary,
   type Investment,
@@ -25,6 +25,7 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<Investment | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<Investment | null>(null);
   const [, bump] = useState(0);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
 
   const locale = language === "bn" ? "bn-BD" : "en-US";
   const typeName = (type: Investment["type"]) =>
-    language === "bn" ? TYPE_INFO[type]?.bn ?? type : type;
+    TYPE_INFO[type]?.[language] ?? type;
 
   // Share of the portfolio by type, biggest first.
   const byType = new Map<Investment["type"], number>();
@@ -217,10 +218,8 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
                         <button
                           type="button"
                           onClick={() => {
-                            if (confirm(t("txDeleteConfirm"))) {
-                              deleteInvestment(item.id);
-                              setOpenId(null);
-                            }
+                            setRemoving(item);
+                            setOpenId(null);
                           }}
                           className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-red-200 py-2 text-sm font-semibold text-red-600"
                         >
@@ -236,6 +235,8 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
           </section>
         </>
       )}
+
+      {removing && <RemoveSheet investment={removing} onClose={() => setRemoving(null)} />}
 
       <AddInvestmentModal open={adding} onClose={() => setAdding(false)} />
 

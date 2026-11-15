@@ -10,6 +10,8 @@ export type InvestmentType =
   | "Bonds"
   | "Savings"
   | "Fixed Deposit (FDR)"
+  | "DPS"
+  | "Savings Certificate"
   | "Business"
   | "Retirement"
   | "Other";
@@ -29,6 +31,9 @@ export type Investment = {
   purchaseDate: string;
 
   notes?: string;
+
+  // The purchase entry made when this was bought with your own money.
+  txId?: number;
 };
 
 
