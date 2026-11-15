@@ -689,6 +689,26 @@ export type TranslationKey =
   | "txAllTime"
   | "txPrevMonth"
   | "txNextMonth"
+  | "rpTitle"
+  | "rpKept"
+  | "rpOver"
+  | "rpNoIncome"
+  | "rpEarned"
+  | "rpSpentLabel"
+  | "rpInvestedLabel"
+  | "rpVsLast"
+  | "rpWhere"
+  | "rpOther"
+  | "rpByDay"
+  | "rpBiggestDay"
+  | "rpFacts"
+  | "rpBiggest"
+  | "rpAvgDay"
+  | "rpNoSpend"
+  | "rpTrend"
+  | "rpDownload"
+  | "rpEmpty"
+  | "rpKeptOf"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2063,6 +2083,46 @@ en: {
     "Previous month",
   txNextMonth:
     "Next month",
+  rpTitle:
+    "Reports",
+  rpKept:
+    "You kept {pct}% of what you earned.",
+  rpOver:
+    "You spent more than you earned.",
+  rpNoIncome:
+    "No income added for this month yet.",
+  rpEarned:
+    "Earned",
+  rpSpentLabel:
+    "Spent",
+  rpInvestedLabel:
+    "Invested",
+  rpVsLast:
+    "vs last month",
+  rpWhere:
+    "Where your money went",
+  rpOther:
+    "Other",
+  rpByDay:
+    "Spending by day",
+  rpBiggestDay:
+    "Biggest day: {day}, {amount}",
+  rpFacts:
+    "Quick facts",
+  rpBiggest:
+    "Biggest category",
+  rpAvgDay:
+    "Average a day",
+  rpNoSpend:
+    "No-spend days",
+  rpTrend:
+    "Money kept, last 6 months",
+  rpDownload:
+    "Download this month (CSV)",
+  rpEmpty:
+    "No entries in this month yet.",
+  rpKeptOf:
+    "Kept {kept} of {income}",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -3503,6 +3563,46 @@ bn: {
     "আগের মাস",
   txNextMonth:
     "পরের মাস",
+  rpTitle:
+    "রিপোর্ট",
+  rpKept:
+    "আপনি যা আয় করেছেন তার {pct}% রেখেছেন।",
+  rpOver:
+    "আয়ের চেয়ে বেশি খরচ হয়েছে।",
+  rpNoIncome:
+    "এই মাসে এখনও আয় যোগ করা হয়নি।",
+  rpEarned:
+    "আয়",
+  rpSpentLabel:
+    "খরচ",
+  rpInvestedLabel:
+    "বিনিয়োগ",
+  rpVsLast:
+    "গত মাসের তুলনায়",
+  rpWhere:
+    "টাকা কোথায় গেল",
+  rpOther:
+    "অন্যান্য",
+  rpByDay:
+    "দিনভিত্তিক খরচ",
+  rpBiggestDay:
+    "সবচেয়ে বেশি: {day}, {amount}",
+  rpFacts:
+    "দ্রুত তথ্য",
+  rpBiggest:
+    "সবচেয়ে বড় খাত",
+  rpAvgDay:
+    "দিনে গড়ে",
+  rpNoSpend:
+    "খরচহীন দিন",
+  rpTrend:
+    "গত ৬ মাসে যা রেখেছেন",
+  rpDownload:
+    "এই মাসের ফাইল নামান (CSV)",
+  rpEmpty:
+    "এই মাসে এখনও কোনো এন্ট্রি নেই।",
+  rpKeptOf:
+    "{income}-এর মধ্যে {kept} রেখেছেন",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
