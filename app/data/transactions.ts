@@ -1,5 +1,7 @@
 import { getPortfolioSummary } from "./investments";
 import { addXP } from "./player";
+import { getNetWorthNow } from "./overview";
+import { monthOfDate, todayLocal } from "../utils/date";
 
 export type Transaction = {
   id: number;
@@ -70,14 +72,11 @@ function getCurrentMonthTransactions() {
   const transactions = getTransactions();
   const now = new Date();
 
-  return transactions.filter((transaction) => {
-    const date = new Date(transaction.date);
+  const month = todayLocal(now).slice(0, 7);
 
-    return (
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear()
-    );
-  });
+  return transactions.filter(
+    (transaction) => monthOfDate(transaction.date) === month
+  );
 }
 
 function calculateMonthlyTotals() {
@@ -146,12 +145,9 @@ export function getSummary() {
 
   const portfolio = getPortfolioSummary();
 
-  const availableCash =
-    income -
-    expense -
-    investmentSpent -
-    transferOut +
-    transferIn;
+  // The money you actually hold (every account), not just this month's
+  // movement, so it never resets to zero on the 1st.
+  const worth = getNetWorthNow();
 
   return {
     income,
@@ -159,13 +155,12 @@ export function getSummary() {
     investmentSpent,
     transferOut,
     transferIn,
-    availableCash,
+    availableCash: worth.accounts,
 
     investment: portfolio.current,
 
-    netWorth:
-      availableCash +
-      portfolio.current,
+    // Same figure as the dashboard: money + goals + investments - debts.
+    netWorth: worth.netWorth,
   };
 }
 
@@ -202,9 +197,12 @@ export function getMonthlyReport() {
   /*
    * Savings rate is based on actual income.
    */
+  // Money invested is still money kept, so only spending is taken off.
+  const kept = income - expense;
+
   const savingsRate =
     income > 0
-      ? (netCashFlow / income) * 100
+      ? (kept / income) * 100
       : 0;
 
   /*
@@ -293,7 +291,7 @@ const expenseBreakdown = Object.entries(
 
     netCashFlow,
 
-    savings: netCashFlow,
+    savings: kept,
 
     savingsRate,
 
@@ -312,9 +310,7 @@ const expenseBreakdown = Object.entries(
     /*
      * Overall position.
      */
-    netWorth:
-      netCashFlow +
-      portfolio.current,
+    netWorth: getNetWorthNow().netWorth,
 
     /*
      * Activity.

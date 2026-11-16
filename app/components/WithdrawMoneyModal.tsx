@@ -1,5 +1,6 @@
 "use client";
 
+import { todayLocal } from "@/app/utils/date";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 import {
@@ -102,7 +103,7 @@ const [, forceCurrencyUpdate] = useState(0);
 
       amount:value,
 
-      date:new Date().toISOString(),
+      date:todayLocal(),
 
       note:
         `Withdraw from goal: ${currentGoal.title}`,

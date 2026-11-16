@@ -14,6 +14,7 @@
    money is simply gone from "Ready to assign".
 ========================================== */
 
+import { monthOfDate } from "@/app/utils/date";
 import { quickExpenseCategories } from "./quickAdd";
 
 export const PLAN_KEY = "myfinance-plan";
@@ -56,7 +57,7 @@ type PlanTransaction = {
 ========================================== */
 
 export function monthOf(date: string): string {
-  return date.slice(0, 7);
+  return monthOfDate(date);
 }
 
 export function shiftMonth(month: string, by: number): string {

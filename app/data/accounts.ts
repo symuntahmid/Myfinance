@@ -18,6 +18,7 @@
    Only its fee is.
 ========================================== */
 
+import { todayLocal } from "@/app/utils/date";
 import {
   getTransactions,
   saveTransactions,
@@ -285,7 +286,7 @@ export function transferBetween(input: {
 
   if (!(amount > 0) || from.id === to.id) return false;
 
-  const date = input.date ?? new Date().toISOString();
+  const date = input.date ?? todayLocal();
 
   const entries: Transaction[] = [
     {

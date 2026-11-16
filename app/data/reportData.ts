@@ -5,6 +5,7 @@
    the entries. Kept apart from the screen.
 ========================================== */
 
+import { dayOf } from "@/app/utils/date";
 import { getTransactions, type Transaction } from "@/app/data/transactions";
 
 export type MonthReport = {
@@ -34,16 +35,7 @@ export function shiftMonth(month: string, by: number): string {
   return monthKey(new Date(y, m - 1 + by, 1));
 }
 
-// The entry's own calendar day, with no time-zone drift.
-function dayKey(date: string): string {
-  if (/^\d{4}-\d{2}-\d{2}/.test(date)) return date.slice(0, 10);
-
-  const d = new Date(date);
-
-  return Number.isNaN(d.getTime())
-    ? ""
-    : `${monthKey(d)}-${String(d.getDate()).padStart(2, "0")}`;
-}
+const dayKey = dayOf;
 
 export function buildMonthReport(
   month: string,

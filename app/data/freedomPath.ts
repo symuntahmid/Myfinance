@@ -7,6 +7,7 @@
 ========================================== */
 
 import { getTransactions } from "@/app/data/transactions";
+import { todayLocal } from "@/app/utils/date";
 import { getPlan, monthOf } from "@/app/data/plan";
 import { getDebts } from "@/app/data/netWorth";
 import { getNetWorthNow } from "@/app/data/overview";
@@ -62,7 +63,7 @@ export function buildFreedomPath(now: Date = new Date()): FreedomPath {
 
   /* 2. Plan: money given a job this month */
 
-  const month = monthOf(now.toISOString());
+  const month = monthOf(todayLocal(now));
   const planned = Object.values(getPlan()[month] ?? {}).reduce(
     (sum, value) => sum + (Number(value) > 0 ? Number(value) : 0),
     0

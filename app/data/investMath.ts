@@ -93,9 +93,12 @@ export function retirementPlan(input: RetireInput): RetireResult {
     Math.abs(real) < 1e-9
       ? retiredYears
       : (1 - Math.pow(1 + real, -retiredYears)) / real;
-  const nest = costThen * 12 * factor;
+  // The first year of spending is needed on retirement day, so the
+  // withdrawals are at the start of each year (annuity due).
+  const nest = costThen * 12 * factor * (1 + real);
 
-  const growth = Math.pow(1 + input.returnBefore / 100, yearsToGo);
+  // Monthly compounding, the same as every other growth figure in the app.
+  const growth = Math.pow(1 + input.returnBefore / 100 / 12, yearsToGo * 12);
   const projected =
     input.saved * growth + futureValue(input.monthly, input.returnBefore, yearsToGo);
 

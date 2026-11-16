@@ -9,6 +9,7 @@
    can be changed by the person (kept on the phone).
 ========================================== */
 
+import { monthOfDate } from "@/app/utils/date";
 import { getTransactions } from "@/app/data/transactions";
 
 export type Bucket = "needs" | "wants";
@@ -76,15 +77,7 @@ function sumMonth(month: string, type: string) {
     (item) =>
       item.type === type &&
       item.amount > 0 &&
-      (() => {
-        const date = new Date(item.date);
-
-        return (
-          !Number.isNaN(date.getTime()) &&
-          `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}` ===
-            month
-        );
-      })()
+      monthOfDate(item.date) === month
   );
 }
 

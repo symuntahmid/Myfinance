@@ -1,4 +1,5 @@
 "use client";
+import { todayLocal } from "@/app/utils/date";
 import { addInvestment } from "@/app/data/investments";
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -172,7 +173,7 @@ export default function TransactionForm({
 
   const [customSource, setCustomSource] = useState("");
   const [date, setDate] = useState(
-    new Date().toISOString().split("T")[0]
+    todayLocal()
   );
 
   const [note, setNote] = useState("");
@@ -258,7 +259,7 @@ export default function TransactionForm({
     setSource("");
     setCustomSource("");
     setNote("");
-    setDate(new Date().toISOString().split("T")[0]);
+    setDate(todayLocal());
 
     setAutoRepeat(false);
     setRepeatFrequency("monthly");

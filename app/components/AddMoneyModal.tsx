@@ -6,10 +6,9 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 import { Goal, addMoneyToGoal } from "@/app/data/goals";
-import {
-  getSummary,
-  addTransaction,
-} from "@/app/data/transactions";
+import { addTransaction } from "@/app/data/transactions";
+import { getAccounts, getBalances, normalizeSource } from "@/app/data/accounts";
+import { todayLocal } from "@/app/utils/date";
 
 import { formatCurrency } from "@/app/utils/currency";
 
@@ -29,8 +28,11 @@ export default function AddMoneyModal({
 
   if (!open || !goal) return null;
 
-  const summary = getSummary();
-  const availableCash = summary.availableCash;
+  // Goals are funded from the Cash account, so check what it really holds.
+  const cashAccount = getAccounts().find(
+    (account) => account.source === normalizeSource("Available Cash")
+  );
+  const availableCash = cashAccount ? getBalances()[cashAccount.id] ?? 0 : 0;
 
   return (
     <>
@@ -145,7 +147,7 @@ addTransaction({
 
   amount: value,
 
-  date: new Date().toISOString(),
+  date: todayLocal(),
 
   note: `Transfer to goal: ${goal.title}`,
 });
