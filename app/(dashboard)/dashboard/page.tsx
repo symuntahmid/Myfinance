@@ -13,6 +13,7 @@ import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
+import CoachStrip from "@/app/components/CoachStrip";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
@@ -56,6 +57,8 @@ export default function Dashboard() {
 <div className="space-y-4">
 
   <HomeHero onQuickAdd={() => setQuickOpen(true)} />
+
+  <CoachStrip />
 
   <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
 

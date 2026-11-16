@@ -30,6 +30,7 @@ import {
   Scale,
   Waypoints,
   Flag,
+  Sparkles,
   Zap,
   Settings,
   X,
@@ -116,6 +117,7 @@ export default function BottomNavigation() {
     {
       title: t("moreGroupInsights"),
       items: [
+        { href: "/coach", name: t("coachMenu"), icon: Sparkles },
         { href: "/freedom", name: t("fpTitle"), icon: Flag },
         { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
         { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },

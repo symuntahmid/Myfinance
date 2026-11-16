@@ -824,6 +824,7 @@ export type TranslationKey =
   | "invRemoveOnlySub"
   | "invSoldFor"
   | "invConfirmSold"
+  | "coachMenu"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2468,6 +2469,8 @@ en: {
     "Sold for",
   invConfirmSold:
     "Confirm sale",
+  coachMenu:
+    "Money Coach",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -4178,6 +4181,8 @@ bn: {
     "কত টাকায় বিক্রি",
   invConfirmSold:
     "বিক্রি নিশ্চিত করুন",
+  coachMenu:
+    "মানি কোচ",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
