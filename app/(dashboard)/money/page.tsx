@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ChevronRight, Landmark } from "lucide-react";
 
+import BudgetPlan from "@/app/components/BudgetPlan";
 import SpendingInsights from "@/app/components/SpendingInsights";
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
 import RecentTransactions from "@/app/components/RecentTransactions";
@@ -84,6 +85,8 @@ export default function MoneyPage() {
           </div>
         </div>
       </section>
+
+      <BudgetPlan />
 
       {/* A story, not a feature list */}
 

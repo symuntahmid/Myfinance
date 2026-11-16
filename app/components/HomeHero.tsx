@@ -7,7 +7,7 @@ import {
   ClipboardList,
   Flame,
   Plus,
-  Receipt,
+  Bell,
   Snowflake,
 } from "lucide-react";
 
@@ -148,8 +148,8 @@ export default function HomeHero({ onQuickAdd }: Props) {
           {(
             [
               ["/accounts", ArrowLeftRight, t("heroMove")],
-              ["/bills", Receipt, t("billsTitle")],
-              ["/plan", ClipboardList, t("planTitle")],
+              ["/reminders", Bell, t("billsTitle")],
+              ["/money", ClipboardList, t("planTitle")],
             ] as const
           ).map(([href, Icon, label]) => (
             <Link

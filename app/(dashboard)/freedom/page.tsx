@@ -23,7 +23,7 @@ import { quickExpenseCategories } from "@/app/data/quickAdd";
 
 const HREF: Record<StepId, string> = {
   track: "/dashboard",
-  plan: "/plan",
+  plan: "/money",
   starter: "/accounts",
   debt: "/debt-plan",
   safety: "/accounts",

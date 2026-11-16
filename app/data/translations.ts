@@ -934,7 +934,7 @@ en: {
   wealthHub: "Your Personal Wealth Hub",
   dashboard: "Dashboard",
   profile: "Profile",
-  myMoney: "My Money",
+  myMoney: "Budget",
   investments: "My Investments",
   reports: "Reports",
   settings: "Settings",
@@ -1686,17 +1686,17 @@ en: {
     "Down",
   // Bills and net worth
   billsTitle:
-    "Bills",
+    "Reminders",
   billsSubtitle:
-    "Bills that repeat every month",
+    "Never miss a payment. Pick a day and we remind you.",
   addBillTitle:
-    "Add a bill",
+    "Add a reminder",
   billNamePlaceholder:
     "e.g. House rent, Internet",
   billAmountLabel:
     "Amount",
   billDayLabel:
-    "Due day (1-31)",
+    "Remind me on day (1-31)",
   billPayFrom:
     "Pay from",
   billCategoryLabel:
@@ -1714,15 +1714,15 @@ en: {
   billDueIn:
     "Due in {days} day(s)",
   billMonthlyTotal:
-    "Total bills each month",
+    "Total due each month",
   billsEmpty:
-    "No bills yet. Add rent, internet, school fee...",
+    "No reminders yet. Add rent, internet, school fee...",
   billsCardNone:
     "Add your monthly bills",
   billsCardNext:
     "Next: {name}",
   billDeleteConfirm:
-    "Delete this bill? Past payments stay.",
+    "Delete this reminder? Past payments stay.",
   netWorthTitle:
     "Net worth",
   netWorthSubtitle:
@@ -1754,7 +1754,7 @@ en: {
 
   // Monthly plan
   planTitle:
-    "Monthly plan",
+    "Budget",
   planSubtitle:
     "Give every taka a job",
   planReadyToAssign:
@@ -2142,7 +2142,7 @@ en: {
   dpRemind:
     "Remind me every month",
   dpRemindOn:
-    "Reminders are on. You will see them under Bills.",
+    "Reminders are on. You will see them under Reminders.",
   dpRemindNeedDay:
     "Set a due day on at least one debt first.",
   dpPaidSoFar:
@@ -2662,7 +2662,7 @@ bn: {
   wealthHub: "আপনার ব্যক্তিগত সম্পদ কেন্দ্র",
   dashboard: "ড্যাশবোর্ড",
   profile: "প্রোফাইল",
-  myMoney: "আমার টাকা",
+  myMoney: "বাজেট",
   investments: "আমার বিনিয়োগ",
   reports: "রিপোর্ট",
   settings: "সেটিংস",
@@ -3406,17 +3406,17 @@ bn: {
     "কমেছে",
   // Bills and net worth
   billsTitle:
-    "বিল",
+    "রিমাইন্ডার",
   billsSubtitle:
-    "প্রতি মাসে যে বিলগুলো আসে",
+    "কোনো পেমেন্ট ভুলবেন না। তারিখ ঠিক করুন, আমরা মনে করিয়ে দেব।",
   addBillTitle:
-    "বিল যোগ করুন",
+    "রিমাইন্ডার যোগ করুন",
   billNamePlaceholder:
     "যেমন: বাসা ভাড়া, ইন্টারনেট",
   billAmountLabel:
     "টাকার পরিমাণ",
   billDayLabel:
-    "কত তারিখে (১-৩১)",
+    "কত তারিখে মনে করাবে (১-৩১)",
   billPayFrom:
     "যেখান থেকে দেবেন",
   billCategoryLabel:
@@ -3434,15 +3434,15 @@ bn: {
   billDueIn:
     "{days} দিন পরে",
   billMonthlyTotal:
-    "প্রতি মাসের মোট বিল",
+    "প্রতি মাসে মোট দেওয়ার কথা",
   billsEmpty:
-    "এখনও কোনো বিল নেই। বাসা ভাড়া, ইন্টারনেট, স্কুল ফি যোগ করুন...",
+    "এখনও কোনো রিমাইন্ডার নেই। বাসা ভাড়া, ইন্টারনেট, স্কুল ফি যোগ করুন...",
   billsCardNone:
     "মাসিক বিল যোগ করুন",
   billsCardNext:
     "পরের বিল: {name}",
   billDeleteConfirm:
-    "এই বিল মুছবেন? আগের পরিশোধ থেকে যাবে।",
+    "এই রিমাইন্ডার মুছবেন? আগের পরিশোধ থেকে যাবে।",
   netWorthTitle:
     "মোট সম্পদ",
   netWorthSubtitle:
@@ -3474,7 +3474,7 @@ bn: {
 
   // Monthly plan
   planTitle:
-    "মাসিক পরিকল্পনা",
+    "বাজেট",
   planSubtitle:
     "প্রতিটি টাকাকে একটি কাজ দিন",
   planReadyToAssign:
@@ -3862,7 +3862,7 @@ bn: {
   dpRemind:
     "প্রতি মাসে মনে করান",
   dpRemindOn:
-    "রিমাইন্ডার চালু। বিলস-এ দেখতে পাবেন।",
+    "রিমাইন্ডার চালু। রিমাইন্ডারে দেখতে পাবেন।",
   dpRemindNeedDay:
     "আগে অন্তত একটি ঋণে তারিখ দিন।",
   dpPaidSoFar:

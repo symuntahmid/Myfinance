@@ -89,7 +89,7 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
           overdue.length > 1 ? ` আরও ${overdue.length - 1}টি বাকি।` : ""
         } আগে এটি দিন।`
       ),
-      href: "/bills",
+      href: "/reminders",
       cta: pick(lang, "Open bills", "বিল দেখুন"),
     });
   }
@@ -124,7 +124,7 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
           dueSoon[0].state === "today" ? "আজই" : `${dueSoon[0].daysLeft} দিন পরে`
         } দিতে হবে।`
       ),
-      href: "/bills",
+      href: "/reminders",
       cta: pick(lang, "Mark paid", "পরিশোধ করুন"),
     });
   }
@@ -159,7 +159,7 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
           `${over.category} is ${money(over.spent - over.assigned)} over its plan this month. Slow down there.`,
           `${over.category} এই মাসের পরিকল্পনার চেয়ে ${money(over.spent - over.assigned)} বেশি গেছে। এখানে একটু থামুন।`
         ),
-        href: "/plan",
+        href: "/money",
         cta: pick(lang, "Open plan", "প্ল্যান দেখুন"),
       });
     }

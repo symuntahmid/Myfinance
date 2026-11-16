@@ -23,7 +23,7 @@ import {
   Ellipsis,
   User,
   Landmark,
-  Receipt,
+  Bell,
   Lightbulb,
   Scale,
   Waypoints,
@@ -108,7 +108,7 @@ export default function BottomNavigation() {
       items: [
         { href: "/reports", name: t("reports"), icon: FileText },
         { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
-        { href: "/bills", name: t("billsTitle"), icon: Receipt },
+        { href: "/reminders", name: t("billsTitle"), icon: Bell },
         { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
         { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
       ],
@@ -165,7 +165,7 @@ export default function BottomNavigation() {
       name: t("aheadTitle"),
       href: "/ahead",
       icon: Compass,
-      also: ["/plan", "/goals", "/occasions", "/somiti", "/time-machine", "/freedom"],
+      also: ["/goals", "/occasions", "/somiti", "/time-machine", "/freedom"],
     },
 
     {

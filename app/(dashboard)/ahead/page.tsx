@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   ChevronRight,
-  ClipboardList,
   Flag,
   Hourglass,
   Moon,
@@ -18,7 +17,6 @@ const TEXT = {
     title: "Plan ahead",
     sub: "Decide where your money goes, and see where it takes you.",
     items: [
-      { href: "/plan", icon: ClipboardList, name: "Monthly plan", about: "Split this month's income so it lasts." },
       { href: "/goals", icon: Target, name: "Savings goals", about: "Save for a trip, a phone, or anything you want." },
       { href: "/occasions", icon: Moon, name: "Eid and festivals", about: "Put aside a little each month for the big days." },
       { href: "/somiti", icon: Users, name: "Somiti", about: "Track who paid and whose turn it is." },
@@ -30,7 +28,6 @@ const TEXT = {
     title: "সামনের পরিকল্পনা",
     sub: "টাকা কোথায় যাবে ঠিক করুন, আর দেখুন সামনে কী হতে পারে।",
     items: [
-      { href: "/plan", icon: ClipboardList, name: "মাসিক পরিকল্পনা", about: "এই মাসের আয় ভাগ করুন যেন শেষ পর্যন্ত চলে।" },
       { href: "/goals", icon: Target, name: "সঞ্চয়ের লক্ষ্য", about: "ভ্রমণ, ফোন বা যা চান তার জন্য জমান।" },
       { href: "/occasions", icon: Moon, name: "ঈদ ও উৎসব", about: "বড় দিনের জন্য প্রতি মাসে অল্প অল্প আলাদা করুন।" },
       { href: "/somiti", icon: Users, name: "সমিতি", about: "কে দিল আর কার পালা, হিসাব রাখুন।" },

@@ -73,7 +73,7 @@ export default function BillsNetWorthCards() {
         </p>
       </Link>
 
-      <Link href="/bills" className={card}>
+      <Link href="/reminders" className={card}>
         <p className="text-xs font-semibold text-[var(--muted)]">
           {t("billsTitle")}
         </p>

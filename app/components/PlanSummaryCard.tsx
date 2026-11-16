@@ -86,7 +86,7 @@ export default function PlanSummaryCard() {
 
   return (
     <Link
-      href="/plan"
+      href="/money"
       className="block rounded-[28px] border border-[var(--border)] bg-[var(--card)] p-5 text-[var(--foreground)]"
     >
       <div className="flex items-start justify-between gap-3">

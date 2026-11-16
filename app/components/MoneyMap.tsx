@@ -6,7 +6,7 @@ import {
   ChevronRight,
   ClipboardList,
   Landmark,
-  Receipt,
+  Bell,
   Waypoints,
   Flag,
 } from "lucide-react";
@@ -116,15 +116,15 @@ export default function MoneyMap() {
       tone: "",
     },
     {
-      href: "/bills",
-      icon: Receipt,
+      href: "/reminders",
+      icon: Bell,
       title: t("billsTitle"),
       sub: billText,
       value: next ? formatCurrency(next.bill.amount) : "",
       tone: next?.state === "overdue" ? "text-[var(--sun)]" : "",
     },
     {
-      href: "/plan",
+      href: "/money",
       icon: ClipboardList,
       title: t("planTitle"),
       sub:
