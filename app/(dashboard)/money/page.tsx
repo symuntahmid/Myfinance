@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ChevronRight, Landmark } from "lucide-react";
+import { Landmark } from "lucide-react";
 
 import BudgetPlan from "@/app/components/BudgetPlan";
-import SpendingInsights from "@/app/components/SpendingInsights";
 import MoneyTrendChart from "@/app/components/MoneyTrendChart";
-import RecentTransactions from "@/app/components/RecentTransactions";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
 import QuickAddSheet from "@/app/components/QuickAddSheet";
 
@@ -88,40 +86,7 @@ export default function MoneyPage() {
 
       <BudgetPlan />
 
-      {/* A story, not a feature list */}
-
-      <div className="grid grid-cols-2 gap-3">
-        {[
-          { href: "/home-plan", title: t("hpEntryTitle"), sub: t("hpEntrySub") },
-          { href: "/debt-plan", title: t("dpEntryTitle"), sub: t("dpEntrySub") },
-        ].map((card) => (
-          <Link
-            key={card.href}
-            href={card.href}
-            className="paper block rounded-3xl border-2 border-[var(--ink)]/10 p-4"
-          >
-            <p className="font-hand text-2xl leading-tight text-[var(--pen)]">
-              <span className="hl">{card.title}</span>
-            </p>
-
-            <p className="mt-2 text-xs">{card.sub}</p>
-          </Link>
-        ))}
-      </div>
-
       <MoneyTrendChart />
-
-      <SpendingInsights />
-
-      <RecentTransactions />
-
-      <Link
-        href="/money/analytics"
-        className="flex items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm font-semibold text-[var(--primary)]"
-      >
-        {t("exploreMoneyAnalytics")}
-        <ChevronRight size={16} />
-      </Link>
 
       <FloatingActionButton onClick={() => setQuickOpen(true)} />
 

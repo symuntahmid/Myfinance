@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import {
+  BadgeCheck,
   ChevronRight,
   Flag,
+  Home,
   Hourglass,
   Moon,
   Target,
@@ -19,6 +21,8 @@ const TEXT = {
     items: [
       { href: "/goals", icon: Target, name: "Savings goals", about: "Save for a trip, a phone, or anything you want." },
       { href: "/occasions", icon: Moon, name: "Eid and festivals", about: "Put aside a little each month for the big days." },
+      { href: "/home-plan", icon: Home, name: "Rent to own", about: "A short story, then your plan to own a home." },
+      { href: "/debt-plan", icon: BadgeCheck, name: "Debt free", about: "Pay off what you owe, in the smartest order." },
       { href: "/somiti", icon: Users, name: "Somiti", about: "Track who paid and whose turn it is." },
       { href: "/time-machine", icon: Hourglass, name: "Time Machine", about: "See how saving more changes your future." },
       { href: "/freedom", icon: Flag, name: "Freedom Path", about: "How much you need to stop worrying about money." },
@@ -30,6 +34,8 @@ const TEXT = {
     items: [
       { href: "/goals", icon: Target, name: "সঞ্চয়ের লক্ষ্য", about: "ভ্রমণ, ফোন বা যা চান তার জন্য জমান।" },
       { href: "/occasions", icon: Moon, name: "ঈদ ও উৎসব", about: "বড় দিনের জন্য প্রতি মাসে অল্প অল্প আলাদা করুন।" },
+      { href: "/home-plan", icon: Home, name: "ভাড়া থেকে নিজের বাড়ি", about: "ছোট একটি গল্প, তারপর নিজের বাড়ির পরিকল্পনা।" },
+      { href: "/debt-plan", icon: BadgeCheck, name: "দেনামুক্ত", about: "যা ধার আছে, সবচেয়ে বুদ্ধিমানের ক্রমে শোধ করুন।" },
       { href: "/somiti", icon: Users, name: "সমিতি", about: "কে দিল আর কার পালা, হিসাব রাখুন।" },
       { href: "/time-machine", icon: Hourglass, name: "টাইম মেশিন", about: "বেশি জমালে ভবিষ্যৎ কেমন বদলায় দেখুন।" },
       { href: "/freedom", icon: Flag, name: "ফ্রিডম পাথ", about: "টাকার চিন্তা ছাড়তে কত লাগবে।" },
