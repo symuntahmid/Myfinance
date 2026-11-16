@@ -20,6 +20,7 @@ import { buildMonthReport, monthKey } from "@/app/data/reportData";
 import { buildProgress } from "@/app/data/progress";
 import { formatCurrency } from "@/app/utils/currency";
 import { dayOf, todayLocal } from "@/app/utils/date";
+import { daysUntil, expectedSaved, upcomingOccasions } from "@/app/data/occasions";
 
 export type Lang = "en" | "bn";
 
@@ -245,6 +246,57 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
       cta: pick(lang, "Add money", "টাকা যোগ করুন"),
     });
   }
+
+  /* 6b. A festival is coming */
+  const festivals = getGoals();
+
+  upcomingOccasions(now)
+    .filter((item) => daysUntil(item.date, now) <= 150)
+    .slice(0, 1)
+    .forEach((item) => {
+      const name = {
+        fitr: pick(lang, "Eid-ul-Fitr", "ঈদুল ফিতর"),
+        adha: pick(lang, "Eid-ul-Adha", "ঈদুল আযহা"),
+        boishakh: pick(lang, "Pohela Boishakh", "পহেলা বৈশাখ"),
+      }[item.kind];
+
+      const days = daysUntil(item.date, now);
+      const made = festivals.find((goal) => goal.occasion === item.id);
+
+      if (!made) {
+        tips.push({
+          id: "festival",
+          tone: "nudge",
+          text: pick(
+            lang,
+            `${name} is about ${days} days away. Plan it now and the monthly amount stays small.`,
+            `${name} প্রায় ${days} দিন পরে। এখনই পরিকল্পনা করুন, মাসিক অঙ্ক ছোট থাকবে।`
+          ),
+          href: "/occasions",
+          cta: pick(lang, "Plan it", "পরিকল্পনা করুন"),
+        });
+
+        return;
+      }
+
+      const behind =
+        expectedSaved(made.targetAmount, made.createdAt, item.date, now) -
+        made.savedAmount;
+
+      if (behind > made.targetAmount * 0.2) {
+        tips.push({
+          id: "festivalBehind",
+          tone: "warn",
+          text: pick(
+            lang,
+            `Your ${name} fund is ${money(behind)} behind. Add some now so it does not pile up at the end.`,
+            `${name} এর তহবিল ${money(behind)} পিছিয়ে। এখন কিছু যোগ করুন, শেষে চাপ কমবে।`
+          ),
+          href: "/goals",
+          cta: pick(lang, "Add money", "টাকা যোগ করুন"),
+        });
+      }
+    });
 
   /* 7. No entry for two days */
   const lastDay = getTransactions()

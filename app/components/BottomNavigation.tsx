@@ -32,6 +32,7 @@ import {
   Flag,
   Sparkles,
   Hourglass,
+  Moon,
   Zap,
   Settings,
   X,
@@ -113,6 +114,7 @@ export default function BottomNavigation() {
         { href: "/bills", name: t("billsTitle"), icon: Receipt },
         { href: "/plan", name: t("planTitle"), icon: ClipboardList },
         { href: "/goals", name: t("goalsTitle"), icon: Target },
+        { href: "/occasions", name: t("occMenu"), icon: Moon },
       ],
     },
     {

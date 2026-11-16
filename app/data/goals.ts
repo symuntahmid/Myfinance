@@ -15,6 +15,9 @@ export type Goal = {
 
   // Chosen by the person. Old goals have none: we work it out from the date.
   term?: GoalTerm;
+
+  // Set when the goal was made from a festival plan (Eid, Qurbani...)
+  occasion?: string;
 };
 
 export type GoalTerm = "short" | "medium" | "long";

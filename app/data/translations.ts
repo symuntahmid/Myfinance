@@ -826,6 +826,7 @@ export type TranslationKey =
   | "invConfirmSold"
   | "coachMenu"
   | "tmMenu"
+  | "occMenu"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2474,6 +2475,8 @@ en: {
     "Money Coach",
   tmMenu:
     "Time Machine",
+  occMenu:
+    "Eid and festivals",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -4188,6 +4191,8 @@ bn: {
     "মানি কোচ",
   tmMenu:
     "টাইম মেশিন",
+  occMenu:
+    "ঈদ ও উৎসব",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:
