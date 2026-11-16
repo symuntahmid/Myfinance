@@ -29,6 +29,9 @@ const STORAGE_KEYS = {
   debtPlan: "myfinance-debt-plan",
   investGrow: "myfinance-invest-grow",
   investRetire: "myfinance-invest-retire",
+  somiti: "myfinance-somiti",
+  occasions: "myfinance-occasions",
+  timeMachine: "myfinance-time-machine",
 };
 
 /* ==========================================

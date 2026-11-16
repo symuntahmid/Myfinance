@@ -827,6 +827,7 @@ export type TranslationKey =
   | "coachMenu"
   | "tmMenu"
   | "occMenu"
+  | "somMenu"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2477,6 +2478,8 @@ en: {
     "Time Machine",
   occMenu:
     "Eid and festivals",
+  somMenu:
+    "Somiti",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -4193,6 +4196,8 @@ bn: {
     "টাইম মেশিন",
   occMenu:
     "ঈদ ও উৎসব",
+  somMenu:
+    "সমিতি",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

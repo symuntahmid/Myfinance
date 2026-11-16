@@ -33,6 +33,7 @@ import {
   Sparkles,
   Hourglass,
   Moon,
+  Users,
   Zap,
   Settings,
   X,
@@ -115,6 +116,7 @@ export default function BottomNavigation() {
         { href: "/plan", name: t("planTitle"), icon: ClipboardList },
         { href: "/goals", name: t("goalsTitle"), icon: Target },
         { href: "/occasions", name: t("occMenu"), icon: Moon },
+        { href: "/somiti", name: t("somMenu"), icon: Users },
       ],
     },
     {
