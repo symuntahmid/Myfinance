@@ -825,6 +825,7 @@ export type TranslationKey =
   | "invSoldFor"
   | "invConfirmSold"
   | "coachMenu"
+  | "tmMenu"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2471,6 +2472,8 @@ en: {
     "Confirm sale",
   coachMenu:
     "Money Coach",
+  tmMenu:
+    "Time Machine",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -4183,6 +4186,8 @@ bn: {
     "বিক্রি নিশ্চিত করুন",
   coachMenu:
     "মানি কোচ",
+  tmMenu:
+    "টাইম মেশিন",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

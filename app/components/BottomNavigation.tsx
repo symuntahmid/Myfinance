@@ -31,6 +31,7 @@ import {
   Waypoints,
   Flag,
   Sparkles,
+  Hourglass,
   Zap,
   Settings,
   X,
@@ -117,6 +118,7 @@ export default function BottomNavigation() {
     {
       title: t("moreGroupInsights"),
       items: [
+        { href: "/time-machine", name: t("tmMenu"), icon: Hourglass },
         { href: "/coach", name: t("coachMenu"), icon: Sparkles },
         { href: "/freedom", name: t("fpTitle"), icon: Flag },
         { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
