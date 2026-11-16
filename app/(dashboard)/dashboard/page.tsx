@@ -13,6 +13,7 @@ import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
+import VoiceButton from "@/app/components/VoiceButton";
 import CoachStrip from "@/app/components/CoachStrip";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
 
@@ -61,6 +62,8 @@ export default function Dashboard() {
   <CoachStrip />
 
   <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
+
+  <VoiceButton />
 
   <RecentTransactions />
 
