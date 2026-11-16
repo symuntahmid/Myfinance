@@ -376,7 +376,7 @@ export default function BottomNavigation() {
             />
 
             <div
-              className="absolute bottom-0 left-0 right-0 rounded-t-[32px] bg-[var(--card)] p-5 pb-8 shadow-2xl"
+              className="absolute bottom-0 left-0 right-0 max-h-[88vh] overflow-y-auto overscroll-contain rounded-t-[32px] bg-[var(--card)] p-5 pb-8 shadow-2xl"
               style={{
                 paddingBottom:
                   "calc(env(safe-area-inset-bottom) + 1.5rem)",
