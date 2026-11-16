@@ -3,10 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, Download, Eye, EyeOff, Share2 } from "lucide-react";
 
-import NetWorthChart from "../../components/NetWorthChart";
-import FinancialInsights from "../../components/FinancialInsights";
 import IncomeExpenseChart from "../../components/IncomeExpenseChart";
-import InvestmentPieChart from "../../components/InvestmentPieChart";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -676,19 +673,7 @@ export default function InsightsPage() {
       {deepOpen && (
         <div className="space-y-3">
           <div className="min-w-0">
-            <NetWorthChart />
-          </div>
-
-          <div className="min-w-0">
-            <FinancialInsights />
-          </div>
-
-          <div className="min-w-0">
             <IncomeExpenseChart />
-          </div>
-
-          <div className="min-w-0">
-            <InvestmentPieChart />
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 
+import NetWorthChart from "@/app/components/NetWorthChart";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getAccounts, getBalances } from "@/app/data/accounts";
@@ -272,6 +273,8 @@ export default function NetWorthPage() {
           </button>
         )}
       </div>
+
+      <NetWorthChart />
     </div>
   );
 }

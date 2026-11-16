@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import InvestmentPieChart from "@/app/components/InvestmentPieChart";
 import PortfolioTab from "@/app/components/invest/PortfolioTab";
 import GrowTab from "@/app/components/invest/GrowTab";
 import RetireTab from "@/app/components/invest/RetireTab";
@@ -46,6 +47,7 @@ export default function InvestmentsPage() {
       </div>
 
       {tab === "portfolio" && <PortfolioTab onGrow={() => setTab("grow")} />}
+      {tab === "portfolio" && <InvestmentPieChart />}
       {tab === "grow" && <GrowTab />}
       {tab === "retire" && <RetireTab />}
       {tab === "learn" && <LearnTab />}
