@@ -95,24 +95,29 @@ setRefresh(
 
   const groups = [
     {
-      title: t("moreGroupMoney"),
+      title: t("aheadTitle"),
       items: [
-        { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
-        { href: "/bills", name: t("billsTitle"), icon: Receipt },
         { href: "/plan", name: t("planTitle"), icon: ClipboardList },
         { href: "/goals", name: t("goalsTitle"), icon: Target },
         { href: "/occasions", name: t("occMenu"), icon: Moon },
         { href: "/somiti", name: t("somMenu"), icon: Users },
+        { href: "/time-machine", name: t("tmMenu"), icon: Hourglass },
+        { href: "/freedom", name: t("fpTitle"), icon: Flag },
+      ],
+    },
+    {
+      title: t("moreGroupMoney"),
+      items: [
+        { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
+        { href: "/bills", name: t("billsTitle"), icon: Receipt },
+        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
+        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
       ],
     },
     {
       title: t("moreGroupInsights"),
       items: [
-        { href: "/time-machine", name: t("tmMenu"), icon: Hourglass },
         { href: "/coach", name: t("coachMenu"), icon: Sparkles },
-        { href: "/freedom", name: t("fpTitle"), icon: Flag },
-        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
-        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
         { href: "/insights", name: t("insTitle"), icon: Lightbulb },
       ],
     },

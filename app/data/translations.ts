@@ -828,6 +828,7 @@ export type TranslationKey =
   | "tmMenu"
   | "occMenu"
   | "somMenu"
+  | "aheadTitle"
   | "addGoal"
   | "activeGoals"
   | "goalsCompleted"
@@ -2480,6 +2481,8 @@ en: {
     "Eid and festivals",
   somMenu:
     "Somiti",
+  aheadTitle:
+    "Plan ahead",
   addGoal:
     "Add Goal",
   activeGoals:
@@ -4198,6 +4201,8 @@ bn: {
     "ঈদ ও উৎসব",
   somMenu:
     "সমিতি",
+  aheadTitle:
+    "সামনের পরিকল্পনা",
   addGoal:
     "লক্ষ্য যোগ করুন",
   activeGoals:

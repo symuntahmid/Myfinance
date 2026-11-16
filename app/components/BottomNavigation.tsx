@@ -22,18 +22,13 @@ import {
   FileText,
   Ellipsis,
   User,
-  Target,
   Landmark,
-  ClipboardList,
   Receipt,
   Lightbulb,
   Scale,
   Waypoints,
-  Flag,
   Sparkles,
-  Hourglass,
-  Moon,
-  Users,
+  Compass,
   Zap,
   Settings,
   X,
@@ -111,22 +106,17 @@ export default function BottomNavigation() {
     {
       title: t("moreGroupMoney"),
       items: [
+        { href: "/reports", name: t("reports"), icon: FileText },
         { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
         { href: "/bills", name: t("billsTitle"), icon: Receipt },
-        { href: "/plan", name: t("planTitle"), icon: ClipboardList },
-        { href: "/goals", name: t("goalsTitle"), icon: Target },
-        { href: "/occasions", name: t("occMenu"), icon: Moon },
-        { href: "/somiti", name: t("somMenu"), icon: Users },
+        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
+        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
       ],
     },
     {
       title: t("moreGroupInsights"),
       items: [
-        { href: "/time-machine", name: t("tmMenu"), icon: Hourglass },
         { href: "/coach", name: t("coachMenu"), icon: Sparkles },
-        { href: "/freedom", name: t("fpTitle"), icon: Flag },
-        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
-        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
         { href: "/insights", name: t("insTitle"), icon: Lightbulb },
       ],
     },
@@ -171,13 +161,12 @@ export default function BottomNavigation() {
 
 
     {
-      key: "reports",
-      name: t("reports"),
-      href: "/reports",
-      icon: FileText,
+      key: "ahead",
+      name: t("aheadTitle"),
+      href: "/ahead",
+      icon: Compass,
+      also: ["/plan", "/goals", "/occasions", "/somiti", "/time-machine", "/freedom"],
     },
-
-
 
     {
       key: "more",
@@ -242,11 +231,14 @@ export default function BottomNavigation() {
 
 
 
-          const active =
-            pathname === item.href ||
-            pathname.startsWith(
-              item.href + "/"
-            );
+          const active = [
+            item.href,
+            ...(("also" in item && item.also) || []),
+          ].some(
+            (href) =>
+              pathname === href ||
+              pathname.startsWith(href + "/")
+          );
 
 
 
