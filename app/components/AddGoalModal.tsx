@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { X, Target } from "lucide-react";
+import { X } from "lucide-react";
 
 import { addGoal, termFromDate, type GoalTerm } from "@/app/data/goals";
 import TermPicker from "@/app/components/TermPicker";
 import { useLanguage } from "@/app/context/LanguageContext";
+import { GOAL_EMOJIS } from "@/app/data/lifeGoals";
 import {
   goalTemplates,
   goalTemplateText,
@@ -17,551 +18,197 @@ type Props = {
   onClose: () => void;
 };
 
-export default function AddGoalModal({
-  open,
-  onClose,
-}: Props) {
+const field =
+  "w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-3 text-base font-semibold text-[var(--foreground)] outline-none focus:border-[var(--primary)]";
+
+export default function AddGoalModal({ open, onClose }: Props) {
+  const { language, t } = useLanguage();
 
   const [title, setTitle] = useState("");
   const [emoji, setEmoji] = useState("🎯");
   const [targetAmount, setTargetAmount] = useState("");
   const [targetDate, setTargetDate] = useState("");
   const [chosenTerm, setChosenTerm] = useState<GoalTerm | null>(null);
-
-  const { language, t } = useLanguage();
-
-  const [templateId, setTemplateId] =
-    useState<GoalTemplateId | null>(null);
-
+  const [templateId, setTemplateId] = useState<GoalTemplateId | null>(null);
 
   if (!open) return null;
 
+  const amount = Number(targetAmount);
+  const valid = title.trim() !== "" && amount > 0;
 
-
-  function handleCreateGoal() {
-
-    if (!title.trim()) return;
-
-    if (!targetAmount) return;
-
-
-    addGoal({
-
-      id: Date.now().toString(),
-
-      title: title.trim(),
-
-      emoji,
-
-      targetAmount: Number(targetAmount),
-
-      savedAmount: 0,
-
-      targetDate,
-
-      createdAt: new Date().toISOString(),
-
-      term: chosenTerm ?? termFromDate(targetDate),
-
-    });
-
-
-
+  function reset() {
     setTitle("");
-
     setEmoji("🎯");
-
     setTargetAmount("");
-
     setTargetDate("");
-
     setChosenTerm(null);
-
     setTemplateId(null);
-
-
-    onClose();
-
   }
 
+  function handleCreateGoal() {
+    if (!valid) return;
 
+    addGoal({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      title: title.trim(),
+      emoji,
+      targetAmount: amount,
+      savedAmount: 0,
+      targetDate,
+      createdAt: new Date().toISOString(),
+      term: chosenTerm ?? termFromDate(targetDate),
+    });
+
+    reset();
+    onClose();
+  }
+
+  const label = "mb-1 block text-xs font-semibold text-[var(--muted)]";
 
   return (
-
-<>
-<div
-className="
-fixed
-inset-0
-z-50
-bg-black/40
-backdrop-blur-sm
-"
-onClick={onClose}
-/>
-
-
-
-<div
-className="
-fixed
-inset-0
-z-50
-flex
-items-center
-justify-center
-p-6
-"
->
-
-
-<div
-
-onClick={(e)=>e.stopPropagation()}
-
-className="
-w-full
-max-w-xl
-max-h-[90vh]
-overflow-y-auto
-rounded-[32px]
-bg-[var(--card)]
-border
-border-[var(--border)]
-shadow-2xl
-"
-
->
-
-
-{/* Header */}
-
-
-<div
-className="
-flex
-items-center
-justify-between
-border-b
-border-[var(--border)]
-px-8
-py-6
-"
->
-
-
-<div
-className="
-flex
-items-center
-gap-4
-"
->
-
-
-<div
-className="
-rounded-2xl
-bg-cyan-500/10
-p-3
-"
->
-
-<Target className="text-cyan-500"/>
-
-</div>
-
-
-
-<div>
-
-<h2
-className="
-text-3xl
-font-bold
-text-[var(--foreground)]
-"
->
-{t("createGoal")}
-</h2>
-
-
-<p
-className="
-mt-1
-text-[var(--muted)]
-"
->
-{t("createGoalDescription")}
-</p>
-
-
-</div>
-
-
-</div>
-
-
-
-
-<button
-
-onClick={onClose}
-
-className="
-rounded-full
-p-2
-text-[var(--muted)]
-hover:bg-[var(--background)]
-"
-
->
-
-<X size={22}/>
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-{/* Body */}
-
-
-<div
-className="
-space-y-6
-p-8
-"
->
-
-<div>
-
-<p
-className="
-mb-2
-text-sm
-font-semibold
-text-[var(--foreground)]
-"
->
-{goalTemplateText[language].heading}
-<span className="ml-2 font-normal text-[var(--muted)]">
-· {goalTemplateText[language].optional}
-</span>
-</p>
-
-<div className="flex flex-wrap gap-2">
-
-{goalTemplates.map((template) => (
-
-<button
-key={template.id}
-type="button"
-onClick={() => {
-setTitle(template.title[language]);
-setEmoji(template.emoji);
-setTemplateId(template.id);
-}}
-className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
-templateId === template.id
-? "border-cyan-500 bg-cyan-500 text-white"
-: "border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] hover:border-cyan-400"
-}`}
->
-{template.emoji} {template.title[language]}
-</button>
-
-))}
-
-</div>
-
-{templateId && (
-<p className="mt-3 rounded-2xl bg-cyan-500/10 px-4 py-3 text-sm text-[var(--foreground)]">
-💡 {goalTemplates.find((t) => t.id === templateId)?.tip[language]}
-</p>
-)}
-
-</div>
-
-
-
-
-<div>
-
-<label
-className="
-mb-2
-block
-text-sm
-font-semibold
-text-[var(--foreground)]
-"
->
-{t("goalName")}
-</label>
-
-
-<input
-
-value={title}
-
-onChange={(e)=>setTitle(e.target.value)}
-
-placeholder={t("goalNamePlaceholder")}
-
-className="
-w-full
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--background)]
-px-4
-py-3
-text-[var(--foreground)]
-outline-none
-transition
-focus:border-cyan-500
-focus:ring-4
-focus:ring-cyan-500/20
-"
-
-/>
-
-</div>
-
-
-
-
-<div>
-
-<label
-className="
-mb-2
-block
-text-sm
-font-semibold
-text-[var(--foreground)]
-"
->
-{t("emojiLabel")}
-</label>
-
-
-<input
-
-value={emoji}
-
-onChange={(e)=>setEmoji(e.target.value)}
-
-placeholder="🎯"
-
-className="
-w-full
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--background)]
-px-4
-py-3
-text-[var(--foreground)]
-outline-none
-transition
-focus:border-cyan-500
-focus:ring-4
-focus:ring-cyan-500/20
-"
-
-/>
-
-</div>
-
-
-
-
-
-<div>
-
-<label
-className="
-mb-2
-block
-text-sm
-font-semibold
-text-[var(--foreground)]
-"
->
-{t("targetAmount")}
-</label>
-
-
-<input
-
-type="number"
-
-value={targetAmount}
-
-onChange={(e)=>setTargetAmount(e.target.value)}
-
-placeholder="10000"
-
-className="
-w-full
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--background)]
-px-4
-py-3
-text-[var(--foreground)]
-outline-none
-transition
-focus:border-cyan-500
-focus:ring-4
-focus:ring-cyan-500/20
-"
-
-/>
-
-</div>
-
-
-
-
-
-<div>
-
-<label
-className="
-mb-2
-block
-text-sm
-font-semibold
-text-[var(--foreground)]
-"
->
-{t("targetDate")}
-</label>
-
-
-<input
-
-type="date"
-
-value={targetDate}
-
-onChange={(e)=>setTargetDate(e.target.value)}
-
-className="
-w-full
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--background)]
-px-4
-py-3
-text-[var(--foreground)]
-outline-none
-transition
-focus:border-cyan-500
-focus:ring-4
-focus:ring-cyan-500/20
-"
-
-/>
-
-</div>
-
-<TermPicker
-value={chosenTerm ?? termFromDate(targetDate)}
-onChange={setChosenTerm}
-/>
-
-</div>
-
-
-
-
-
-{/* Footer */}
-
-
-<div
-className="
-flex
-gap-4
-px-8
-pb-8
-"
->
-
-
-<button
-
-onClick={onClose}
-
-className="
-flex-1
-rounded-2xl
-border
-border-[var(--border)]
-py-4
-font-semibold
-text-[var(--foreground)]
-transition
-hover:bg-[var(--background)]
-"
-
->
-
-{t("cancel")}
-
-</button>
-
-
-
-
-<button
-
-onClick={handleCreateGoal}
-
-className="
-flex-1
-rounded-2xl
-bg-gradient-to-r
-from-cyan-500
-to-blue-600
-py-4
-font-semibold
-text-white
-transition
-hover:scale-[1.02]
-"
-
->
-
-{t("createGoal")}
-
-</button>
-
-
-
-</div>
-
-
-
-
-</div>
-
-
-</div>
-
-</>
-
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+      <div
+        className="absolute inset-0 bg-black/40"
+        onClick={onClose}
+        aria-hidden
+      />
+
+      <div className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-[var(--card)] p-5 pb-8 sm:rounded-3xl">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold">{t("createGoal")}</h2>
+            <p className="text-sm text-[var(--muted)]">
+              {t("createGoalDescription")}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("cancel")}
+            className="rounded-full p-2 text-[var(--muted)]"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="mt-4">
+          <p className={label}>
+            {goalTemplateText[language].heading} ·{" "}
+            {goalTemplateText[language].optional}
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {goalTemplates.map((template) => (
+              <button
+                key={template.id}
+                type="button"
+                onClick={() => {
+                  setTitle(template.title[language]);
+                  setEmoji(template.emoji);
+                  setTemplateId(template.id);
+                }}
+                className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${
+                  templateId === template.id
+                    ? "border-[var(--forest)] bg-[var(--forest)] text-[var(--on-forest)]"
+                    : "border-[var(--border)] bg-[var(--background)]"
+                }`}
+              >
+                {template.emoji} {template.title[language]}
+              </button>
+            ))}
+          </div>
+
+          {templateId && (
+            <p className="mt-3 rounded-xl bg-[var(--gold-soft)] px-3 py-2 text-sm">
+              💡 {goalTemplates.find((x) => x.id === templateId)?.tip[language]}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-4 space-y-4">
+          <label className="block">
+            <span className={label}>{t("goalName")}</span>
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={t("goalNamePlaceholder")}
+              className={field}
+            />
+          </label>
+
+          <div>
+            <span className={label}>{t("emojiLabel")}</span>
+
+            <div className="flex flex-wrap gap-2">
+              {[...new Set([emoji, "🎯", ...GOAL_EMOJIS])].map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setEmoji(item)}
+                  aria-pressed={emoji === item}
+                  className={`flex h-10 w-10 items-center justify-center rounded-xl border text-xl ${
+                    emoji === item
+                      ? "border-[var(--forest)] bg-[var(--gold-soft)]"
+                      : "border-[var(--border)] bg-[var(--background)]"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span className={label}>{t("targetAmount")}</span>
+              <input
+                inputMode="decimal"
+                value={targetAmount}
+                onChange={(e) =>
+                  setTargetAmount(e.target.value.replace(/[^\d.]/g, ""))
+                }
+                placeholder="10000"
+                className={field}
+              />
+            </label>
+
+            <label className="block">
+              <span className={label}>{t("targetDate")}</span>
+              <input
+                type="date"
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
+                className={field}
+              />
+            </label>
+          </div>
+
+          <TermPicker
+            value={chosenTerm ?? termFromDate(targetDate)}
+            onChange={setChosenTerm}
+          />
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 rounded-full border border-[var(--border)] py-3 text-sm font-semibold"
+          >
+            {t("cancel")}
+          </button>
+
+          <button
+            type="button"
+            disabled={!valid}
+            onClick={handleCreateGoal}
+            className="flex-1 rounded-full bg-[var(--primary)] py-3 text-sm font-semibold text-white disabled:opacity-40"
+          >
+            {t("createGoal")}
+          </button>
+        </div>
+      </div>
+    </div>
   );
-
 }

@@ -11,6 +11,7 @@
                            investments could pay for)
 ========================================== */
 
+import { monthOfDate } from "@/app/utils/date";
 import { getTransactions } from "@/app/data/transactions";
 import { getNetWorthNow } from "@/app/data/overview";
 
@@ -55,8 +56,7 @@ function rateOf(rows: MonthRow[]): number | null {
 
 export function buildProgress(now: Date = new Date()): Progress {
   const all = getTransactions().filter(
-    (item) =>
-      item.amount > 0 && !Number.isNaN(new Date(item.date).getTime())
+    (item) => item.amount > 0 && monthOfDate(item.date) !== ""
   );
 
   const rows: MonthRow[] = [];
@@ -64,14 +64,9 @@ export function buildProgress(now: Date = new Date()): Progress {
   for (let back = WINDOW_MONTHS - 1; back >= 0; back -= 1) {
     const date = new Date(now.getFullYear(), now.getMonth() - back, 1);
 
-    const list = all.filter((item) => {
-      const when = new Date(item.date);
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 
-      return (
-        when.getFullYear() === date.getFullYear() &&
-        when.getMonth() === date.getMonth()
-      );
-    });
+    const list = all.filter((item) => monthOfDate(item.date) === key);
 
     const add = (type: string) =>
       list
@@ -88,7 +83,8 @@ export function buildProgress(now: Date = new Date()): Progress {
       income,
       expense,
       invested,
-      kept: income - expense - invested,
+      // Money put into investments is still money kept.
+      kept: income - expense,
     });
   }
 

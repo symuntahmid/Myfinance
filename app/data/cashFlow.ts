@@ -10,6 +10,7 @@
                and money kept (savings)
 ========================================== */
 
+import { dayOf } from "@/app/utils/date";
 import { getTransactions } from "@/app/data/transactions";
 
 export type CashFlowRange =
@@ -106,7 +107,10 @@ export function buildCashFlow(range: CashFlowRange): CashFlow {
   const [from, to] = rangeBounds(range);
 
   const items = getTransactions().filter((item) => {
-    const date = new Date(item.date);
+    const day = dayOf(item.date);
+    const date = day
+      ? new Date(+day.slice(0, 4), +day.slice(5, 7) - 1, +day.slice(8, 10))
+      : new Date(NaN);
 
     return (
       !Number.isNaN(date.getTime()) &&

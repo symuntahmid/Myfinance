@@ -1,3 +1,4 @@
+import { monthOfDate } from "@/app/utils/date";
 import {
   getTransactions,
   getMonthlyReport,
@@ -74,11 +75,9 @@ function getMonthTransactions(
 ): Transaction[] {
   return getTransactions().filter(
     (transaction) => {
-      const date = new Date(transaction.date);
-
       return (
-        date.getFullYear() === year &&
-        date.getMonth() === month
+        monthOfDate(transaction.date) ===
+        `${year}-${String(month + 1).padStart(2, "0")}`
       );
     }
   );

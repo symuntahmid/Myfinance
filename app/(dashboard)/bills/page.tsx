@@ -23,7 +23,7 @@ import { quickExpenseCategories } from "@/app/data/quickAdd";
 import { getCustomCategories } from "@/app/data/plan";
 
 const field =
-  "mt-1 w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]";
+  "mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 text-base font-semibold text-[var(--foreground)] outline-none focus:border-[var(--primary)]";
 
 export default function BillsPage() {
   const { t, language } = useLanguage();
@@ -73,6 +73,12 @@ export default function BillsPage() {
     0
   );
 
+  const unpaidTotal = statuses
+    .filter((item) => item.state !== "paid")
+    .reduce((sum, item) => sum + item.bill.amount, 0);
+
+  const paidCount = statuses.filter((item) => item.state === "paid").length;
+
   const dayNumber = Number(day);
 
   const valid =
@@ -103,29 +109,37 @@ export default function BillsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 pb-32 pt-6 md:px-0">
+    <div className="space-y-4 pb-24">
       <div>
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">
+        <h1 className="text-xl font-bold text-[var(--foreground)]">
           {t("billsTitle")}
         </h1>
 
-        <p className="mt-1 text-sm text-[var(--muted)]">
+        <p className="text-sm text-[var(--muted)]">
           {t("billsSubtitle")}
         </p>
       </div>
 
-      <div className="rounded-3xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] p-6 text-white">
-        <p className="text-sm opacity-90">
-          {t("billMonthlyTotal")}
+      <div className="rounded-3xl bg-[var(--forest)] p-5 text-[var(--on-forest)]">
+        <p className="text-sm opacity-80">
+          {language === "bn" ? "এখনো দিতে হবে" : "Still to pay"}
         </p>
 
-        <p className="mt-1 text-4xl font-bold">
-          {formatCurrency(monthlyTotal)}
+        <p className="mt-1 text-3xl font-bold">
+          {formatCurrency(unpaidTotal)}
+        </p>
+
+        <p className="mt-2 text-xs opacity-80">
+          {t("billMonthlyTotal")}: {formatCurrency(monthlyTotal)}
+          {statuses.length > 0 &&
+            ` · ${paidCount}/${statuses.length} ${
+              language === "bn" ? "দেওয়া হয়েছে" : "paid"
+            }`}
         </p>
       </div>
 
       {adding ? (
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
           <p className="font-semibold text-[var(--foreground)]">
             {t("addBillTitle")}
           </p>
@@ -135,7 +149,7 @@ export default function BillsPage() {
               value={emoji}
               maxLength={2}
               onChange={(e) => setEmoji(e.target.value)}
-              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-center text-[var(--foreground)]"
+              className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 text-center text-[var(--foreground)]"
             />
 
             <input
@@ -143,7 +157,7 @@ export default function BillsPage() {
               maxLength={40}
               placeholder={t("billNamePlaceholder")}
               onChange={(e) => setName(e.target.value)}
-              className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]"
+              className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 text-base text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
             />
           </div>
 
@@ -223,7 +237,7 @@ export default function BillsPage() {
                 setDay("");
                 setAdding(false);
               }}
-              className="rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
+              className="rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
             >
               {t("saveLabel")}
             </button>
@@ -241,7 +255,7 @@ export default function BillsPage() {
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--primary)] py-3 text-sm font-semibold text-white"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--primary)] py-2.5 text-sm font-semibold text-white"
         >
           <Plus size={16} />
           {t("addBillTitle")}
@@ -249,19 +263,29 @@ export default function BillsPage() {
       )}
 
       {statuses.length === 0 ? (
-        <p className="text-sm text-[var(--muted)]">
-          {t("billsEmpty")}
-        </p>
+        <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-6 text-center">
+          <p className="text-sm text-[var(--muted)]">{t("billsEmpty")}</p>
+
+          <button
+            type="button"
+            onClick={() => setAdding(true)}
+            className="mt-4 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-white"
+          >
+            {t("addBillTitle")}
+          </button>
+        </div>
       ) : (
         <div className="space-y-3">
           {statuses.map((item) => (
             <div
               key={item.bill.id}
-              className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
+              className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 ${
+                item.state === "paid" ? "opacity-60" : ""
+              }`}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="text-2xl">{item.bill.emoji}</span>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-2xl">{item.bill.emoji}</span>
 
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-[var(--foreground)]">
@@ -294,7 +318,7 @@ export default function BillsPage() {
                   <button
                     type="button"
                     onClick={() => markBillPaid(item.bill.id)}
-                    className="rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white"
+                    className="rounded-full bg-[var(--success)] px-4 py-2 text-xs font-semibold text-white"
                   >
                     {t("billMarkPaid")}
                   </button>

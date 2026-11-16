@@ -17,10 +17,10 @@ import {
 } from "@/app/data/accounts";
 
 const field =
-  "mt-1 w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 text-sm text-[var(--foreground)]";
+  "mt-1 w-full rounded-xl border border-[var(--border)] bg-[var(--background)] p-3 text-base font-semibold text-[var(--foreground)] outline-none focus:border-[var(--primary)]";
 
 const button =
-  "rounded-2xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white disabled:opacity-40";
+  "rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-40";
 
 function cleanNumber(value: string): string {
   return value.replace(/[^\d.]/g, "");
@@ -93,7 +93,16 @@ export default function AccountsPage() {
     }
 
     if (!(Number(amount) > 0)) {
-      setError(t("transferNotEnough"));
+      setError(language === "bn" ? "টাকার অঙ্ক লিখুন।" : "Enter an amount.");
+      return;
+    }
+
+    if (Number(amount) + (Number(fee) || 0) > (balances[from.id] ?? 0)) {
+      setError(
+        language === "bn"
+          ? `${accountName(from, language)}-এ এত টাকা নেই (আছে ${formatCurrency(balances[from.id] ?? 0)})।`
+          : `${accountName(from, language)} only has ${formatCurrency(balances[from.id] ?? 0)}.`
+      );
       return;
     }
 
@@ -108,21 +117,21 @@ export default function AccountsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 pb-32 pt-6 md:px-0">
+    <div className="space-y-4 pb-24">
       <div>
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">
+        <h1 className="text-xl font-bold text-[var(--foreground)]">
           {t("accountsTitle")}
         </h1>
 
-        <p className="mt-1 text-sm text-[var(--muted)]">
+        <p className="text-sm text-[var(--muted)]">
           {t("accountsSubtitle")}
         </p>
       </div>
 
-      <div className="rounded-3xl bg-gradient-to-br from-[var(--forest)] to-[var(--primary)] p-6 text-white">
-        <p className="text-sm opacity-90">{t("totalBalance")}</p>
+      <div className="rounded-3xl bg-[var(--forest)] p-5 text-[var(--on-forest)]">
+        <p className="text-sm opacity-80">{t("totalBalance")}</p>
 
-        <p className="mt-1 text-4xl font-bold">
+        <p className="mt-1 text-3xl font-bold">
           {formatCurrency(total)}
         </p>
       </div>
@@ -144,7 +153,7 @@ export default function AccountsPage() {
             setOpening("");
             setPanel("add");
           }}
-          className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-[var(--border)] px-4 py-3 text-sm font-semibold text-[var(--foreground)]"
+          className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[var(--border)] px-4 py-2.5 text-sm font-semibold text-[var(--foreground)]"
         >
           <Plus size={16} />
           {t("addAccount")}
@@ -152,7 +161,7 @@ export default function AccountsPage() {
       </div>
 
       {panel === "add" && (
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
           <div className="grid grid-cols-[4rem_1fr] gap-3">
             <label className="text-xs text-[var(--muted)]">
               &nbsp;
@@ -217,7 +226,7 @@ export default function AccountsPage() {
       )}
 
       {panel === "move" && (
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
           <div className="grid grid-cols-2 gap-3">
             {(
               [
@@ -299,11 +308,11 @@ export default function AccountsPage() {
         {accounts.map((item) => (
           <div
             key={item.id}
-            className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4"
+            className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
           >
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="text-2xl">{item.emoji}</span>
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--background)] text-2xl">{item.emoji}</span>
 
                 <p className="truncate font-semibold text-[var(--foreground)]">
                   {accountName(item, language)}
