@@ -3,7 +3,7 @@
 import { getCurrencySymbol } from "@/app/utils/currency";
 import type { SeriesPoint } from "@/app/data/netWorthSeries";
 
-const H = 92; // chart height in px
+const H = 72; // chart height in px
 const PAD = 14; // room for the label above each line
 
 function compact(value: number, bn: boolean): string {
@@ -64,7 +64,7 @@ export default function HeroChart({
   const ticks = [max, mid, min];
 
   return (
-    <div className="mt-3">
+    <div className="mt-4">
       <div className="relative" style={{ height: H }}>
         <svg
           width="100%"
@@ -76,8 +76,8 @@ export default function HeroChart({
         >
           <defs>
             <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#E2B64F" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#E2B64F" stopOpacity="0" />
+              <stop offset="0%" style={{ stopColor: "var(--primary)", stopOpacity: 0.18 }} />
+              <stop offset="100%" style={{ stopColor: "var(--primary)", stopOpacity: 0 }} />
             </linearGradient>
           </defs>
 
@@ -88,7 +88,7 @@ export default function HeroChart({
               x2="100"
               y1={y(v)}
               y2={y(v)}
-              stroke="rgba(255,255,255,0.16)"
+              stroke="var(--border)"
               strokeWidth="1"
               vectorEffect="non-scaling-stroke"
             />
@@ -99,7 +99,7 @@ export default function HeroChart({
           <path
             d={line}
             fill="none"
-            stroke="#E2B64F"
+            stroke="var(--primary)"
             strokeWidth="2"
             strokeLinejoin="round"
             strokeLinecap="round"
@@ -110,7 +110,7 @@ export default function HeroChart({
         {ticks.map((v) => (
           <span
             key={v}
-            className="absolute left-0 text-[10px] leading-none text-[var(--on-forest)]/60"
+            className="absolute right-0 rounded bg-[var(--card)]/80 pl-1 text-[10px] leading-none text-[var(--muted)]"
             style={{ top: y(v) - 12 }}
           >
             {compact(v, bn)}
@@ -118,7 +118,7 @@ export default function HeroChart({
         ))}
       </div>
 
-      <div className="mt-1 flex justify-between text-[10px] text-[var(--on-forest)]/60">
+      <div className="mt-1 flex justify-between text-[10px] text-[var(--muted)]">
         <span>{day(series[0].date)}</span>
         <span>{day(series[series.length - 1].date)}</span>
       </div>

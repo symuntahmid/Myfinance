@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bell, Flame, Snowflake } from "lucide-react";
+import { Bell, Flame } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -13,7 +13,6 @@ import HeroChart from "@/app/components/HeroChart";
 import { getTransactions } from "@/app/data/transactions";
 import { buildNetWorthSeries, type SeriesPoint } from "@/app/data/netWorthSeries";
 import { getBills, sortedStatuses } from "@/app/data/bills";
-import { getFreezeData, MAX_FREEZES } from "@/app/data/streakFreeze";
 
 function currentMonth(): string {
   const now = new Date();
@@ -28,7 +27,6 @@ export default function HomeHero() {
     worth: number;
     change: number | null;
     streak: number;
-    freezes: number;
     due: number;
     series: SeriesPoint[];
   } | null>(null);
@@ -46,7 +44,6 @@ export default function HomeHero() {
         worth,
         change: before ? worth - before.value : null,
         streak: getPlayer().streak,
-        freezes: getFreezeData().freezes,
         series: buildNetWorthSeries(worth, getTransactions()),
         due: sortedStatuses(getBills(), new Date()).filter(
           (item) => item.state === "overdue" || item.state === "today"
@@ -82,87 +79,60 @@ export default function HomeHero() {
   const number = (value: number) =>
     value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
 
+  const bn = language === "bn";
+  const first = state.series[0];
+  const last = state.series[state.series.length - 1];
+  const diff = first && last ? last.value - first.value : 0;
+  const hasTrend = state.series.length >= 2 && diff !== 0;
+  const days = number(Math.max(state.series.length - 1, 0));
+
+  const chip =
+    "flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] px-2.5 text-xs font-semibold text-[var(--foreground)]";
+
   return (
-    <section className="hero-rise alpona relative overflow-hidden rounded-3xl bg-[var(--forest)] p-4 text-[var(--on-forest)] shadow-[0_14px_30px_rgba(11,59,46,0.25)]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(226,182,79,0.5) 0%, rgba(226,182,79,0.1) 45%, transparent 70%)",
-        }}
-      />
-
-      <div className="relative">
-        <div className="flex items-center justify-between gap-3">
-          <Link
-            href="/reminders"
-            className="flex items-center gap-1.5 rounded-full bg-black/25 px-3 py-1.5 text-xs font-semibold"
-          >
-            <Bell size={14} className="text-[var(--gold)]" />
-            {t("billsTitle")}
-            {state.due > 0 && (
-              <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--gold)] px-1 text-[10px] font-bold text-[#1F1500]">
-                {number(state.due)}
-              </span>
-            )}
-          </Link>
-
-          <div className="flex items-center gap-2 rounded-full bg-black/25 px-2.5 py-1 text-xs">
-            <span className="flex items-center gap-1">
-              <Flame size={13} className="text-[var(--gold)]" />
-              {number(state.streak)}
-            </span>
-            <span className="h-3 w-px bg-white/20" />
-            <span className="flex items-center gap-1">
-              <Snowflake size={13} className="text-[var(--gold)]" />
-              {number(state.freezes)}/{number(MAX_FREEZES)}
-            </span>
-          </div>
-        </div>
-
-        <p className="mt-4 text-[13px] text-[var(--on-forest)]/75">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-[var(--muted)]">
           {t("netWorthTitle")}
         </p>
 
-        <p className="font-display mt-1 text-[34px] leading-none">
+        <div className="flex items-center gap-2">
+          <Link href="/reminders" aria-label={t("billsTitle")} className={chip}>
+            <Bell size={14} className="text-[var(--muted)]" />
+            {state.due > 0 && (
+              <span className="text-[var(--sun)]">{number(state.due)}</span>
+            )}
+          </Link>
+
+          <span className={chip}>
+            <Flame size={14} className="text-[var(--sun)]" />
+            {number(state.streak)}
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-2 flex items-end justify-between gap-3">
+        <p className="text-[32px] font-semibold leading-none tracking-tight [font-variant-numeric:tabular-nums]">
           {formatCurrency(state.worth)}
         </p>
 
-        {(() => {
-          const bn = language === "bn";
-          const first = state.series[0];
-          const last = state.series[state.series.length - 1];
-          const diff = first && last ? last.value - first.value : 0;
-
-          if (state.series.length >= 2 && diff !== 0) {
-            const days = number(state.series.length - 1);
-            const amount = formatCurrency(Math.abs(diff));
-
-            return (
-              <p className="mt-1.5 text-xs text-[var(--gold)]">
-                {diff > 0 ? "▲ " : "▼ "}
-                {bn ? `${days} দিনে ${amount}` : `${amount} in ${days} days`}
-              </p>
-            );
-          }
-
-          if (state.change !== null && state.change !== 0) {
-            return (
-              <p className="mt-1.5 text-xs text-[var(--gold)]">
-                {state.change > 0 ? "▲ " : "▼ "}
-                {t("heroSinceLast", {
-                  amount: formatCurrency(Math.abs(state.change)),
-                })}
-              </p>
-            );
-          }
-
-          return null;
-        })()}
-
-        <HeroChart series={state.series} bn={language === "bn"} />
+        {hasTrend && (
+          <span
+            className={`mb-0.5 shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${
+              diff > 0
+                ? "bg-[var(--success)]/12 text-[var(--success)]"
+                : "bg-red-500/10 text-red-600"
+            }`}
+          >
+            {diff > 0 ? "+" : "-"}
+            {formatCurrency(Math.abs(diff))}
+            {" · "}
+            {bn ? `${days} দিন` : `${days}d`}
+          </span>
+        )}
       </div>
+
+      <HeroChart series={state.series} bn={bn} />
     </section>
   );
 }
