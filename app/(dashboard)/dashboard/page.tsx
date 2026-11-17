@@ -60,11 +60,11 @@ export default function Dashboard() {
 
   <HomeHero />
 
+  <BudgetRings />
+
   <VoiceButton />
 
   <RecentTransactions />
-
-  <BudgetRings />
 
   {/* Everything else, one tap away */}
 

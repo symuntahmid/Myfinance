@@ -9,6 +9,9 @@ import { formatCurrency } from "@/app/utils/currency";
 import { getNetWorthNow } from "@/app/data/overview";
 import { previousSnapshot, recordSnapshot } from "@/app/data/netWorth";
 import { getPlayer } from "@/app/data/player";
+import HeroChart from "@/app/components/HeroChart";
+import { getTransactions } from "@/app/data/transactions";
+import { buildNetWorthSeries, type SeriesPoint } from "@/app/data/netWorthSeries";
 import { getBills, sortedStatuses } from "@/app/data/bills";
 import { getFreezeData, MAX_FREEZES } from "@/app/data/streakFreeze";
 
@@ -27,6 +30,7 @@ export default function HomeHero() {
     streak: number;
     freezes: number;
     due: number;
+    series: SeriesPoint[];
   } | null>(null);
 
   useEffect(() => {
@@ -43,6 +47,7 @@ export default function HomeHero() {
         change: before ? worth - before.value : null,
         streak: getPlayer().streak,
         freezes: getFreezeData().freezes,
+        series: buildNetWorthSeries(worth, getTransactions()),
         due: sortedStatuses(getBills(), new Date()).filter(
           (item) => item.state === "overdue" || item.state === "today"
         ).length,
@@ -124,14 +129,39 @@ export default function HomeHero() {
           {formatCurrency(state.worth)}
         </p>
 
-        {state.change !== null && state.change !== 0 && (
-          <p className="mt-1.5 text-xs text-[var(--gold)]">
-            {state.change > 0 ? "▲ " : "▼ "}
-            {t("heroSinceLast", {
-              amount: formatCurrency(Math.abs(state.change)),
-            })}
-          </p>
-        )}
+        {(() => {
+          const bn = language === "bn";
+          const first = state.series[0];
+          const last = state.series[state.series.length - 1];
+          const diff = first && last ? last.value - first.value : 0;
+
+          if (state.series.length >= 2 && diff !== 0) {
+            const days = number(state.series.length - 1);
+            const amount = formatCurrency(Math.abs(diff));
+
+            return (
+              <p className="mt-1.5 text-xs text-[var(--gold)]">
+                {diff > 0 ? "▲ " : "▼ "}
+                {bn ? `${days} দিনে ${amount}` : `${amount} in ${days} days`}
+              </p>
+            );
+          }
+
+          if (state.change !== null && state.change !== 0) {
+            return (
+              <p className="mt-1.5 text-xs text-[var(--gold)]">
+                {state.change > 0 ? "▲ " : "▼ "}
+                {t("heroSinceLast", {
+                  amount: formatCurrency(Math.abs(state.change)),
+                })}
+              </p>
+            );
+          }
+
+          return null;
+        })()}
+
+        <HeroChart series={state.series} bn={language === "bn"} />
       </div>
     </section>
   );
