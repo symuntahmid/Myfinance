@@ -1,5 +1,6 @@
 "use client";
 
+import InvestmentMindMap from "@/app/components/InvestmentMindMap";
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 
@@ -14,8 +15,6 @@ import {
   getPortfolioSummary,
   type Investment,
 } from "@/app/data/investments";
-
-const SHADES = ["#0B3B2E", "#2E8B6A", "#5BAE8E", "#C8962E", "#8CC9B0", "#E0772F"];
 
 export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
   const { t, language } = useLanguage();
@@ -119,40 +118,12 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
             </div>
           </section>
 
-          {mix.length > 0 && (
-            <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
-              <h2 className="text-sm font-bold">{t("ivMix")}</h2>
+          <InvestmentMindMap />
 
-              <div className="mt-3 flex h-3 overflow-hidden rounded-full">
-                {mix.map((m, i) => (
-                  <span
-                    key={m.type}
-                    style={{ width: `${Math.max(m.pct, 2)}%`, background: SHADES[i % SHADES.length] }}
-                  />
-                ))}
-              </div>
-
-              <ul className="mt-3 space-y-1.5">
-                {mix.map((m, i) => (
-                  <li key={m.type} className="flex items-center gap-2 text-sm">
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ background: SHADES[i % SHADES.length] }}
-                    />
-
-                    <span className="min-w-0 flex-1 truncate">{typeName(m.type)}</span>
-
-                    <span className="text-xs text-[var(--muted)]">{m.pct.toLocaleString(locale)}%</span>
-                  </li>
-                ))}
-              </ul>
-
-              {heavy && (
-                <p className="mt-3 rounded-xl bg-[var(--gold-soft)] px-3 py-2 text-xs font-semibold">
-                  {t("ivSpread", { pct: heavy.pct.toLocaleString(locale), type: typeName(heavy.type) })}
-                </p>
-              )}
-            </section>
+          {heavy && (
+            <p className="rounded-xl bg-[var(--gold-soft)] px-3 py-2 text-xs font-semibold">
+              {t("ivSpread", { pct: heavy.pct.toLocaleString(locale), type: typeName(heavy.type) })}
+            </p>
           )}
 
           <section>
