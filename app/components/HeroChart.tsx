@@ -3,7 +3,7 @@
 import { getCurrencySymbol } from "@/app/utils/currency";
 import type { SeriesPoint } from "@/app/data/netWorthSeries";
 
-const H = 56; // chart height in px
+const H_DEFAULT = 56; // chart height in px
 const PAD = 14; // room for the label above each line
 
 function compact(value: number, bn: boolean): string {
@@ -27,10 +27,14 @@ function compact(value: number, bn: boolean): string {
 export default function HeroChart({
   series,
   bn,
+  compactH,
 }: {
   series: SeriesPoint[];
   bn: boolean;
+  compactH?: number;
 }) {
+  const H = compactH ?? H_DEFAULT;
+
   if (series.length < 2) return null;
 
   const values = series.map((p) => p.value);
@@ -107,7 +111,7 @@ export default function HeroChart({
           />
         </svg>
 
-        {ticks.map((v) => (
+        {[max, min].map((v) => (
           <span
             key={v}
             className="absolute right-0 rounded bg-[var(--card)]/80 pl-1 text-[10px] leading-none text-[var(--muted)]"
