@@ -19,6 +19,7 @@ import { computePlan, getPlan } from "@/app/data/plan";
 import { buildMonthReport, monthKey } from "@/app/data/reportData";
 import { buildProgress } from "@/app/data/progress";
 import { formatCurrency } from "@/app/utils/currency";
+import { categoryLabel } from "@/app/data/categoryLabel";
 import { dayOf, todayLocal } from "@/app/utils/date";
 import { daysUntil, expectedSaved, upcomingOccasions } from "@/app/data/occasions";
 
@@ -156,11 +157,11 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
         tone: "warn",
         text: pick(
           lang,
-          `${over.category} is ${money(over.spent - over.assigned)} over its plan this month. Slow down there.`,
-          `${over.category} এই মাসের পরিকল্পনার চেয়ে ${money(over.spent - over.assigned)} বেশি গেছে। এখানে একটু থামুন।`
+          `${categoryLabel(over.category, "en")} is ${money(over.spent - over.assigned)} over its plan this month. Slow down there.`,
+          `${categoryLabel(over.category, "bn")} এই মাসের পরিকল্পনার চেয়ে ${money(over.spent - over.assigned)} বেশি গেছে। এখানে একটু থামুন।`
         ),
         href: "/money",
-        cta: pick(lang, "Open plan", "প্ল্যান দেখুন"),
+        cta: pick(lang, "Open budget", "বাজেট দেখুন"),
       });
     }
   }

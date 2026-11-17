@@ -205,29 +205,13 @@ setNotifications([]);
 }}
 
 
-className="
-relative
-flex
-h-11
-w-11
-items-center
-justify-center
-rounded-2xl
-border
-border-[var(--border)]
-bg-[var(--card)]
-text-[var(--foreground)]
-shadow-sm
-transition
-hover:-translate-y-0.5
-hover:shadow-lg
-"
+className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
 
 >
 
 
 <Bell
-size={22}
+size={18}
 className="
 text-[var(--primary)]
 "

@@ -41,9 +41,23 @@ export default function WelcomeBanner() {
       ? t("greetingEvening")
       : t("greetingNight");
 
+  const initial = Array.from(displayName.trim())[0]?.toUpperCase() ?? "U";
+
   return (
-    <h2 className="min-w-0 truncate text-xl font-semibold leading-tight text-[var(--foreground)]">
-      {greeting}, {displayName}
-    </h2>
+    <div className="flex min-w-0 items-center gap-2.5">
+      <span
+        aria-hidden
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-bold text-white"
+      >
+        {initial}
+      </span>
+
+      <div className="min-w-0 leading-tight">
+        <p className="truncate text-xs text-[var(--muted)]">{greeting}</p>
+        <h2 className="truncate text-base font-semibold text-[var(--foreground)]">
+          {displayName}
+        </h2>
+      </div>
+    </div>
   );
 }

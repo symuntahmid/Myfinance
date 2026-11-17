@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Bell, Flame } from "lucide-react";
+import { CalendarClock, Flame } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -144,7 +144,7 @@ export default function HomeHero() {
       <div className="relative">
         <div className="absolute right-3.5 top-0 z-10 flex items-center gap-2">
           <Link href="/reminders" aria-label="Reminders" className={chip}>
-            <Bell size={14} className="text-[var(--muted)]" />
+            <CalendarClock size={14} className="text-[var(--muted)]" />
             {state.due > 0 && <span className="text-[var(--sun)]">{num(state.due)}</span>}
           </Link>
 
