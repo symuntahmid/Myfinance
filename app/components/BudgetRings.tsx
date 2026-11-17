@@ -23,22 +23,22 @@ type Ring = {
 const TEXT = {
   en: {
     set: "Set a budget",
-    over: "Over budget on {name} by {x}. Spend less here to get back on track.",
-    overMany: "Over budget on {n} things, {name} the most. Hold back a little.",
+    over: "{name} is {x} over budget. Spend less here.",
+    overMany: "{n} budgets are over, {name} the most.",
     left: "left",
     ok: "{x} left in {name}",
   },
   bn: {
     set: "বাজেট দিন",
-    over: "{name} এ {x} বেশি খরচ হয়েছে। এখানে খরচ কমালে আবার ঠিক পথে আসবেন।",
-    overMany: "{n}টি খাতে বাজেট ছাড়িয়েছে, সবচেয়ে বেশি {name}। একটু রাশ টানুন।",
+    over: "{name} এ বাজেটের চেয়ে {x} বেশি। এখানে খরচ কমান।",
+    overMany: "{n}টি বাজেট ছাড়িয়েছে, সবচেয়ে বেশি {name}।",
     left: "বাকি",
     ok: "{name} এ {x} বাকি",
   },
 } as const;
 
-const SIZE = 64;
-const STROKE = 6;
+const SIZE = 28;
+const STROKE = 3;
 const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
@@ -123,9 +123,12 @@ export default function BudgetRings() {
   const overs = rings.filter((ring) => ring.over > 0);
   const worst = overs[0];
 
+  const pctText = (pct: number) =>
+    `${Math.round(pct).toLocaleString(lang === "bn" ? "bn-BD" : "en-US")}%`;
+
   return (
-    <section aria-label="Budgets" className="space-y-3">
-      <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
+    <section aria-label="Budgets" className="space-y-1.5">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-0.5">
         {rings.map((ring) => {
           const bad = ring.pct > 100;
           const shown = Math.min(ring.pct, 100);
@@ -134,10 +137,14 @@ export default function BudgetRings() {
             <Link
               key={ring.category}
               href="/money"
-              className="flex w-[72px] shrink-0 flex-col items-center gap-1"
+              className={`flex h-10 shrink-0 items-center gap-2 rounded-full border pl-1.5 pr-3 text-xs font-semibold ${
+                bad
+                  ? "border-red-500/30 bg-red-500/10 text-red-600"
+                  : "border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
+              }`}
             >
               <span className="relative block" style={{ width: SIZE, height: SIZE }}>
-                <svg width={SIZE} height={SIZE} className="-rotate-90">
+                <svg width={SIZE} height={SIZE} className="-rotate-90" aria-hidden>
                   <circle
                     cx={SIZE / 2}
                     cy={SIZE / 2}
@@ -159,19 +166,13 @@ export default function BudgetRings() {
                   />
                 </svg>
 
-                <span className="absolute inset-0 flex items-center justify-center text-2xl">
+                <span className="absolute inset-0 flex items-center justify-center text-[13px]">
                   {ring.emoji}
                 </span>
-
-                {bad && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
-                    {Math.round(ring.pct).toLocaleString(lang === "bn" ? "bn-BD" : "en-US")}%
-                  </span>
-                )}
               </span>
 
-              <span className="w-full truncate text-center text-xs text-[var(--muted)]">
-                {ring.name}
+              <span className="whitespace-nowrap">
+                {ring.name} {pctText(ring.pct)}
               </span>
             </Link>
           );
@@ -179,23 +180,15 @@ export default function BudgetRings() {
 
         <Link
           href="/money"
-          className="flex w-[72px] shrink-0 flex-col items-center gap-1"
+          className="flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-dashed border-[var(--border)] px-3 text-xs font-semibold text-[var(--muted)]"
         >
-          <span
-            className="flex items-center justify-center rounded-full bg-[var(--border)] text-[var(--foreground)]"
-            style={{ width: SIZE, height: SIZE }}
-          >
-            <Plus size={26} />
-          </span>
-
-          <span className="w-full truncate text-center text-xs text-[var(--muted)]">
-            {x.set}
-          </span>
+          <Plus size={14} />
+          {x.set}
         </Link>
       </div>
 
       {worst && (
-        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-600">
+        <p className="truncate text-xs font-semibold text-red-600">
           {overs.length === 1
             ? x.over.replace("{name}", worst.name).replace("{x}", formatCurrency(worst.over))
             : x.overMany

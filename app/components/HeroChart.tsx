@@ -3,7 +3,7 @@
 import { getCurrencySymbol } from "@/app/utils/currency";
 import type { SeriesPoint } from "@/app/data/netWorthSeries";
 
-const H = 72; // chart height in px
+const H = 56; // chart height in px
 const PAD = 14; // room for the label above each line
 
 function compact(value: number, bn: boolean): string {
@@ -64,7 +64,7 @@ export default function HeroChart({
   const ticks = [max, mid, min];
 
   return (
-    <div className="mt-4">
+    <div className="mt-3">
       <div className="relative" style={{ height: H }}>
         <svg
           width="100%"

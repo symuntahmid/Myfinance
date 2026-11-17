@@ -90,7 +90,7 @@ export default function HomeHero() {
     "flex h-8 items-center gap-1.5 rounded-full border border-[var(--border)] px-2.5 text-xs font-semibold text-[var(--foreground)]";
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-medium text-[var(--muted)]">
           {t("netWorthTitle")}
@@ -112,7 +112,7 @@ export default function HomeHero() {
       </div>
 
       <div className="mt-2 flex items-end justify-between gap-3">
-        <p className="text-[32px] font-semibold leading-none tracking-tight [font-variant-numeric:tabular-nums]">
+        <p className="text-[30px] font-semibold leading-none tracking-tight [font-variant-numeric:tabular-nums]">
           {formatCurrency(state.worth)}
         </p>
 

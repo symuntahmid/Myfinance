@@ -205,16 +205,13 @@ export default function VoiceButton() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-left"
+        className="flex h-11 w-full items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] pl-2 pr-4 text-left"
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white">
-          <Mic size={18} />
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+          <Mic size={16} />
         </span>
 
-        <span className="min-w-0">
-          <span className="block text-sm font-bold">{x.button}</span>
-          <span className="block truncate text-xs text-[var(--muted)]">{x.hint}</span>
-        </span>
+        <span className="min-w-0 truncate text-sm text-[var(--muted)]">{x.button}</span>
       </button>
 
       {open && (

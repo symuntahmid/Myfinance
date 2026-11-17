@@ -55,8 +55,8 @@ export default function RecentTransactions() {
   };
 
   return (
-    <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4">
-      <div className="mb-2 flex items-center justify-between">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] px-3.5 pb-1 pt-3">
+      <div className="mb-1 flex items-center justify-between">
         <h2 className="text-sm font-bold">{t("recentTransactions")}</h2>
 
         <Link
@@ -77,8 +77,8 @@ export default function RecentTransactions() {
             const label = labelOf(item);
 
             return (
-              <li key={item.id} className="flex items-center gap-3 py-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-lg">
+              <li key={item.id} className="flex items-center gap-3 py-1.5">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--background)] text-base">
                   {label.emoji}
                 </span>
 
@@ -87,7 +87,7 @@ export default function RecentTransactions() {
                     {label.text}
                   </p>
 
-                  <p className="truncate text-xs text-[var(--muted)]">
+                  <p className="truncate text-[11px] text-[var(--muted)]">
                     {item.source.replace(/^[^\p{L}\p{N}]+/u, "")}
                   </p>
                 </div>

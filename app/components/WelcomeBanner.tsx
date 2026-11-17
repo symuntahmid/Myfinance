@@ -1,174 +1,34 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-import {
-  getProfile,
-  type UserProfile,
-} from "@/app/data/profile";
-
-import {
-  getLevel,
-} from "@/app/data/player";
-
-import {
-  getJourneyProgress,
-} from "@/app/data/dailyJourney";
-
+import { getProfile, type UserProfile } from "@/app/data/profile";
 import { t } from "@/app/data/i18n";
 
-
 export default function WelcomeBanner() {
-
-  const [profile, setProfile] =
-    useState<UserProfile>(
-      getProfile()
-    );
-
-
-  const [level, setLevel] =
-    useState(
-      getLevel()
-    );
-
-
-  const [journey, setJourney] =
-    useState(
-      getJourneyProgress()
-    );
-
-
-  const [, refreshLanguage] =
-    useState(0);
-
+  const [profile, setProfile] = useState<UserProfile>(getProfile());
+  const [, redraw] = useState(0);
 
   useEffect(() => {
-
-    const refresh = () => {
-
-      setProfile(
-        getProfile()
-      );
-
-      setLevel(
-        getLevel()
-      );
-
-      setJourney(
-        getJourneyProgress()
-      );
-
-    };
-
-
-    const handleLanguageUpdate = () => {
-
-      refreshLanguage(
-        value => value + 1
-      );
-
-    };
-
+    const refresh = () => setProfile(getProfile());
+    const again = () => redraw((value) => value + 1);
 
     refresh();
 
-
-    window.addEventListener(
-      "profileUpdated",
-      refresh
-    );
-
-    window.addEventListener(
-      "player-updated",
-      refresh
-    );
-
-    window.addEventListener(
-      "dailyJourneyUpdated",
-      refresh
-    );
-
-    window.addEventListener(
-      "languageUpdated",
-      handleLanguageUpdate
-    );
-
+    window.addEventListener("profileUpdated", refresh);
+    window.addEventListener("languageUpdated", again);
 
     return () => {
-
-      window.removeEventListener(
-        "profileUpdated",
-        refresh
-      );
-
-      window.removeEventListener(
-        "player-updated",
-        refresh
-      );
-
-      window.removeEventListener(
-        "dailyJourneyUpdated",
-        refresh
-      );
-
-      window.removeEventListener(
-        "languageUpdated",
-        handleLanguageUpdate
-      );
-
+      window.removeEventListener("profileUpdated", refresh);
+      window.removeEventListener("languageUpdated", again);
     };
-
   }, []);
-
-
-  const journeyCompleted =
-    journey.total > 0 &&
-    journey.completed >= journey.total;
-
-
-  let message =
-    t("dailyJourneyChallenge");
-
-
-  if (journeyCompleted) {
-
-    message =
-      t("dailyJourneyComplete");
-
-  }
-  else if (
-    level.nextLevelXP -
-    level.currentXP <= 20
-  ) {
-
-    const xpRemaining =
-      level.nextLevelXP -
-      level.currentXP;
-
-
-    message =
-      t("xpUntilLevel")
-        .replace(
-          "{xp}",
-          String(xpRemaining)
-        )
-        .replace(
-          "{level}",
-          String(level.level + 1)
-        );
-
-  }
-
 
   const displayName =
     profile.displayName ||
     `${profile.firstName} ${profile.lastName}`.trim() ||
     profile.username ||
     "User";
-
 
   const hour = new Date().getHours();
 
@@ -182,27 +42,8 @@ export default function WelcomeBanner() {
       : t("greetingNight");
 
   return (
-
-    <div className="min-w-0">
-
-      <h2
-        className="
-          font-display
-          truncate
-          text-[22px]
-          leading-tight
-          text-[var(--foreground)]
-        "
-      >
-        {greeting}, {displayName}
-      </h2>
-
-      <p className="mt-0.5 truncate text-[13px] text-[var(--muted)]">
-        {journeyCompleted && "🎉 "}
-        {message}
-      </p>
-
-    </div>
-
+    <h2 className="min-w-0 truncate text-xl font-semibold leading-tight text-[var(--foreground)]">
+      {greeting}, {displayName}
+    </h2>
   );
 }

@@ -35,7 +35,7 @@ export default function Dashboard() {
     <>
       {/* Header */}
 
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <WelcomeBanner />
 
         <div className="flex shrink-0 items-center gap-3">
@@ -56,7 +56,7 @@ export default function Dashboard() {
 
       {/* Main */}
 
-<div className="space-y-4">
+<div className="space-y-3">
 
   <HomeHero />
 
