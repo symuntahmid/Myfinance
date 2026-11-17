@@ -14,7 +14,6 @@ import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import VoiceButton from "@/app/components/VoiceButton";
-import DashboardTabs from "@/app/components/DashboardTabs";
 import BudgetRings from "@/app/components/BudgetRings";
 import CoachStrip from "@/app/components/CoachStrip";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
@@ -34,8 +33,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <DashboardTabs />
-
       {/* Header */}
 
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -63,15 +60,11 @@ export default function Dashboard() {
 
   <HomeHero />
 
-  <BudgetRings />
-
-  <CoachStrip />
-
-  <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
-
   <VoiceButton />
 
   <RecentTransactions />
+
+  <BudgetRings />
 
   {/* Everything else, one tap away */}
 
@@ -82,6 +75,10 @@ export default function Dashboard() {
     </summary>
 
     <div className="space-y-4 px-3 pb-3">
+      <CoachStrip />
+
+      <TodayCoachCard onQuickAdd={() => setQuickOpen(true)} />
+
       <MonthStats />
 
       <MoneyMap />

@@ -195,7 +195,7 @@ export default function BudgetRings() {
       </div>
 
       {worst && (
-        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-600">
+        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs font-semibold text-red-600">
           {overs.length === 1
             ? x.over.replace("{name}", worst.name).replace("{x}", formatCurrency(worst.over))
             : x.overMany

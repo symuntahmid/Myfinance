@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import Sidebar from "../components/Sidebar";
+import DashboardTabs from "@/app/components/DashboardTabs";
 import BottomNavigation from "@/app/components/BottomNavigation";
 
 import { runTransactionScheduler } from "@/app/services/transactionScheduler";
@@ -38,6 +39,8 @@ export default function DashboardLayout({
       <Sidebar />
 
       <main className="min-w-0 flex-1 px-4 pb-28 pt-5 sm:px-6 lg:p-8 lg:pb-8">
+        <DashboardTabs />
+
         {children}
       </main>
 
