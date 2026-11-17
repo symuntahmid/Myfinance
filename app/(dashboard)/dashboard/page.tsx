@@ -14,6 +14,7 @@ import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import VoiceButton from "@/app/components/VoiceButton";
+import BudgetRings from "@/app/components/BudgetRings";
 import CoachStrip from "@/app/components/CoachStrip";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
 
@@ -58,6 +59,8 @@ export default function Dashboard() {
 <div className="space-y-4">
 
   <HomeHero onQuickAdd={() => setQuickOpen(true)} />
+
+  <BudgetRings />
 
   <CoachStrip />
 
