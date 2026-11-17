@@ -11,6 +11,8 @@ import { buildCoach, type CoachState } from "@/app/data/coach";
 import { getNetWorthNow } from "@/app/data/overview";
 import { recordSnapshot } from "@/app/data/netWorth";
 import { getPlayer } from "@/app/data/player";
+import InvestmentBubbles from "@/app/components/InvestmentBubbles";
+import { getInvestments, type Investment } from "@/app/data/investments";
 import { getBills, sortedStatuses } from "@/app/data/bills";
 import { getSummary, getTransactions } from "@/app/data/transactions";
 import { buildNetWorthSeries, type SeriesPoint } from "@/app/data/netWorthSeries";
@@ -25,6 +27,7 @@ const TEXT = {
     spent: "Spent",
     net: "Net worth",
     month: "This month",
+    invest: "Investments",
     kept: "Kept {x} · {p}% of income",
     over: "Over by {x}",
     nothing: "Add your first entry to see this.",
@@ -38,6 +41,7 @@ const TEXT = {
     spent: "খরচ",
     net: "নিট সম্পদ",
     month: "এই মাস",
+    invest: "বিনিয়োগ",
     kept: "জমেছে {x} · আয়ের {p}%",
     over: "{x} বেশি খরচ",
     nothing: "প্রথম এন্ট্রি দিলে এটি দেখা যাবে।",
@@ -53,6 +57,7 @@ type State = {
   coach: CoachState;
   income: number;
   expense: number;
+  investments: Investment[];
 };
 
 const chip =
@@ -85,6 +90,7 @@ export default function HomeHero() {
         coach: buildCoach(lang),
         income: summary.income,
         expense: summary.expense,
+        investments: getInvestments(),
       });
     };
 
@@ -273,11 +279,18 @@ export default function HomeHero() {
               </>
             )}
           </div>
+
+          {/* 4. Investments, as a bubble map */}
+          <div className={`${slide} h-[150px] px-3.5`}>
+            <p className={`${label} flex h-8 items-center`}>{x.invest}</p>
+
+            <InvestmentBubbles items={state.investments} lang={lang} />
+          </div>
         </div>
       </div>
 
       <div className="mt-1 flex justify-center gap-1.5">
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2, 3].map((index) => (
           <button
             key={index}
             type="button"

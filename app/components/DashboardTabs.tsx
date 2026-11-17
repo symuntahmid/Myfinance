@@ -10,6 +10,9 @@ export default function DashboardTabs() {
   const pathname = usePathname();
   const bn = language === "bn";
 
+  // Only the front page has the shortcut bar.
+  if (pathname !== "/dashboard") return null;
+
   const tabs = [
     { href: "/dashboard", name: bn ? "হোম" : "Home" },
     { href: "/accounts", name: t("heroMove") },
