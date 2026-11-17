@@ -14,6 +14,7 @@ import QuickAddSheet from "@/app/components/QuickAddSheet";
 
 import DailyJourneyCard from "../../components/DailyJourneyCard";
 import VoiceButton from "@/app/components/VoiceButton";
+import DashboardTabs from "@/app/components/DashboardTabs";
 import BudgetRings from "@/app/components/BudgetRings";
 import CoachStrip from "@/app/components/CoachStrip";
 import TodayCoachCard from "@/app/components/TodayCoachCard";
@@ -33,6 +34,8 @@ export default function Dashboard() {
 
   return (
     <>
+      <DashboardTabs />
+
       {/* Header */}
 
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -58,7 +61,7 @@ export default function Dashboard() {
 
 <div className="space-y-4">
 
-  <HomeHero onQuickAdd={() => setQuickOpen(true)} />
+  <HomeHero />
 
   <BudgetRings />
 

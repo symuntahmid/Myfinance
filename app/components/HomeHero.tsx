@@ -2,25 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeftRight,
-  ClipboardList,
-  Flame,
-  Plus,
-  Bell,
-  Snowflake,
-} from "lucide-react";
+import { Bell, Flame, Snowflake } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getNetWorthNow } from "@/app/data/overview";
 import { previousSnapshot, recordSnapshot } from "@/app/data/netWorth";
 import { getPlayer } from "@/app/data/player";
+import { getBills, sortedStatuses } from "@/app/data/bills";
 import { getFreezeData, MAX_FREEZES } from "@/app/data/streakFreeze";
-
-type Props = {
-  onQuickAdd: () => void;
-};
 
 function currentMonth(): string {
   const now = new Date();
@@ -28,7 +18,7 @@ function currentMonth(): string {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 }
 
-export default function HomeHero({ onQuickAdd }: Props) {
+export default function HomeHero() {
   const { t, language } = useLanguage();
 
   const [state, setState] = useState<{
@@ -36,6 +26,7 @@ export default function HomeHero({ onQuickAdd }: Props) {
     change: number | null;
     streak: number;
     freezes: number;
+    due: number;
   } | null>(null);
 
   useEffect(() => {
@@ -52,6 +43,9 @@ export default function HomeHero({ onQuickAdd }: Props) {
         change: before ? worth - before.value : null,
         streak: getPlayer().streak,
         freezes: getFreezeData().freezes,
+        due: sortedStatuses(getBills(), new Date()).filter(
+          (item) => item.state === "overdue" || item.state === "today"
+        ).length,
       });
     };
 
@@ -67,6 +61,7 @@ export default function HomeHero({ onQuickAdd }: Props) {
       "languageUpdated",
       "player-updated",
       "dailyJourneyUpdated",
+      "billsUpdated",
     ];
 
     events.forEach((e) => window.addEventListener(e, refresh));
@@ -82,11 +77,6 @@ export default function HomeHero({ onQuickAdd }: Props) {
   const number = (value: number) =>
     value.toLocaleString(language === "bn" ? "bn-BD" : "en-US");
 
-  const actionIcon =
-    "flex h-11 w-11 items-center justify-center rounded-full border border-[var(--gold)]/35 bg-white/10 text-[var(--gold)] transition group-active:scale-95";
-
-  const actionLabel = "text-[11px] text-[var(--on-forest)]/85";
-
   return (
     <section className="hero-rise alpona relative overflow-hidden rounded-3xl bg-[var(--forest)] p-4 text-[var(--on-forest)] shadow-[0_14px_30px_rgba(11,59,46,0.25)]">
       <div
@@ -99,25 +89,36 @@ export default function HomeHero({ onQuickAdd }: Props) {
       />
 
       <div className="relative">
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-[13px] text-[var(--on-forest)]/75">
-            {t("netWorthTitle")}
-          </p>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/reminders"
+            className="flex items-center gap-1.5 rounded-full bg-black/25 px-3 py-1.5 text-xs font-semibold"
+          >
+            <Bell size={14} className="text-[var(--gold)]" />
+            {t("billsTitle")}
+            {state.due > 0 && (
+              <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--gold)] px-1 text-[10px] font-bold text-[#1F1500]">
+                {number(state.due)}
+              </span>
+            )}
+          </Link>
 
           <div className="flex items-center gap-2 rounded-full bg-black/25 px-2.5 py-1 text-xs">
             <span className="flex items-center gap-1">
               <Flame size={13} className="text-[var(--gold)]" />
               {number(state.streak)}
             </span>
-
             <span className="h-3 w-px bg-white/20" />
-
             <span className="flex items-center gap-1">
               <Snowflake size={13} className="text-[var(--gold)]" />
               {number(state.freezes)}/{number(MAX_FREEZES)}
             </span>
           </div>
         </div>
+
+        <p className="mt-4 text-[13px] text-[var(--on-forest)]/75">
+          {t("netWorthTitle")}
+        </p>
 
         <p className="font-display mt-1 text-[34px] leading-none">
           {formatCurrency(state.worth)}
@@ -131,40 +132,6 @@ export default function HomeHero({ onQuickAdd }: Props) {
             })}
           </p>
         )}
-
-        <div className="mt-4 grid grid-cols-4 gap-2">
-          <button
-            type="button"
-            onClick={onQuickAdd}
-            className="group flex flex-col items-center gap-1.5"
-          >
-            <span className={`${actionIcon} bg-[var(--gold)] text-[#1F1500]`}>
-              <Plus size={20} />
-            </span>
-
-            <span className={actionLabel}>{t("heroAdd")}</span>
-          </button>
-
-          {(
-            [
-              ["/accounts", ArrowLeftRight, t("heroMove")],
-              ["/reminders", Bell, t("billsTitle")],
-              ["/money", ClipboardList, t("planTitle")],
-            ] as const
-          ).map(([href, Icon, label]) => (
-            <Link
-              key={href}
-              href={href}
-              className="group flex flex-col items-center gap-1.5"
-            >
-              <span className={actionIcon}>
-                <Icon size={18} />
-              </span>
-
-              <span className={actionLabel}>{label}</span>
-            </Link>
-          ))}
-        </div>
       </div>
     </section>
   );
