@@ -19,7 +19,7 @@ import {
 } from "@/app/data/bills";
 import { formatCurrency } from "@/app/utils/currency";
 import { todayKey } from "@/app/data/streakFreeze";
-import { quickExpenseCategories } from "@/app/data/quickAdd";
+import { categoryLabel } from "@/app/data/categoryLabel";
 import {
   getDayReminders,
   pickNudge,
@@ -50,15 +50,7 @@ export default function TodayCoachCard({ onQuickAdd }: Props) {
       const nudge = pickNudge({
         transactions: getTransactions(),
         now,
-        categoryLabel: (category) => {
-          const found = quickExpenseCategories.find(
-            (item) => item.value === category
-          );
-
-          return found
-            ? found[language]
-            : category.replace(/^[^\p{L}\p{N}]+/u, "");
-        },
+        categoryLabel: (category) => categoryLabel(category, language),
       });
 
       const reminders = settings.remindersEnabled

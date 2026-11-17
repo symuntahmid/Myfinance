@@ -984,10 +984,10 @@ en: {
   xpEarnedMessage:
     "XP earned. Your money habits are improving.",
 
-  trackExpense: "Track one expense",
-  reviewSpending: "Review your spending",
+  trackExpense: "Log one expense",
+  reviewSpending: "Open your Reports",
   betterMoneyDecision:
-    "Make one better money decision",
+    "Add money to a goal or invest",
 
   level: "Level",
   netWorth: "Net Worth",
@@ -2712,10 +2712,10 @@ bn: {
   xpEarnedMessage:
     "XP অর্জিত হয়েছে। আপনার অর্থ ব্যবস্থাপনার অভ্যাস উন্নত হচ্ছে।",
 
-  trackExpense: "একটি খরচ হিসাব করুন",
-  reviewSpending: "আপনার খরচ পর্যালোচনা করুন",
+  trackExpense: "একটি খরচ লিখুন",
+  reviewSpending: "রিপোর্ট খুলে দেখুন",
   betterMoneyDecision:
-    "আরও ভালো একটি আর্থিক সিদ্ধান্ত নিন",
+    "লক্ষ্যে টাকা জমান বা বিনিয়োগ করুন",
 
   level: "লেভেল",
   netWorth: "নিট সম্পদ",
