@@ -37,8 +37,8 @@ const TEXT = {
   },
 } as const;
 
-const SIZE = 28;
-const STROKE = 3;
+const SIZE = 36;
+const STROKE = 4;
 const R = (SIZE - STROKE) / 2;
 const C = 2 * Math.PI * R;
 
@@ -137,7 +137,7 @@ export default function BudgetRings() {
             <Link
               key={ring.category}
               href="/money"
-              className={`flex h-10 shrink-0 items-center gap-2 rounded-full border pl-1.5 pr-3 text-xs font-semibold ${
+              className={`flex h-12 shrink-0 items-center gap-2 rounded-full border pl-1.5 pr-3.5 text-xs font-semibold ${
                 bad
                   ? "border-red-500/30 bg-red-500/10 text-red-600"
                   : "border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
@@ -166,7 +166,7 @@ export default function BudgetRings() {
                   />
                 </svg>
 
-                <span className="absolute inset-0 flex items-center justify-center text-[13px]">
+                <span className="absolute inset-0 flex items-center justify-center text-base">
                   {ring.emoji}
                 </span>
               </span>
@@ -180,7 +180,7 @@ export default function BudgetRings() {
 
         <Link
           href="/money"
-          className="flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-dashed border-[var(--border)] px-3 text-xs font-semibold text-[var(--muted)]"
+          className="flex h-12 shrink-0 items-center gap-1.5 rounded-full border border-dashed border-[var(--border)] px-3 text-xs font-semibold text-[var(--muted)]"
         >
           <Plus size={14} />
           {x.set}
