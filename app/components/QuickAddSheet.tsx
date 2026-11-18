@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { X, Zap, ClipboardPaste, Check } from "lucide-react";
+import { X, Zap, ClipboardPaste, Check, Mic, Camera } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -15,10 +15,10 @@ import {
 
 import { getCustomCategories } from "@/app/data/plan";
 import { entryFeedback, type EntryNote } from "@/app/data/entryFeedback";
-import { addInvestment, type InvestmentType } from "@/app/data/investments";
-import { TYPE_INFO } from "@/app/data/investLearn";
-import { addTransaction, getTransactions } from "@/app/data/transactions";
-import { todayLocal } from "@/app/utils/date";
+import { getTransactions } from "@/app/data/transactions";
+import { parseSpeech } from "@/app/data/voiceParse";
+import { createRecognition, type Recognition } from "@/app/components/VoiceButton";
+import { saveReceipt, shrinkPhoto } from "@/app/data/receipts";
 
 import {
   accountForProvider,
@@ -42,7 +42,7 @@ interface Props {
   initialSms?: string;
 }
 
-type Kind = "expense" | "income" | "invest";
+type Kind = "expense" | "income" | "transfer";
 
 const INCOME_CATEGORIES = [
   { value: "💼 Salary", emoji: "💼", en: "Salary", bn: "বেতন" },
@@ -51,55 +51,62 @@ const INCOME_CATEGORIES = [
   { value: "📦 Others", emoji: "📦", en: "Other", bn: "অন্যান্য" },
 ];
 
-const INVEST_TYPES: InvestmentType[] = [
-  "Savings",
-  "DPS",
-  "Fixed Deposit (FDR)",
-  "Stocks",
-  "Gold",
-  "Other",
-];
-
 const ACCENT: Record<Kind, string> = {
   expense: "#0f766e",
   income: "#16a34a",
-  invest: "#2563eb",
+  transfer: "#2563eb",
 };
 
 const KIND_TEXT = {
   en: {
     expense: "Expense",
     income: "Income",
-    invest: "Invest",
-    sms: "SMS",
+    transfer: "Transfer",
+    sms: "Paste SMS",
+    voice: "Speak",
+    listening: "Listening…",
+    camera: "Photo",
+    heard: "Heard",
+    noHear: "Could not hear an amount. Try “tea 20 taka”.",
+    noMic: "Voice is not available on this browser.",
+    to: "To",
+    sameAcc: "Pick two different accounts",
     q: {
       expense: "How much did you spend?",
       income: "How much did you get?",
-      invest: "How much are you putting in?",
+      transfer: "How much are you moving?",
     },
-    what: { expense: "What for?", income: "From where?", invest: "What kind?" },
-    where: { expense: "Paid with", income: "Received in", invest: "Paid from" },
+    what: { expense: "What for?", income: "From where?", transfer: "" },
+    where: { expense: "Paid with", income: "Received in", transfer: "From" },
     more: "More",
     less: "Less",
     incomeNote: "Added. Your money grew.",
-    investNote: "Invested. A good move for your future.",
+    transferNote: "Moved. Your total money stays the same.",
   },
   bn: {
     expense: "খরচ",
     income: "আয়",
-    invest: "ইনভেস্ট",
-    sms: "SMS",
+    transfer: "ট্রান্সফার",
+    sms: "SMS পেস্ট",
+    voice: "বলুন",
+    listening: "শুনছি…",
+    camera: "ছবি",
+    heard: "শুনেছি",
+    noHear: "টাকার অঙ্ক শুনতে পাইনি। বলুন “চা বিশ টাকা”।",
+    noMic: "এই ব্রাউজারে ভয়েস চলছে না।",
+    to: "কোথায়",
+    sameAcc: "দুটি আলাদা অ্যাকাউন্ট বেছে নিন",
     q: {
       expense: "কত টাকা খরচ করেছেন?",
       income: "কত টাকা পেয়েছেন?",
-      invest: "কত টাকা বিনিয়োগ করছেন?",
+      transfer: "কত টাকা সরাচ্ছেন?",
     },
-    what: { expense: "কীসের জন্য?", income: "কোথা থেকে?", invest: "কী ধরনের?" },
-    where: { expense: "কীভাবে দিয়েছেন", income: "কোথায় পেয়েছেন", invest: "কোথা থেকে দিলেন" },
+    what: { expense: "কীসের জন্য?", income: "কোথা থেকে?", transfer: "" },
+    where: { expense: "কীভাবে দিয়েছেন", income: "কোথায় পেয়েছেন", transfer: "কোথা থেকে" },
     more: "আরও",
     less: "কম",
     incomeNote: "যোগ হয়েছে। আপনার টাকা বাড়ল।",
-    investNote: "বিনিয়োগ হয়েছে। ভবিষ্যতের জন্য ভালো সিদ্ধান্ত।",
+    transferNote: "সরানো হয়েছে। আপনার মোট টাকা একই আছে।",
   },
 } as const;
 
@@ -179,9 +186,13 @@ function QuickAddPanel({
   const [showAll, setShowAll] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState(() => readLast().expense ?? "");
-  const [invType, setInvType] = useState<InvestmentType>(
-    () => (readLast().invest as InvestmentType) ?? "Savings"
-  );
+  const [dest, setDest] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [listening, setListening] = useState(false);
+  const [heard, setHeard] = useState("");
+  const [voiceMsg, setVoiceMsg] = useState("");
+  const rec = useRef<Recognition | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [accounts] = useState(() => getAccounts());
 
   // The built-in categories plus the ones the user made in Plan.
@@ -252,6 +263,81 @@ function QuickAddPanel({
   const amountValue = Number(amount);
   const canSaveQuick = amountValue > 0;
 
+  // Where the money goes: the chosen account, or the first one that is not the source.
+  const toSource =
+    accounts.find((a) => a.source === dest && a.source !== source)?.source ??
+    accounts.find((a) => a.source !== source)?.source ??
+    "";
+
+  function startVoice() {
+    if (listening) {
+      rec.current?.stop();
+      setListening(false);
+
+      return;
+    }
+
+    const r = createRecognition();
+
+    if (!r) {
+      setVoiceMsg(kx.noMic);
+
+      return;
+    }
+
+    setVoiceMsg("");
+    setHeard("");
+
+    r.lang = language === "bn" ? "bn-BD" : "en-US";
+    r.interimResults = true;
+    r.continuous = false;
+
+    r.onresult = (event) => {
+      let said = "";
+
+      for (let i = 0; i < event.results.length; i += 1) {
+        said += event.results[i][0].transcript + " ";
+      }
+
+      said = said.trim();
+      setHeard(said);
+
+      const first = parseSpeech(said)[0];
+
+      if (first) {
+        const next: Kind = first.type === "Income" ? "income" : "expense";
+
+        setKind(next);
+        setTab("quick");
+        setAmount(String(first.amount));
+        setCategory(first.category);
+
+        if (accounts.some((a) => a.source === first.source)) setSource(first.source);
+
+        setVoiceMsg("");
+      }
+    };
+
+    r.onerror = () => {
+      setListening(false);
+      setVoiceMsg(kx.noMic);
+    };
+
+    r.onend = () => setListening(false);
+
+    rec.current = r;
+    setListening(true);
+    r.start();
+  }
+
+  async function pickPhoto(file: File | undefined) {
+    if (!file) return;
+
+    try {
+      setPhoto(await shrinkPhoto(file));
+    } catch {}
+  }
+
   function finish(savedValue: number, savedCategory?: string) {
     setSavedAmount(formatCurrency(savedValue));
 
@@ -268,40 +354,22 @@ function QuickAddPanel({
   function saveQuick() {
     if (!canSaveQuick) return;
 
-    writeLast({ source });
+    if (kind !== "transfer") writeLast({ source });
 
-    if (kind === "invest") {
-      const txId = Date.now() + Math.floor(Math.random() * 100000);
-      const info = TYPE_INFO[invType];
-      const name = info[language];
-      const date = todayLocal();
+    if (kind === "transfer") {
+      const from = accounts.find((item) => item.source === source);
+      const to = accounts.find((item) => item.source === toSource);
 
-      addInvestment({
-        id: `${Date.now()}${Math.floor(Math.random() * 1_000_000)}`,
-        name,
-        type: invType,
-        purchaseDate: date,
-        investedAmount: amountValue,
-        currentValue: amountValue,
-        notes: "",
-        txId,
-      });
+      if (!from || !to || from.id === to.id) {
+        setVoiceMsg(kx.sameAcc);
 
-      addTransaction({
-        id: txId,
-        type: "Investment",
-        source,
-        category: "Investment",
-        amount: amountValue,
-        date,
-        note: `Investment: ${name}`,
-        autoRepeat: false,
-        reminder: false,
-      });
+        return;
+      }
 
-      writeLast({ invest: invType });
+      transferBetween({ from, to, amount: amountValue });
+      writeLast({ source });
       finish(amountValue);
-      setNote({ tone: "good", text: kx.investNote });
+      setNote({ tone: "calm", text: kx.transferNote });
 
       return;
     }
@@ -315,6 +383,7 @@ function QuickAddPanel({
       });
 
       writeLast({ income: category });
+      if (photo) saveReceipt(transaction.id, photo);
       finish(transaction.amount);
       setNote({ tone: "good", text: kx.incomeNote });
 
@@ -329,6 +398,7 @@ function QuickAddPanel({
     });
 
     writeLast({ expense: category });
+    if (photo) saveReceipt(transaction.id, photo);
     finish(transaction.amount, transaction.category);
   }
 
@@ -429,7 +499,7 @@ function QuickAddPanel({
     setKind(next);
     setTab("quick");
     setShowAll(false);
-    setCategory(next === "invest" ? "" : readLast()[next] ?? "");
+    setCategory(next === "transfer" ? "" : readLast()[next] ?? "");
   };
 
   const sortedExpense = [...categoryList].sort(
@@ -507,12 +577,12 @@ function QuickAddPanel({
 
         {/* Type switch */}
 
-        <div className="mx-6 mt-5 grid grid-cols-4 gap-1 rounded-2xl bg-[var(--background)] p-1">
+        <div className="mx-6 mt-5 grid grid-cols-3 gap-1 rounded-2xl bg-[var(--background)] p-1">
           {(
             [
               ["expense", kx.expense],
               ["income", kx.income],
-              ["invest", kx.invest],
+              ["transfer", kx.transfer],
             ] as [Kind, string][]
           ).map(([id, label]) => (
             <button
@@ -528,19 +598,65 @@ function QuickAddPanel({
               {label}
             </button>
           ))}
+        </div>
+
+        {/* Voice, photo and SMS */}
+
+        <div className="mx-6 mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={startVoice}
+            className={`flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold ${
+              listening
+                ? "border-red-500 bg-red-500/10 text-red-600"
+                : "border-[var(--border)]"
+            }`}
+          >
+            <Mic size={16} />
+            {listening ? kx.listening : kx.voice}
+          </button>
+
+          {kind !== "transfer" && (
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="flex items-center gap-1.5 rounded-full border border-[var(--border)] px-3.5 py-2 text-sm font-semibold"
+            >
+              <Camera size={16} />
+              {kx.camera}
+            </button>
+          )}
 
           <button
             type="button"
             onClick={() => setTab("sms")}
-            className={`rounded-xl py-2.5 text-sm font-bold transition ${
-              tab === "sms"
-                ? "bg-[var(--card)] text-[var(--primary)] shadow-sm"
-                : "text-[var(--muted)]"
+            className={`flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold ${
+              tab === "sms" ? "border-[var(--primary)] text-[var(--primary)]" : "border-[var(--border)]"
             }`}
           >
+            <ClipboardPaste size={16} />
             {kx.sms}
           </button>
+
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            hidden
+            onChange={(event) => {
+              pickPhoto(event.target.files?.[0]);
+              event.target.value = "";
+            }}
+          />
         </div>
+
+        {(heard || voiceMsg) && tab === "quick" && (
+          <p className="mx-6 mt-2 text-xs text-[var(--muted)]">
+            {voiceMsg ? voiceMsg : `${kx.heard}: “${heard}”`}
+          </p>
+        )}
+
 
         {/* Saved message */}
 
@@ -584,23 +700,14 @@ function QuickAddPanel({
               className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-4 text-3xl font-bold outline-none focus:border-[var(--primary)]"
             />
 
-            <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
-              {kx.what[kind]}
-            </p>
+            {kind !== "transfer" && (
+              <>
+                <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
+                  {kx.what[kind]}
+                </p>
 
-            <div className="mt-2 flex flex-wrap gap-2">
-              {kind === "invest"
-                ? INVEST_TYPES.map((item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setInvType(item)}
-                      className={chip(invType === item)}
-                    >
-                      {TYPE_INFO[item].emoji} {TYPE_INFO[item][language]}
-                    </button>
-                  ))
-                : shownList.map((item) => (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {shownList.map((item) => (
                     <button
                       key={item.value}
                       type="button"
@@ -611,16 +718,18 @@ function QuickAddPanel({
                     </button>
                   ))}
 
-              {kind === "expense" && sortedExpense.length > 8 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAll(!showAll)}
-                  className="rounded-2xl px-3 py-2 text-sm font-semibold text-[var(--muted)]"
-                >
-                  {showAll ? kx.less : kx.more}
-                </button>
-              )}
-            </div>
+                  {kind === "expense" && sortedExpense.length > 8 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAll(!showAll)}
+                      className="rounded-2xl px-3 py-2 text-sm font-semibold text-[var(--muted)]"
+                    >
+                      {showAll ? kx.less : kx.more}
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
 
             <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
               {kx.where[kind]}
@@ -638,6 +747,42 @@ function QuickAddPanel({
                 </button>
               ))}
             </div>
+
+            {kind === "transfer" && (
+              <>
+                <p className="mt-5 text-sm font-semibold text-[var(--muted)]">{kx.to}</p>
+
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {accounts
+                    .filter((item) => item.source !== source)
+                    .map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setDest(item.source)}
+                        className={chip(toSource === item.source)}
+                      >
+                        {item.emoji} {accountName(item, language)}
+                      </button>
+                    ))}
+                </div>
+              </>
+            )}
+
+            {photo && (
+              <div className="mt-4 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={photo} alt="" className="h-14 w-14 rounded-xl object-cover" />
+
+                <button
+                  type="button"
+                  onClick={() => setPhoto(null)}
+                  className="text-xs font-semibold text-[var(--muted)]"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
 
             <button
               type="button"

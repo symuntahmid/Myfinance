@@ -23,7 +23,7 @@ const INCOME_CATEGORIES = [
   "📦 Others",
 ];
 
-type Recognition = {
+export type Recognition = {
   lang: string;
   interimResults: boolean;
   continuous: boolean;
@@ -34,7 +34,7 @@ type Recognition = {
   stop: () => void;
 };
 
-function createRecognition(): Recognition | null {
+export function createRecognition(): Recognition | null {
   if (typeof window === "undefined") return null;
 
   const w = window as unknown as {

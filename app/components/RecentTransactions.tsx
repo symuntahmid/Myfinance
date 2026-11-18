@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Camera, X } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getTransactions, type Transaction } from "../data/transactions";
 import { quickExpenseCategories } from "@/app/data/quickAdd";
+import { getReceipts } from "@/app/data/receipts";
 
 const SIGN: Record<Transaction["type"], string> = {
   Income: "+",
@@ -19,9 +21,12 @@ export default function RecentTransactions() {
   const { t, language } = useLanguage();
 
   const [items, setItems] = useState<Transaction[]>([]);
+  const [receipts, setReceipts] = useState<Record<string, string>>({});
+  const [viewing, setViewing] = useState<string | null>(null);
 
   useEffect(() => {
-    const refresh = () =>
+    const refresh = () => {
+      setReceipts(getReceipts());
       setItems(
         [...getTransactions()]
           .sort(
@@ -31,10 +36,11 @@ export default function RecentTransactions() {
           )
           .slice(0, 5)
       );
+    };
 
     refresh();
 
-    const events = ["transactionsUpdated", "currencyUpdated", "languageUpdated"];
+    const events = ["transactionsUpdated", "currencyUpdated", "languageUpdated", "receiptsUpdated"];
 
     events.forEach((name) => window.addEventListener(name, refresh));
 
@@ -92,6 +98,17 @@ export default function RecentTransactions() {
                   </p>
                 </div>
 
+                {receipts[String(item.id)] && (
+                  <button
+                    type="button"
+                    aria-label="receipt"
+                    onClick={() => setViewing(receipts[String(item.id)])}
+                    className="shrink-0 text-[var(--muted)]"
+                  >
+                    <Camera size={15} />
+                  </button>
+                )}
+
                 <span
                   className={`shrink-0 text-sm font-bold ${
                     item.type === "Income" ? "text-[var(--success)]" : ""
@@ -104,6 +121,20 @@ export default function RecentTransactions() {
             );
           })}
         </ul>
+      )}
+
+      {viewing && (
+        <div
+          className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setViewing(null)}
+        >
+          <button type="button" aria-label="close" className="absolute right-4 top-4 text-white">
+            <X size={26} />
+          </button>
+
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={viewing} alt="" className="max-h-full max-w-full rounded-xl" />
+        </div>
       )}
     </section>
   );
