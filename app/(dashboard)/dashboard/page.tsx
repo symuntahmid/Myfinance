@@ -12,6 +12,7 @@ import VoiceButton from "@/app/components/VoiceButton";
 import BudgetRings from "@/app/components/BudgetRings";
 
 import WelcomeBanner from "../../components/WelcomeBanner";
+import BackupNudge from "@/app/components/BackupNudge";
 import FirstRunWelcome from "@/app/components/FirstRunWelcome";
 
 import HomeToday from "@/app/components/HomeToday";
@@ -61,6 +62,8 @@ export default function Dashboard() {
   <RecentTransactions />
 
   <HomeToday />
+
+  <BackupNudge />
 </div>
 
       <FirstRunWelcome />

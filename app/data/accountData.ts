@@ -97,6 +97,14 @@ export function exportMyFinanceData() {
     }
   }
 
+  // Remember when the last backup was made (it is kept inside the backup too).
+  try {
+    const stamp = new Date().toISOString();
+
+    localStorage.setItem("myfinance-last-backup", stamp);
+    keys["myfinance-last-backup"] = stamp;
+  } catch {}
+
   const backup = {
     app: "myfinance",
     version: 2,
@@ -137,6 +145,8 @@ export function exportMyFinanceData() {
   document.body.removeChild(link);
 
   URL.revokeObjectURL(url);
+
+  window.dispatchEvent(new Event("backupUpdated"));
 }
 
 /* ==========================================
