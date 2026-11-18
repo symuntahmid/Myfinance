@@ -19,6 +19,7 @@ import { getTransactions } from "@/app/data/transactions";
 import { parseSpeech } from "@/app/data/voiceParse";
 import { createRecognition, type Recognition } from "@/app/components/VoiceButton";
 import { saveReceipt, shrinkPhoto } from "@/app/data/receipts";
+import { readReceiptPhoto } from "@/app/data/receiptRead";
 
 import {
   accountForProvider,
@@ -67,6 +68,9 @@ const KIND_TEXT = {
     listening: "Listening…",
     camera: "Photo",
     heard: "Heard",
+    reading: "Reading the receipt… the first time takes a little longer",
+    readOk: "Read from your photo: {x}. Please check it.",
+    readFail: "Could not read the total. Type the amount.",
     noHear: "Could not hear an amount. Try “tea 20 taka”.",
     noMic: "Voice is not available on this browser.",
     to: "To",
@@ -92,6 +96,9 @@ const KIND_TEXT = {
     listening: "শুনছি…",
     camera: "ছবি",
     heard: "শুনেছি",
+    reading: "রসিদ পড়ছি… প্রথমবার একটু সময় লাগে",
+    readOk: "ছবি থেকে পেয়েছি: {x}। একবার দেখে নিন।",
+    readFail: "মোট টাকা পড়া যায়নি। অঙ্কটি লিখে দিন।",
     noHear: "টাকার অঙ্ক শুনতে পাইনি। বলুন “চা বিশ টাকা”।",
     noMic: "এই ব্রাউজারে ভয়েস চলছে না।",
     to: "কোথায়",
@@ -191,6 +198,8 @@ function QuickAddPanel({
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");
   const [voiceMsg, setVoiceMsg] = useState("");
+  const [reading, setReading] = useState<number | null>(null);
+  const [readMsg, setReadMsg] = useState("");
   const rec = useRef<Recognition | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [accounts] = useState(() => getAccounts());
@@ -334,7 +343,28 @@ function QuickAddPanel({
     if (!file) return;
 
     try {
-      setPhoto(await shrinkPhoto(file));
+      const small = await shrinkPhoto(file);
+      const sharp = await shrinkPhoto(file, 1400, 0.85);
+
+      setPhoto(small);
+      setReadMsg("");
+      setReading(0);
+
+      // Read the photo on this phone and fill in the total.
+      try {
+        const found = await readReceiptPhoto(sharp, (percent) => setReading(percent));
+
+        if (found) {
+          setAmount(String(found));
+          setReadMsg(kx.readOk.replace("{x}", formatCurrency(found)));
+        } else {
+          setReadMsg(kx.readFail);
+        }
+      } catch {
+        setReadMsg(kx.readFail);
+      } finally {
+        setReading(null);
+      }
     } catch {}
   }
 
@@ -767,6 +797,12 @@ function QuickAddPanel({
                     ))}
                 </div>
               </>
+            )}
+
+            {(reading !== null || readMsg) && (
+              <p className="mt-3 text-xs font-medium text-[var(--muted)]">
+                {reading !== null ? `${kx.reading} ${reading > 0 ? reading + "%" : ""}` : readMsg}
+              </p>
             )}
 
             {photo && (
