@@ -14,6 +14,7 @@ import {
 } from "@/app/data/mobileMoneySms";
 
 import { getCustomCategories } from "@/app/data/plan";
+import { entryFeedback, type EntryNote } from "@/app/data/entryFeedback";
 
 import {
   accountForProvider,
@@ -127,6 +128,7 @@ function QuickAddPanel({
   const [clipboardFailed, setClipboardFailed] = useState(false);
 
   const [savedAmount, setSavedAmount] = useState<string | null>(null);
+  const [note, setNote] = useState<EntryNote | null>(null);
 
   const amountRef = useRef<HTMLInputElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -147,12 +149,17 @@ function QuickAddPanel({
   const amountValue = Number(amount);
   const canSaveQuick = amountValue > 0;
 
-  function finish(savedValue: number) {
+  function finish(savedValue: number, savedCategory?: string) {
     setSavedAmount(formatCurrency(savedValue));
 
-    closeTimer.current = setTimeout(() => {
-      onClose();
-    }, 900);
+    if (savedCategory) setNote(entryFeedback(savedCategory, language));
+
+    closeTimer.current = setTimeout(
+      () => {
+        onClose();
+      },
+      savedCategory ? 2200 : 900
+    );
   }
 
   function saveQuick() {
@@ -165,7 +172,7 @@ function QuickAddPanel({
       source,
     });
 
-    finish(transaction.amount);
+    finish(transaction.amount, transaction.category);
   }
 
   function readMessage(message: string) {
@@ -243,7 +250,7 @@ function QuickAddPanel({
         : data.note,
     });
 
-    finish(transaction.amount);
+    finish(transaction.amount, transaction.category);
   }
 
   function failureMessage(): string | null {
@@ -361,6 +368,16 @@ function QuickAddPanel({
             <p className="text-lg font-bold">
               {text.saved} · {savedAmount}
             </p>
+
+            {note && (
+              <p
+                className={`max-w-xs text-center text-sm font-medium ${
+                  note.tone === "watch" ? "text-amber-600" : "text-[var(--muted)]"
+                }`}
+              >
+                {note.text}
+              </p>
+            )}
           </div>
         ) : tab === "quick" ? (
           <div className="px-6 pb-8 pt-6">
