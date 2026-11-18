@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Landmark } from "lucide-react";
 
 import BudgetPlan from "@/app/components/BudgetPlan";
+import SpendingMindMap from "@/app/components/SpendingMindMap";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
 import QuickAddSheet from "@/app/components/QuickAddSheet";
 
@@ -84,6 +85,8 @@ export default function MoneyPage() {
       </section>
 
       <BudgetPlan />
+
+      <SpendingMindMap />
 
       <FloatingActionButton onClick={() => setQuickOpen(true)} />
 

@@ -5,14 +5,8 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency, getCurrencySymbol } from "@/app/utils/currency";
 import { getInvestments, type Investment, type InvestmentType } from "@/app/data/investments";
+import MindMapGraph from "@/app/components/MindMapGraph";
 import { EMOJI, NAME } from "@/app/data/investmentMeta";
-
-const W = 316;
-const H = 322;
-const CX = W / 2;
-const CY = 156;
-const R1 = 104; // distance of the category nodes from the centre
-const CORE = 46; // radius of the centre circle
 
 const UP = "var(--success)";
 const DOWN = "#ef4444";
@@ -109,33 +103,12 @@ export default function InvestmentMindMap() {
     return `${getCurrencySymbol()}${body}`;
   };
 
-  const count = nodes.length;
-
-  const placed = nodes.map((n, i) => {
-    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / count;
-    const dx = Math.cos(angle);
-    const dy = Math.sin(angle);
-    const r = Math.round(19 + 12 * Math.sqrt(n.share));
-    const x = CX + dx * R1;
-    const y = CY + dy * R1;
-
-    // A gentle bend, so the branches look grown and not ruled.
-    const sx = CX + dx * CORE;
-    const sy = CY + dy * CORE;
-    const ex = x - dx * r;
-    const ey = y - dy * r;
-    const bend = (i % 2 === 0 ? 1 : -1) * 14;
-    const mx = (sx + ex) / 2 - dy * bend;
-    const my = (sy + ey) / 2 + dx * bend;
-
-    return { n, x, y, r, path: `M${sx.toFixed(1)},${sy.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${ex.toFixed(1)},${ey.toFixed(1)}`, i };
-  });
-
   const title = lang === "bn" ? "বিনিয়োগের মানচিত্র" : "Investment map";
   const hint =
     lang === "bn"
       ? "কোনো বৃত্তে চাপ দিন, ভেতরের বিনিয়োগ দেখুন।"
       : "Tap a circle to see what is inside.";
+  const count = nodes.length;
   const kinds =
     lang === "bn"
       ? `${count.toLocaleString(loc)} ধরন`
@@ -143,97 +116,27 @@ export default function InvestmentMindMap() {
 
   return (
     <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5">
-      <style>{`
-        @keyframes mmDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-        @keyframes mmPop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
-        .mm-branch { stroke-dasharray: 1; stroke-dashoffset: 0; animation: mmDraw .9s ease-out both; }
-        .mm-node { transform-box: fill-box; transform-origin: center; animation: mmPop .45s ease-out both; }
-        @media (prefers-reduced-motion: reduce) { .mm-branch, .mm-node { animation: none; } }
-      `}</style>
-
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="text-sm font-semibold">{title}</h3>
         <span className="text-xs text-[var(--muted)]">{hint}</span>
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="mt-1 w-full" role="group" aria-label={title}>
-        {/* the orbit the branches grow towards */}
-        <circle cx={CX} cy={CY} r={R1} fill="none" stroke="var(--border)" strokeDasharray="2 6" />
-
-        {placed.map(({ n, path, i }) => (
-          <path
-            key={`b-${n.type}`}
-            d={path}
-            pathLength={1}
-            fill="none"
-            stroke={tone(n.pct)}
-            strokeOpacity={0.55}
-            strokeWidth={1.5 + 4 * n.share}
-            strokeLinecap="round"
-            className="mm-branch"
-            style={{ animationDelay: `${0.05 * i}s` }}
-          />
-        ))}
-
-        {/* centre */}
-        <circle cx={CX} cy={CY} r={CORE} fill="var(--primary)" />
-        <text x={CX} y={CY - 4} textAnchor="middle" fontSize="17" fontWeight="700" fill="#fff">
-          {compact(total)}
-        </text>
-        <text x={CX} y={CY + 12} textAnchor="middle" fontSize="11" fontWeight="600" fill="var(--gold)">
-          {pctText(totalPct)}
-        </text>
-        <text x={CX} y={CY + 26} textAnchor="middle" fontSize="9" fill="#fff" fillOpacity={0.75}>
-          {kinds}
-        </text>
-
-        {placed.map(({ n, x, y, r, i }) => {
-          const on = n.type === active.type;
-
-          return (
-            <g
-              key={`n-${n.type}`}
-              role="button"
-              tabIndex={0}
-              aria-label={`${NAME[n.type][lang]}, ${pctText(n.pct)}`}
-              aria-pressed={on}
-              onClick={() => setPicked(n.type)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") setPicked(n.type);
-              }}
-              className="mm-node cursor-pointer outline-none"
-              style={{ animationDelay: `${0.35 + 0.06 * i}s` }}
-            >
-              {on && <circle cx={x} cy={y} r={r + 5} fill="none" stroke={tone(n.pct)} strokeOpacity={0.35} strokeWidth={4} />}
-
-              <circle
-                cx={x}
-                cy={y}
-                r={r}
-                fill="var(--card)"
-                stroke={tone(n.pct)}
-                strokeWidth={on ? 3 : 2}
-              />
-              <circle cx={x} cy={y} r={r} fill={tone(n.pct)} fillOpacity={0.12} />
-
-              <text x={x} y={y + r * 0.3} textAnchor="middle" fontSize={Math.round(r * 0.9)}>
-                {EMOJI[n.type]}
-              </text>
-
-              <text
-                x={x}
-                y={y + r + 12}
-                textAnchor="middle"
-                fontSize="10"
-                fontWeight="700"
-                fill={tone(n.pct)}
-              >
-                {pctText(n.pct)}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+      <MindMapGraph
+        title={title}
+        big={compact(total)}
+        small={pctText(totalPct)}
+        note={kinds}
+        activeId={active.type}
+        onPick={(id) => setPicked(id as InvestmentType)}
+        nodes={nodes.map((n) => ({
+          id: n.type,
+          emoji: EMOJI[n.type],
+          label: pctText(n.pct),
+          color: tone(n.pct),
+          share: n.share,
+          aria: `${NAME[n.type][lang]}, ${pctText(n.pct)}`,
+        }))}
+      />
 
       {/* what is inside the picked circle */}
       <div className="mt-1 rounded-xl bg-[var(--background)] p-3">
