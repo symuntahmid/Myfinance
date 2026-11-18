@@ -15,6 +15,10 @@ import {
 
 import { getCustomCategories } from "@/app/data/plan";
 import { entryFeedback, type EntryNote } from "@/app/data/entryFeedback";
+import { addInvestment, type InvestmentType } from "@/app/data/investments";
+import { TYPE_INFO } from "@/app/data/investLearn";
+import { addTransaction, getTransactions } from "@/app/data/transactions";
+import { todayLocal } from "@/app/utils/date";
 
 import {
   accountForProvider,
@@ -36,6 +40,83 @@ interface Props {
   onClose: () => void;
   // A message to read right away (from the automatic SMS link).
   initialSms?: string;
+}
+
+type Kind = "expense" | "income" | "invest";
+
+const INCOME_CATEGORIES = [
+  { value: "💼 Salary", emoji: "💼", en: "Salary", bn: "বেতন" },
+  { value: "🏪 Business", emoji: "🏪", en: "Business", bn: "ব্যবসা" },
+  { value: "🎁 Gift", emoji: "🎁", en: "Gift", bn: "উপহার" },
+  { value: "📦 Others", emoji: "📦", en: "Other", bn: "অন্যান্য" },
+];
+
+const INVEST_TYPES: InvestmentType[] = [
+  "Savings",
+  "DPS",
+  "Fixed Deposit (FDR)",
+  "Stocks",
+  "Gold",
+  "Other",
+];
+
+const ACCENT: Record<Kind, string> = {
+  expense: "#0f766e",
+  income: "#16a34a",
+  invest: "#2563eb",
+};
+
+const KIND_TEXT = {
+  en: {
+    expense: "Expense",
+    income: "Income",
+    invest: "Invest",
+    sms: "SMS",
+    q: {
+      expense: "How much did you spend?",
+      income: "How much did you get?",
+      invest: "How much are you putting in?",
+    },
+    what: { expense: "What for?", income: "From where?", invest: "What kind?" },
+    where: { expense: "Paid with", income: "Received in", invest: "Paid from" },
+    more: "More",
+    less: "Less",
+    incomeNote: "Added. Your money grew.",
+    investNote: "Invested. A good move for your future.",
+  },
+  bn: {
+    expense: "খরচ",
+    income: "আয়",
+    invest: "ইনভেস্ট",
+    sms: "SMS",
+    q: {
+      expense: "কত টাকা খরচ করেছেন?",
+      income: "কত টাকা পেয়েছেন?",
+      invest: "কত টাকা বিনিয়োগ করছেন?",
+    },
+    what: { expense: "কীসের জন্য?", income: "কোথা থেকে?", invest: "কী ধরনের?" },
+    where: { expense: "কীভাবে দিয়েছেন", income: "কোথায় পেয়েছেন", invest: "কোথা থেকে দিলেন" },
+    more: "আরও",
+    less: "কম",
+    incomeNote: "যোগ হয়েছে। আপনার টাকা বাড়ল।",
+    investNote: "বিনিয়োগ হয়েছে। ভবিষ্যতের জন্য ভালো সিদ্ধান্ত।",
+  },
+} as const;
+
+const LAST_KEY = "myfinance-quick-last";
+
+function readLast(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(LAST_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function writeLast(patch: Record<string, string>) {
+  try {
+    localStorage.setItem(LAST_KEY, JSON.stringify({ ...readLast(), ...patch }));
+  } catch {}
 }
 
 const BANGLA_DIGITS = "০১২৩৪৫৬৭৮৯";
@@ -78,6 +159,7 @@ function QuickAddPanel({
 }) {
   const { language, t } = useLanguage();
   const text = quickText[language];
+  const kx = KIND_TEXT[language];
 
   // When opened from the automatic SMS link, read the message at once.
   const [initial] = useState(() =>
@@ -93,8 +175,13 @@ function QuickAddPanel({
     initial ? "sms" : "quick"
   );
 
+  const [kind, setKind] = useState<Kind>("expense");
+  const [showAll, setShowAll] = useState(false);
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(() => readLast().expense ?? "");
+  const [invType, setInvType] = useState<InvestmentType>(
+    () => (readLast().invest as InvestmentType) ?? "Savings"
+  );
   const [accounts] = useState(() => getAccounts());
 
   // The built-in categories plus the ones the user made in Plan.
@@ -107,9 +194,25 @@ function QuickAddPanel({
       bn: item.name,
     })),
   ]);
-  const [source, setSource] = useState(
-    () => getAccounts()[0]?.source ?? CASH_SOURCE
-  );
+  const [source, setSource] = useState(() => {
+    const last = readLast().source;
+    const all = getAccounts();
+
+    return all.find((a) => a.source === last)?.source ?? all[0]?.source ?? CASH_SOURCE;
+  });
+
+  // Most-used expense categories first.
+  const [usage] = useState(() => {
+    const counts: Record<string, number> = {};
+
+    getTransactions().forEach((tx) => {
+      if (tx.type === "Expense" && tx.category) {
+        counts[tx.category] = (counts[tx.category] ?? 0) + 1;
+      }
+    });
+
+    return counts;
+  });
 
   const [smsText, setSmsText] = useState(initial?.text ?? "");
   const [parsed, setParsed] = useState<SmsParseResult | null>(
@@ -165,6 +268,59 @@ function QuickAddPanel({
   function saveQuick() {
     if (!canSaveQuick) return;
 
+    writeLast({ source });
+
+    if (kind === "invest") {
+      const txId = Date.now() + Math.floor(Math.random() * 100000);
+      const info = TYPE_INFO[invType];
+      const name = info[language];
+      const date = todayLocal();
+
+      addInvestment({
+        id: `${Date.now()}${Math.floor(Math.random() * 1_000_000)}`,
+        name,
+        type: invType,
+        purchaseDate: date,
+        investedAmount: amountValue,
+        currentValue: amountValue,
+        notes: "",
+        txId,
+      });
+
+      addTransaction({
+        id: txId,
+        type: "Investment",
+        source,
+        category: "Investment",
+        amount: amountValue,
+        date,
+        note: `Investment: ${name}`,
+        autoRepeat: false,
+        reminder: false,
+      });
+
+      writeLast({ invest: invType });
+      finish(amountValue);
+      setNote({ tone: "good", text: kx.investNote });
+
+      return;
+    }
+
+    if (kind === "income") {
+      const transaction = saveQuickTransaction({
+        type: "Income",
+        amount: amountValue,
+        category: category || "📦 Others",
+        source,
+      });
+
+      writeLast({ income: category });
+      finish(transaction.amount);
+      setNote({ tone: "good", text: kx.incomeNote });
+
+      return;
+    }
+
     const transaction = saveQuickTransaction({
       type: "Expense",
       amount: amountValue,
@@ -172,6 +328,7 @@ function QuickAddPanel({
       source,
     });
 
+    writeLast({ expense: category });
     finish(transaction.amount, transaction.category);
   }
 
@@ -268,6 +425,24 @@ function QuickAddPanel({
     }
   }
 
+  const switchKind = (next: Kind) => {
+    setKind(next);
+    setTab("quick");
+    setShowAll(false);
+    setCategory(next === "invest" ? "" : readLast()[next] ?? "");
+  };
+
+  const sortedExpense = [...categoryList].sort(
+    (a, b) => (usage[b.value] ?? 0) - (usage[a.value] ?? 0)
+  );
+
+  const shownList =
+    kind === "income"
+      ? INCOME_CATEGORIES
+      : showAll
+      ? sortedExpense
+      : sortedExpense.slice(0, 8);
+
   const chip = (selected: boolean) =>
     `rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
       selected
@@ -303,6 +478,7 @@ function QuickAddPanel({
           bg-[var(--card)] text-[var(--foreground)]
           shadow-[0_-30px_80px_rgba(0,0,0,.18)]
         "
+        style={{ ["--primary" as string]: ACCENT[kind] }}
       >
         <div className="flex justify-center pt-3">
           <div className="h-1.5 w-14 rounded-full bg-slate-300" />
@@ -329,31 +505,40 @@ function QuickAddPanel({
           </button>
         </div>
 
-        {/* Tabs */}
+        {/* Type switch */}
 
-        <div className="mx-6 mt-5 grid grid-cols-2 gap-1 rounded-2xl bg-[var(--background)] p-1">
-          <button
-            type="button"
-            onClick={() => setTab("quick")}
-            className={`rounded-xl py-2.5 text-sm font-bold transition ${
-              tab === "quick"
-                ? "bg-[var(--card)] shadow-sm"
-                : "text-[var(--muted)]"
-            }`}
-          >
-            {text.tabQuick}
-          </button>
+        <div className="mx-6 mt-5 grid grid-cols-4 gap-1 rounded-2xl bg-[var(--background)] p-1">
+          {(
+            [
+              ["expense", kx.expense],
+              ["income", kx.income],
+              ["invest", kx.invest],
+            ] as [Kind, string][]
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => switchKind(id)}
+              className={`rounded-xl py-2.5 text-sm font-bold transition ${
+                tab === "quick" && kind === id
+                  ? "bg-[var(--card)] text-[var(--primary)] shadow-sm"
+                  : "text-[var(--muted)]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
 
           <button
             type="button"
             onClick={() => setTab("sms")}
             className={`rounded-xl py-2.5 text-sm font-bold transition ${
               tab === "sms"
-                ? "bg-[var(--card)] shadow-sm"
+                ? "bg-[var(--card)] text-[var(--primary)] shadow-sm"
                 : "text-[var(--muted)]"
             }`}
           >
-            {text.tabSms}
+            {kx.sms}
           </button>
         </div>
 
@@ -382,7 +567,7 @@ function QuickAddPanel({
         ) : tab === "quick" ? (
           <div className="px-6 pb-8 pt-6">
             <label className="text-sm font-semibold text-[var(--muted)]">
-              {text.amountLabel}
+              {kx.q[kind]}
             </label>
 
             <input
@@ -400,24 +585,45 @@ function QuickAddPanel({
             />
 
             <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
-              {text.categoryLabel}
+              {kx.what[kind]}
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">
-              {categoryList.map((item) => (
+              {kind === "invest"
+                ? INVEST_TYPES.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setInvType(item)}
+                      className={chip(invType === item)}
+                    >
+                      {TYPE_INFO[item].emoji} {TYPE_INFO[item][language]}
+                    </button>
+                  ))
+                : shownList.map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setCategory(item.value)}
+                      className={chip(category === item.value)}
+                    >
+                      {item.emoji} {item[language]}
+                    </button>
+                  ))}
+
+              {kind === "expense" && sortedExpense.length > 8 && (
                 <button
-                  key={item.value}
                   type="button"
-                  onClick={() => setCategory(item.value)}
-                  className={chip(category === item.value)}
+                  onClick={() => setShowAll(!showAll)}
+                  className="rounded-2xl px-3 py-2 text-sm font-semibold text-[var(--muted)]"
                 >
-                  {item.emoji} {item[language]}
+                  {showAll ? kx.less : kx.more}
                 </button>
-              ))}
+              )}
             </div>
 
             <p className="mt-5 text-sm font-semibold text-[var(--muted)]">
-              {text.sourceLabel}
+              {kx.where[kind]}
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2">
