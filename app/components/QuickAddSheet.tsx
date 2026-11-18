@@ -19,7 +19,7 @@ import { getTransactions } from "@/app/data/transactions";
 import { parseSpeech } from "@/app/data/voiceParse";
 import { createRecognition, type Recognition } from "@/app/components/VoiceButton";
 import { saveReceipt, shrinkPhoto } from "@/app/data/receipts";
-import { readReceiptPhoto } from "@/app/data/receiptRead";
+import { prepareForReading, readReceiptPhoto } from "@/app/data/receiptRead";
 
 import {
   accountForProvider,
@@ -339,12 +339,23 @@ function QuickAddPanel({
     r.start();
   }
 
+  // The full photo on a canvas, ready for reading.
+  async function photoCanvas(file: File): Promise<HTMLCanvasElement> {
+    const bitmap = await createImageBitmap(file);
+    const canvas = document.createElement("canvas");
+
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
+
+    return prepareForReading(canvas);
+  }
+
   async function pickPhoto(file: File | undefined) {
     if (!file) return;
 
     try {
       const small = await shrinkPhoto(file);
-      const sharp = await shrinkPhoto(file, 1400, 0.85);
 
       setPhoto(small);
       setReadMsg("");
@@ -352,7 +363,7 @@ function QuickAddPanel({
 
       // Read the photo on this phone and fill in the total.
       try {
-        const found = await readReceiptPhoto(sharp, (percent) => setReading(percent));
+        const found = await readReceiptPhoto(await photoCanvas(file), (percent) => setReading(percent));
 
         if (found) {
           setAmount(String(found));
