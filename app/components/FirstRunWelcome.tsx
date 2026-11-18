@@ -6,6 +6,23 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { updateProfile } from "@/app/data/profile";
 import { updateSettings } from "@/app/data/settings";
 import { setCurrentBalance } from "@/app/data/accounts";
+import { setAssigned } from "@/app/data/plan";
+import { formatCurrency } from "@/app/utils/currency";
+
+type Goal = "save" | "control" | "track";
+
+// Share of income for each category. The rest is left as savings.
+const SHARES: Record<Goal, Record<string, number>> = {
+  save: { "🛒 Supermarket": 18, "🍔 Food": 8, "🚌 Transport": 7, "🏠 House": 25, "💡 Bills": 6, "📱 Mobile Recharge": 3, "📚 Education": 4, "🏥 Health": 3, "🎮 Entertainment": 2, "📦 Others": 2 },
+  control: { "🛒 Supermarket": 20, "🍔 Food": 10, "🚌 Transport": 8, "🏠 House": 25, "💡 Bills": 6, "📱 Mobile Recharge": 3, "📚 Education": 4, "🏥 Health": 4, "🎮 Entertainment": 3, "📦 Others": 3 },
+  track: { "🛒 Supermarket": 20, "🍔 Food": 10, "🚌 Transport": 8, "🏠 House": 25, "💡 Bills": 7, "📱 Mobile Recharge": 3, "📚 Education": 5, "🏥 Health": 4, "🎮 Entertainment": 5, "📦 Others": 4 },
+};
+
+const currentMonthKey = () => {
+  const d = new Date();
+
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
 
 const FLAG = "myfinance-welcome";
 
@@ -29,6 +46,16 @@ const TEXT = {
     skip: "Skip for now",
     done: "Open my app",
     step: "Step {a} of 3",
+    goalTitle: "What matters most to you?",
+    goalSave: "Save more",
+    goalControl: "Spend less",
+    goalTrack: "Just see where it goes",
+    readyTitle: "Your plan is ready",
+    readySub: "I made a starting budget from your income. Change any amount later.",
+    readyBudget: "Monthly budget",
+    readySave: "You keep",
+    readyPerDay: "A day to spend",
+    readyNoIncome: "Add your income any time and I will build your budget.",
   },
   bn: {
     hello: "স্বাগতম! ১ মিনিটে আপনার টাকার হিসাব সাজাই।",
@@ -49,6 +76,16 @@ const TEXT = {
     skip: "এখন থাক",
     done: "আমার অ্যাপ খুলুন",
     step: "ধাপ {a} / ৩",
+    goalTitle: "আপনার কাছে সবচেয়ে জরুরি কী?",
+    goalSave: "বেশি সঞ্চয়",
+    goalControl: "কম খরচ",
+    goalTrack: "শুধু হিসাব দেখা",
+    readyTitle: "আপনার প্ল্যান তৈরি",
+    readySub: "আপনার আয় দেখে একটি শুরুর বাজেট বানিয়েছি। পরে যেকোনো অঙ্ক বদলাতে পারবেন।",
+    readyBudget: "মাসিক বাজেট",
+    readySave: "আপনার সঞ্চয়",
+    readyPerDay: "প্রতিদিন খরচ করতে পারবেন",
+    readyNoIncome: "আয় যোগ করলেই আমি বাজেট বানিয়ে দেব।",
   },
 } as const;
 
@@ -87,6 +124,8 @@ export default function FirstRunWelcome() {
   const [bank, setBank] = useState("");
   const [income, setIncome] = useState("");
   const [day, setDay] = useState("");
+  const [goal, setGoal] = useState<Goal>("control");
+  const [made, setMade] = useState<{ budget: number; save: number; perDay: number } | null>(null);
 
   useEffect(() => {
     const load = () => setShow(!alreadySetUp());
@@ -120,6 +159,34 @@ export default function FirstRunWelcome() {
         monthlyIncome: toNumber(income) || null,
         salaryDay: dayNumber >= 1 && dayNumber <= 31 ? dayNumber : null,
       });
+
+      const earn = toNumber(income);
+
+      if (earn > 0) {
+        const month = currentMonthKey();
+        let budget = 0;
+
+        Object.entries(SHARES[goal]).forEach(([category, pct]) => {
+          const amount = Math.max(100, Math.round((earn * pct) / 100 / 100) * 100);
+
+          budget += amount;
+          setAssigned(month, category, amount);
+        });
+
+        const now = new Date();
+        const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate() + 1;
+
+        try {
+          localStorage.setItem(FLAG, "done");
+        } catch {}
+
+        window.dispatchEvent(new Event("accountsUpdated"));
+        window.dispatchEvent(new Event("planUpdated"));
+        setMade({ budget, save: Math.max(0, earn - budget), perDay: Math.round(budget / daysLeft) });
+        setStep(3);
+
+        return;
+      }
     }
 
     try {
@@ -127,6 +194,11 @@ export default function FirstRunWelcome() {
     } catch {}
 
     window.dispatchEvent(new Event("accountsUpdated"));
+    window.dispatchEvent(new Event("transactionsUpdated"));
+    setShow(false);
+  };
+
+  const close = () => {
     window.dispatchEvent(new Event("transactionsUpdated"));
     setShow(false);
   };
@@ -152,7 +224,7 @@ export default function FirstRunWelcome() {
     <div className="fixed inset-0 z-[1000] overflow-y-auto bg-[var(--background)]">
       <div className="mx-auto flex min-h-full max-w-md flex-col justify-center px-5 py-8">
         <p className="mb-3 text-xs font-semibold text-[var(--muted)]">
-          {x.step.replace("{a}", String(step + 1))}
+          {step < 3 ? x.step.replace("{a}", String(step + 1)) : "✓"}
         </p>
 
         <div className="paper rounded-3xl p-6">
@@ -201,10 +273,67 @@ export default function FirstRunWelcome() {
                 {num(x.income, income, setIncome)}
                 {num(x.day, day, setDay)}
               </div>
+
+              <p className="mt-5 text-sm font-semibold">{x.goalTitle}</p>
+
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(
+                  [
+                    ["save", x.goalSave],
+                    ["control", x.goalControl],
+                    ["track", x.goalTrack],
+                  ] as [Goal, string][]
+                ).map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setGoal(id)}
+                    className={`rounded-full border px-4 py-2 text-sm font-semibold ${
+                      goal === id
+                        ? "border-[var(--primary)] bg-[var(--primary)] text-white"
+                        : "border-[var(--border)]"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {step === 3 && made && (
+            <>
+              <h1 className="font-hand text-3xl leading-tight">
+                <span className="hl">{x.readyTitle}</span>
+              </h1>
+              <p className="mt-3 text-sm text-[var(--muted)]">{x.readySub}</p>
+
+              <dl className="mt-5 space-y-3 text-sm">
+                {[
+                  [x.readyBudget, made.budget],
+                  [x.readySave, made.save],
+                  [x.readyPerDay, made.perDay],
+                ].map(([label, value]) => (
+                  <div key={label as string} className="flex items-baseline justify-between border-b border-[var(--border)] pb-2">
+                    <dt className="text-[var(--muted)]">{label}</dt>
+                    <dd className="text-lg font-semibold">{formatCurrency(value as number)}</dd>
+                  </div>
+                ))}
+              </dl>
             </>
           )}
         </div>
 
+        {step === 3 ? (
+          <button
+            type="button"
+            onClick={close}
+            className="mt-5 rounded-full bg-[var(--primary)] py-3 text-sm font-semibold text-white"
+          >
+            {x.done}
+          </button>
+        ) : (
+        <>
         <div className="mt-5 flex gap-3">
           {step > 0 && (
             <button
@@ -232,6 +361,8 @@ export default function FirstRunWelcome() {
         >
           {x.skip}
         </button>
+        </>
+        )}
       </div>
     </div>
   );

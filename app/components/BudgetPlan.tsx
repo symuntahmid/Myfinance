@@ -33,7 +33,7 @@ const TEXT = {
     planned: "Planned {x}",
     over: "{n} over budget",
     unplanned: "{x} not planned yet",
-    tooMuch: "You planned {x} more than your cash",
+    tooMuch: "{x} waiting on income",
     unbudgeted: "{x} spent outside your budget",
     cash: "Cash on hand",
     accounts: "Accounts",
@@ -71,7 +71,7 @@ const TEXT = {
     planned: "পরিকল্পনা {x}",
     over: "{n}টি বাজেট ছাড়িয়েছে",
     unplanned: "{x} এখনও ভাগ করা হয়নি",
-    tooMuch: "নগদের চেয়ে {x} বেশি ভাগ করেছেন",
+    tooMuch: "আয় আসার অপেক্ষায় {x}",
     unbudgeted: "বাজেটের বাইরে {x} খরচ হয়েছে",
     cash: "হাতে নগদ",
     accounts: "অ্যাকাউন্ট",
@@ -400,7 +400,7 @@ export default function BudgetPlan() {
             {planned > 0 && rta !== 0 && (
               <>
                 {" · "}
-                <span className={rta < 0 ? "font-semibold text-red-600" : ""}>
+                <span>
                   {rta < 0
                     ? x.tooMuch.replace("{x}", money(-rta))
                     : x.unplanned.replace("{x}", money(rta))}
