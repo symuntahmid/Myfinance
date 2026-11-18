@@ -1,5 +1,6 @@
 "use client";
 
+import PageLinks from "@/app/components/PageLinks";
 import { useEffect, useState } from "react";
 import { ArrowLeftRight, Plus, Trash2 } from "lucide-react";
 
@@ -127,6 +128,8 @@ export default function AccountsPage() {
           {t("accountsSubtitle")}
         </p>
       </div>
+
+      <PageLinks items={[{ href: "/net-worth", en: "Net worth", bn: "মোট সম্পদ" }]} />
 
       <div className="rounded-3xl bg-[var(--forest)] p-5 text-[var(--on-forest)]">
         <p className="text-sm opacity-80">{t("totalBalance")}</p>

@@ -46,6 +46,9 @@ const TEXT = {
 export default function AheadPage() {
   const { language } = useLanguage();
   const x = TEXT[language === "bn" ? "bn" : "en"];
+  const firstHrefs = ["/goals", "/occasions", "/somiti", "/debt-plan"];
+  const main = x.items.filter((item) => firstHrefs.includes(item.href));
+  const later = x.items.filter((item) => !firstHrefs.includes(item.href));
 
   return (
     <div className="space-y-4 pb-24">
@@ -55,7 +58,7 @@ export default function AheadPage() {
       </header>
 
       <ul className="space-y-3">
-        {x.items.map((item) => {
+        {main.map((item) => {
           const Icon = item.icon;
 
           return (
@@ -79,6 +82,40 @@ export default function AheadPage() {
           );
         })}
       </ul>
+
+      <details className="group">
+        <summary className="cursor-pointer list-none rounded-full border border-[var(--border)] bg-[var(--card)] py-2.5 text-center text-sm font-semibold">
+          {language === "bn" ? "বড় স্বপ্ন ও লম্বা পরিকল্পনা" : "Big dreams and long-term plans"}
+        </summary>
+
+        <div className="mt-3">
+      <ul className="space-y-3">
+        {later.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--background)] text-[var(--primary)]">
+                  <Icon size={22} />
+                </span>
+
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold">{item.name}</span>
+                  <span className="block text-xs text-[var(--muted)]">{item.about}</span>
+                </span>
+
+                <ChevronRight size={18} className="text-[var(--muted)]" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+        </div>
+      </details>
     </div>
   );
 }

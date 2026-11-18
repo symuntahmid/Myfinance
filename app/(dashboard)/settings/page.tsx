@@ -1,5 +1,6 @@
 "use client";
 
+import PageLinks from "@/app/components/PageLinks";
 import CustomRemindersEditor from "@/app/components/CustomRemindersEditor";
 import {
   useEffect,
@@ -376,6 +377,8 @@ const [passcodeConfirm, setPasscodeConfirm] =
   return (
     <div className="mx-auto max-w-3xl space-y-5 pb-24">
       <h1 className="text-xl font-bold tracking-tight">{t("settings")}</h1>
+
+      <PageLinks items={[{ href: "/sms-setup", en: "Auto-add from SMS", bn: "এসএমএস থেকে অটো এন্ট্রি" }]} />
 
       {/* WHO YOU ARE */}
 

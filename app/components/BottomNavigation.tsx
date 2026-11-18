@@ -23,13 +23,9 @@ import {
   Ellipsis,
   User,
   Landmark,
-  Bell,
-  Lightbulb,
-  Scale,
-  Waypoints,
+  Bell,   
   Sparkles,
-  Compass,
-  Zap,
+  Compass, 
   Settings,
   X,
 } from "lucide-react";
@@ -109,22 +105,18 @@ export default function BottomNavigation() {
         { href: "/reports", name: t("reports"), icon: FileText },
         { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
         { href: "/reminders", name: t("billsTitle"), icon: Bell },
-        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
-        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
       ],
     },
     {
       title: t("moreGroupInsights"),
       items: [
         { href: "/coach", name: t("coachMenu"), icon: Sparkles },
-        { href: "/insights", name: t("insTitle"), icon: Lightbulb },
       ],
     },
     {
       title: t("moreGroupYou"),
       items: [
         { href: "/profile", name: t("profile"), icon: User },
-        { href: "/sms-setup", name: t("smsAutoTitle"), icon: Zap },
         { href: "/settings", name: t("settings"), icon: Settings },
       ],
     },

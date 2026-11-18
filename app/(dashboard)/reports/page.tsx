@@ -1,5 +1,6 @@
 "use client";
 
+import PageLinks from "@/app/components/PageLinks";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Download } from "lucide-react";
 
@@ -178,6 +179,14 @@ export default function ReportsPage() {
           </button>
         </div>
       </header>
+
+      <PageLinks
+        items={[
+          { href: "/insights", en: "Insights", bn: "ইনসাইট" },
+          { href: "/cash-flow", en: "Cash flow", bn: "টাকার প্রবাহ" },
+          { href: "/net-worth", en: "Net worth", bn: "মোট সম্পদ" },
+        ]}
+      />
 
       {/* The one sentence that matters */}
 

@@ -21,14 +21,9 @@ import {
   Bell,
   Target,
   Moon,
-  Users,
-  Hourglass,
+  Users, 
   Sparkles,
-  Flag,
-  Waypoints,
-  Scale,
-  Lightbulb,
-  Zap,
+  Flag,    
 } from "lucide-react";
 
 
@@ -99,8 +94,7 @@ setRefresh(
         { href: "/goals", name: t("goalsTitle"), icon: Target },
         { href: "/occasions", name: t("occMenu"), icon: Moon },
         { href: "/somiti", name: t("somMenu"), icon: Users },
-        { href: "/time-machine", name: t("tmMenu"), icon: Hourglass },
-        { href: "/freedom", name: t("fpTitle"), icon: Flag },
+        { href: "/ahead", name: t("aheadTitle"), icon: Flag },
       ],
     },
     {
@@ -108,22 +102,18 @@ setRefresh(
       items: [
         { href: "/accounts", name: t("accountsTitle"), icon: Landmark },
         { href: "/reminders", name: t("billsTitle"), icon: Bell },
-        { href: "/net-worth", name: t("netWorthTitle"), icon: Scale },
-        { href: "/cash-flow", name: t("cfTitle"), icon: Waypoints },
       ],
     },
     {
       title: t("moreGroupInsights"),
       items: [
         { href: "/coach", name: t("coachMenu"), icon: Sparkles },
-        { href: "/insights", name: t("insTitle"), icon: Lightbulb },
       ],
     },
     {
       title: t("moreGroupYou"),
       items: [
         { href: "/profile", name: t("profile"), icon: User },
-        { href: "/sms-setup", name: t("smsAutoTitle"), icon: Zap },
         { href: "/settings", name: t("settings"), icon: Settings },
       ],
     },
