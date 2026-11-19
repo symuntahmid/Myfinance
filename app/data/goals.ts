@@ -132,3 +132,71 @@ export function withdrawMoneyFromGoal(
 
   saveGoals(goals);
 }
+
+/* =====================================================
+   GOAL MATHS (days, status, pace)
+===================================================== */
+
+export type GoalStatus = "done" | "late" | "ahead" | "onTrack" | "risk" | "new";
+
+export type GoalPlan = {
+  daysLeft: number | null; // null = no usable date
+  perMonth: number; // 0 when due within a month or done
+  dueTotal: number; // money still needed
+  status: GoalStatus;
+  finish: Date | null; // when it ends at the current saving pace
+};
+
+const DAY_MS = 86_400_000;
+
+// A yyyy-mm-dd date as local midnight (new Date("yyyy-mm-dd") would be UTC).
+function localDay(text: string): Date | null {
+  const [y, m, d] = (text || "").slice(0, 10).split("-").map(Number);
+
+  if (!y || !m || !d) return null;
+
+  return new Date(y, m - 1, d);
+}
+
+export function goalPlan(goal: Goal, now: Date = new Date()): GoalPlan {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const end = localDay(goal.targetDate);
+  const start = localDay(goal.createdAt.slice(0, 10)) ?? today;
+  const left = Math.max(goal.targetAmount - goal.savedAmount, 0);
+
+  if (!end) {
+    return { daysLeft: null, perMonth: 0, dueTotal: left, status: left === 0 ? "done" : "new", finish: null };
+  }
+
+  const daysLeft = Math.round((end.getTime() - today.getTime()) / DAY_MS);
+
+  if (left === 0) return { daysLeft, perMonth: 0, dueTotal: 0, status: "done", finish: null };
+  if (daysLeft < 0) return { daysLeft, perMonth: 0, dueTotal: left, status: "late", finish: null };
+
+  // Whole months only when there is more than a month to go.
+  const perMonth = daysLeft > 31 ? Math.ceil(left / (daysLeft / 30.4375)) : 0;
+
+  // Straight-line: how much should be saved by today.
+  const total = Math.max((end.getTime() - start.getTime()) / DAY_MS, 1);
+  const elapsed = Math.max((today.getTime() - start.getTime()) / DAY_MS, 0);
+  const expected = goal.targetAmount * Math.min(elapsed / total, 1);
+
+  let status: GoalStatus = "onTrack";
+
+  if (elapsed < 3) status = "new";
+  else if (goal.savedAmount >= expected * 1.1) status = "ahead";
+  else if (goal.savedAmount >= expected * 0.9) status = "onTrack";
+  else status = "risk";
+
+  // When it would finish at the pace so far.
+  let finish: Date | null = null;
+
+  if (goal.savedAmount > 0 && elapsed >= 7) {
+    const pace = goal.savedAmount / elapsed; // money per day
+    const days = Math.ceil(left / pace);
+
+    if (days < 365 * 40) finish = new Date(today.getTime() + days * DAY_MS);
+  }
+
+  return { daysLeft, perMonth, dueTotal: left, status, finish };
+}

@@ -15,6 +15,8 @@ import {
   deleteGoal,
   getGoals,
   monthsLeft,
+  goalPlan,
+  type GoalStatus,
   termOf,
   type Goal,
   type GoalTerm,
@@ -28,6 +30,36 @@ const TEXT = {
 
 const percent = (saved: number, target: number) =>
   target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
+
+const GOAL_TEXT = {
+  en: {
+    ahead: "Ahead",
+    onTrack: "On track",
+    risk: "Behind",
+    late: "Past due",
+    days: "{n} days left",
+    byDue: "{x} needed by the due date",
+    finish: "At your pace: done by {d}",
+    riskHint: "Save a little more to reach it on time.",
+  },
+  bn: {
+    ahead: "এগিয়ে",
+    onTrack: "ঠিক পথে",
+    risk: "পিছিয়ে",
+    late: "মেয়াদ শেষ",
+    days: "আর {n} দিন",
+    byDue: "মেয়াদের মধ্যে {x} লাগবে",
+    finish: "এই গতিতে শেষ হবে {d}",
+    riskHint: "সময়মতো পৌঁছাতে একটু বেশি জমান।",
+  },
+} as const;
+
+const STATUS_STYLE: Partial<Record<GoalStatus, string>> = {
+  ahead: "bg-[var(--success)]/15 text-[var(--success)]",
+  onTrack: "bg-[var(--primary)]/12 text-[var(--primary)]",
+  risk: "bg-[var(--gold-soft)] text-[var(--foreground)]",
+  late: "bg-[var(--gold-soft)] text-[var(--foreground)]",
+};
 
 export default function GoalsPage() {
   const { t, language } = useLanguage();
@@ -91,18 +123,23 @@ export default function GoalsPage() {
     0
   );
 
-  const timeText = (goal: Goal) => {
-    const months = monthsLeft(goal.targetDate);
+  const gx = GOAL_TEXT[language === "bn" ? "bn" : "en"];
 
-    if (months === null) return t("gtNoDate");
-    if (months < 0) return t("gtPastDue");
-    if (months === 0) return t("gtDueNow");
+  const timeText = (goal: Goal) => {
+    const days = goalPlan(goal).daysLeft;
+
+    if (days === null) return t("gtNoDate");
+    if (days < 0) return t("gtPastDue");
+    if (days === 0) return t("gtDueNow");
+    if (days <= 45) return gx.days.replace("{n}", num(days));
+
+    const months = monthsLeft(goal.targetDate) ?? 0;
 
     return months >= 12
       ? `${num(Math.round((months / 12) * 10) / 10)} ${
           language === "bn" ? "বছর" : "yr"
         }`
-      : t("gtMonthsLeft", { n: num(months) });
+      : t("gtMonthsLeft", { n: num(Math.max(months, 1)) });
   };
 
   return (
@@ -207,12 +244,9 @@ export default function GoalsPage() {
           {list.map((goal) => {
             const pct = percent(goal.savedAmount, goal.targetAmount);
             const done = goal.savedAmount >= goal.targetAmount;
-            const left = Math.max(goal.targetAmount - goal.savedAmount, 0);
-            const months = monthsLeft(goal.targetDate);
-            const monthly =
-              !done && months !== null && months > 0
-                ? Math.ceil(left / months)
-                : 0;
+            const plan = goalPlan(goal);
+            const monthly = plan.perMonth;
+            const showStatus = !done && STATUS_STYLE[plan.status];
 
             return (
               <li
@@ -232,9 +266,19 @@ export default function GoalsPage() {
                     </p>
                   </div>
 
-                  <p className="text-sm font-bold text-[var(--primary)]">
-                    {done ? "✓" : `${num(pct)}%`}
-                  </p>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-[var(--primary)]">
+                      {done ? "✓" : `${num(pct)}%`}
+                    </p>
+
+                    {showStatus && (
+                      <span
+                        className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS_STYLE[plan.status]}`}
+                      >
+                        {gx[plan.status as "ahead" | "onTrack" | "risk" | "late"]}
+                      </span>
+                    )}
+                  </div>
 
                   <button
                     type="button"
@@ -303,6 +347,25 @@ export default function GoalsPage() {
                 {monthly > 0 && (
                   <p className="mt-1 text-xs font-semibold text-[var(--foreground)]">
                     {t("gtPerMonth", { amount: formatCurrency(monthly) })}
+                  </p>
+                )}
+
+                {!done && monthly === 0 && plan.dueTotal > 0 && (plan.daysLeft ?? -1) >= 0 && (
+                  <p className="mt-1 text-xs font-semibold text-[var(--foreground)]">
+                    {gx.byDue.replace("{x}", formatCurrency(plan.dueTotal))}
+                  </p>
+                )}
+
+                {!done && plan.finish && plan.status !== "late" && (
+                  <p className="mt-1 text-xs text-[var(--muted)]">
+                    {gx.finish.replace(
+                      "{d}",
+                      plan.finish.toLocaleDateString(language === "bn" ? "bn-BD" : "en-US", {
+                        month: "short",
+                        year: "numeric",
+                      })
+                    )}
+                    {plan.status === "risk" ? ` · ${gx.riskHint}` : ""}
                   </p>
                 )}
 
