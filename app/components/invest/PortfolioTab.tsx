@@ -2,7 +2,7 @@
 
 import InvestmentMindMap from "@/app/components/InvestmentMindMap";
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 import AddInvestmentModal from "@/app/components/AddInvestmentModal";
 import EditInvestmentModal from "@/app/components/EditInvestmentModal";
@@ -36,11 +36,15 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
 
     refresh();
 
+    const openAdd = () => setAdding(true);
+
+    window.addEventListener("openAddInvestment", openAdd);
     window.addEventListener("investmentsUpdated", refresh);
     window.addEventListener("currencyUpdated", redraw);
     window.addEventListener("languageUpdated", redraw);
 
     return () => {
+      window.removeEventListener("openAddInvestment", openAdd);
       window.removeEventListener("investmentsUpdated", refresh);
       window.removeEventListener("currencyUpdated", redraw);
       window.removeEventListener("languageUpdated", redraw);
@@ -130,14 +134,7 @@ export default function PortfolioTab({ onGrow }: { onGrow: () => void }) {
             <div className="mb-2 flex items-center justify-between px-1">
               <h2 className="text-xs font-semibold text-[var(--muted)]">{t("ivHoldings")}</h2>
 
-              <button
-                type="button"
-                onClick={() => setAdding(true)}
-                className="flex items-center gap-1 text-xs font-semibold text-[var(--primary)]"
-              >
-                <Plus size={14} />
-                {t("ivAdd")}
-              </button>
+
             </div>
 
             <ul className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)]">

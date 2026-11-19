@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
 
 import PortfolioTab from "@/app/components/invest/PortfolioTab";
 import GrowTab from "@/app/components/invest/GrowTab";
@@ -24,9 +25,22 @@ export default function InvestmentsPage() {
 
   return (
     <div className="space-y-4 pb-24">
-      <header>
-        <h1 className="text-xl font-bold">{t("ivTitle")}</h1>
-        <p className="text-sm text-[var(--muted)]">{t("ivSub")}</p>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">{t("ivTitle")}</h1>
+          <p className="text-sm text-[var(--muted)]">{t("ivSub")}</p>
+        </div>
+
+        {tab === "portfolio" && (
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("openAddInvestment"))}
+            className="flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white"
+          >
+            <Plus size={16} />
+            {t("ivAdd")}
+          </button>
+        )}
       </header>
 
       <div className="grid grid-cols-4 gap-1 rounded-full bg-[var(--border)]/60 p-1">
