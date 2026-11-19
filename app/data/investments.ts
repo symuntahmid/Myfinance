@@ -34,6 +34,9 @@ export type Investment = {
 
   // The purchase entry made when this was bought with your own money.
   txId?: number;
+
+  // When the value was last checked or changed (ISO date). Older entries use the purchase date.
+  updatedAt?: string;
 };
 
 
@@ -213,7 +216,7 @@ export function addInvestment(
 
 
   investments.unshift(
-    investment
+    { ...investment, updatedAt: investment.updatedAt ?? new Date().toISOString() }
   );
 
 
@@ -291,7 +294,7 @@ export function updateInvestment(
       (investment) =>
         investment.id ===
         updatedInvestment.id
-          ? updatedInvestment
+          ? { ...updatedInvestment, updatedAt: new Date().toISOString() }
           : investment
     );
 
