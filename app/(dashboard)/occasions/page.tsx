@@ -13,6 +13,7 @@ import {
 } from "@/app/data/goals";
 import {
   LINES,
+  OCCASION_META,
   daysUntil,
   expectedSaved,
   isoDay,
@@ -20,18 +21,13 @@ import {
   monthsToSave,
   upcomingOccasions,
   type Occasion,
-  type OccasionKind,
 } from "@/app/data/occasions";
 
 const KEY = "myfinance-occasions";
 
 type Draft = Record<string, Record<string, string>>;
 
-const NAME: Record<OccasionKind, { emoji: string; en: string; bn: string }> = {
-  fitr: { emoji: "🌙", en: "Eid-ul-Fitr", bn: "ঈদুল ফিতর" },
-  adha: { emoji: "🐄", en: "Eid-ul-Adha (Qurbani)", bn: "ঈদুল আযহা (কুরবানি)" },
-  boishakh: { emoji: "🎊", en: "Pohela Boishakh", bn: "পহেলা বৈশাখ" },
-};
+const NAME = OCCASION_META;
 
 const TEXT = {
   en: {
@@ -49,7 +45,7 @@ const TEXT = {
     onTrack: "On track",
     behind: "Behind by {x}",
     add: "Add money",
-    note: "Islamic festival dates are about. The real day can be a day or two different, depending on the moon.",
+    note: "Festival dates are about. Eid, Puja and Purnima follow the moon, so the real day can differ by a day or two.",
     left: "{x} a month to finish",
   },
   bn: {
@@ -67,7 +63,7 @@ const TEXT = {
     onTrack: "ঠিক পথে",
     behind: "{x} পিছিয়ে",
     add: "টাকা যোগ করুন",
-    note: "ইসলামী উৎসবের তারিখ আনুমানিক। চাঁদ দেখার ওপর আসল দিন এক-দুই দিন বদলাতে পারে।",
+    note: "উৎসবের তারিখ আনুমানিক। ঈদ, পূজা ও পূর্ণিমা চাঁদের ওপর নির্ভর করে, তাই আসল দিন এক-দুই দিন বদলাতে পারে।",
     left: "শেষ করতে মাসে {x}",
   },
 } as const;
@@ -160,7 +156,7 @@ export default function OccasionsPage() {
           const days = daysUntil(item.date);
           const months = monthsToSave(item.date);
           const expanded = current === item.id;
-          const islamic = item.kind !== "boishakh";
+          const islamic = item.kind !== "boishakh" && item.kind !== "christmas";
 
           const target = goal ? goal.targetAmount : total;
           const saved = goal ? goal.savedAmount : 0;

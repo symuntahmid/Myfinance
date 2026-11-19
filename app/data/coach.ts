@@ -21,7 +21,7 @@ import { buildProgress } from "@/app/data/progress";
 import { formatCurrency } from "@/app/utils/currency";
 import { categoryLabel } from "@/app/data/categoryLabel";
 import { dayOf, todayLocal } from "@/app/utils/date";
-import { daysUntil, expectedSaved, upcomingOccasions } from "@/app/data/occasions";
+import { OCCASION_META, daysUntil, expectedSaved, upcomingOccasions } from "@/app/data/occasions";
 
 export type Lang = "en" | "bn";
 
@@ -255,11 +255,7 @@ export function buildCoach(lang: Lang, now: Date = new Date()): CoachState {
     .filter((item) => daysUntil(item.date, now) <= 150)
     .slice(0, 1)
     .forEach((item) => {
-      const name = {
-        fitr: pick(lang, "Eid-ul-Fitr", "ঈদুল ফিতর"),
-        adha: pick(lang, "Eid-ul-Adha", "ঈদুল আযহা"),
-        boishakh: pick(lang, "Pohela Boishakh", "পহেলা বৈশাখ"),
-      }[item.kind];
+      const name = OCCASION_META[item.kind][lang];
 
       const days = daysUntil(item.date, now);
       const made = festivals.find((goal) => goal.occasion === item.id);
