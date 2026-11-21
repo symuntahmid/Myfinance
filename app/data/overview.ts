@@ -6,7 +6,7 @@
 ========================================== */
 
 import { getAccounts, getBalances } from "./accounts";
-import { getGoals } from "./goals";
+import { goalsHeldOutside } from "./goals";
 import { getPortfolioSummary } from "./investments";
 import { computeNetWorth, getDebts, type NetWorth } from "./netWorth";
 
@@ -18,10 +18,7 @@ export function getNetWorthNow(): NetWorth {
     0
   );
 
-  const goals = getGoals().reduce(
-    (sum, item) => sum + (Number(item.savedAmount) || 0),
-    0
-  );
+  const goals = goalsHeldOutside();
 
   return computeNetWorth({
     accounts,

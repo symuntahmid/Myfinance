@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 
 import { addGoal, termFromDate, type GoalTerm } from "@/app/data/goals";
 import TermPicker from "@/app/components/TermPicker";
+import GoalWherePicker from "@/app/components/GoalWherePicker";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { GOAL_EMOJIS } from "@/app/data/lifeGoals";
 import {
@@ -30,6 +31,7 @@ export default function AddGoalModal({ open, onClose }: Props) {
   const [targetDate, setTargetDate] = useState("");
   const [chosenTerm, setChosenTerm] = useState<GoalTerm | null>(null);
   const [templateId, setTemplateId] = useState<GoalTemplateId | null>(null);
+  const [accountId, setAccountId] = useState("");
 
   if (!open) return null;
 
@@ -43,6 +45,7 @@ export default function AddGoalModal({ open, onClose }: Props) {
     setTargetDate("");
     setChosenTerm(null);
     setTemplateId(null);
+    setAccountId("");
   }
 
   function handleCreateGoal() {
@@ -57,6 +60,7 @@ export default function AddGoalModal({ open, onClose }: Props) {
       targetDate,
       createdAt: new Date().toISOString(),
       term: chosenTerm ?? termFromDate(targetDate),
+      ...(accountId ? { accountId } : {}),
     });
 
     reset();
@@ -188,6 +192,8 @@ export default function AddGoalModal({ open, onClose }: Props) {
             value={chosenTerm ?? termFromDate(targetDate)}
             onChange={setChosenTerm}
           />
+
+          <GoalWherePicker value={accountId} onChange={setAccountId} />
         </div>
 
         <div className="mt-6 flex gap-3">

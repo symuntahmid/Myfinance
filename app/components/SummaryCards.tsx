@@ -14,7 +14,7 @@ import StatCard from "./StatCard";
 import { getSummary } from "../data/transactions";
 import { getPortfolioSummary } from "../data/investments";
 import { getAccounts, getBalances } from "../data/accounts";
-import { getGoals } from "../data/goals";
+import { goalsHeldOutside } from "../data/goals";
 import { computeNetWorth, getDebts } from "../data/netWorth";
 
 import { formatCurrency } from "@/app/utils/currency";
@@ -30,10 +30,7 @@ function trueNetWorth(): number {
     0
   );
 
-  const goals = getGoals().reduce(
-    (sum, item) => sum + (Number(item.savedAmount) || 0),
-    0
-  );
+  const goals = goalsHeldOutside();
 
   return computeNetWorth({
     accounts,

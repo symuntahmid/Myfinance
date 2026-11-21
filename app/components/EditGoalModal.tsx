@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 
 import { Goal, GoalTerm, termOf, updateGoal } from "@/app/data/goals";
 import TermPicker from "@/app/components/TermPicker";
+import GoalWherePicker from "@/app/components/GoalWherePicker";
 
 type Props = {
   open: boolean;
@@ -41,6 +42,7 @@ export default function EditGoalModal({
   const [targetDate, setTargetDate] =
     useState("");
   const [term, setTerm] = useState<GoalTerm>("medium");
+  const [accountId, setAccountId] = useState("");
 
   const { t } = useLanguage();
 
@@ -53,6 +55,7 @@ export default function EditGoalModal({
       goal.targetAmount.toString()
     );
     setTargetDate(goal.targetDate);
+    setAccountId(goal.accountId ?? "");
     setTerm(termOf(goal));
   }, [goal]);
 
@@ -75,6 +78,8 @@ export default function EditGoalModal({
     }
 
     updateGoal({
+      ...goal,
+      accountId: accountId || undefined,
       id: goal.id,
 
       title: title.trim(),
@@ -193,6 +198,10 @@ export default function EditGoalModal({
                 className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100"
               />
               <TermPicker value={term} onChange={setTerm} />
+          </div>
+
+          <div>
+            <GoalWherePicker value={accountId} onChange={setAccountId} goalId={goal.id} />
           </div>
             <TermPicker value={term} onChange={setTerm} />
           </div>

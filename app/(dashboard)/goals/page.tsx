@@ -6,14 +6,16 @@ import { MoreVertical, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
+import { accountName, getAccounts } from "@/app/data/accounts";
 import AddGoalModal from "@/app/components/AddGoalModal";
 import EditGoalModal from "@/app/components/EditGoalModal";
 import AddMoneyModal from "@/app/components/AddMoneyModal";
-import WithdrawMoneyModal from "@/app/components/WithdrawMoneyModal";
+import QuickAddSheet from "@/app/components/QuickAddSheet";
 import {
   GOAL_TERMS,
   deleteGoal,
   getGoals,
+  isLinked,
   monthsLeft,
   goalPlan,
   type GoalStatus,
@@ -41,6 +43,10 @@ const GOAL_TEXT = {
     byDue: "{x} needed by the due date",
     finish: "At your pace: done by {d}",
     riskHint: "Save a little more to reach it on time.",
+    saveMore: "Save more",
+    update: "Update saved amount",
+    kept: "Kept in {a}",
+    manual: "You update this one yourself",
   },
   bn: {
     ahead: "এগিয়ে",
@@ -51,6 +57,10 @@ const GOAL_TEXT = {
     byDue: "মেয়াদের মধ্যে {x} লাগবে",
     finish: "এই গতিতে শেষ হবে {d}",
     riskHint: "সময়মতো পৌঁছাতে একটু বেশি জমান।",
+    saveMore: "আরও জমান",
+    update: "জমার অঙ্ক আপডেট",
+    kept: "{a}-এ জমা আছে",
+    manual: "এটি আপনি নিজে আপডেট করেন",
   },
 } as const;
 
@@ -70,7 +80,7 @@ export default function GoalsPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState<Goal | null>(null);
   const [adding, setAdding] = useState<Goal | null>(null);
-  const [withdrawing, setWithdrawing] = useState<Goal | null>(null);
+  const [transferTo, setTransferTo] = useState<string | null>(null);
   const [menuId, setMenuId] = useState<string | null>(null);
 
   const [, bump] = useState(0);
@@ -82,11 +92,15 @@ export default function GoalsPage() {
     refresh();
 
     window.addEventListener("goalsUpdated", refresh);
+    window.addEventListener("accountsUpdated", refresh);
+    window.addEventListener("transactionsUpdated", refresh);
     window.addEventListener("currencyUpdated", money);
     window.addEventListener("languageUpdated", money);
 
     return () => {
       window.removeEventListener("goalsUpdated", refresh);
+      window.removeEventListener("accountsUpdated", refresh);
+      window.removeEventListener("transactionsUpdated", refresh);
       window.removeEventListener("currencyUpdated", money);
       window.removeEventListener("languageUpdated", money);
     };
@@ -247,6 +261,9 @@ export default function GoalsPage() {
             const plan = goalPlan(goal);
             const monthly = plan.perMonth;
             const showStatus = !done && STATUS_STYLE[plan.status];
+            const linkedAccount = isLinked(goal)
+              ? getAccounts().find((item) => item.id === goal.accountId)
+              : undefined;
 
             return (
               <li
@@ -344,6 +361,12 @@ export default function GoalsPage() {
                   })}
                 </p>
 
+                <p className="mt-1 text-xs text-[var(--muted)]">
+                  {linkedAccount
+                    ? `${linkedAccount.emoji} ${gx.kept.replace("{a}", accountName(linkedAccount, language === "bn" ? "bn" : "en"))}`
+                    : `✍️ ${gx.manual}`}
+                </p>
+
                 {monthly > 0 && (
                   <p className="mt-1 text-xs font-semibold text-[var(--foreground)]">
                     {t("gtPerMonth", { amount: formatCurrency(monthly) })}
@@ -375,21 +398,21 @@ export default function GoalsPage() {
                   </p>
                 ) : (
                   <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setAdding(goal)}
-                      className="flex-1 rounded-full bg-[var(--primary)] py-2 text-sm font-semibold text-white"
-                    >
-                      {t("addMoney")}
-                    </button>
-
-                    {goal.savedAmount > 0 && (
+                    {linkedAccount ? (
                       <button
                         type="button"
-                        onClick={() => setWithdrawing(goal)}
-                        className="flex-1 rounded-full border border-[var(--border)] py-2 text-sm font-semibold"
+                        onClick={() => setTransferTo(linkedAccount.source)}
+                        className="flex-1 rounded-full bg-[var(--primary)] py-2 text-sm font-semibold text-white"
                       >
-                        {t("withdrawMoney")}
+                        {gx.saveMore}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setAdding(goal)}
+                        className="flex-1 rounded-full bg-[var(--primary)] py-2 text-sm font-semibold text-white"
+                      >
+                        {gx.update}
                       </button>
                     )}
                   </div>
@@ -423,10 +446,10 @@ export default function GoalsPage() {
         onClose={() => setAdding(null)}
       />
 
-      <WithdrawMoneyModal
-        open={withdrawing !== null}
-        goal={withdrawing}
-        onClose={() => setWithdrawing(null)}
+      <QuickAddSheet
+        open={transferTo !== null}
+        onClose={() => setTransferTo(null)}
+        initialTransferTo={transferTo ?? undefined}
       />
     </div>
   );

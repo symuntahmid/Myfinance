@@ -7,7 +7,7 @@ import NetWorthChart from "@/app/components/NetWorthChart";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
 import { getAccounts, getBalances } from "@/app/data/accounts";
-import { getGoals } from "@/app/data/goals";
+import { goalsHeldOutside } from "@/app/data/goals";
 import { getPortfolioSummary } from "@/app/data/investments";
 import {
   addDebt,
@@ -48,10 +48,7 @@ export default function NetWorthPage() {
         0
       );
 
-      const goals = getGoals().reduce(
-        (sum, item) => sum + (Number(item.savedAmount) || 0),
-        0
-      );
+      const goals = goalsHeldOutside();
 
       const list = getDebts();
 

@@ -41,6 +41,8 @@ interface Props {
   onClose: () => void;
   // A message to read right away (from the automatic SMS link).
   initialSms?: string;
+  // Open on Transfer with the money going to this account (used by goals).
+  initialTransferTo?: string;
 }
 
 type Kind = "expense" | "income" | "transfer";
@@ -158,18 +160,27 @@ export default function QuickAddSheet({
   open,
   onClose,
   initialSms,
+  initialTransferTo,
 }: Props) {
   if (!open || typeof document === "undefined") return null;
 
-  return <QuickAddPanel onClose={onClose} initialSms={initialSms} />;
+  return (
+    <QuickAddPanel
+      onClose={onClose}
+      initialSms={initialSms}
+      initialTransferTo={initialTransferTo}
+    />
+  );
 }
 
 function QuickAddPanel({
   onClose,
   initialSms,
+  initialTransferTo,
 }: {
   onClose: () => void;
   initialSms?: string;
+  initialTransferTo?: string;
 }) {
   const { language, t } = useLanguage();
   const text = quickText[language];
@@ -189,11 +200,11 @@ function QuickAddPanel({
     initial ? "sms" : "quick"
   );
 
-  const [kind, setKind] = useState<Kind>("expense");
+  const [kind, setKind] = useState<Kind>(initialTransferTo ? "transfer" : "expense");
   const [showAll, setShowAll] = useState(false);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState(() => readLast().expense ?? "");
-  const [dest, setDest] = useState("");
+  const [dest, setDest] = useState(initialTransferTo ?? "");
   const [photo, setPhoto] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");

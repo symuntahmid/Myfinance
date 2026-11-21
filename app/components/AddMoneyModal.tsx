@@ -1,16 +1,10 @@
 "use client";
 
-import { useLanguage } from "@/app/context/LanguageContext";
-
 import { useState } from "react";
 import { X } from "lucide-react";
 
-import { Goal, addMoneyToGoal } from "@/app/data/goals";
-import { addTransaction } from "@/app/data/transactions";
-import { getAccounts, getBalances } from "@/app/data/accounts";
-import AccountPicker, { CASH } from "@/app/components/AccountPicker";
-import { todayLocal } from "@/app/utils/date";
-
+import { useLanguage } from "@/app/context/LanguageContext";
+import { Goal, setGoalSaved } from "@/app/data/goals";
 import { formatCurrency } from "@/app/utils/currency";
 
 type Props = {
@@ -19,152 +13,102 @@ type Props = {
   onClose: () => void;
 };
 
-export default function AddMoneyModal({
-  open,
-  goal,
-  onClose,
-}: Props) {
-  const [amount, setAmount] = useState("");
-  const [from, setFrom] = useState("");
-  const { t, language } = useLanguage();
+const TEXT = {
+  en: {
+    title: "Update saved amount",
+    hint: "Type how much you have saved for this goal now. Your account balances do not change.",
+    label: "Saved so far",
+    save: "Save",
+    cancel: "Cancel",
+    of: "{a} of {b}",
+    bad: "Enter a valid amount",
+  },
+  bn: {
+    title: "জমার অঙ্ক আপডেট",
+    hint: "এই লক্ষ্যে এখন মোট কত জমেছে, তা লিখুন। আপনার অ্যাকাউন্টের ব্যালান্স বদলাবে না।",
+    label: "এ পর্যন্ত জমেছে",
+    save: "সেভ করুন",
+    cancel: "বাতিল",
+    of: "{b}-এর মধ্যে {a}",
+    bad: "সঠিক অঙ্ক লিখুন",
+  },
+} as const;
 
+// For goals the person tracks by hand. This only changes the goal, never an account.
+export default function AddMoneyModal({ open, goal, onClose }: Props) {
   if (!open || !goal) return null;
 
-  // The money comes from the chosen account (Cash unless the person picks another).
-  const fromSource = from || CASH();
-  const fromAccount = getAccounts().find((account) => account.source === fromSource);
-  const availableCash = fromAccount ? getBalances()[fromAccount.id] ?? 0 : 0;
+  return <Panel goal={goal} onClose={onClose} />;
+}
+
+function Panel({ goal, onClose }: { goal: Goal; onClose: () => void }) {
+  const { language } = useLanguage();
+  const x = TEXT[language === "bn" ? "bn" : "en"];
+  const [value, setValue] = useState(String(goal.savedAmount || ""));
+
+  const save = () => {
+    const amount = Number(value);
+
+    if (value === "" || isNaN(amount) || amount < 0) {
+      alert(x.bad);
+
+      return;
+    }
+
+    setGoalSaved(goal.id, amount);
+    onClose();
+  };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
 
-      {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="
-w-full
-max-w-lg
-rounded-[32px]
-bg-[var(--card)]
-border
-border-[var(--border)]
-shadow-2xl
-"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-200 px-8 py-6">
-            <div>
-              <h2 className="text-3xl font-bold">
-                {t("addMoney")}
-              </h2>
-
-              <p className="mt-1 text-slate-500">
-                {t("addMoneyDescription")}
-              </p>
-            </div>
-
-            <button
-              onClick={onClose}
-              className="rounded-full p-2 hover:bg-slate-100"
-            >
-              <X size={22} />
-            </button>
+      <div className="relative w-full max-w-md rounded-t-3xl bg-[var(--card)] p-5 pb-8 sm:rounded-3xl">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold">{x.title}</h2>
+            <p className="mt-1 text-sm text-[var(--muted)]">{x.hint}</p>
           </div>
 
-          {/* Body */}
-          <div className="p-8">
+          <button type="button" onClick={onClose} className="rounded-full p-2 text-[var(--muted)]">
+            <X size={20} />
+          </button>
+        </div>
 
-            <div className="rounded-2xl bg-slate-100 p-5">
-              <p className="text-sm text-slate-500">
-                {t("selectedGoal")}
-              </p>
+        <div className="mt-4 rounded-2xl bg-[var(--background)] p-4">
+          <p className="text-base font-bold">
+            {goal.emoji} {goal.title}
+          </p>
+          <p className="mt-1 text-xs text-[var(--muted)]">
+            {x.of.replace("{a}", formatCurrency(goal.savedAmount)).replace("{b}", formatCurrency(goal.targetAmount))}
+          </p>
+        </div>
 
-              <h3 className="mt-2 text-2xl font-bold">
-                {goal.emoji} {goal.title}
-              </h3>
+        <label className="mt-4 block text-xs font-semibold text-[var(--muted)]">
+          {x.label}
+          <input
+            autoFocus
+            inputMode="decimal"
+            value={value}
+            onChange={(e) => setValue(e.target.value.replace(/[^\d.]/g, ""))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") save();
+            }}
+            placeholder="0"
+            className="mt-1 w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-2xl font-semibold text-[var(--foreground)] outline-none focus:border-[var(--primary)]"
+          />
+        </label>
 
-              <p className="mt-2 text-[var(--muted)]">
-  {t("amountOfTarget", { saved: formatCurrency(goal.savedAmount), target: formatCurrency(goal.targetAmount) })}
-</p>
-            </div>
+        <div className="mt-5 flex gap-3">
+          <button type="button" onClick={onClose} className="flex-1 rounded-full border border-[var(--border)] py-3 text-sm font-semibold">
+            {x.cancel}
+          </button>
 
-            {/* Amount */}
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder={t("enterAmount")}
-              className="mt-6 w-full rounded-xl border border-slate-300 p-4"
-            />
-
-            <AccountPicker
-              label={language === "bn" ? "কোন অ্যাকাউন্ট থেকে?" : "From which account?"}
-              value={fromSource}
-              onChange={setFrom}
-            />
-
-            {/* Buttons */}
-            <div className="mt-8 flex gap-4">
-
-              <button
-                onClick={onClose}
-                className="flex-1 rounded-2xl border border-slate-300 py-4 font-semibold"
-              >
-                {t("cancel")}
-              </button>
-
-              <button
-                onClick={() => {
-                  const value = Number(amount);
-
-                  if (value <= 0) {
-                    alert(t("enterValidAmount"));
-                    return;
-                  }
-
-                  if (value > availableCash) {
-                    alert(t("notEnoughCash"));
-                    return;
-                  }
-
-                  addMoneyToGoal(goal.id, value);
-
-addTransaction({
-  id: Date.now(),
-
-  type: "Transfer",
-
-  source: fromSource,
-
-  destination: goal.title,
-
-  amount: value,
-
-  date: todayLocal(),
-
-  note: `Transfer to goal: ${goal.title}`,
-});
-
-setAmount("");
-
-onClose();
-                }}
-                className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 py-4 font-semibold text-white"
-              >
-                {t("addMoney")}
-              </button>
-
-            </div>
-
-          </div>
+          <button type="button" onClick={save} className="flex-1 rounded-full bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+            {x.save}
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -1,3 +1,5 @@
+import { getAccounts, getBalances } from "./accounts";
+
 export type Goal = {
   id: string;
 
@@ -18,6 +20,10 @@ export type Goal = {
 
   // Set when the goal was made from a festival plan (Eid, Qurbani...)
   occasion?: string;
+
+  // Where the money is kept. When set, the saved amount is that account's balance.
+  // Without it, the person updates the saved amount by hand.
+  accountId?: string;
 };
 
 export type GoalTerm = "short" | "medium" | "long";
@@ -54,12 +60,53 @@ export function termOf(goal: Goal): GoalTerm {
 
 const STORAGE_KEY = "myfinance-goals";
 
-export function getGoals(): Goal[] {
+// What is stored: linked goals keep an old copy of the saved amount here.
+function getStoredGoals(): Goal[] {
   if (typeof window === "undefined") return [];
 
   const saved = localStorage.getItem(STORAGE_KEY);
 
   return saved ? JSON.parse(saved) : [];
+}
+
+// Goals as the app shows them. A goal linked to an account shows that account's
+// balance as its saved amount, so it always matches the real money.
+export function getGoals(): Goal[] {
+  const stored = getStoredGoals();
+
+  if (!stored.some((goal) => goal.accountId)) return stored;
+
+  const accounts = getAccounts();
+  const balances = getBalances();
+
+  return stored.map((goal) => {
+    const account = goal.accountId ? accounts.find((item) => item.id === goal.accountId) : undefined;
+
+    if (!account) return goal;
+
+    return { ...goal, savedAmount: Math.max(balances[account.id] ?? 0, 0) };
+  });
+}
+
+// True when the goal follows an account that still exists.
+export function isLinked(goal: Goal): boolean {
+  return !!goal.accountId && getAccounts().some((item) => item.id === goal.accountId);
+}
+
+// Money in goals that is NOT inside an account (so net worth adds it on top of the accounts).
+export function goalsHeldOutside(goals: Goal[] = getGoals()): number {
+  return goals
+    .filter((goal) => !isLinked(goal))
+    .reduce((sum, goal) => sum + (Number(goal.savedAmount) || 0), 0);
+}
+
+// Set the saved amount by hand (goals that are not linked to an account).
+export function setGoalSaved(id: string, value: number) {
+  saveGoals(
+    getStoredGoals().map((goal) =>
+      goal.id === id ? { ...goal, savedAmount: Math.max(0, value) } : goal
+    )
+  );
 }
 
 export function saveGoals(goals: Goal[]) {
@@ -74,7 +121,7 @@ export function saveGoals(goals: Goal[]) {
 }
 
 export function addGoal(goal: Goal) {
-  const goals = getGoals();
+  const goals = getStoredGoals();
 
   goals.unshift(goal);
 
@@ -82,7 +129,7 @@ export function addGoal(goal: Goal) {
 }
 
 export function updateGoal(goal: Goal) {
-  const goals = getGoals().map((g) =>
+  const goals = getStoredGoals().map((g) =>
     g.id === goal.id ? goal : g
   );
 
@@ -90,45 +137,9 @@ export function updateGoal(goal: Goal) {
 }
 
 export function deleteGoal(id: string) {
-  const goals = getGoals().filter(
+  const goals = getStoredGoals().filter(
     (g) => g.id !== id
   );
-
-  saveGoals(goals);
-}
-
-export function addMoneyToGoal(
-  goalId: string,
-  amount: number
-) {
-  const goals = getGoals();
-
-  const updatedGoals = goals.map((goal) => {
-    if (goal.id !== goalId) return goal;
-
-    return {
-      ...goal,
-      savedAmount: goal.savedAmount + amount,
-    };
-  });
-
-  saveGoals(updatedGoals);
-}
-export function withdrawMoneyFromGoal(
-  id: string,
-  amount: number
-) {
-  const goals = getGoals().map((goal) => {
-    if (goal.id !== id) return goal;
-
-    return {
-      ...goal,
-      savedAmount: Math.max(
-        goal.savedAmount - amount,
-        0
-      ),
-    };
-  });
 
   saveGoals(goals);
 }
