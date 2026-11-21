@@ -7,7 +7,8 @@ import { X } from "lucide-react";
 
 import { Goal, addMoneyToGoal } from "@/app/data/goals";
 import { addTransaction } from "@/app/data/transactions";
-import { getAccounts, getBalances, normalizeSource } from "@/app/data/accounts";
+import { getAccounts, getBalances } from "@/app/data/accounts";
+import AccountPicker, { CASH } from "@/app/components/AccountPicker";
 import { todayLocal } from "@/app/utils/date";
 
 import { formatCurrency } from "@/app/utils/currency";
@@ -24,15 +25,15 @@ export default function AddMoneyModal({
   onClose,
 }: Props) {
   const [amount, setAmount] = useState("");
-  const { t } = useLanguage();
+  const [from, setFrom] = useState("");
+  const { t, language } = useLanguage();
 
   if (!open || !goal) return null;
 
-  // Goals are funded from the Cash account, so check what it really holds.
-  const cashAccount = getAccounts().find(
-    (account) => account.source === normalizeSource("Available Cash")
-  );
-  const availableCash = cashAccount ? getBalances()[cashAccount.id] ?? 0 : 0;
+  // The money comes from the chosen account (Cash unless the person picks another).
+  const fromSource = from || CASH();
+  const fromAccount = getAccounts().find((account) => account.source === fromSource);
+  const availableCash = fromAccount ? getBalances()[fromAccount.id] ?? 0 : 0;
 
   return (
     <>
@@ -102,13 +103,11 @@ shadow-2xl
               className="mt-6 w-full rounded-xl border border-slate-300 p-4"
             />
 
-            {/* Available Cash */}
-            <p className="mt-3 text-sm text-[var(--muted)]">
-  {t("availableCash")}:
-  <span className="ml-2 font-semibold text-cyan-600">
-    {formatCurrency(availableCash)}
-  </span>
-</p>
+            <AccountPicker
+              label={language === "bn" ? "কোন অ্যাকাউন্ট থেকে?" : "From which account?"}
+              value={fromSource}
+              onChange={setFrom}
+            />
 
             {/* Buttons */}
             <div className="mt-8 flex gap-4">
@@ -141,7 +140,7 @@ addTransaction({
 
   type: "Transfer",
 
-  source: "Available Cash",
+  source: fromSource,
 
   destination: goal.title,
 

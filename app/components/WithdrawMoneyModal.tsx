@@ -23,6 +23,8 @@ import {
   formatCurrency,
 } from "@/app/utils/currency";
 
+import AccountPicker, { CASH } from "@/app/components/AccountPicker";
+
 
 type Props = {
   open: boolean;
@@ -45,7 +47,9 @@ export default function WithdrawMoneyModal({
 
 const [, forceCurrencyUpdate] = useState(0);
 
-  const { t } = useLanguage();
+  const [to, setTo] = useState("");
+
+  const { t, language } = useLanguage();
 
   if(!open || !goal)
     return null;
@@ -99,7 +103,7 @@ const [, forceCurrencyUpdate] = useState(0);
 
       source:currentGoal.title,
 
-      destination:"Available Cash",
+      destination: to || CASH(),
 
       amount:value,
 
@@ -324,6 +328,13 @@ const [, forceCurrencyUpdate] = useState(0);
               focus:border-cyan-500
               "
 
+            />
+
+            <AccountPicker
+              label={language === "bn" ? "কোন অ্যাকাউন্টে ফেরত যাবে?" : "Put the money back into"}
+              value={to || CASH()}
+              onChange={setTo}
+              showBalance={false}
             />
 
 
