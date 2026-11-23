@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import BudgetPlan from "@/app/components/BudgetPlan";
+import GoalsMonthlyLine from "@/app/components/GoalsMonthlyLine";
 import SpendingMindMap from "@/app/components/SpendingMindMap";
 import FloatingActionButton from "@/app/components/FloatingActionButton";
 import QuickAddSheet from "@/app/components/QuickAddSheet";
@@ -13,6 +14,8 @@ export default function MoneyPage() {
   return (
     <div className="space-y-5 pb-28">
       <BudgetPlan />
+
+      <GoalsMonthlyLine />
 
       <SpendingMindMap />
 
