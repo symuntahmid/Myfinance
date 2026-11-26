@@ -59,9 +59,9 @@ export default function Dashboard() {
 
   <VoiceButton />
 
-  <HomeToday />
-
   <RecentTransactions />
+
+  <HomeToday />
 
   <BackupNudge />
 </div>
