@@ -32,6 +32,13 @@ const TEXT = {
     over: "Over by {x}",
     nothing: "Add your first entry to see this.",
     days: "{n}d",
+    today: "You can spend today",
+    gone: "Spent today {x}",
+    onTrack: "You are on track today.",
+    close: "Close to today's limit. Go gently.",
+    overToday: "{x} over today. A little less tomorrow evens it out.",
+    monthLeft: "Left this month {x}, after bills",
+    daysShort: "{n} days left",
   },
   bn: {
     left: "খরচ করার মতো আছে",
@@ -46,6 +53,13 @@ const TEXT = {
     over: "{x} বেশি খরচ",
     nothing: "প্রথম এন্ট্রি দিলে এটি দেখা যাবে।",
     days: "{n} দিন",
+    today: "আজ খরচ করতে পারেন",
+    gone: "আজ গেছে {x}",
+    onTrack: "আজ আপনি ঠিক পথে আছেন।",
+    close: "আজকের সীমার কাছাকাছি। একটু সাবধানে।",
+    overToday: "আজ {x} বেশি হয়েছে। কাল একটু কম করলেই ঠিক হয়ে যাবে।",
+    monthLeft: "মাসে বাকি {x}, বিল বাদে",
+    daysShort: "আর {n} দিন",
   },
 } as const;
 
@@ -58,6 +72,7 @@ type State = {
   income: number;
   expense: number;
   investments: Investment[];
+  today: number;
 };
 
 const chip =
@@ -91,6 +106,9 @@ export default function HomeHero() {
         income: summary.income,
         expense: summary.expense,
         investments: getInvestments(),
+        today: getTransactions()
+          .filter((t) => t.type === "Expense" && t.date === todayLocal())
+          .reduce((sum, t) => sum + t.amount, 0),
       });
     };
 
@@ -131,6 +149,14 @@ export default function HomeHero() {
   const diff = first && last ? last.value - first.value : 0;
   const trend = state.series.length >= 2 && diff !== 0;
 
+  /* Today's allowance is fixed for the day: what is left now plus what
+     went today, shared over the days left. So spending today lowers
+     "left today" one for one, and tomorrow starts fresh. */
+  const allowance = (coach.safe + state.today) / Math.max(coach.daysLeft, 1);
+  const daily = coach.cash > 0 && coach.perDay > 0 && allowance > 0;
+  const ratio = daily ? state.today / allowance : 0;
+  const leftToday = Math.max(allowance - state.today, 0);
+
   const biggest = Math.max(income, expense, 1);
   const kept = income - expense;
 
@@ -169,14 +195,22 @@ export default function HomeHero() {
           }}
           className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {/* 1. Left to spend */}
+          {/* 1. Today: one short-horizon number you can act on */}
           <div className={`${slide} h-[150px] px-3.5`}>
-            <p className={`${label} flex h-8 items-center`}>{x.left}</p>
+            <p className={`${label} flex h-8 items-center`}>
+              {daily ? x.today : x.left}
+            </p>
 
             <div className="mt-1 flex items-end justify-between gap-3">
-              <p className={big}>{formatCurrency(coach.safe)}</p>
+              <p className={big}>{formatCurrency(daily ? leftToday : coach.safe)}</p>
 
-              {coach.cash > 0 && (
+              {daily && state.today > 0 && (
+                <span className="mb-0.5 shrink-0 rounded-full bg-[var(--background)] px-2 py-1 text-xs font-semibold">
+                  {x.gone.replace("{x}", formatCurrency(state.today))}
+                </span>
+              )}
+
+              {!daily && coach.cash > 0 && (
                 <span className="mb-0.5 shrink-0 rounded-full bg-[var(--background)] px-2 py-1 text-xs font-semibold">
                   {x.perDay.replace("{x}", formatCurrency(coach.perDay))}
                 </span>
@@ -184,27 +218,53 @@ export default function HomeHero() {
             </div>
 
             <p className="mt-1.5 truncate text-xs text-[var(--muted)]">
-              {x.daysLeft
-                .replace("{n}", num(coach.daysLeft))
-                .replace("{b}", formatCurrency(coach.billsLeft))}
+              {daily
+                ? ratio > 1
+                  ? x.overToday.replace("{x}", formatCurrency(state.today - allowance))
+                  : ratio >= 0.8
+                  ? x.close
+                  : x.onTrack
+                : x.daysLeft
+                    .replace("{n}", num(coach.daysLeft))
+                    .replace("{b}", formatCurrency(coach.billsLeft))}
             </p>
 
             <div className="mt-3 h-1.5 rounded-full bg-[var(--border)]">
               <div
                 className="h-1.5 rounded-full"
-                style={{ width: `${Math.round(Math.min(usedPct, 1) * 100)}%`, background: barColor }}
+                style={{
+                  width: `${Math.round(Math.min(daily ? ratio : usedPct, 1) * 100)}%`,
+                  background: daily
+                    ? ratio >= 0.8
+                      ? "var(--gold)"
+                      : "var(--primary)"
+                    : barColor,
+                }}
               />
             </div>
 
             <div className="mt-2 flex justify-between text-xs">
-              <span className="text-[var(--muted)]">
-                {x.income}{" "}
-                <b className="font-semibold text-[var(--success)]">+{formatCurrency(income)}</b>
-              </span>
-              <span className="text-[var(--muted)]">
-                {x.spent}{" "}
-                <b className="font-semibold text-[var(--foreground)]">-{formatCurrency(expense)}</b>
-              </span>
+              {daily ? (
+                <>
+                  <span className="text-[var(--muted)]">
+                    {x.monthLeft.replace("{x}", formatCurrency(coach.safe))}
+                  </span>
+                  <span className="text-[var(--muted)]">
+                    {x.daysShort.replace("{n}", num(coach.daysLeft))}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[var(--muted)]">
+                    {x.income}{" "}
+                    <b className="font-semibold text-[var(--success)]">+{formatCurrency(income)}</b>
+                  </span>
+                  <span className="text-[var(--muted)]">
+                    {x.spent}{" "}
+                    <b className="font-semibold text-[var(--foreground)]">-{formatCurrency(expense)}</b>
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
