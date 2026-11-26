@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { CalendarCheck, Compass, ListChecks, Plus, TrendingUp } from "lucide-react";
+import { CalendarCheck, ListChecks, Plus, TrendingUp } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -71,8 +71,8 @@ const TEXT = {
     howMuch: "How much is left to pay?",
     more: "More details (optional)",
     moreHint: "Not sure? Skip these. You can add them later.",
-    rate: "Interest a year (%)",
-    min: "Smallest monthly payment",
+    rate: "Interest (% a year). Friends and shops are often 0",
+    min: "The least you must pay each month",
     dueDay: "Due day (1-31)",
     save: "Save",
     remove: "Remove this debt",
@@ -103,11 +103,10 @@ const TEXT = {
     remindOn: "Reminders are on.",
     remindNeed: "Add a due day to a debt first.",
     yes: "Yes",
-    tabs: ["Debts", "Strategy", "Plan", "Track"],
+    tabs: ["Debts", "Plan", "Track"],
     intro: [
       "Add everything you owe. Just a name and an amount to begin.",
-      "Pick how to pay. We show what each way costs you.",
-      "Your payments for this month and the way to freedom.",
+      "Drag to see how much sooner you can be free.",
       "Pay and watch your field grow.",
     ],
     next: "Next: {t}",
@@ -123,6 +122,13 @@ const TEXT = {
     minPill: "Min {a} a month",
     duePill: "Due on day {n}",
     nothingYet: "Nothing to pay yet.",
+    paidSoFar: "{a} already paid",
+    leftShort: "{a} left",
+    dayOne: "Day one. Your field starts here.",
+    freeHeading: "You will be free by",
+    plusMore: "{a} more each month",
+    guessRate: "We guessed {r}% interest a year. Change it under more details.",
+    guessNone: "We guessed no interest. Change it under more details.",
   },
   bn: {
     title: "ঋণ পরিকল্পনা",
@@ -160,8 +166,8 @@ const TEXT = {
     howMuch: "কত টাকা শোধ বাকি?",
     more: "আরও তথ্য (ইচ্ছা হলে)",
     moreHint: "নিশ্চিত না হলে বাদ দিন। পরে দিতে পারবেন।",
-    rate: "বছরে সুদ (%)",
-    min: "মাসে সবচেয়ে কম কত দিতে হয়",
+    rate: "বছরে সুদ (%)। বন্ধু বা দোকানের বাকিতে প্রায়ই ০",
+    min: "মাসে অন্তত কত দিতেই হবে",
     dueDay: "মাসের কত তারিখে (১-৩১)",
     save: "সংরক্ষণ",
     remove: "এই ঋণ মুছুন",
@@ -192,11 +198,10 @@ const TEXT = {
     remindOn: "রিমাইন্ডার চালু হয়েছে।",
     remindNeed: "আগে কোনো ঋণে মাসের তারিখ দিন।",
     yes: "হ্যাঁ",
-    tabs: ["ঋণ", "কৌশল", "পরিকল্পনা", "হিসাব"],
+    tabs: ["ঋণ", "পরিকল্পনা", "হিসাব"],
     intro: [
       "যা ঋণ আছে সব যোগ করুন। শুরুতে শুধু নাম আর অংক লাগবে।",
-      "কীভাবে শোধ করবেন বেছে নিন। প্রতিটি পথে কত খরচ তা দেখানো হবে।",
-      "এই মাসে কত দিতে হবে এবং মুক্তির পথ।",
+      "টেনে দেখুন কত আগে মুক্ত হতে পারেন।",
       "শোধ করুন আর মাঠ বাড়তে দেখুন।",
     ],
     next: "পরের ধাপ: {t}",
@@ -212,6 +217,13 @@ const TEXT = {
     minPill: "মাসে কমপক্ষে {a}",
     duePill: "{n} তারিখে দিতে হয়",
     nothingYet: "এখনো কিছু দেওয়ার নেই।",
+    paidSoFar: "{a} শোধ হয়েছে",
+    leftShort: "বাকি {a}",
+    dayOne: "প্রথম দিন। আপনার মাঠ এখান থেকে শুরু।",
+    freeHeading: "আপনি মুক্ত হবেন",
+    plusMore: "প্রতি মাসে আরও {a}",
+    guessRate: "আমরা বছরে {r}% সুদ ধরেছি। বদলাতে চাইলে আরও তথ্যে দিন।",
+    guessNone: "আমরা সুদ নেই ধরেছি। বদলাতে চাইলে আরও তথ্যে দিন।",
   },
 } as const;
 
@@ -226,9 +238,17 @@ const toNum = (value: string) => {
 
 const digits = (value: string) => value.replace(/[^0-9.]/g, "");
 
-const TAB_ICONS = [ListChecks, Compass, CalendarCheck, TrendingUp];
+const TAB_ICONS = [ListChecks, CalendarCheck, TrendingUp];
 
-const EXTRA_CHIPS = [0, 500, 1000, 2000, 5000];
+/* A sensible guess so most people only type a name and an amount. */
+const DEFAULT_RATE: Record<string, number> = {
+  "🏦": 12,
+  "🤝": 0,
+  "🏪": 0,
+  "📱": 0,
+  "💳": 24,
+  "🧾": 0,
+};
 
 /* ---------- add / edit sheet ---------- */
 
@@ -251,6 +271,7 @@ function DebtSheet({
   const [dueDay, setDueDay] = useState(debt?.dueDay ? String(debt.dueDay) : "");
   const [more, setMore] = useState(Boolean(debt?.rate || debt?.minPay || debt?.dueDay));
   const [sure, setSure] = useState(false);
+  const [rateTouched, setRateTouched] = useState(Boolean(debt));
 
   const ready = name.trim().length > 0 && toNum(amount) > 0;
 
@@ -310,6 +331,11 @@ function DebtSheet({
                 aria-pressed={emoji === icon}
                 onClick={() => {
                   setEmoji(icon);
+                  if (!rateTouched) {
+                    const guess = DEFAULT_RATE[icon] ?? 0;
+
+                    setRate(guess ? String(guess) : "");
+                  }
                   if (!name.trim() || L.kinds.some(([, k]) => k === name)) setName(label);
                 }}
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-semibold ${
@@ -323,6 +349,14 @@ function DebtSheet({
             ))}
           </div>
         </div>
+
+        {!debt && emoji && !rateTouched && (
+          <p className="-mt-2 text-xs opacity-70">
+            {DEFAULT_RATE[emoji]
+              ? fill(L.guessRate, { r: String(DEFAULT_RATE[emoji]) })
+              : L.guessNone}
+          </p>
+        )}
 
         <label className="block">
           <span className="mb-1 block text-sm font-semibold">{L.name}</span>
@@ -365,7 +399,10 @@ function DebtSheet({
                   <input
                     inputMode="decimal"
                     value={value}
-                    onChange={(e) => set(digits(e.target.value))}
+                    onChange={(e) => {
+                      if (set === setRate) setRateTouched(true);
+                      set(digits(e.target.value));
+                    }}
                     className={box}
                   />
                 </label>
@@ -411,7 +448,7 @@ export default function DebtPlanPage() {
   const [state, setState] = useState<DebtPlanState | null>(null);
   const [debts, setDebts] = useState<Debt[]>([]);
   const [slide, setSlide] = useState(0);
-  const [tab, setTab] = useState<0 | 1 | 2 | 3 | null>(null);
+  const [tab, setTab] = useState<0 | 1 | 2 | null>(null);
   const [sheet, setSheet] = useState<"new" | string | null>(null);
   const [openPay, setOpenPay] = useState<string | null>(null);
   const [payInputs, setPayInputs] = useState<Record<string, string>>({});
@@ -497,7 +534,7 @@ export default function DebtPlanPage() {
   const stage = stageOf(totalPct, allDone);
 
   const open = debts.filter((d) => d.amount > 0);
-  const tabNow: 0 | 1 | 2 | 3 = tab ?? (open.length > 0 ? 3 : 0);
+  const tabNow: 0 | 1 | 2 = tab ?? (open.length > 0 ? 2 : 0);
   const done = debts.filter((d) => d.amount <= 0);
 
   const focusId =
@@ -683,15 +720,21 @@ export default function DebtPlanPage() {
             <div className="space-y-2 px-4 py-3">
               {debts.length > 0 ? (
                 <>
-                  <div className="flex items-baseline justify-between gap-3">
+                  {allDone ? (
                     <p className="font-hand text-3xl leading-none text-[var(--pen)]">
-                      {money(totalOwed)}
+                      {L.stages[4]}
                     </p>
+                  ) : result && !result.plan.never && result.plan.months > 0 ? (
+                    <div>
+                      <p className="text-xs opacity-70">{L.freeHeading}</p>
 
-                    <p className="text-xs opacity-70">
-                      {L.left} · {fill(L.paidPct, { p: fmt(totalPct) })}
-                    </p>
-                  </div>
+                      <p className="font-hand text-4xl leading-none text-[var(--pen)]">
+                        {freeBy(result.plan.months)}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm font-semibold text-[var(--pen)]">{L.needPay}</p>
+                  )}
 
                   <div className="h-2 rounded-full bg-[var(--ink)]/10">
                     <div
@@ -700,12 +743,14 @@ export default function DebtPlanPage() {
                     />
                   </div>
 
-                  <p className="text-sm font-semibold text-[var(--pen)]">
-                    {allDone
-                      ? L.stages[4]
-                      : result && !result.plan.never && result.plan.months > 0
-                      ? fill(L.freeBy, { d: freeBy(result.plan.months) })
-                      : L.needPay}
+                  <p className="flex justify-between gap-3 text-xs">
+                    <span className="font-semibold text-[var(--pen)]">
+                      {totalOriginal - totalOwed > 0
+                        ? fill(L.paidSoFar, { a: money(totalOriginal - totalOwed) })
+                        : L.dayOne}
+                    </span>
+
+                    <span className="opacity-70">{fill(L.leftShort, { a: money(totalOwed) })}</span>
                   </p>
                 </>
               ) : (
@@ -718,14 +763,14 @@ export default function DebtPlanPage() {
 
           <nav
             aria-label={L.title}
-            className="grid grid-cols-4 gap-1 rounded-3xl bg-[var(--ink)]/10 p-1"
+            className="grid grid-cols-3 gap-1 rounded-3xl bg-[var(--ink)]/10 p-1"
           >
             {TAB_ICONS.map((Icon, i) => (
               <button
                 key={i}
                 type="button"
                 aria-pressed={tabNow === i}
-                onClick={() => setTab(i as 0 | 1 | 2 | 3)}
+                onClick={() => setTab(i as 0 | 1 | 2)}
                 className={`flex flex-col items-center gap-0.5 rounded-2xl py-2 text-[11px] font-bold ${
                   tabNow === i ? "bg-[var(--pen)] text-white" : ""
                 }`}
@@ -808,7 +853,7 @@ export default function DebtPlanPage() {
             </section>
           )}
 
-          {/* 2 STRATEGY */}
+          {/* 2 PLAN (strategy + this month, together) */}
 
           {tabNow === 1 && (
             <section className="space-y-4">
@@ -816,39 +861,57 @@ export default function DebtPlanPage() {
                 <p className="text-sm opacity-70">{L.nothingYet}</p>
               ) : (
                 <>
-                  <div className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
-                    <p className="text-sm font-semibold">
-                      {hasMins ? L.extraLabel : L.payLabel}
-                    </p>
+                  <div className="space-y-3 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="text-sm font-semibold">
+                        {hasMins ? L.extraLabel : L.payLabel}
+                      </p>
 
-                    <div className="flex flex-wrap gap-2">
-                      {EXTRA_CHIPS.map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          aria-pressed={extra === v}
-                          onClick={() => update({ extra: v ? String(v) : "" })}
-                          className={`rounded-full border-2 px-3.5 py-1.5 text-sm font-bold ${
-                            extra === v
-                              ? "border-[var(--pen)] bg-[var(--pen)] text-white"
-                              : "border-[var(--ink)]/15 bg-white/70"
-                          }`}
-                        >
-                          {v === 0 ? (hasMins ? "0" : "–") : `+${fmt(v)}`}
-                        </button>
-                      ))}
+                      <p className="font-hand text-2xl text-[var(--pen)]">{money(extra)}</p>
                     </div>
 
                     <input
-                      inputMode="decimal"
-                      placeholder={L.another}
-                      value={EXTRA_CHIPS.includes(extra) ? "" : state.extra}
-                      onChange={(e) => update({ extra: digits(e.target.value) })}
-                      className="w-full rounded-xl border-2 border-[var(--ink)]/15 bg-white/80 px-3 py-2.5 text-base font-semibold outline-none focus:border-[var(--pen)]"
+                      type="range"
+                      min={0}
+                      max={Math.max(10000, extra)}
+                      step={100}
+                      value={extra}
+                      aria-label={hasMins ? L.extraLabel : L.payLabel}
+                      onChange={(e) => {
+                        const v = Number(e.target.value);
+
+                        update({ extra: v ? String(v) : "" });
+                      }}
+                      className="w-full accent-[var(--pen)]"
                     />
+
+                    {result?.plan.never ? (
+                      <p className="rounded-xl bg-[var(--mark)]/60 px-3 py-2 text-sm font-semibold">
+                        {hasMins || extra > 0 ? L.never : L.needPay}
+                      </p>
+                    ) : (
+                      result && (
+                        <div>
+                          <p className="text-xs opacity-70">{L.freeHeading}</p>
+
+                          <p className="font-hand text-4xl text-[var(--pen)]">
+                            <span className="hl">{freeBy(result.plan.months)}</span>
+                          </p>
+
+                          {extra > 0 && hasMins && !result.base.never && (
+                            <p className="mt-2 rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
+                              {fill(L.saves, {
+                                saved: money(result.base.interest - result.plan.interest),
+                                months: fmt(result.base.months - result.plan.months),
+                              })}
+                            </p>
+                          )}
+                        </div>
+                      )
+                    )}
                   </div>
 
-                  {open.length > 1 && both ? (
+                  {open.length > 1 && both && (
                     <div className="space-y-2">
                       <p className="text-sm font-semibold">{L.which}</p>
 
@@ -888,124 +951,93 @@ export default function DebtPlanPage() {
                         );
                       })}
                     </div>
-                  ) : (
-                    <p className="text-sm opacity-70">{L.oneDebt}</p>
+                  )}
+
+                  {result && !result.plan.never && (
+                    <>
+                      <div className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                        <p className="text-sm font-bold">{L.thisMonth}</p>
+
+                        {open.map((d) => (
+                          <div key={d.id} className="flex justify-between gap-3 text-sm">
+                            <span className="min-w-0 truncate">
+                              {d.emoji} {d.name}
+                              {d.id === focusId ? " ⭐" : ""}
+                            </span>
+
+                            <span className="shrink-0 font-bold">{money(alloc[d.id] ?? 0)}</span>
+                          </div>
+                        ))}
+
+                        <div className="flex justify-between border-t border-[var(--ink)]/10 pt-2 text-sm font-bold">
+                          <span>{L.total}</span>
+                          <span>
+                            {money(open.reduce((sum, d) => sum + (alloc[d.id] ?? 0), 0))}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between text-xs opacity-70">
+                          <span>{L.interest}</span>
+                          <span>{money(result.plan.interest)}</span>
+                        </div>
+                      </div>
+
+                      {open.length > 1 && (
+                        <div className="rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                          <p className="mb-2 text-sm font-bold">{L.order}</p>
+
+                          <ol className="space-y-1">
+                            {result.plan.cleared.map((item, index) => {
+                              const debt = debts.find((d) => d.id === item.id);
+
+                              return (
+                                <li key={item.id} className="flex justify-between gap-3 text-sm">
+                                  <span className="min-w-0 truncate">
+                                    <span className="font-hand text-lg text-[var(--pen)]">
+                                      {fmt(index + 1)}.
+                                    </span>{" "}
+                                    {debt?.emoji} {debt?.name}
+                                  </span>
+
+                                  <span className="shrink-0 font-semibold">
+                                    {fill(L.inMonths, { n: fmt(item.month) })}
+                                  </span>
+                                </li>
+                              );
+                            })}
+                          </ol>
+                        </div>
+                      )}
+
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const count = syncReminders(alloc);
+
+                            setRemindMsg(count > 0 ? "on" : "needDay");
+                          }}
+                          className={plainButton}
+                        >
+                          {L.remind}
+                        </button>
+
+                        {remindMsg && (
+                          <p role="status" className="mt-2 text-sm font-semibold text-[var(--pen)]">
+                            {remindMsg === "on" ? L.remindOn : L.remindNeed}
+                          </p>
+                        )}
+                      </div>
+                    </>
                   )}
                 </>
               )}
             </section>
           )}
 
-          {/* 3 PLAN */}
+          {/* 3 TRACK */}
 
           {tabNow === 2 && (
-            <section className="space-y-4">
-              {!result || open.length === 0 ? (
-                <p className="text-sm opacity-70">{L.nothingYet}</p>
-              ) : result.plan.never ? (
-                <p className="rounded-xl bg-[var(--mark)]/60 px-3 py-2 text-sm font-semibold">
-                  {hasMins || extra > 0 ? L.never : L.needPay}
-                </p>
-              ) : (
-                <>
-                  <div className="rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
-                    <p className="text-sm opacity-70">{fill(L.freeLine, { d: "" })}</p>
-
-                    <p className="font-hand text-4xl text-[var(--pen)]">
-                      <span className="hl">{freeBy(result.plan.months)}</span>
-                    </p>
-
-                    <div className="mt-2 flex justify-between text-sm">
-                      <span className="opacity-70">{L.interest}</span>
-                      <span className="font-bold">{money(result.plan.interest)}</span>
-                    </div>
-
-                    {extra > 0 && hasMins && !result.base.never && (
-                      <p className="mt-2 rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
-                        {fill(L.saves, {
-                          saved: money(result.base.interest - result.plan.interest),
-                          months: fmt(result.base.months - result.plan.months),
-                        })}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
-                    <p className="text-sm font-bold">{L.thisMonth}</p>
-
-                    {open.map((d) => (
-                      <div key={d.id} className="flex justify-between gap-3 text-sm">
-                        <span className="min-w-0 truncate">
-                          {d.emoji} {d.name}
-                          {d.id === focusId ? " ⭐" : ""}
-                        </span>
-
-                        <span className="shrink-0 font-bold">{money(alloc[d.id] ?? 0)}</span>
-                      </div>
-                    ))}
-
-                    <div className="flex justify-between border-t border-[var(--ink)]/10 pt-2 text-sm font-bold">
-                      <span>{L.total}</span>
-                      <span>
-                        {money(open.reduce((sum, d) => sum + (alloc[d.id] ?? 0), 0))}
-                      </span>
-                    </div>
-                  </div>
-
-                  {open.length > 1 && (
-                    <div className="rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
-                      <p className="mb-2 text-sm font-bold">{L.order}</p>
-
-                      <ol className="space-y-1">
-                        {result.plan.cleared.map((item, index) => {
-                          const debt = debts.find((d) => d.id === item.id);
-
-                          return (
-                            <li key={item.id} className="flex justify-between gap-3 text-sm">
-                              <span className="min-w-0 truncate">
-                                <span className="font-hand text-lg text-[var(--pen)]">
-                                  {fmt(index + 1)}.
-                                </span>{" "}
-                                {debt?.emoji} {debt?.name}
-                              </span>
-
-                              <span className="shrink-0 font-semibold">
-                                {fill(L.inMonths, { n: fmt(item.month) })}
-                              </span>
-                            </li>
-                          );
-                        })}
-                      </ol>
-                    </div>
-                  )}
-
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const count = syncReminders(alloc);
-
-                        setRemindMsg(count > 0 ? "on" : "needDay");
-                      }}
-                      className={plainButton}
-                    >
-                      {L.remind}
-                    </button>
-
-                    {remindMsg && (
-                      <p role="status" className="mt-2 text-sm font-semibold text-[var(--pen)]">
-                        {remindMsg === "on" ? L.remindOn : L.remindNeed}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-            </section>
-          )}
-
-          {/* 4 TRACK */}
-
-          {tabNow === 3 && (
             <section className="space-y-3">
               {open.map((d) => {
                 const original = originalOf(d);
@@ -1143,12 +1175,12 @@ export default function DebtPlanPage() {
 
           {/* guided next step */}
 
-          {tabNow < 3 && (
+          {tabNow < 2 && (
             <div>
               <button
                 type="button"
                 disabled={debts.length === 0}
-                onClick={() => setTab((tabNow + 1) as 1 | 2 | 3)}
+                onClick={() => setTab((tabNow + 1) as 1 | 2)}
                 className={`${bigButton} disabled:opacity-40`}
               >
                 {debts.length === 0
