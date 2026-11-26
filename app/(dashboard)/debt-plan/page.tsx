@@ -670,47 +670,43 @@ export default function DebtPlanPage() {
       {/* THE PLANNER: four clear steps, one job each */}
 
       {state.answer === "owe" && (
-        <div className="space-y-4">
-          <header>
-            <h1 className="font-hand text-4xl text-[var(--pen)]">
-              <span className="hl">{L.title}</span>
-            </h1>
-
-            <p className="mt-1 text-sm opacity-70">{L.sub}</p>
-          </header>
+        <div className="space-y-3">
+          <h1 className="font-hand text-3xl text-[var(--pen)]">
+            <span className="hl">{L.title}</span>
+          </h1>
 
           {/* the field: shows how far you have come */}
 
           <section className="overflow-hidden rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50">
-            <RiceField stage={stage} />
+            <RiceField stage={stage} compact />
 
-            <div className="space-y-1 p-4">
+            <div className="space-y-2 px-4 py-3">
               {debts.length > 0 ? (
                 <>
-                  <p className="font-hand text-4xl leading-none text-[var(--pen)]">
-                    {money(totalOwed)}
-                  </p>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <p className="font-hand text-3xl leading-none text-[var(--pen)]">
+                      {money(totalOwed)}
+                    </p>
 
-                  <p className="text-sm opacity-70">
-                    {L.left} · {fill(L.paidPct, { p: fmt(totalPct) })}
-                  </p>
+                    <p className="text-xs opacity-70">
+                      {L.left} · {fill(L.paidPct, { p: fmt(totalPct) })}
+                    </p>
+                  </div>
 
-                  <div className="!mt-3 h-2.5 rounded-full bg-[var(--ink)]/10">
+                  <div className="h-2 rounded-full bg-[var(--ink)]/10">
                     <div
-                      className="h-2.5 rounded-full bg-[var(--pen)] transition-all duration-700"
+                      className="h-2 rounded-full bg-[var(--pen)] transition-all duration-700"
                       style={{ width: `${Math.min(totalPct, 100)}%` }}
                     />
                   </div>
 
-                  <p className="!mt-3 text-sm font-semibold text-[var(--pen)]">
+                  <p className="text-sm font-semibold text-[var(--pen)]">
                     {allDone
                       ? L.stages[4]
                       : result && !result.plan.never && result.plan.months > 0
                       ? fill(L.freeBy, { d: freeBy(result.plan.months) })
                       : L.needPay}
                   </p>
-
-                  <p className="text-xs opacity-70">{L.stages[stage]}</p>
                 </>
               ) : (
                 <p className="text-sm font-semibold">{L.empty}</p>

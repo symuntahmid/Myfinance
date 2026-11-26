@@ -69,10 +69,12 @@ function Farmer({ x, y, stage }: { x: number; y: number; stage: Stage }) {
 export function RiceField({
   stage,
   farmer = true,
+  compact = false,
   className = "",
 }: {
   stage: Stage;
   farmer?: boolean;
+  compact?: boolean;
   className?: string;
 }) {
   const height = [0, 9, 17, 25, 30][stage];
@@ -81,9 +83,10 @@ export function RiceField({
   return (
     <svg
       viewBox="0 0 320 150"
+      preserveAspectRatio={compact ? "xMidYMax slice" : "xMidYMid meet"}
       role="img"
       aria-hidden="true"
-      className={`block w-full ${className}`}
+      className={`block w-full ${compact ? "h-28" : ""} ${className}`}
     >
       <rect width="320" height="150" fill={SKY[stage]} />
 
