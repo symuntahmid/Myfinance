@@ -408,3 +408,16 @@ h3 {
   background: linear-gradient(transparent 62%, var(--mark) 62%, var(--mark) 92%, transparent 92%);
   padding: 0 0.15em;
 }
+
+/* Debt planner illustrations: gentle movement only */
+@keyframes dp-sway { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes dp-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes dp-wave { 0%,100% { transform: rotate(-10deg); } 50% { transform: rotate(12deg); } }
+@keyframes dp-float { 0% { transform: translateY(8px); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-16px); opacity: 0; } }
+.dp-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: dp-sway 3.2s ease-in-out infinite; }
+.dp-bob { animation: dp-bob 2.6s ease-in-out infinite; }
+.dp-wave { transform-box: fill-box; animation: dp-wave 1s ease-in-out infinite; }
+.dp-float { animation: dp-float 3.4s ease-in infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .dp-sway, .dp-bob, .dp-wave, .dp-float { animation: none; }
+}
