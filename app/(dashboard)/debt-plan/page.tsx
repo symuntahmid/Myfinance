@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { CalendarCheck, Compass, ListChecks, Plus, TrendingUp } from "lucide-react";
 
 import { useLanguage } from "@/app/context/LanguageContext";
 import { formatCurrency } from "@/app/utils/currency";
@@ -103,6 +103,26 @@ const TEXT = {
     remindOn: "Reminders are on.",
     remindNeed: "Add a due day to a debt first.",
     yes: "Yes",
+    tabs: ["Debts", "Strategy", "Plan", "Track"],
+    intro: [
+      "Add everything you owe. Just a name and an amount to begin.",
+      "Pick how to pay. We show what each way costs you.",
+      "Your payments for this month and the way to freedom.",
+      "Pay and watch your field grow.",
+    ],
+    next: "Next: {t}",
+    addFirst: "Add your first debt to continue",
+    bestSave: "Saves the most money",
+    bestWin: "Quick wins keep you going",
+    freeLine: "Free by {d}",
+    intLine: "Interest {i}",
+    oneDebt: "You have one debt, so there is no order to choose. Just decide how much you can pay each month.",
+    thisMonth: "Pay this month",
+    total: "Total this month",
+    ratePill: "{r}% a year",
+    minPill: "Min {a} a month",
+    duePill: "Due on day {n}",
+    nothingYet: "Nothing to pay yet.",
   },
   bn: {
     title: "ঋণ পরিকল্পনা",
@@ -172,6 +192,26 @@ const TEXT = {
     remindOn: "রিমাইন্ডার চালু হয়েছে।",
     remindNeed: "আগে কোনো ঋণে মাসের তারিখ দিন।",
     yes: "হ্যাঁ",
+    tabs: ["ঋণ", "কৌশল", "পরিকল্পনা", "হিসাব"],
+    intro: [
+      "যা ঋণ আছে সব যোগ করুন। শুরুতে শুধু নাম আর অংক লাগবে।",
+      "কীভাবে শোধ করবেন বেছে নিন। প্রতিটি পথে কত খরচ তা দেখানো হবে।",
+      "এই মাসে কত দিতে হবে এবং মুক্তির পথ।",
+      "শোধ করুন আর মাঠ বাড়তে দেখুন।",
+    ],
+    next: "পরের ধাপ: {t}",
+    addFirst: "এগোতে প্রথম ঋণটি যোগ করুন",
+    bestSave: "সবচেয়ে বেশি টাকা বাঁচে",
+    bestWin: "দ্রুত জয় চালিয়ে যেতে সাহস দেয়",
+    freeLine: "মুক্তি: {d}",
+    intLine: "সুদ {i}",
+    oneDebt: "আপনার একটিই ঋণ, তাই ক্রম বাছার কিছু নেই। শুধু ঠিক করুন মাসে কত দিতে পারবেন।",
+    thisMonth: "এই মাসে দিতে হবে",
+    total: "এই মাসে মোট",
+    ratePill: "বছরে {r}%",
+    minPill: "মাসে কমপক্ষে {a}",
+    duePill: "{n} তারিখে দিতে হয়",
+    nothingYet: "এখনো কিছু দেওয়ার নেই।",
   },
 } as const;
 
@@ -185,6 +225,8 @@ const toNum = (value: string) => {
 };
 
 const digits = (value: string) => value.replace(/[^0-9.]/g, "");
+
+const TAB_ICONS = [ListChecks, Compass, CalendarCheck, TrendingUp];
 
 const EXTRA_CHIPS = [0, 500, 1000, 2000, 5000];
 
@@ -369,6 +411,7 @@ export default function DebtPlanPage() {
   const [state, setState] = useState<DebtPlanState | null>(null);
   const [debts, setDebts] = useState<Debt[]>([]);
   const [slide, setSlide] = useState(0);
+  const [tab, setTab] = useState<0 | 1 | 2 | 3 | null>(null);
   const [sheet, setSheet] = useState<"new" | string | null>(null);
   const [openPay, setOpenPay] = useState<string | null>(null);
   const [payInputs, setPayInputs] = useState<Record<string, string>>({});
@@ -419,6 +462,15 @@ export default function DebtPlanPage() {
     };
   }, [debts, extra, strategy]);
 
+  const both = useMemo(() => {
+    if (debts.length === 0) return null;
+
+    return {
+      avalanche: simulate(debts, extra, "avalanche"),
+      snowball: simulate(debts, extra, "snowball"),
+    };
+  }, [debts, extra]);
+
   if (!state) return null;
 
   const money = (value: number) => formatCurrency(Math.round(value));
@@ -445,6 +497,7 @@ export default function DebtPlanPage() {
   const stage = stageOf(totalPct, allDone);
 
   const open = debts.filter((d) => d.amount > 0);
+  const tabNow: 0 | 1 | 2 | 3 = tab ?? (open.length > 0 ? 3 : 0);
   const done = debts.filter((d) => d.amount <= 0);
 
   const focusId =
@@ -614,7 +667,7 @@ export default function DebtPlanPage() {
         </div>
       )}
 
-      {/* THE PLANNER: one page, no tabs */}
+      {/* THE PLANNER: four clear steps, one job each */}
 
       {state.answer === "owe" && (
         <div className="space-y-4">
@@ -665,296 +718,448 @@ export default function DebtPlanPage() {
             </div>
           </section>
 
-          {/* debts */}
+          {/* the four steps */}
 
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="font-hand text-2xl text-[var(--pen)]">{L.yourDebts}</h2>
-
+          <nav
+            aria-label={L.title}
+            className="grid grid-cols-4 gap-1 rounded-3xl bg-[var(--ink)]/10 p-1"
+          >
+            {TAB_ICONS.map((Icon, i) => (
               <button
+                key={i}
                 type="button"
-                onClick={() => setSheet("new")}
-                className="flex items-center gap-1 rounded-full bg-[var(--pen)] px-4 py-2 text-sm font-bold text-white"
+                aria-pressed={tabNow === i}
+                onClick={() => setTab(i as 0 | 1 | 2 | 3)}
+                className={`flex flex-col items-center gap-0.5 rounded-2xl py-2 text-[11px] font-bold ${
+                  tabNow === i ? "bg-[var(--pen)] text-white" : ""
+                }`}
               >
-                <Plus size={16} aria-hidden="true" />
-                {L.addDebt}
+                <Icon size={18} aria-hidden="true" />
+                {L.tabs[i]}
               </button>
-            </div>
+            ))}
+          </nav>
 
-            {open.map((d) => {
-              const original = originalOf(d);
-              const pct = Math.round(((original - d.amount) / original) * 100);
-              const due = d.dueDay ? daysToDue(d.dueDay) : null;
-              const suggest = Math.round(alloc[d.id] ?? d.minPay ?? 0);
-              const custom = openPay === d.id || suggest <= 0;
-              const last = d.payments?.[0];
+          <p className="text-sm font-semibold">{L.intro[tabNow]}</p>
 
-              return (
-                <div
-                  key={d.id}
-                  className={`space-y-3 rounded-3xl border-2 bg-white/60 p-4 ${
-                    d.id === focusId ? "border-[var(--pen)]" : "border-[var(--ink)]/10"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-base font-bold">
+          {/* 1 DEBTS */}
+
+          {tabNow === 0 && (
+            <section className="space-y-3">
+              {debts.map((d) => {
+                const original = originalOf(d);
+                const pct = Math.round(((original - d.amount) / original) * 100);
+
+                return (
+                  <div
+                    key={d.id}
+                    className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/60 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="min-w-0 truncate text-base font-bold">
                         {d.emoji} {d.name}
                       </p>
 
-                      {d.id === focusId && (
-                        <span className="mt-1 inline-block rounded-full bg-[var(--mark)] px-2 py-0.5 text-[11px] font-bold">
-                          {L.focus}
-                        </span>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => setSheet(d.id)}
+                        className="shrink-0 text-sm font-semibold text-[var(--pen)]"
+                      >
+                        {L.edit}
+                      </button>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => setSheet(d.id)}
-                      className="shrink-0 text-sm font-semibold text-[var(--pen)]"
-                    >
-                      {L.edit}
-                    </button>
-                  </div>
+                    <p className="font-hand text-3xl leading-none">
+                      {d.amount > 0 ? money(d.amount) : L.cleared}
+                    </p>
 
-                  <div>
-                    <p className="font-hand text-3xl leading-none">{money(d.amount)}</p>
-
-                    <div className="mt-2 h-2 rounded-full bg-[var(--ink)]/10">
+                    <div className="h-2 rounded-full bg-[var(--ink)]/10">
                       <div
-                        className="h-2 rounded-full bg-[var(--pen)] transition-all duration-700"
+                        className="h-2 rounded-full bg-[var(--pen)]"
                         style={{ width: `${Math.min(Math.max(pct, 0), 100)}%` }}
                       />
                     </div>
 
-                    <p className="mt-1.5 text-xs opacity-70">
-                      {due === null
-                        ? ""
-                        : due === 0
-                        ? L.dueToday
-                        : fill(L.dueIn, { n: fmt(due) })}
-                      {due !== null && last ? " · " : ""}
-                      {last ? fill(L.lastPaid, { d: last.date, a: money(last.amount) }) : ""}
+                    <div className="flex flex-wrap gap-1.5 text-[11px] font-semibold">
+                      {d.rate ? (
+                        <span className="rounded-full bg-white/80 px-2 py-0.5">
+                          {fill(L.ratePill, { r: fmt(d.rate) })}
+                        </span>
+                      ) : null}
+
+                      {d.minPay ? (
+                        <span className="rounded-full bg-white/80 px-2 py-0.5">
+                          {fill(L.minPill, { a: money(d.minPay) })}
+                        </span>
+                      ) : null}
+
+                      {d.dueDay ? (
+                        <span className="rounded-full bg-white/80 px-2 py-0.5">
+                          {fill(L.duePill, { n: fmt(d.dueDay) })}
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
+
+              <button type="button" onClick={() => setSheet("new")} className={bigButton}>
+                <span className="inline-flex items-center justify-center gap-1.5">
+                  <Plus size={18} aria-hidden="true" />
+                  {L.addDebt}
+                </span>
+              </button>
+            </section>
+          )}
+
+          {/* 2 STRATEGY */}
+
+          {tabNow === 1 && (
+            <section className="space-y-4">
+              {open.length === 0 ? (
+                <p className="text-sm opacity-70">{L.nothingYet}</p>
+              ) : (
+                <>
+                  <div className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                    <p className="text-sm font-semibold">
+                      {hasMins ? L.extraLabel : L.payLabel}
                     </p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {EXTRA_CHIPS.map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          aria-pressed={extra === v}
+                          onClick={() => update({ extra: v ? String(v) : "" })}
+                          className={`rounded-full border-2 px-3.5 py-1.5 text-sm font-bold ${
+                            extra === v
+                              ? "border-[var(--pen)] bg-[var(--pen)] text-white"
+                              : "border-[var(--ink)]/15 bg-white/70"
+                          }`}
+                        >
+                          {v === 0 ? (hasMins ? "0" : "–") : `+${fmt(v)}`}
+                        </button>
+                      ))}
+                    </div>
+
+                    <input
+                      inputMode="decimal"
+                      placeholder={L.another}
+                      value={EXTRA_CHIPS.includes(extra) ? "" : state.extra}
+                      onChange={(e) => update({ extra: digits(e.target.value) })}
+                      className="w-full rounded-xl border-2 border-[var(--ink)]/15 bg-white/80 px-3 py-2.5 text-base font-semibold outline-none focus:border-[var(--pen)]"
+                    />
                   </div>
 
-                  {custom ? (
-                    <div className="flex items-end gap-2">
-                      <label className="block flex-1">
-                        <span className="mb-1 block text-xs font-semibold opacity-70">
-                          {L.amountLabel}
-                        </span>
+                  {open.length > 1 && both ? (
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold">{L.which}</p>
 
-                        <input
-                          inputMode="decimal"
-                          value={payInputs[d.id] ?? ""}
-                          onChange={(e) =>
-                            setPayInputs((cur) => ({ ...cur, [d.id]: digits(e.target.value) }))
-                          }
-                          className="w-full rounded-xl border-2 border-[var(--ink)]/15 bg-white/80 px-3 py-2.5 text-base font-semibold outline-none focus:border-[var(--pen)]"
-                        />
-                      </label>
+                      {(
+                        [
+                          ["avalanche", L.avalanche, L.bestSave],
+                          ["snowball", L.snowball, L.bestWin],
+                        ] as [Strategy, string, string][]
+                      ).map(([id, label, hint]) => {
+                        const r = both[id];
+                        const picked = strategy === id;
 
-                      <button
-                        type="button"
-                        disabled={toNum(payInputs[d.id] ?? "") <= 0}
-                        onClick={() => pay(d, toNum(payInputs[d.id] ?? ""))}
-                        className="shrink-0 rounded-full bg-[var(--pen)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40"
-                      >
-                        {L.savePay}
-                      </button>
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            aria-pressed={picked}
+                            onClick={() => update({ strategy: id })}
+                            className={`w-full rounded-3xl border-2 p-4 text-left ${
+                              picked
+                                ? "border-[var(--pen)] bg-[var(--pen)] text-white"
+                                : "border-[var(--ink)]/15 bg-white/70"
+                            }`}
+                          >
+                            <span className="block text-base font-bold">{label}</span>
+                            <span className="block text-xs opacity-80">{hint}</span>
+
+                            <span className="mt-2 block text-sm font-semibold">
+                              {r.never
+                                ? L.never
+                                : `${fill(L.freeLine, { d: freeBy(r.months) })} · ${fill(
+                                    L.intLine,
+                                    { i: money(r.interest) }
+                                  )}`}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   ) : (
-                    <div className="space-y-2">
-                      <button
-                        type="button"
-                        onClick={() => pay(d, suggest)}
-                        className={bigButton}
-                      >
-                        {fill(L.paidBtn, { a: money(suggest) })}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setOpenPay(d.id)}
-                        className="block w-full text-center text-sm font-semibold text-[var(--pen)]"
-                      >
-                        {L.otherAmt}
-                      </button>
-                    </div>
+                    <p className="text-sm opacity-70">{L.oneDebt}</p>
                   )}
-
-                  {flash?.id === d.id && (
-                    <p role="status" className="rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
-                      🌾 {flash.text}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-
-            {done.map((d) => (
-              <div
-                key={d.id}
-                className="flex items-center justify-between gap-3 rounded-2xl bg-white/40 px-4 py-3"
-              >
-                <p className="min-w-0 truncate text-sm font-semibold opacity-70">
-                  {d.emoji} {d.name}
-                </p>
-
-                <span className="shrink-0 text-sm font-bold text-[var(--pen)]">
-                  🌾 {L.cleared}
-                </span>
-              </div>
-            ))}
-
-            {flash && !debts.some((d) => d.id === flash.id && d.amount > 0) && (
-              <p role="status" className="rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
-                🌾 {flash.text}
-              </p>
-            )}
-          </section>
-
-          {/* plan */}
-
-          {open.length > 0 && (
-            <section className="space-y-4 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
-              <h2 className="font-hand text-2xl text-[var(--pen)]">{L.planTitle}</h2>
-
-              <div>
-                <p className="mb-2 text-sm font-semibold">
-                  {hasMins ? L.extraLabel : L.payLabel}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  {EXTRA_CHIPS.map((v) => (
-                    <button
-                      key={v}
-                      type="button"
-                      aria-pressed={extra === v}
-                      onClick={() => update({ extra: v ? String(v) : "" })}
-                      className={`rounded-full border-2 px-3.5 py-1.5 text-sm font-bold ${
-                        extra === v
-                          ? "border-[var(--pen)] bg-[var(--pen)] text-white"
-                          : "border-[var(--ink)]/15 bg-white/70"
-                      }`}
-                    >
-                      {v === 0 ? (hasMins ? "0" : "–") : `+${fmt(v)}`}
-                    </button>
-                  ))}
-                </div>
-
-                <input
-                  inputMode="decimal"
-                  placeholder={L.another}
-                  value={EXTRA_CHIPS.includes(extra) ? "" : state.extra}
-                  onChange={(e) => update({ extra: digits(e.target.value) })}
-                  className="mt-2 w-full rounded-xl border-2 border-[var(--ink)]/15 bg-white/80 px-3 py-2.5 text-base font-semibold outline-none focus:border-[var(--pen)]"
-                />
-              </div>
-
-              {open.length > 1 && (
-                <div>
-                  <p className="mb-2 text-sm font-semibold">{L.which}</p>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {(
-                      [
-                        ["avalanche", L.avalanche, L.avalancheHint],
-                        ["snowball", L.snowball, L.snowballHint],
-                      ] as [Strategy, string, string][]
-                    ).map(([id, label, hint]) => (
-                      <button
-                        key={id}
-                        type="button"
-                        aria-pressed={strategy === id}
-                        onClick={() => update({ strategy: id })}
-                        className={`rounded-2xl border-2 px-3 py-2 text-left ${
-                          strategy === id
-                            ? "border-[var(--pen)] bg-[var(--pen)] text-white"
-                            : "border-[var(--ink)]/15 bg-white/70"
-                        }`}
-                      >
-                        <span className="block text-sm font-bold">{label}</span>
-                        <span className="block text-[11px] opacity-80">{hint}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                </>
               )}
+            </section>
+          )}
 
-              {result?.plan.never ? (
+          {/* 3 PLAN */}
+
+          {tabNow === 2 && (
+            <section className="space-y-4">
+              {!result || open.length === 0 ? (
+                <p className="text-sm opacity-70">{L.nothingYet}</p>
+              ) : result.plan.never ? (
                 <p className="rounded-xl bg-[var(--mark)]/60 px-3 py-2 text-sm font-semibold">
                   {hasMins || extra > 0 ? L.never : L.needPay}
                 </p>
               ) : (
-                result && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                <>
+                  <div className="rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                    <p className="text-sm opacity-70">{fill(L.freeLine, { d: "" })}</p>
+
+                    <p className="font-hand text-4xl text-[var(--pen)]">
+                      <span className="hl">{freeBy(result.plan.months)}</span>
+                    </p>
+
+                    <div className="mt-2 flex justify-between text-sm">
                       <span className="opacity-70">{L.interest}</span>
                       <span className="font-bold">{money(result.plan.interest)}</span>
                     </div>
 
                     {extra > 0 && hasMins && !result.base.never && (
-                      <p className="rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
+                      <p className="mt-2 rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
                         {fill(L.saves, {
                           saved: money(result.base.interest - result.plan.interest),
                           months: fmt(result.base.months - result.plan.months),
                         })}
                       </p>
                     )}
+                  </div>
 
-                    {open.length > 1 && (
-                      <div>
-                        <p className="mb-1 text-xs font-semibold opacity-70">{L.order}</p>
+                  <div className="space-y-2 rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                    <p className="text-sm font-bold">{L.thisMonth}</p>
 
-                        <ol className="space-y-1">
-                          {result.plan.cleared.map((item, index) => {
-                            const debt = debts.find((d) => d.id === item.id);
+                    {open.map((d) => (
+                      <div key={d.id} className="flex justify-between gap-3 text-sm">
+                        <span className="min-w-0 truncate">
+                          {d.emoji} {d.name}
+                          {d.id === focusId ? " ⭐" : ""}
+                        </span>
 
-                            return (
-                              <li key={item.id} className="flex justify-between gap-3 text-sm">
-                                <span className="min-w-0 truncate">
-                                  <span className="font-hand text-lg text-[var(--pen)]">
-                                    {fmt(index + 1)}.
-                                  </span>{" "}
-                                  {debt?.emoji} {debt?.name}
-                                </span>
-
-                                <span className="shrink-0 font-semibold">
-                                  {fill(L.inMonths, { n: fmt(item.month) })}
-                                </span>
-                              </li>
-                            );
-                          })}
-                        </ol>
+                        <span className="shrink-0 font-bold">{money(alloc[d.id] ?? 0)}</span>
                       </div>
+                    ))}
+
+                    <div className="flex justify-between border-t border-[var(--ink)]/10 pt-2 text-sm font-bold">
+                      <span>{L.total}</span>
+                      <span>
+                        {money(open.reduce((sum, d) => sum + (alloc[d.id] ?? 0), 0))}
+                      </span>
+                    </div>
+                  </div>
+
+                  {open.length > 1 && (
+                    <div className="rounded-3xl border-2 border-[var(--ink)]/10 bg-white/50 p-4">
+                      <p className="mb-2 text-sm font-bold">{L.order}</p>
+
+                      <ol className="space-y-1">
+                        {result.plan.cleared.map((item, index) => {
+                          const debt = debts.find((d) => d.id === item.id);
+
+                          return (
+                            <li key={item.id} className="flex justify-between gap-3 text-sm">
+                              <span className="min-w-0 truncate">
+                                <span className="font-hand text-lg text-[var(--pen)]">
+                                  {fmt(index + 1)}.
+                                </span>{" "}
+                                {debt?.emoji} {debt?.name}
+                              </span>
+
+                              <span className="shrink-0 font-semibold">
+                                {fill(L.inMonths, { n: fmt(item.month) })}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </div>
+                  )}
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const count = syncReminders(alloc);
+
+                        setRemindMsg(count > 0 ? "on" : "needDay");
+                      }}
+                      className={plainButton}
+                    >
+                      {L.remind}
+                    </button>
+
+                    {remindMsg && (
+                      <p role="status" className="mt-2 text-sm font-semibold text-[var(--pen)]">
+                        {remindMsg === "on" ? L.remindOn : L.remindNeed}
+                      </p>
                     )}
                   </div>
-                )
+                </>
+              )}
+            </section>
+          )}
+
+          {/* 4 TRACK */}
+
+          {tabNow === 3 && (
+            <section className="space-y-3">
+              {open.map((d) => {
+                const original = originalOf(d);
+                const pct = Math.round(((original - d.amount) / original) * 100);
+                const due = d.dueDay ? daysToDue(d.dueDay) : null;
+                const suggest = Math.round(alloc[d.id] ?? d.minPay ?? 0);
+                const custom = openPay === d.id || suggest <= 0;
+                const last = d.payments?.[0];
+
+                return (
+                  <div
+                    key={d.id}
+                    className={`space-y-3 rounded-3xl border-2 bg-white/60 p-4 ${
+                      d.id === focusId ? "border-[var(--pen)]" : "border-[var(--ink)]/10"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-base font-bold">
+                          {d.emoji} {d.name}
+                        </p>
+
+                        {d.id === focusId && (
+                          <span className="mt-1 inline-block rounded-full bg-[var(--mark)] px-2 py-0.5 text-[11px] font-bold">
+                            {L.focus}
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setSheet(d.id)}
+                        className="shrink-0 text-sm font-semibold text-[var(--pen)]"
+                      >
+                        {L.edit}
+                      </button>
+                    </div>
+
+                    <div>
+                      <p className="font-hand text-3xl leading-none">{money(d.amount)}</p>
+
+                      <div className="mt-2 h-2 rounded-full bg-[var(--ink)]/10">
+                        <div
+                          className="h-2 rounded-full bg-[var(--pen)] transition-all duration-700"
+                          style={{ width: `${Math.min(Math.max(pct, 0), 100)}%` }}
+                        />
+                      </div>
+
+                      <p className="mt-1.5 text-xs opacity-70">
+                        {due === null
+                          ? ""
+                          : due === 0
+                          ? L.dueToday
+                          : fill(L.dueIn, { n: fmt(due) })}
+                        {due !== null && last ? " · " : ""}
+                        {last ? fill(L.lastPaid, { d: last.date, a: money(last.amount) }) : ""}
+                      </p>
+                    </div>
+
+                    {custom ? (
+                      <div className="flex items-end gap-2">
+                        <label className="block flex-1">
+                          <span className="mb-1 block text-xs font-semibold opacity-70">
+                            {L.amountLabel}
+                          </span>
+
+                          <input
+                            inputMode="decimal"
+                            value={payInputs[d.id] ?? ""}
+                            onChange={(e) =>
+                              setPayInputs((cur) => ({ ...cur, [d.id]: digits(e.target.value) }))
+                            }
+                            className="w-full rounded-xl border-2 border-[var(--ink)]/15 bg-white/80 px-3 py-2.5 text-base font-semibold outline-none focus:border-[var(--pen)]"
+                          />
+                        </label>
+
+                        <button
+                          type="button"
+                          disabled={toNum(payInputs[d.id] ?? "") <= 0}
+                          onClick={() => pay(d, toNum(payInputs[d.id] ?? ""))}
+                          className="shrink-0 rounded-full bg-[var(--pen)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40"
+                        >
+                          {L.savePay}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <button type="button" onClick={() => pay(d, suggest)} className={bigButton}>
+                          {fill(L.paidBtn, { a: money(suggest) })}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setOpenPay(d.id)}
+                          className="block w-full text-center text-sm font-semibold text-[var(--pen)]"
+                        >
+                          {L.otherAmt}
+                        </button>
+                      </div>
+                    )}
+
+                    {flash?.id === d.id && (
+                      <p role="status" className="rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
+                        🌾 {flash.text}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+
+              {done.map((d) => (
+                <div
+                  key={d.id}
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-white/40 px-4 py-3"
+                >
+                  <p className="min-w-0 truncate text-sm font-semibold opacity-70">
+                    {d.emoji} {d.name}
+                  </p>
+
+                  <span className="shrink-0 text-sm font-bold text-[var(--pen)]">
+                    🌾 {L.cleared}
+                  </span>
+                </div>
+              ))}
+
+              {flash && !debts.some((d) => d.id === flash.id && d.amount > 0) && (
+                <p role="status" className="rounded-xl bg-[var(--pen)]/15 px-3 py-2 text-sm font-semibold text-[var(--pen)]">
+                  🌾 {flash.text}
+                </p>
               )}
 
-              <div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const count = syncReminders(alloc);
-
-                    setRemindMsg(count > 0 ? "on" : "needDay");
-                  }}
-                  className={plainButton}
-                >
-                  {L.remind}
-                </button>
-
-                {remindMsg && (
-                  <p role="status" className="mt-2 text-sm font-semibold text-[var(--pen)]">
-                    {remindMsg === "on" ? L.remindOn : L.remindNeed}
-                  </p>
-                )}
-              </div>
+              {debts.length === 0 && <p className="text-sm opacity-70">{L.nothingYet}</p>}
             </section>
+          )}
+
+          {/* guided next step */}
+
+          {tabNow < 3 && (
+            <div>
+              <button
+                type="button"
+                disabled={debts.length === 0}
+                onClick={() => setTab((tabNow + 1) as 1 | 2 | 3)}
+                className={`${bigButton} disabled:opacity-40`}
+              >
+                {debts.length === 0
+                  ? L.addFirst
+                  : fill(L.next, { t: L.tabs[tabNow + 1] })}
+              </button>
+            </div>
           )}
 
           <p className="text-center text-xs opacity-60">{t("dpDisclaimer")}</p>
